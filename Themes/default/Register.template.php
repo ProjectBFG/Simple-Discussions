@@ -111,27 +111,6 @@ function template_registration_form()
 						</dd>
 					</dl>';
 
-	// If OpenID is enabled, give the user a choice between password and OpenID.
-	if (!empty($modSettings['enableOpenID']))
-	{
-		echo '
-					<dl class="register_form" id="authentication_group">
-						<dt>
-							<strong>', $txt['authenticate_label'], ':</strong>
-						</dt>
-						<dd>
-							<label for="auth_pass" id="option_auth_pass">
-								<input type="radio" name="authenticate" value="passwd" id="auth_pass" tabindex="', $context['tabindex']++, '" ', empty($context['openid']) ? 'checked="checked" ' : '', ' onclick="updateAuthMethod();" class="input_radio" />
-								', $txt['authenticate_password'], '
-							</label>
-							<label for="auth_openid" id="option_auth_openid">
-								<input type="radio" name="authenticate" value="openid" id="auth_openid" tabindex="', $context['tabindex']++, '" ', !empty($context['openid']) ? 'checked="checked" ' : '', ' onclick="updateAuthMethod();" class="input_radio" />
-								', $txt['authenticate_openid'], '
-							</label>
-						</dd>
-					</dl>';
-	}
-
 	echo '
 					<dl class="register_form" id="password1_group">
 						<dt><strong><label for="smf_autov_pwmain">', ucwords($txt['choose_pass']), ':</label></strong></dt>
@@ -151,19 +130,6 @@ function template_registration_form()
 							</span>
 						</dd>
 					</dl>';
-
-	// If OpenID is enabled, give the user a choice between password and OpenID.
-	if (!empty($modSettings['enableOpenID']))
-	{
-		echo '
-
-					<dl class="register_form" id="openid_group">
-						<dt><strong>', $txt['authenticate_openid_url'], ':</strong></dt>
-						<dd>
-							<input type="text" name="openid_identifier" id="openid_url" size="30" tabindex="', $context['tabindex']++, '" value="', isset($context['openid']) ? $context['openid'] : '', '" class="input_text openid_login" />
-						</dd>
-					</dl>';
-	}
 
 	// If there is any field marked as required, show it here!
 	if (!empty($context['custom_fields_required']) && !empty($context['custom_fields']))

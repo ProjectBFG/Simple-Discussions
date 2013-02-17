@@ -176,22 +176,10 @@ function Register($reg_errors = array())
 	else
 		$context['visual_verification'] = false;
 
-	// Are they coming from an OpenID login attempt?
-	if (!empty($_SESSION['openid']['verified']) && !empty($_SESSION['openid']['openid_uri']))
-	{
-		$context['openid'] = $_SESSION['openid']['openid_uri'];
-		$context['username'] = $smcFunc['htmlspecialchars'](!empty($_POST['user']) ? $_POST['user'] : $_SESSION['openid']['nickname']);
-		$context['email'] = $smcFunc['htmlspecialchars'](!empty($_POST['email']) ? $_POST['email'] : $_SESSION['openid']['email']);
-	}
-	// See whether we have some prefiled values.
-	else
-	{
-		$context += array(
-			'openid' => isset($_POST['openid_identifier']) ? $_POST['openid_identifier'] : '',
-			'username' => isset($_POST['user']) ? $smcFunc['htmlspecialchars']($_POST['user']) : '',
-			'email' => isset($_POST['email']) ? $smcFunc['htmlspecialchars']($_POST['email']) : '',
-		);
-	}
+	$context += array(
+		'username' => isset($_POST['user']) ? $smcFunc['htmlspecialchars']($_POST['user']) : '',
+		'email' => isset($_POST['email']) ? $smcFunc['htmlspecialchars']($_POST['email']) : '',
+	);
 
 	// @todo Why isn't this a simple set operation?
 	// Were there any errors?
@@ -206,9 +194,8 @@ function Register($reg_errors = array())
 /**
  * Actually register the member.
  *
- * @param bool $verifiedOpenID = false
  */
-function Register2($verifiedOpenID = false)
+function Register2()
 {
 	global $scripturl, $txt, $modSettings, $context, $sourcedir;
 	global $user_info, $options, $settings, $smcFunc;
@@ -219,54 +206,43 @@ function Register2($verifiedOpenID = false)
 	// Start collecting together any errors.
 	$reg_errors = array();
 
-	// Did we save some open ID fields?
-	if ($verifiedOpenID && !empty($context['openid_save_fields']))
-	{
-		foreach ($context['openid_save_fields'] as $id => $value)
-			$_POST[$id] = $value;
-	}
-
 	// You can't register if it's disabled.
 	if (!empty($modSettings['registration_method']) && $modSettings['registration_method'] == 3)
 		fatal_lang_error('registration_disabled', false);
 
-	// Things we don't do for people who have already confirmed their OpenID allegances via register.
-	if (!$verifiedOpenID)
+	// Well, if you don't agree, you can't register.
+	if (!empty($modSettings['requireAgreement']) && empty($_SESSION['registration_agreed']))
+		redirectexit();
+
+	// Make sure they came from *somewhere*, have a session.
+	if (!isset($_SESSION['old_url']))
+		redirectexit('action=register');
+
+	// If we don't require an agreement, we need a extra check for coppa.
+	if (empty($modSettings['requireAgreement']) && !empty($modSettings['coppaAge']))
+		$_SESSION['skip_coppa'] = !empty($_POST['accept_agreement']);
+	// Are they under age, and under age users are banned?
+	if (!empty($modSettings['coppaAge']) && empty($modSettings['coppaType']) && empty($_SESSION['skip_coppa']))
 	{
-		// Well, if you don't agree, you can't register.
-		if (!empty($modSettings['requireAgreement']) && empty($_SESSION['registration_agreed']))
-			redirectexit();
+		// @todo This should be put in Errors, imho.
+		loadLanguage('Login');
+		fatal_lang_error('under_age_registration_prohibited', false, array($modSettings['coppaAge']));
+	}
 
-		// Make sure they came from *somewhere*, have a session.
-		if (!isset($_SESSION['old_url']))
-			redirectexit('action=register');
+	// Check whether the visual verification code was entered correctly.
+	if (!empty($modSettings['reg_verification']))
+	{
+		require_once($sourcedir . '/Subs-Editor.php');
+		$verificationOptions = array(
+			'id' => 'register',
+		);
+		$context['visual_verification'] = create_control_verification($verificationOptions, true);
 
-		// If we don't require an agreement, we need a extra check for coppa.
-		if (empty($modSettings['requireAgreement']) && !empty($modSettings['coppaAge']))
-			$_SESSION['skip_coppa'] = !empty($_POST['accept_agreement']);
-		// Are they under age, and under age users are banned?
-		if (!empty($modSettings['coppaAge']) && empty($modSettings['coppaType']) && empty($_SESSION['skip_coppa']))
+		if (is_array($context['visual_verification']))
 		{
-			// @todo This should be put in Errors, imho.
-			loadLanguage('Login');
-			fatal_lang_error('under_age_registration_prohibited', false, array($modSettings['coppaAge']));
-		}
-
-		// Check whether the visual verification code was entered correctly.
-		if (!empty($modSettings['reg_verification']))
-		{
-			require_once($sourcedir . '/Subs-Editor.php');
-			$verificationOptions = array(
-				'id' => 'register',
-			);
-			$context['visual_verification'] = create_control_verification($verificationOptions, true);
-
-			if (is_array($context['visual_verification']))
-			{
-				loadLanguage('Errors');
-				foreach ($context['visual_verification'] as $error)
-					$reg_errors[] = $txt['error_' . $error];
-			}
+			loadLanguage('Errors');
+			foreach ($context['visual_verification'] as $error)
+				$reg_errors[] = $txt['error_' . $error];
 		}
 	}
 
@@ -349,13 +325,12 @@ function Register2($verifiedOpenID = false)
 		'email' => !empty($_POST['email']) ? $_POST['email'] : '',
 		'password' => !empty($_POST['passwrd1']) ? $_POST['passwrd1'] : '',
 		'password_check' => !empty($_POST['passwrd2']) ? $_POST['passwrd2'] : '',
-		'openid' => !empty($_POST['openid_identifier']) ? $_POST['openid_identifier'] : '',
 		'auth_method' => !empty($_POST['authenticate']) ? $_POST['authenticate'] : '',
 		'check_reserved_name' => true,
 		'check_password_strength' => true,
 		'check_email_ban' => true,
 		'send_welcome_email' => !empty($modSettings['send_welcomeEmail']),
-		'require' => !empty($modSettings['coppaAge']) && !$verifiedOpenID && empty($_SESSION['skip_coppa']) ? 'coppa' : (empty($modSettings['registration_method']) ? 'nothing' : ($modSettings['registration_method'] == 1 ? 'activation' : 'approval')),
+		'require' => !empty($modSettings['coppaAge']) && empty($_SESSION['skip_coppa']) ? 'coppa' : (empty($modSettings['registration_method']) ? 'nothing' : ($modSettings['registration_method'] == 1 ? 'activation' : 'approval')),
 		'extra_register_vars' => array(),
 		'theme_vars' => array(),
 	);
@@ -444,26 +419,6 @@ function Register2($verifiedOpenID = false)
 	{
 		$_REQUEST['step'] = 2;
 		return Register($reg_errors);
-	}
-	// If they're wanting to use OpenID we need to validate them first.
-	if (empty($_SESSION['openid']['verified']) && !empty($_POST['authenticate']) && $_POST['authenticate'] == 'openid')
-	{
-		// What do we need to save?
-		$save_variables = array();
-		foreach ($_POST as $k => $v)
-			if (!in_array($k, array('sc', 'sesc', $context['session_var'], 'passwrd1', 'passwrd2', 'regSubmit')))
-				$save_variables[$k] = $v;
-
-		require_once($sourcedir . '/Subs-OpenID.php');
-		smf_openID_validate($_POST['openid_identifier'], false, $save_variables);
-	}
-	// If we've come from OpenID set up some default stuff.
-	elseif ($verifiedOpenID || (!empty($_POST['openid_identifier']) && $_POST['authenticate'] == 'openid'))
-	{
-		$regOptions['username'] = !empty($_POST['user']) && trim($_POST['user']) != '' ? $_POST['user'] : $_SESSION['openid']['nickname'];
-		$regOptions['email'] = !empty($_POST['email']) && trim($_POST['email']) != '' ? $_POST['email'] : $_SESSION['openid']['email'];
-		$regOptions['auth_method'] = 'openid';
-		$regOptions['openid'] = !empty($_POST['openid_identifier']) ? $_POST['openid_identifier'] : $_SESSION['openid']['openid_uri'];
 	}
 
 	$memberID = registerMember($regOptions, true);

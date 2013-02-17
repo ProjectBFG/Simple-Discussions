@@ -69,12 +69,8 @@ $txt['secret_why_blank'] = 'why is this blank?';
 $txt['authentication_reminder'] = 'Authentication Reminder';
 $txt['password_reminder_desc'] = 'If you\'ve forgotten your login details, don\'t worry, they can be retrieved. To start this process please enter your username or email address below.';
 $txt['authentication_options'] = 'Please select one of the two options below';
-$txt['authentication_openid_email'] = 'Email me a reminder of my OpenID identity';
-$txt['authentication_openid_secret'] = 'Answer my &quot;secret question&quot; to display my OpenID identity';
 $txt['authentication_password_email'] = 'Email me a new password';
 $txt['authentication_password_secret'] = 'Let me set a new password by answering my &quot;secret question&quot;';
-$txt['openid_secret_reminder'] = 'Please enter your answer to the question below. If you get it correct your OpenID identity will be shown.';
-$txt['reminder_openid_is'] = 'The OpenID identity associated with your account is:<br />&nbsp;&nbsp;&nbsp;&nbsp;<strong>%1$s</strong><br /><br />Please make a note of this for future reference.';
 $txt['reminder_continue'] = 'Continue';
 
 $txt['current_theme'] = 'Current Theme';
@@ -163,9 +159,6 @@ $txt['trackActivity'] = 'Activity';
 $txt['trackIP'] = 'IP Address';
 $txt['trackLogins'] = 'Logins';
 
-$txt['authentication'] = 'Authentication';
-$txt['change_authentication'] = 'From this section you can change how you login to the forum. You may choose to either use an OpenID account for your authentication, or alternatively switch to use a username and password.';
-
 $txt['profileEdit'] = 'Modify Profile';
 $txt['account_info'] = 'These are your account settings. This page holds all critical information that identifies you on this forum. For security reasons, you will need to enter your (current) password to make changes to this information.';
 $txt['forumProfile_info'] = 'You can change your personal information on this page. This information will be displayed throughout ' . $context['forum_name_html_safe'] . '. If you aren\'t comfortable with sharing some information, simply skip it - nothing here is required.';
@@ -226,7 +219,6 @@ $txt['user_email'] = 'Username/Email';
 $txt['reminder_subject'] = 'New password for ' . $context['forum_name'];
 $txt['reminder_mail'] = 'This mail was sent because the \'forgot password\' function has been applied to your account. To set a new password, click the following link';
 $txt['reminder_sent'] = 'A mail has been sent to your email address. Click the link in that mail to set a new password.';
-$txt['reminder_openid_sent'] = 'Your current OpenID identity has been sent to your email address.';
 $txt['reminder_set_password'] = 'Set Password';
 $txt['reminder_password_set'] = 'Password successfully set';
 $txt['reminder_error'] = '%1$s failed to answer their secret question correctly when attempting to change a forgotten password.';

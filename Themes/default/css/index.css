@@ -553,11 +553,6 @@ a.moderation_link, a.moderation_link:visited {
 	font-weight: bold;
 }
 
-.openid_login {
-	background: white url(../images/openid.png) no-repeat;
-	padding-left: 18px;
-}
-
 /* a descriptive style */
 .description, .information, .plainbox, #whoisviewing {
 	-moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;

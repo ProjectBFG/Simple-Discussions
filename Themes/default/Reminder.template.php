@@ -134,7 +134,7 @@ function template_ask()
 		<div class="tborder login">
 				<h3 class="catbg">', $txt['authentication_reminder'], '</h3>
 			<div class="roundframe">
-				<p class="smalltext">', $context['account_type'] == 'password' ? $txt['enter_new_password'] : $txt['openid_secret_reminder'], '</p>
+				<p class="smalltext">', $txt['enter_new_password'], '</p>
 				<dl>
 					<dt>', $txt['secret_question'], ':</dt>
 					<dd>', $context['secret_question'], '</dd>

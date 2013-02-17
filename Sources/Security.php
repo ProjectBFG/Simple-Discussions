@@ -77,15 +77,6 @@ function validateSession($type = 'admin')
 			return;
 		}
 	}
-	// OpenID?
-	if (!empty($user_settings['openid_uri']))
-	{
-		require_once($sourcedir . '/Subs-OpenID.php');
-		smf_openID_revalidate();
-
-		$_SESSION[$type . '_time'] = time();
-		return;
-	}
 
 	// Need to type in a password for that, man.
 	if (!isset($_GET['xml']))

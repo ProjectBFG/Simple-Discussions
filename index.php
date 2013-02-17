@@ -113,13 +113,6 @@ set_error_handler('error_handler');
 // Start the session. (assuming it hasn't already been.)
 loadSession();
 
-// Restore post data if we are revalidating OpenID.
-if (isset($_GET['openid_restore_post']) && !empty($_SESSION['openid']['saved_data'][$_GET['openid_restore_post']]['post']) && empty($_POST))
-{
-	$_POST = $_SESSION['openid']['saved_data'][$_GET['openid_restore_post']]['post'];
-	unset($_SESSION['openid']['saved_data'][$_GET['openid_restore_post']]);
-}
-
 // What function shall we execute? (done like this for memory's sake.)
 call_user_func(smf_main());
 
@@ -195,7 +188,7 @@ function smf_main()
 		}
 	}
 	// If guest access is off, a guest can only do one of the very few following actions.
-	elseif (empty($modSettings['allow_guestAccess']) && $user_info['is_guest'] && (!isset($_REQUEST['action']) || !in_array($_REQUEST['action'], array('coppa', 'login', 'login2', 'register', 'register2', 'reminder', 'activate', 'smstats', 'mailq', 'verificationcode', 'openidreturn'))))
+	elseif (empty($modSettings['allow_guestAccess']) && $user_info['is_guest'] && (!isset($_REQUEST['action']) || !in_array($_REQUEST['action'], array('coppa', 'login', 'login2', 'register', 'register2', 'reminder', 'activate', 'smstats', 'mailq', 'verificationcode'))))
 	{
 		require_once($sourcedir . '/Subs-Auth.php');
 		return 'KickGuest';
@@ -267,7 +260,6 @@ function smf_main()
 		'movetopic2' => array('MoveTopic.php', 'MoveTopic2'),
 		'notify' => array('Notify.php', 'Notify'),
 		'notifyboard' => array('Notify.php', 'BoardNotify'),
-		'openidreturn' => array('Subs-OpenID.php', 'smf_openID_return'),
 		'pm' => array('PersonalMessage.php', 'MessageMain'),
 		'post' => array('Post.php', 'Post'),
 		'post2' => array('Post.php', 'Post2'),
