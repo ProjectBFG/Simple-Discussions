@@ -315,7 +315,7 @@ function PackageGBrowse()
 			'items' => array(),
 		);
 
-		$packages = $section->set('title|heading|text|remote|rule|modification|language|avatar-pack|theme|smiley-set');
+		$packages = $section->set('title|heading|text|remote|rule|modification|language|theme|smiley-set');
 		foreach ($packages as $thisPackage)
 		{
 			$package = array(
@@ -600,8 +600,6 @@ function PackageDownload()
 
 	if ($context['package']['type'] == 'modification')
 		$context['package']['install']['link'] = '<a href="' . $scripturl . '?action=admin;area=packages;sa=install;package=' . $context['package']['filename'] . '">[ ' . $txt['install_mod'] . ' ]</a>';
-	elseif ($context['package']['type'] == 'avatar')
-		$context['package']['install']['link'] = '<a href="' . $scripturl . '?action=admin;area=packages;sa=install;package=' . $context['package']['filename'] . '">[ ' . $txt['use_avatars'] . ' ]</a>';
 	elseif ($context['package']['type'] == 'language')
 		$context['package']['install']['link'] = '<a href="' . $scripturl . '?action=admin;area=packages;sa=install;package=' . $context['package']['filename'] . '">[ ' . $txt['add_languages'] . ' ]</a>';
 	else
@@ -688,8 +686,6 @@ function PackageUpload()
 
 	if ($context['package']['type'] == 'modification')
 		$context['package']['install']['link'] = '<a href="' . $scripturl . '?action=admin;area=packages;sa=install;package=' . $context['package']['filename'] . '">[ ' . $txt['install_mod'] . ' ]</a>';
-	elseif ($context['package']['type'] == 'avatar')
-		$context['package']['install']['link'] = '<a href="' . $scripturl . '?action=admin;area=packages;sa=install;package=' . $context['package']['filename'] . '">[ ' . $txt['use_avatars'] . ' ]</a>';
 	elseif ($context['package']['type'] == 'language')
 		$context['package']['install']['link'] = '<a href="' . $scripturl . '?action=admin;area=packages;sa=install;package=' . $context['package']['filename'] . '">[ ' . $txt['add_languages'] . ' ]</a>';
 	else

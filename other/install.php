@@ -433,8 +433,6 @@ function CheckFilesWritable()
 	$incontext['sub_template'] = 'chmod_files';
 
 	$writable_files = array(
-		'attachments',
-		'avatars',
 		'cache',
 		'Packages',
 		'Packages/installed.list',
@@ -1303,7 +1301,7 @@ function AdminAccount()
 				array(
 					'member_name' => 'string-25', 'real_name' => 'string-25', 'passwd' => 'string', 'email_address' => 'string',
 					'id_group' => 'int', 'posts' => 'int', 'date_registered' => 'int', 'hide_email' => 'int',
-					'password_salt' => 'string', 'lngfile' => 'string', 'personal_text' => 'string', 'avatar' => 'string',
+					'password_salt' => 'string', 'lngfile' => 'string', 'personal_text' => 'string',
 					'member_ip' => 'string', 'member_ip2' => 'string', 'buddy_list' => 'string', 'pm_ignore_list' => 'string',
 					'message_labels' => 'string', 'website_title' => 'string', 'website_url' => 'string', 'location' => 'string',
 					'signature' => 'string', 'usertitle' => 'string', 'secret_question' => 'string',
@@ -1312,7 +1310,7 @@ function AdminAccount()
 				array(
 					stripslashes($_POST['username']), stripslashes($_POST['username']), sha1(strtolower(stripslashes($_POST['username'])) . stripslashes($_POST['password1'])), stripslashes($_POST['email']),
 					1, 0, time(), 0,
-					$incontext['member_salt'], '', '', '',
+					$incontext['member_salt'], '', '',
 					$ip, $ip, '', '',
 					'', '', '', '',
 					'', '', '',

@@ -260,7 +260,7 @@ function Register2()
 		'buddy_list',
 		'pm_ignore_list',
 		'smiley_set',
-		'signature', 'personal_text', 'avatar',
+		'signature', 'personal_text',
 		'lngfile',
 		'secret_question', 'secret_answer',
 	);

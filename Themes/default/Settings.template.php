@@ -31,11 +31,6 @@ function template_options()
 			'default' => true,
 		),
 		array(
-			'id' => 'show_no_avatars',
-			'label' => $txt['show_no_avatars'],
-			'default' => true,
-		),
-		array(
 			'id' => 'show_no_signatures',
 			'label' => $txt['show_no_signatures'],
 			'default' => true,
@@ -235,10 +230,6 @@ function template_settings()
 		array(
 			'id' => 'show_profile_buttons',
 			'label' => $txt['show_view_profile_button'],
-		),
-		array(
-			'id' => 'show_user_images',
-			'label' => $txt['user_avatars'],
 		),
 		array(
 			'id' => 'show_blurb',

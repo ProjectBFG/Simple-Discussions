@@ -2,7 +2,7 @@
 
 /**
  * This is perhaps the most important and probably most accessed file in all
- * of SMF.  This file controls topic, message, and attachment display.
+ * of SMF.  This file controls topic and message display.
  *
  * Simple Machines Forum (SMF)
  *
@@ -30,7 +30,7 @@ function Display()
 {
 	global $scripturl, $txt, $modSettings, $context, $settings;
 	global $options, $sourcedir, $user_info, $board_info, $topic, $board;
-	global $attachments, $messages_request, $topicinfo, $language, $smcFunc;
+	global $messages_request, $topicinfo, $language, $smcFunc;
 
 	// What are you gonna display if these are empty?!
 	if (empty($topic))
@@ -877,49 +877,9 @@ function Display()
 		}
 	}
 
-	$attachments = array();
-
 	// If there _are_ messages here... (probably an error otherwise :!)
 	if (!empty($messages))
 	{
-		// Fetch attachments.
-		if (!empty($modSettings['attachmentEnable']) && allowedTo('view_attachments'))
-		{
-			$request = $smcFunc['db_query']('', '
-				SELECT
-					a.id_attach, a.id_folder, a.id_msg, a.filename, a.file_hash, IFNULL(a.size, 0) AS filesize, a.downloads, a.approved,
-					a.width, a.height' . (empty($modSettings['attachmentShowImages']) || empty($modSettings['attachmentThumbnails']) ? '' : ',
-					IFNULL(thumb.id_attach, 0) AS id_thumb, thumb.width AS thumb_width, thumb.height AS thumb_height') . '
-				FROM {db_prefix}attachments AS a' . (empty($modSettings['attachmentShowImages']) || empty($modSettings['attachmentThumbnails']) ? '' : '
-					LEFT JOIN {db_prefix}attachments AS thumb ON (thumb.id_attach = a.id_thumb)') . '
-				WHERE a.id_msg IN ({array_int:message_list})
-					AND a.attachment_type = {int:attachment_type}',
-				array(
-					'message_list' => $messages,
-					'attachment_type' => 0,
-					'is_approved' => 1,
-				)
-			);
-			$temp = array();
-			while ($row = $smcFunc['db_fetch_assoc']($request))
-			{
-				if (!$row['approved'] && $modSettings['postmod_active'] && !allowedTo('approve_posts') && (!isset($all_posters[$row['id_msg']]) || $all_posters[$row['id_msg']] != $user_info['id']))
-					continue;
-
-				$temp[$row['id_attach']] = $row;
-
-				if (!isset($attachments[$row['id_msg']]))
-					$attachments[$row['id_msg']] = array();
-			}
-			$smcFunc['db_free_result']($request);
-
-			// This is better than sorting it with the query...
-			ksort($temp);
-
-			foreach ($temp as $row)
-				$attachments[$row['id_msg']][] = $row;
-		}
-
 		$msg_parameters = array(
 			'message_list' => $messages,
 			'new_from' => $topicinfo['new_from'],
@@ -1065,7 +1025,6 @@ function Display()
 			// Store the ID.
 			$context['post_box_name'] = $editorOptions['id'];
 
-			$context['attached'] = '';
 			$context['make_poll'] = isset($_REQUEST['poll']);
 
 			// Message icons - customized icons are off?
@@ -1118,7 +1077,7 @@ function Display()
 function prepareDisplayContext($reset = false)
 {
 	global $settings, $txt, $modSettings, $scripturl, $options, $user_info, $smcFunc;
-	global $memberContext, $context, $messages_request, $topic, $attachments, $topicinfo;
+	global $memberContext, $context, $messages_request, $topic, $topicinfo;
 
 	static $counter = null;
 
@@ -1198,7 +1157,6 @@ function prepareDisplayContext($reset = false)
 
 	// Compose the memory eat- I mean message array.
 	$output = array(
-		'attachment' => loadAttachmentContext($message['id_msg']),
 		'alternate' => $counter % 2,
 		'id' => $message['id_msg'],
 		'href' => $scripturl . '?topic=' . $topic . '.msg' . $message['id_msg'] . '#msg' . $message['id_msg'],
@@ -1240,393 +1198,6 @@ function prepareDisplayContext($reset = false)
 		$counter--;
 
 	return $output;
-}
-
-/**
- * Downloads an attachment, and increments the download count.
- * It requires the view_attachments permission.
- * It disables the session parser, and clears any previous output.
- * It depends on the attachmentUploadDir setting being correct.
- * It is accessed via the query string ?action=dlattach.
- * Views to attachments do not increase hits and are not logged in the "Who's Online" log.
- */
-function Download()
-{
-	global $txt, $modSettings, $user_info, $scripturl, $context, $sourcedir, $topic, $smcFunc;
-
-	// Some defaults that we need.
-	$context['character_set'] = empty($modSettings['global_character_set']) ? (empty($txt['lang_character_set']) ? 'ISO-8859-1' : $txt['lang_character_set']) : $modSettings['global_character_set'];
-	$context['utf8'] = $context['character_set'] === 'UTF-8';
-	$context['no_last_modified'] = true;
-
-	// Make sure some attachment was requested!
-	if (!isset($_REQUEST['attach']) && !isset($_REQUEST['id']))
-		fatal_lang_error('no_access', false);
-
-	$_REQUEST['attach'] = isset($_REQUEST['attach']) ? (int) $_REQUEST['attach'] : (int) $_REQUEST['id'];
-
-		// This checks only the current board for $board/$topic's permissions.
-		isAllowedTo('view_attachments');
-
-	// Make sure this attachment is on this board.
-	// @todo: We must verify that $topic is the attachment's topic, or else the permission check above is broken.
-	$request = $smcFunc['db_query']('', '
-		SELECT a.id_folder, a.filename, a.file_hash, a.fileext, a.id_attach, a.attachment_type, a.mime_type, a.approved, m.id_member
-		FROM {db_prefix}attachments AS a
-			INNER JOIN {db_prefix}messages AS m ON (m.id_msg = a.id_msg AND m.id_topic = {int:current_topic})
-			INNER JOIN {db_prefix}boards AS b ON (b.id_board = m.id_board AND {query_see_board})
-		WHERE a.id_attach = {int:attach}
-		LIMIT 1',
-		array(
-			'attach' => $_REQUEST['attach'],
-			'current_topic' => $topic,
-		)
-	);
-		
-	if ($smcFunc['db_num_rows']($request) == 0)
-		fatal_lang_error('no_access', false);
-	list ($id_folder, $real_filename, $file_hash, $file_ext, $id_attach, $attachment_type, $mime_type, $is_approved, $id_member) = $smcFunc['db_fetch_row']($request);
-	$smcFunc['db_free_result']($request);
-
-	// If it isn't yet approved, do they have permission to view it?
-	if (!$is_approved && ($id_member == 0 || $user_info['id'] != $id_member) && ($attachment_type == 0 || $attachment_type == 3))
-		isAllowedTo('approve_posts');
-
-	// Update the download counter (unless it's a thumbnail).
-	if ($attachment_type != 3)
-		$smcFunc['db_query']('attach_download_increase', '
-			UPDATE LOW_PRIORITY {db_prefix}attachments
-			SET downloads = downloads + 1
-			WHERE id_attach = {int:id_attach}',
-			array(
-				'id_attach' => $id_attach,
-			)
-		);
-
-	$filename = getAttachmentFilename($real_filename, $_REQUEST['attach'], $id_folder, false, $file_hash);
-
-	// This is done to clear any output that was made before now.
-	ob_end_clean();
-	if (!empty($modSettings['enableCompressedOutput']) && @filesize($filename) <= 4194304 && in_array($file_ext, array('txt', 'html', 'htm', 'js', 'doc', 'docx', 'rtf', 'css', 'php', 'log', 'xml', 'sql', 'c', 'java')))
-		@ob_start('ob_gzhandler');
-	else
-	{
-		ob_start();
-		header('Content-Encoding: none');
-	}
-
-	// No point in a nicer message, because this is supposed to be an attachment anyway...
-	if (!file_exists($filename))
-	{
-		loadLanguage('Errors');
-
-		header((preg_match('~HTTP/1\.[01]~i', $_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0') . ' 404 Not Found');
-		header('Content-Type: text/plain; charset=' . (empty($context['character_set']) ? 'ISO-8859-1' : $context['character_set']));
-
-		// We need to die like this *before* we send any anti-caching headers as below.
-		die('404 - ' . $txt['attachment_not_found']);
-	}
-
-	// If it hasn't been modified since the last time this attachement was retrieved, there's no need to display it again.
-	if (!empty($_SERVER['HTTP_IF_MODIFIED_SINCE']))
-	{
-		list($modified_since) = explode(';', $_SERVER['HTTP_IF_MODIFIED_SINCE']);
-		if (strtotime($modified_since) >= filemtime($filename))
-		{
-			ob_end_clean();
-
-			// Answer the question - no, it hasn't been modified ;).
-			header('HTTP/1.1 304 Not Modified');
-			exit;
-		}
-	}
-
-	// Check whether the ETag was sent back, and cache based on that...
-	$eTag = '"' . substr($_REQUEST['attach'] . $real_filename . filemtime($filename), 0, 64) . '"';
-	if (!empty($_SERVER['HTTP_IF_NONE_MATCH']) && strpos($_SERVER['HTTP_IF_NONE_MATCH'], $eTag) !== false)
-	{
-		ob_end_clean();
-
-		header('HTTP/1.1 304 Not Modified');
-		exit;
-	}
-
-	// Send the attachment headers.
-	header('Pragma: ');
-	if (!isBrowser('gecko'))
-		header('Content-Transfer-Encoding: binary');
-	header('Expires: ' . gmdate('D, d M Y H:i:s', time() + 525600 * 60) . ' GMT');
-	header('Last-Modified: ' . gmdate('D, d M Y H:i:s', filemtime($filename)) . ' GMT');
-	header('Accept-Ranges: bytes');
-	header('Connection: close');
-	header('ETag: ' . $eTag);
-
-	// Make sure the mime type warrants an inline display.
-	if (isset($_REQUEST['image']) && !empty($mime_type) && strpos($mime_type, 'image/') !== 0)
-		unset($_REQUEST['image']);
-
-	// Does this have a mime type?
-	elseif (!empty($mime_type) && (isset($_REQUEST['image']) || !in_array($file_ext, array('jpg', 'gif', 'jpeg', 'x-ms-bmp', 'png', 'psd', 'tiff', 'iff'))))
-		header('Content-Type: ' . strtr($mime_type, array('image/bmp' => 'image/x-ms-bmp')));
-
-	else
-	{
-		header('Content-Type: ' . (isBrowser('ie') || isBrowser('opera') ? 'application/octetstream' : 'application/octet-stream'));
-		if (isset($_REQUEST['image']))
-			unset($_REQUEST['image']);
-	}
-
-	// Convert the file to UTF-8, cuz most browsers dig that.
-	$utf8name = !$context['utf8'] && function_exists('iconv') ? iconv($context['character_set'], 'UTF-8', $real_filename) : (!$context['utf8'] && function_exists('mb_convert_encoding') ? mb_convert_encoding($real_filename, 'UTF-8', $context['character_set']) : $real_filename);
-	$disposition = !isset($_REQUEST['image']) ? 'attachment' : 'inline';
-
-	// Different browsers like different standards...
-	if (isBrowser('firefox'))
-		header('Content-Disposition: ' . $disposition . '; filename*=UTF-8\'\'' . rawurlencode(preg_replace_callback('~&#(\d{3,8});~', 'fixchar__callback', $utf8name)));
-
-	elseif (isBrowser('opera'))
-		header('Content-Disposition: ' . $disposition . '; filename="' . preg_replace_callback('~&#(\d{3,8});~', 'fixchar__callback', $utf8name) . '"');
-
-	elseif (isBrowser('ie'))
-		header('Content-Disposition: ' . $disposition . '; filename="' . urlencode(preg_replace_callback('~&#(\d{3,8});~', 'fixchar__callback', $utf8name)) . '"');
-
-	else
-		header('Content-Disposition: ' . $disposition . '; filename="' . $utf8name . '"');
-
-	// If this has an "image extension" - but isn't actually an image - then ensure it isn't cached cause of silly IE.
-	if (!isset($_REQUEST['image']) && in_array($file_ext, array('gif', 'jpg', 'bmp', 'png', 'jpeg', 'tiff')))
-		header('Cache-Control: no-cache');
-	else
-		header('Cache-Control: max-age=' . (525600 * 60) . ', private');
-
-	header('Content-Length: ' . filesize($filename));
-
-	// Try to buy some time...
-	@set_time_limit(600);
-
-	// Recode line endings for text files, if enabled.
-	if (!empty($modSettings['attachmentRecodeLineEndings']) && !isset($_REQUEST['image']) && in_array($file_ext, array('txt', 'css', 'htm', 'html', 'php', 'xml')))
-	{
-		if (strpos($_SERVER['HTTP_USER_AGENT'], 'Windows') !== false)
-			$callback = create_function('$buffer', 'return preg_replace(\'~[\r]?\n~\', "\r\n", $buffer);');
-		elseif (strpos($_SERVER['HTTP_USER_AGENT'], 'Mac') !== false)
-			$callback = create_function('$buffer', 'return preg_replace(\'~[\r]?\n~\', "\r", $buffer);');
-		else
-			$callback = create_function('$buffer', 'return preg_replace(\'~[\r]?\n~\', "\n", $buffer);');
-	}
-
-	// Since we don't do output compression for files this large...
-	if (filesize($filename) > 4194304)
-	{
-		// Forcibly end any output buffering going on.
-		while (@ob_get_level() > 0)
-			@ob_end_clean();
-
-		$fp = fopen($filename, 'rb');
-		while (!feof($fp))
-		{
-			if (isset($callback))
-				echo $callback(fread($fp, 8192));
-			else
-				echo fread($fp, 8192);
-			flush();
-		}
-		fclose($fp);
-	}
-	// On some of the less-bright hosts, readfile() is disabled.  It's just a faster, more byte safe, version of what's in the if.
-	elseif (isset($callback) || @readfile($filename) === null)
-		echo isset($callback) ? $callback(file_get_contents($filename)) : file_get_contents($filename);
-
-	obExit(false);
-}
-
-/**
- * This loads an attachment's contextual data including, most importantly, its size if it is an image.
- * Pre-condition: $attachments array to have been filled with the proper attachment data, as Display() does.
- * (@todo change this pre-condition, too fragile and error-prone.)
- * It requires the view_attachments permission to calculate image size.
- * It attempts to keep the "aspect ratio" of the posted image in line, even if it has to be resized by
- * the max_image_width and max_image_height settings.
- *
- * @param type $id_msg message number to load attachments for
- * @return array of attachemnts
- */
-function loadAttachmentContext($id_msg)
-{
-	global $attachments, $modSettings, $txt, $scripturl, $topic, $sourcedir, $smcFunc;
-
-	// Set up the attachment info - based on code by Meriadoc.
-	$attachmentData = array();
-	$have_unapproved = false;
-	if (isset($attachments[$id_msg]) && !empty($modSettings['attachmentEnable']))
-	{
-		foreach ($attachments[$id_msg] as $i => $attachment)
-		{
-			$attachmentData[$i] = array(
-				'id' => $attachment['id_attach'],
-				'name' => preg_replace('~&amp;#(\\d{1,7}|x[0-9a-fA-F]{1,6});~', '&#\\1;', htmlspecialchars($attachment['filename'])),
-				'downloads' => $attachment['downloads'],
-				'size' => ($attachment['filesize'] < 1024000) ? round($attachment['filesize'] / 1024, 2) . ' ' . $txt['kilobyte'] : round($attachment['filesize'] / 1024 / 1024, 2) . ' ' . $txt['megabyte'],
-				'byte_size' => $attachment['filesize'],
-				'href' => $scripturl . '?action=dlattach;topic=' . $topic . '.0;attach=' . $attachment['id_attach'],
-				'link' => '<a href="' . $scripturl . '?action=dlattach;topic=' . $topic . '.0;attach=' . $attachment['id_attach'] . '">' . htmlspecialchars($attachment['filename']) . '</a>',
-				'is_image' => !empty($attachment['width']) && !empty($attachment['height']) && !empty($modSettings['attachmentShowImages']),
-				'is_approved' => $attachment['approved'],
-			);
-
-			// If something is unapproved we'll note it so we can sort them.
-			if (!$attachment['approved'])
-				$have_unapproved = true;
-
-			if (!$attachmentData[$i]['is_image'])
-				continue;
-
-			$attachmentData[$i]['real_width'] = $attachment['width'];
-			$attachmentData[$i]['width'] = $attachment['width'];
-			$attachmentData[$i]['real_height'] = $attachment['height'];
-			$attachmentData[$i]['height'] = $attachment['height'];
-
-			// Let's see, do we want thumbs?
-			if (!empty($modSettings['attachmentThumbnails']) && !empty($modSettings['attachmentThumbWidth']) && !empty($modSettings['attachmentThumbHeight']) && ($attachment['width'] > $modSettings['attachmentThumbWidth'] || $attachment['height'] > $modSettings['attachmentThumbHeight']) && strlen($attachment['filename']) < 249)
-			{
-				// A proper thumb doesn't exist yet? Create one!
-				if (empty($attachment['id_thumb']) || $attachment['thumb_width'] > $modSettings['attachmentThumbWidth'] || $attachment['thumb_height'] > $modSettings['attachmentThumbHeight'] || ($attachment['thumb_width'] < $modSettings['attachmentThumbWidth'] && $attachment['thumb_height'] < $modSettings['attachmentThumbHeight']))
-				{
-					$filename = getAttachmentFilename($attachment['filename'], $attachment['id_attach'], $attachment['id_folder']);
-
-					require_once($sourcedir . '/Subs-Graphics.php');
-					if (createThumbnail($filename, $modSettings['attachmentThumbWidth'], $modSettings['attachmentThumbHeight']))
-					{
-						// So what folder are we putting this image in?
-						if (!empty($modSettings['currentAttachmentUploadDir']))
-						{
-							if (!is_array($modSettings['attachmentUploadDir']))
-								$modSettings['attachmentUploadDir'] = @unserialize($modSettings['attachmentUploadDir']);
-							$path = $modSettings['attachmentUploadDir'][$modSettings['currentAttachmentUploadDir']];
-							$id_folder_thumb = $modSettings['currentAttachmentUploadDir'];
-						}
-						else
-						{
-							$path = $modSettings['attachmentUploadDir'];
-							$id_folder_thumb = 1;
-						}
-
-						// Calculate the size of the created thumbnail.
-						$size = @getimagesize($filename . '_thumb');
-						list ($attachment['thumb_width'], $attachment['thumb_height']) = $size;
-						$thumb_size = filesize($filename . '_thumb');
-
-						// These are the only valid image types for SMF.
-						$validImageTypes = array(1 => 'gif', 2 => 'jpeg', 3 => 'png', 5 => 'psd', 6 => 'bmp', 7 => 'tiff', 8 => 'tiff', 9 => 'jpeg', 14 => 'iff');
-
-						// What about the extension?
-						$thumb_ext = isset($validImageTypes[$size[2]]) ? $validImageTypes[$size[2]] : '';
-
-						// Figure out the mime type.
-						if (!empty($size['mime']))
-							$thumb_mime = $size['mime'];
-						else
-							$thumb_mime = 'image/' . $thumb_ext;
-
-						$thumb_filename = $attachment['filename'] . '_thumb';
-						$thumb_hash = getAttachmentFilename($thumb_filename, false, null, true);
-
-						// Add this beauty to the database.
-						$smcFunc['db_insert']('',
-							'{db_prefix}attachments',
-							array('id_folder' => 'int', 'id_msg' => 'int', 'attachment_type' => 'int', 'filename' => 'string', 'file_hash' => 'string', 'size' => 'int', 'width' => 'int', 'height' => 'int', 'fileext' => 'string', 'mime_type' => 'string'),
-							array($id_folder_thumb, $id_msg, 3, $thumb_filename, $thumb_hash, (int) $thumb_size, (int) $attachment['thumb_width'], (int) $attachment['thumb_height'], $thumb_ext, $thumb_mime),
-							array('id_attach')
-						);
-						$old_id_thumb = $attachment['id_thumb'];
-						$attachment['id_thumb'] = $smcFunc['db_insert_id']('{db_prefix}attachments', 'id_attach');
-						if (!empty($attachment['id_thumb']))
-						{
-							$smcFunc['db_query']('', '
-								UPDATE {db_prefix}attachments
-								SET id_thumb = {int:id_thumb}
-								WHERE id_attach = {int:id_attach}',
-								array(
-									'id_thumb' => $attachment['id_thumb'],
-									'id_attach' => $attachment['id_attach'],
-								)
-							);
-
-							$thumb_realname = getAttachmentFilename($thumb_filename, $attachment['id_thumb'], $id_folder_thumb, false, $thumb_hash);
-							rename($filename . '_thumb', $thumb_realname);
-
-							// Do we need to remove an old thumbnail?
-							if (!empty($old_id_thumb))
-							{
-								require_once($sourcedir . '/ManageAttachments.php');
-								removeAttachments(array('id_attach' => $old_id_thumb), '', false, false);
-							}
-						}
-					}
-				}
-
-				// Only adjust dimensions on successful thumbnail creation.
-				if (!empty($attachment['thumb_width']) && !empty($attachment['thumb_height']))
-				{
-					$attachmentData[$i]['width'] = $attachment['thumb_width'];
-					$attachmentData[$i]['height'] = $attachment['thumb_height'];
-				}
-			}
-
-			if (!empty($attachment['id_thumb']))
-				$attachmentData[$i]['thumbnail'] = array(
-					'id' => $attachment['id_thumb'],
-					'href' => $scripturl . '?action=dlattach;topic=' . $topic . '.0;attach=' . $attachment['id_thumb'] . ';image',
-				);
-			$attachmentData[$i]['thumbnail']['has_thumb'] = !empty($attachment['id_thumb']);
-
-			// If thumbnails are disabled, check the maximum size of the image.
-			if (!$attachmentData[$i]['thumbnail']['has_thumb'] && ((!empty($modSettings['max_image_width']) && $attachment['width'] > $modSettings['max_image_width']) || (!empty($modSettings['max_image_height']) && $attachment['height'] > $modSettings['max_image_height'])))
-			{
-				if (!empty($modSettings['max_image_width']) && (empty($modSettings['max_image_height']) || $attachment['height'] * $modSettings['max_image_width'] / $attachment['width'] <= $modSettings['max_image_height']))
-				{
-					$attachmentData[$i]['width'] = $modSettings['max_image_width'];
-					$attachmentData[$i]['height'] = floor($attachment['height'] * $modSettings['max_image_width'] / $attachment['width']);
-				}
-				elseif (!empty($modSettings['max_image_width']))
-				{
-					$attachmentData[$i]['width'] = floor($attachment['width'] * $modSettings['max_image_height'] / $attachment['height']);
-					$attachmentData[$i]['height'] = $modSettings['max_image_height'];
-				}
-			}
-			elseif ($attachmentData[$i]['thumbnail']['has_thumb'])
-			{
-				// If the image is too large to show inline, make it a popup.
-				if (((!empty($modSettings['max_image_width']) && $attachmentData[$i]['real_width'] > $modSettings['max_image_width']) || (!empty($modSettings['max_image_height']) && $attachmentData[$i]['real_height'] > $modSettings['max_image_height'])))
-					$attachmentData[$i]['thumbnail']['javascript'] = 'return reqWin(\'' . $attachmentData[$i]['href'] . ';image\', ' . ($attachment['width'] + 20) . ', ' . ($attachment['height'] + 20) . ', true);';
-				else
-					$attachmentData[$i]['thumbnail']['javascript'] = 'return expandThumb(' . $attachment['id_attach'] . ');';
-			}
-
-			if (!$attachmentData[$i]['thumbnail']['has_thumb'])
-				$attachmentData[$i]['downloads']++;
-		}
-	}
-
-	// Do we need to instigate a sort?
-	if ($have_unapproved)
-		usort($attachmentData, 'approved_attach_sort');
-
-	return $attachmentData;
-}
-
-/**
- * A sort function for putting unapproved attachments first.
- * @param $a
- * @param $b
- * @return int, -1, 0, 1
- */
-function approved_attach_sort($a, $b)
-{
-	if ($a['is_approved'] == $b['is_approved'])
-		return 0;
-
-	return $a['is_approved'] > $b['is_approved'] ? -1 : 1;
 }
 
 /**

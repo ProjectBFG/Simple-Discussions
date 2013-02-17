@@ -756,7 +756,7 @@ function PackageInstallTest()
 }
 
 /**
- * Apply another type of (avatar, language, etc.) package.
+ * Apply another type of (language, etc.) package.
  */
 function PackageInstall()
 {
@@ -1376,7 +1376,7 @@ function PackageBrowse()
 	$installed = $context['sub_action'] == 'installed' ? true : false;
 
 	$context['forum_version'] = $forum_version;
-	$context['modification_types'] = $installed ? array('modification') : array('modification', 'avatar', 'language', 'unknown');
+	$context['modification_types'] = $installed ? array('modification') : array('modification', 'language', 'unknown');
 
 	require_once($sourcedir . '/Subs-List.php');
 
@@ -1504,7 +1504,6 @@ function PackageBrowse()
 
 	// Empty lists for now.
 	$context['available_mods'] = array();
-	$context['available_avatars'] = array();
 	$context['available_languages'] = array();
 	$context['available_other'] = array();
 	$context['available_all'] = array();
@@ -1512,7 +1511,7 @@ function PackageBrowse()
 
 /**
  * Get a listing of all the packages
- * Determines if the package is a mod, avatar, language package
+ * Determines if the package is a mod, language package
  * Determines if the package has been installed or not
  *
  * @param type $start
@@ -1600,7 +1599,6 @@ function list_getPackages($start, $items_per_page, $sort, $params, $installed)
 		$sort_id = array(
 			'mod' => 1,
 			'modification' => 1,
-			'avatar' => 1,
 			'language' => 1,
 			'unknown' => 1,
 		);
@@ -1748,13 +1746,6 @@ function list_getPackages($start, $items_per_page, $sort, $params, $installed)
 						$packages['modification'][strtolower($packageInfo[$sort]) .  '_' . $sort_id['mod']] = md5($package);
 						$context['available_modification'][md5($package)] = $packageInfo;
 					}
-				}
-				// Avatar package.
-				elseif ($packageInfo['type'] == 'avatar')
-				{
-					$sort_id[$packageInfo['type']]++;
-					$packages['avatar'][strtolower($packageInfo[$sort])] = md5($package);
-					$context['available_avatar'][md5($package)] = $packageInfo;
 				}
 				// Language package.
 				elseif ($packageInfo['type'] == 'language')
@@ -1972,19 +1963,7 @@ function PackagePermissions()
 					'type' => 'file',
 					'writable_on' => 'restrictive',
 				),
-				'attachments' => array(
-					'type' => 'dir',
-					'writable_on' => 'restrictive',
-				),
-				'avatars' => array(
-					'type' => 'dir',
-					'writable_on' => 'standard',
-				),
 				'cache' => array(
-					'type' => 'dir',
-					'writable_on' => 'restrictive',
-				),
-				'custom_avatar_dir' => array(
 					'type' => 'dir',
 					'writable_on' => 'restrictive',
 				),
@@ -2055,53 +2034,12 @@ function PackagePermissions()
 		);
 	}
 
-	// Are we using multiple attachment directories?
-	if (!empty($modSettings['currentAttachmentUploadDir']))
-	{
-		unset($context['file_tree'][strtr($boarddir, array('\\' => '/'))]['contents']['attachments']);
-
-		if (!is_array($modSettings['attachmentUploadDir']))
-			$modSettings['attachmentUploadDir'] = unserialize($modSettings['attachmentUploadDir']);
-
-		// @todo Should we suggest non-current directories be read only?
-		foreach ($modSettings['attachmentUploadDir'] as $dir)
-			$context['file_tree'][strtr($dir, array('\\' => '/'))] = array(
-			'type' => 'dir',
-			'writable_on' => 'restrictive',
-		);
-
-	}
-	elseif (substr($modSettings['attachmentUploadDir'], 0, strlen($boarddir)) != $boarddir)
-	{
-		unset($context['file_tree'][strtr($boarddir, array('\\' => '/'))]['contents']['attachments']);
-		$context['file_tree'][strtr($modSettings['attachmentUploadDir'], array('\\' => '/'))] = array(
-			'type' => 'dir',
-			'writable_on' => 'restrictive',
-		);
-	}
-
 	if (substr($modSettings['smileys_dir'], 0, strlen($boarddir)) != $boarddir)
 	{
 		unset($context['file_tree'][strtr($boarddir, array('\\' => '/'))]['contents']['Smileys']);
 		$context['file_tree'][strtr($modSettings['smileys_dir'], array('\\' => '/'))] = array(
 			'type' => 'dir_recursive',
 			'writable_on' => 'standard',
-		);
-	}
-	if (substr($modSettings['avatar_directory'], 0, strlen($boarddir)) != $boarddir)
-	{
-		unset($context['file_tree'][strtr($boarddir, array('\\' => '/'))]['contents']['avatars']);
-		$context['file_tree'][strtr($modSettings['avatar_directory'], array('\\' => '/'))] = array(
-			'type' => 'dir',
-			'writable_on' => 'standard',
-		);
-	}
-	if (isset($modSettings['custom_avatar_dir']) && substr($modSettings['custom_avatar_dir'], 0, strlen($boarddir)) != $boarddir)
-	{
-		unset($context['file_tree'][strtr($boarddir, array('\\' => '/'))]['contents']['custom_avatar_dir']);
-		$context['file_tree'][strtr($modSettings['custom_avatar_dir'], array('\\' => '/'))] = array(
-			'type' => 'dir',
-			'writable_on' => 'restrictive',
 		);
 	}
 

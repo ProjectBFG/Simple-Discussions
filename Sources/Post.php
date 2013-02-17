@@ -23,7 +23,7 @@ if (!defined('SMF'))
  * - additionally handles previews of posts.
  * - @uses the Post template and language file, main sub template.
  * - requires different permissions depending on the actions, but most notably post_new, post_reply_own, and post_reply_any.
- * - shows options for the editing and posting of attachments, as well as the posting of polls.
+ * - shows options the posting of polls.
  * - accessed from ?action=post.
  *
  *  @param array $post_errors holds any errors found tyring to post
@@ -166,9 +166,6 @@ function Post($post_errors = array())
 
 	// Generally don't show the approval box... (Assume we want things approved)
 	$context['show_approval'] = allowedTo('approve_posts') && $context['becomes_approved'] ? 2 : (allowedTo('approve_posts') ? 1 : 0);
-
-	// An array to hold all the attachments for this topic.
-	$context['current_attachments'] = array();
 
 	// Don't allow a post if it's locked and you aren't all powerful.
 	if ($locked && !allowedTo('moderate_board'))
@@ -397,18 +394,14 @@ function Post($post_errors = array())
 				SELECT
 					m.id_member, m.modified_time, m.smileys_enabled, m.body,
 					m.poster_name, m.poster_email, m.subject, m.icon, m.approved,
-					IFNULL(a.size, -1) AS filesize, a.filename, a.id_attach,
-					a.approved AS attachment_approved, t.id_member_started AS id_member_poster,
-					m.poster_time, log.id_action
+					t.id_member_started AS id_member_poster, m.poster_time, log.id_action
 				FROM {db_prefix}messages AS m
 					INNER JOIN {db_prefix}topics AS t ON (t.id_topic = {int:current_topic})
-					LEFT JOIN {db_prefix}attachments AS a ON (a.id_msg = m.id_msg AND a.attachment_type = {int:attachment_type})
 					LEFT JOIN {db_prefix}log_actions AS log ON (m.id_topic = log.id_topic AND log.action = {string:announce_action})
 				WHERE m.id_msg = {int:id_msg}
 					AND m.id_topic = {int:current_topic}',
 				array(
 					'current_topic' => $topic,
-					'attachment_type' => 0,
 					'id_msg' => $_REQUEST['msg'],
 					'announce_action' => 'announce_topic',
 				)
@@ -418,11 +411,6 @@ function Post($post_errors = array())
 			if ($smcFunc['db_num_rows']($request) == 0)
 				fatal_lang_error('no_board', false);
 			$row = $smcFunc['db_fetch_assoc']($request);
-
-			$attachment_stuff = array($row);
-			while ($row2 = $smcFunc['db_fetch_assoc']($request))
-				$attachment_stuff[] = $row2;
-			$smcFunc['db_free_result']($request);
 
 			if ($row['id_member'] == $user_info['id'] && !allowedTo('modify_any'))
 			{
@@ -444,34 +432,6 @@ function Post($post_errors = array())
 				loadLanguage('Errors');
 				$context['post_error']['messages'][] = $txt['error_topic_already_announced'];
 			}	
-				
-			if (!empty($modSettings['attachmentEnable']))
-			{
-				$request = $smcFunc['db_query']('', '
-					SELECT IFNULL(size, -1) AS filesize, filename, id_attach, approved
-					FROM {db_prefix}attachments
-					WHERE id_msg = {int:id_msg}
-						AND attachment_type = {int:attachment_type}
-					ORDER BY id_attach',
-					array(
-						'id_msg' => (int) $_REQUEST['msg'],
-						'attachment_type' => 0,
-					)
-				);
-
-				while ($row = $smcFunc['db_fetch_assoc']($request))
-				{
-					if ($row['filesize'] <= 0)
-						continue;
-					$context['current_attachments'][] = array(
-						'name' => htmlspecialchars($row['filename']),
-						'size' => $row['filesize'],
-						'id' => $row['id_attach'],
-						'approved' => $row['approved'],
-					);
-				}
-				$smcFunc['db_free_result']($request);
-			}
 
 			// Allow moderators to change names....
 			if (allowedTo('moderate_forum') && !empty($topic))
@@ -511,18 +471,14 @@ function Post($post_errors = array())
 			SELECT
 				m.id_member, m.modified_time, m.modified_name, m.smileys_enabled, m.body,
 				m.poster_name, m.poster_email, m.subject, m.icon, m.approved,
-				IFNULL(a.size, -1) AS filesize, a.filename, a.id_attach,
-				a.approved AS attachment_approved, t.id_member_started AS id_member_poster,
-				m.poster_time, log.id_action
+				t.id_member_started AS id_member_poster, m.poster_time, log.id_action
 			FROM {db_prefix}messages AS m
 				INNER JOIN {db_prefix}topics AS t ON (t.id_topic = {int:current_topic})
-				LEFT JOIN {db_prefix}attachments AS a ON (a.id_msg = m.id_msg AND a.attachment_type = {int:attachment_type})
 					LEFT JOIN {db_prefix}log_actions AS log ON (m.id_topic = log.id_topic AND log.action = {string:announce_action})
 			WHERE m.id_msg = {int:id_msg}
 				AND m.id_topic = {int:current_topic}',
 			array(
 				'current_topic' => $topic,
-				'attachment_type' => 0,
 				'id_msg' => $_REQUEST['msg'],
 				'announce_action' => 'announce_topic',
 			)
@@ -532,9 +488,6 @@ function Post($post_errors = array())
 			fatal_lang_error('no_message', false);
 		$row = $smcFunc['db_fetch_assoc']($request);
 
-		$attachment_stuff = array($row);
-		while ($row2 = $smcFunc['db_fetch_assoc']($request))
-			$attachment_stuff[] = $row2;
 		$smcFunc['db_free_result']($request);
 
 		if ($row['id_member'] == $user_info['id'] && !allowedTo('modify_any'))
@@ -578,27 +531,6 @@ function Post($post_errors = array())
 		// Show an "approve" box if the user can approve it, and the message isn't approved.
 		if (!$row['approved'] && !$context['show_approval'])
 			$context['show_approval'] = allowedTo('approve_posts');
-
-		// Sort the attachments so they are in the order saved
-		$temp = array();
-		foreach ($attachment_stuff as $attachment)
-		{
-			if ($attachment['filesize'] >= 0 && !empty($modSettings['attachmentEnable']))
-				$temp[$attachment['id_attach']] = $attachment;
-
-		}
-		ksort($temp);
-
-		// Load up 'em attachments!
-		foreach ($temp as $attachment)
-		{
-			$context['current_attachments'][] = array(
-				'name' => htmlspecialchars($attachment['filename']),
-				'size' => $attachment['filesize'],
-				'id' => $attachment['id_attach'],
-				'approved' => $attachment['attachment_approved'],
-			);
-		}
 
 		// Allow moderators to change names....
 		if (allowedTo('moderate_forum') && empty($row['id_member']))
@@ -698,152 +630,6 @@ function Post($post_errors = array())
 		{
 			$form_subject = isset($_GET['subject']) ? $_GET['subject'] : '';
 			$form_message = '';
-		}
-	}
-
-	$context['can_post_attachment'] = !empty($modSettings['attachmentEnable']) && $modSettings['attachmentEnable'] == 1 && (allowedTo('post_attachment') || ($modSettings['postmod_active'] && allowedTo('post_unapproved_attachments')));
-	if ($context['can_post_attachment'])
-	{
-		// If there are attachments, calculate the total size and how many.
-		$context['attachments']['total_size'] = 0;
-		$context['attachments']['quantity'] = 0;
-
-		// If this isn't a new post, check the current attachments.
-		if (isset($_REQUEST['msg']))
-		{
-			$context['attachments']['quantity'] = count($context['current_attachments']);
-			foreach ($context['current_attachments'] as $attachment)
-				$context['attachments']['total_size'] += $attachment['size'];
-		}
-
-		// A bit of house keeping first.
-		if (!empty($_SESSION['temp_attachments']) && count($_SESSION['temp_attachments']) == 1)
-			unset($_SESSION['temp_attachments']);
-
-		if (!empty($_SESSION['temp_attachments']))
-		{
-			// Is this a request to delete them?
-			if (isset($_GET['delete_temp']))
-			{
-				foreach ($_SESSION['temp_attachments'] as $attachID => $attachment)
-				{
-					if (strpos($attachID, 'post_tmp_' . $user_info['id']) !== false)
-						if (file_exists($attachment['tmp_name']))
-							unlink($attachment['tmp_name']);
-				}
-				$post_errors[] = 'temp_attachments_gone';
-				$_SESSION['temp_attachments'] = array();
-			}
-			// Hmm, coming in fresh and there are files in session.
-			elseif ($context['current_action'] != 'post2' || !empty($_POST['from_qr']))
-			{
-				// Let's be nice and see if they belong here first.
-				if ((empty($_REQUEST['msg']) && empty($_SESSION['temp_attachments']['post']['msg']) && $_SESSION['temp_attachments']['post']['board'] == $board) || (!empty($_REQUEST['msg']) && $_SESSION['temp_attachments']['post']['msg'] == $_REQUEST['msg']))
-				{
-					// See if any files still exist before showing the warning message and the files attached.
-					foreach ($_SESSION['temp_attachments'] as $attachID => $attachment)
-					{
-						if (strpos($attachID, 'post_tmp_' . $user_info['id']) === false)
-							continue;
-
-						if (file_exists($attachment['tmp_name']))
-						{
-							$post_errors[] = 'temp_attachments_new';
-							$context['files_in_session_warning'] = $txt['attached_files_in_session'];
-							unset($_SESSION['temp_attachments']['post']['files']);
-							break;
-						}
-					}
-				}
-				else
-				{
-					// Since, they don't belong here. Let's inform the user that they exist..
-					if (!empty($topic))
-						$delete_link = '<a href="' . $scripturl . '?action=post' .(!empty($_REQUEST['msg']) ? (';msg=' . $_REQUEST['msg']) : '') . (!empty($_REQUEST['last_msg']) ? (';last_msg=' . $_REQUEST['last_msg']) : '') . ';topic=' . $topic . ';delete_temp">' . $txt['here'] . '</a>';
-					else
-						$delete_link = '<a href="' . $scripturl . '?action=post;board=' . $board . ';delete_temp">' . $txt['here'] . '</a>';
-
-					// Compile a list of the files to show the user.
-					$file_list = array();
-					foreach ($_SESSION['temp_attachments'] as $attachID => $attachment)
-						if (strpos($attachID, 'post_tmp_' . $user_info['id']) !== false)
-							$file_list[] =  $attachment['name'];
-
-					$_SESSION['temp_attachments']['post']['files'] = $file_list;
-					$file_list = '<div class="attachments">' . implode('<br />', $file_list) . '</div>';
-
-					if (!empty($_SESSION['temp_attachments']['post']['msg']))
-					{
-						// We have a message id, so we can link back to the old topic they were trying to edit..
-						$goback_link = '<a href="' . $scripturl . '?action=post' .(!empty($_SESSION['temp_attachments']['post']['msg']) ? (';msg=' . $_SESSION['temp_attachments']['post']['msg']) : '') . (!empty($_SESSION['temp_attachments']['post']['last_msg']) ? (';last_msg=' . $_SESSION['temp_attachments']['post']['last_msg']) : '') . ';topic=' . $_SESSION['temp_attachments']['post']['topic'] . ';additionalOptions">' . $txt['here'] . '</a>';
-
-						$post_errors[] = array('temp_attachments_found', array($delete_link, $goback_link, $file_list));
-						$context['ignore_temp_attachments'] = true;
-					}
-					else
-					{
-						$post_errors[] = array('temp_attachments_lost', array($delete_link, $file_list));
-						$context['ignore_temp_attachments'] = true;
-					}
-				}
-			}
-
-			if (!empty($context['we_are_history']))
-				$post_errors[] = $context['we_are_history'];
-
-			foreach ($_SESSION['temp_attachments'] as $attachID => $attachment)
-			{
-				if (isset($context['ignore_temp_attachments']) || isset($_SESSION['temp_attachments']['post']['files']))
-					break;
-
-				if ($attachID != 'initial_error' && strpos($attachID, 'post_tmp_' . $user_info['id']) === false)
-					continue;
-
-				if ($attachID == 'initial_error')
-				{
-					$txt['error_attach_initial_error'] = $txt['attach_no_upload'] . '<div style="padding: 0 1em;">' . (is_array($attachment) ? vsprintf($txt[$attachment[0]], $attachment[1]) : $txt[$attachment]) . '</div>';
-					$post_errors[] = 'attach_initial_error';
-					unset($_SESSION['temp_attachments']);
-					break;
-				}
-
-				// Show any errors which might of occured.
-				if (!empty($attachment['errors']))
-				{
-					$txt['error_attach_errors'] = empty($txt['error_attach_errors']) ? '<br />' : '';
-					$txt['error_attach_errors'] .= vsprintf($txt['attach_warning'], $attachment['name']) . '<div style="padding: 0 1em;">';
-					foreach ($attachment['errors'] as $error)
-						$txt['error_attach_errors'] .= (is_array($error) ? vsprintf($txt[$error[0]], $error[1]) : $txt[$error]) . '<br  />';
-					$txt['error_attach_errors'] .= '</div>';
-					$post_errors[] = 'attach_errors';
-
-					// Take out the trash.
-					unset($_SESSION['temp_attachments'][$attachID]);
-					if (file_exists($attachment['tmp_name']))
-						unlink($attachment['tmp_name']);
-					continue;
-				}
-
-				// More house keeping.
-				if (!file_exists($attachment['tmp_name']))
-				{
-					unset($_SESSION['temp_attachments'][$attachID]);
-					continue;
-				}
-
-				$context['attachments']['quantity']++;
-				$context['attachments']['total_size'] += $attachment['size'];
-				if (!isset($context['files_in_session_warning']))
-					$context['files_in_session_warning'] = $txt['attached_files_in_session'];
-
-				$context['current_attachments'][] = array(
-					'name' => '<u>' . htmlspecialchars($attachment['name']) . '</u>',
-					'size' => $attachment['size'],
-					'id' => $attachID,
-					'unchecked' => false,
-					'approved' => 1,
-				);
-			}
 		}
 	}
 
@@ -958,7 +744,6 @@ function Post($post_errors = array())
 	// Store the ID.
 	$context['post_box_name'] = $editorOptions['id'];
 
-	$context['attached'] = '';
 	$context['make_poll'] = isset($_REQUEST['poll']);
 
 	// Message icons - customized icons are off?
@@ -1003,29 +788,8 @@ function Post($post_errors = array())
 	if (!empty($topic) && !empty($modSettings['topicSummaryPosts']))
 		getTopic();
 
-	// If the user can post attachments prepare the warning labels.
-	if ($context['can_post_attachment'])
-	{
-		// If they've unchecked an attachment, they may still want to attach that many more files, but don't allow more than num_allowed_attachments.
-		$context['num_allowed_attachments'] = empty($modSettings['attachmentNumPerPostLimit']) ? 50 : min($modSettings['attachmentNumPerPostLimit'] - count($context['current_attachments']), $modSettings['attachmentNumPerPostLimit']);
-		$context['can_post_attachment_unapproved'] = allowedTo('post_attachment');
-		$context['attachment_restrictions'] = array();
-		$context['allowed_extensions'] = strtr(strtolower($modSettings['attachmentExtensions']), array(',' => ', '));
-		$attachmentRestrictionTypes = array('attachmentNumPerPostLimit', 'attachmentPostLimit', 'attachmentSizeLimit');
-		foreach ($attachmentRestrictionTypes as $type)
-			if (!empty($modSettings[$type]))
-			{
-				$context['attachment_restrictions'][] = sprintf($txt['attach_restrict_' . $type], comma_format($modSettings[$type], 0));
-				// Show some numbers. If they exist.
-				if ($type == 'attachmentNumPerPostLimit' && $context['attachments']['quantity'] > 0)
-					$context['attachment_restrictions'][] = sprintf($txt['attach_remaining'], $modSettings['attachmentNumPerPostLimit'] - $context['attachments']['quantity']);
-				elseif ($type == 'attachmentPostLimit' && $context['attachments']['total_size'] > 0)
-					$context['attachment_restrictions'][] = sprintf($txt['attach_available'], comma_format(round(max($modSettings['attachmentPostLimit'] - ($context['attachments']['total_size'] / 1028), 0)), 0));
-			}
-	}
-
 	$context['back_to_topic'] = isset($_REQUEST['goback']) || (isset($_REQUEST['msg']) && !isset($_REQUEST['subject']));
-	$context['show_additional_options'] = !empty($_POST['additional_options']) || isset($_SESSION['temp_attachments']['post']) || isset($_GET['additionalOptions']);
+	$context['show_additional_options'] = !empty($_POST['additional_options']) || isset($_GET['additionalOptions']);
 
 	$context['is_new_topic'] = empty($topic);
 	$context['is_new_post'] = !isset($_REQUEST['msg']);
@@ -1046,7 +810,7 @@ function Post($post_errors = array())
  * Posts or saves the message composed with Post().
  *
  * requires various permissions depending on the action.
- * handles attachment, post saving.
+ * handles post saving.
  * sends off notifications, and allows for announcements and moderation.
  * accessed from ?action=post2.
  */
@@ -1101,47 +865,6 @@ function Post2()
 	// Drafts enabled and needed?
 	if (!empty($modSettings['drafts_enabled']) && (isset($_POST['save_draft']) || isset($_POST['id_draft'])))
 		require_once($sourcedir . '/Drafts.php');
-
-	// First check to see if they are trying to delete any current attachments.
-	if (isset($_POST['attach_del']))
-	{
-		$keep_temp = array();
-		$keep_ids = array();
-		foreach ($_POST['attach_del'] as $dummy)
-			if (strpos($dummy, 'post_tmp_' . $user_info['id']) !== false)
-				$keep_temp[] = $dummy;
-			else
-				$keep_ids[] = (int) $dummy;
-
-		if (isset($_SESSION['temp_attachments']))
-			foreach ($_SESSION['temp_attachments'] as $attachID => $attachment)
-			{
-				if ((isset($_SESSION['temp_attachments']['post']['files'], $attachment['name']) && in_array($attachment['name'], $_SESSION['temp_attachments']['post']['files'])) || in_array($attachID, $keep_temp) || strpos($attachID, 'post_tmp_' . $user_info['id']) === false)
-					continue;
-
-				unset($_SESSION['temp_attachments'][$attachID]);
-				unlink($attachment['tmp_name']);
-			}
-
-		if (!empty($_REQUEST['msg']))
-		{
-			require_once($sourcedir . '/ManageAttachments.php');
-			$attachmentQuery = array(
-				'attachment_type' => 0,
-				'id_msg' => (int) $_REQUEST['msg'],
-				'not_id_attach' => $keep_ids,
-			);
-			removeAttachments($attachmentQuery);
-		}
-	}
-
-	// Then try to upload any attachments.
-	$context['can_post_attachment'] = !empty($modSettings['attachmentEnable']) && $modSettings['attachmentEnable'] == 1 && (allowedTo('post_attachment') || ($modSettings['postmod_active'] && allowedTo('post_unapproved_attachments')));
-	if ($context['can_post_attachment'] && empty($_POST['from_qr']))
-	{
-		 require_once($sourcedir . '/Subs-Attachments.php');
-		 processAttachments();
-	}
 
 	// If this isn't a new topic load the topic info that we need.
 	if (!empty($topic))
@@ -1554,76 +1277,6 @@ function Post2()
 		$_POST['options'] = htmlspecialchars__recursive($_POST['options']);
 	}
 
-	// ...or attach a new file...
-	if (empty($ignore_temp) && $context['can_post_attachment'] && !empty($_SESSION['temp_attachments']) && empty($_POST['from_qr']))
-	{
-		$attachIDs = array();
-		$attach_errors = array();
-		if (!empty($context['we_are_history']))
-			$attach_errors[] = '<dd>' . $txt['error_temp_attachments_flushed'] . '<br /><br /></dd>';
-
-		foreach ($_SESSION['temp_attachments'] as  $attachID => $attachment)
-		{
-			if ($attachID != 'initial_error' && strpos($attachID, 'post_tmp_' . $user_info['id']) === false)
-				continue;
-
-			// If there was an initial error just show that message.
-			if ($attachID == 'initial_error')
-			{
-				$attach_errors[] = '<dt>' . $txt['attach_no_upload'] . '</dt>';
-				$attach_errors[] = '<dd>' . (is_array($attachment) ? vsprintf($txt[$attachment[0]], $attachment[1]) : $txt[$attachment]) . '</dd>';
-
-				unset($_SESSION['temp_attachments']);
-				break;
-			}
-
-			$attachmentOptions = array(
-				'post' => isset($_REQUEST['msg']) ? $_REQUEST['msg'] : 0,
-				'poster' => $user_info['id'],
-				'name' => $attachment['name'],
-				'tmp_name' => $attachment['tmp_name'],
-				'size' => isset($attachment['size']) ? $attachment['size'] : 0,
-				'mime_type' => isset($attachment['type']) ? $attachment['type'] : '',
-				'id_folder' => $attachment['id_folder'],
-				'approved' => !$modSettings['postmod_active'] || allowedTo('post_attachment'),
-				'errors' => $attachment['errors'],
-			);
-
-			if (empty($attachment['errors']))
-			{
-				if (createAttachment($attachmentOptions))
-				{
-					$attachIDs[] = $attachmentOptions['id'];
-					if (!empty($attachmentOptions['thumb']))
-						$attachIDs[] = $attachmentOptions['thumb'];
-				}
-			}
-			else
-				$attach_errors[] = '<dt>&nbsp;</dt>';
-
-			if (!empty($attachmentOptions['errors']))
-			{
-				// Sort out the errors for display and delete any associated files.
-				$attach_errors[] = '<dt>' . vsprintf($txt['attach_warning'], $attachment['name']) . '</dt>';
-				$log_these = array('attachments_no_create', 'attachments_no_write', 'attach_timeout', 'ran_out_of_space', 'cant_access_upload_path', 'attach_0_byte_file');
-				foreach ($attachmentOptions['errors'] as $error)
-				{
-					if (!is_array($error))
-					{
-						$attach_errors[] = '<dd>' . $txt[$error] . '</dd>';
-						if (in_array($error, $log_these))
-							log_error($attachment['name'] . ': ' . $txt[$error], 'critical');
-					}
-					else
-						$attach_errors[] = '<dd>' . vsprintf($txt[$error[0]], $error[1]) . '</dd>';
-				}
-				if (file_exists($attachment['tmp_name']))
-					unlink($attachment['tmp_name']);
-			}
-		}
-		unset($_SESSION['temp_attachments']);
-	}
-
 	// Make the poll...
 	if (isset($_REQUEST['poll']))
 	{
@@ -1666,8 +1319,6 @@ function Post2()
 	// Creating a new topic?
 	$newTopic = empty($_REQUEST['msg']) && empty($topic);
 
-	$_POST['icon'] = !empty($attachIDs) && $_POST['icon'] == 'xx' ? 'clip' : $_POST['icon'];
-
 	// Collect all parameters for the creation or modification of a post.
 	$msgOptions = array(
 		'id' => empty($_REQUEST['msg']) ? 0 : (int) $_REQUEST['msg'],
@@ -1675,7 +1326,6 @@ function Post2()
 		'body' => $_POST['message'],
 		'icon' => preg_replace('~[\./\\\\*:"\'<>]~', '', $_POST['icon']),
 		'smileys_enabled' => !isset($_POST['ns']),
-		'attachments' => empty($attachIDs) ? array() : $attachIDs,
 		'approved' => $becomesApproved,
 	);
 	$topicOptions = array(
@@ -1822,36 +1472,6 @@ function Post2()
 
 	if (!empty($_POST['move']) && allowedTo('move_any'))
 		redirectexit('action=movetopic;topic=' . $topic . '.0' . (empty($_REQUEST['goback']) ? '' : ';goback'));
-
-	// If there are attachment errors. Let's show a list to the user.
-	if (!empty($attach_errors))
-	{
-		global $settings, $scripturl;
-
-		loadTemplate('Errors');
-		$context['sub_template'] = 'attachment_errors';
-		$context['page_title'] = $txt['error_occured'];
-
-		$context['error_message'] = '<dl>';
-		$context['error_message'] .= implode("\n", $attach_errors);
-		$context['error_message'] .= '</dl>';
-		$context['error_title'] = $txt['attach_error_title'];
-
-		$context['linktree'][] = array(
-			'url' => $scripturl . '?topic=' . $topic . '.0',
-			'name' => $_POST['subject'],
-			'extra_before' => !empty($settings['linktree_inline']) ? $txt['topic'] . ': ' : ''
-		);
-
-		if (isset($_REQUEST['msg']))
-			$context['redirect_link'] = '?topic=' . $topic . '.msg' . $_REQUEST['msg'] . '#msg' . $_REQUEST['msg'];
-		else
-			$context['redirect_link'] = '?topic=' . $topic . '.new#new';
-
-		$context['back_link'] = '?action=post;msg=' . $msgOptions['id'] . ';topic=' . $topic . ';additionalOptions#postAttachment';
-
-		obExit(null, true);
-	}
 
 	// Return to post if the mod is on.
 	if (isset($_REQUEST['msg']) && !empty($_REQUEST['goback']))

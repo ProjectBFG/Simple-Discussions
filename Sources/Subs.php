@@ -311,7 +311,6 @@ function updateMemberData($members, $data)
 			'hide_email',
 			'time_format',
 			'time_offset',
-			'avatar',
 			'lngfile',
 		);
 		$vars_to_integrate = array_intersect($integration_vars, array_keys($data));
@@ -1703,8 +1702,8 @@ function parse_bbc($message, $smileys = true, $cache_id = '', $parse_tags = arra
 						$alt = empty($matches[3][$match]) ? '' : ' alt=' . preg_replace('~^&quot;|&quot;$~', '', $matches[3][$match]);
 
 						// Remove action= from the URL - no funny business, now.
-						if (preg_match('~action(=|%3d)(?!dlattach)~i', $imgtag) != 0)
-							$imgtag = preg_replace('~action(?:=|%3d)(?!dlattach)~i', 'action-', $imgtag);
+						if (preg_match('~action(=|%3d)~i', $imgtag) != 0)
+							$imgtag = preg_replace('~action(?:=|%3d)~i', 'action-', $imgtag);
 
 						// Check if the image is larger than allowed.
 						if (!empty($modSettings['max_image_width']) && !empty($modSettings['max_image_height']))
@@ -2632,7 +2631,7 @@ function obExit($header = null, $do_footer = null, $from_index = false, $from_fa
 	}
 
 	// Remember this URL in case someone doesn't like sending HTTP_REFERER.
-	if (strpos($_SERVER['REQUEST_URL'], 'action=dlattach') === false && strpos($_SERVER['REQUEST_URL'], 'action=viewsmfile') === false)
+	if (strpos($_SERVER['REQUEST_URL'], 'action=viewsmfile') === false)
 		$_SESSION['old_url'] = $_SERVER['REQUEST_URL'];
 
 	// For session check verification.... don't switch browsers...
@@ -2821,31 +2820,6 @@ function setupThemeContext($forceload = false)
 		}
 		$context['show_open_reports'] = empty($user_settings['mod_prefs']) || $user_settings['mod_prefs'][0] == 1;
 
-		$context['user']['avatar'] = array();
-
-		// Figure out the avatar... uploaded?
-		if ($user_info['avatar']['url'] == '' && !empty($user_info['avatar']['id_attach']))
-			$context['user']['avatar']['href'] = $user_info['avatar']['custom_dir'] ? $modSettings['custom_avatar_url'] . '/' . $user_info['avatar']['filename'] : $scripturl . '?action=dlattach;attach=' . $user_info['avatar']['id_attach'] . ';type=avatar';
-		// Full URL?
-		elseif (substr($user_info['avatar']['url'], 0, 7) == 'http://')
-		{
-			$context['user']['avatar']['href'] = $user_info['avatar']['url'];
-
-			if ($modSettings['avatar_action_too_large'] == 'option_html_resize' || $modSettings['avatar_action_too_large'] == 'option_js_resize')
-			{
-				if (!empty($modSettings['avatar_max_width_external']))
-					$context['user']['avatar']['width'] = $modSettings['avatar_max_width_external'];
-				if (!empty($modSettings['avatar_max_height_external']))
-					$context['user']['avatar']['height'] = $modSettings['avatar_max_height_external'];
-			}
-		}
-		// Otherwise we assume it's server stored?
-		elseif ($user_info['avatar']['url'] != '')
-			$context['user']['avatar']['href'] = $modSettings['avatar_url'] . '/' . htmlspecialchars($user_info['avatar']['url']);
-
-		if (!empty($context['user']['avatar']))
-			$context['user']['avatar']['image'] = '<img src="' . $context['user']['avatar']['href'] . '"' . (isset($context['user']['avatar']['width']) ? ' width="' . $context['user']['avatar']['width'] . '"' : '') . (isset($context['user']['avatar']['height']) ? ' height="' . $context['user']['avatar']['height'] . '"' : '') . ' alt="" class="avatar" />';
-
 		// Figure out how long they've been logged in.
 		$context['user']['total_time_logged_in'] = array(
 			'days' => floor($user_info['total_time_logged_in'] / 86400),
@@ -2857,7 +2831,6 @@ function setupThemeContext($forceload = false)
 	{
 		$context['user']['messages'] = 0;
 		$context['user']['unread_messages'] = 0;
-		$context['user']['avatar'] = array();
 		$context['user']['total_time_logged_in'] = array('days' => 0, 'hours' => 0, 'minutes' => 0);
 		$context['user']['popup_messages'] = false;
 
@@ -2891,27 +2864,6 @@ function setupThemeContext($forceload = false)
 				icon: smf_images_url + \'/im_sm_newmsg.png\'
 			});
 		});');
-
-	// Resize avatars the fancy, but non-GD requiring way.
-	if ($modSettings['avatar_action_too_large'] == 'option_js_resize' && (!empty($modSettings['avatar_max_width_external']) || !empty($modSettings['avatar_max_height_external'])))
-	{
-		// @todo Move this over to script.js?
-		$context['html_headers'] .= '
-	<script type="text/javascript"><!-- // --><![CDATA[
-		var smf_avatarMaxWidth = ' . (int) $modSettings['avatar_max_width_external'] . ';
-		var smf_avatarMaxHeight = ' . (int) $modSettings['avatar_max_height_external'] . ';';
-
-		if (!isBrowser('ie'))
-			$context['html_headers'] .= '
-	window.addEventListener("load", smf_avatarResize, false);';
-		else
-			$context['html_headers'] .= '
-	var window_oldAvatarOnload = window.onload;
-	window.onload = smf_avatarResize;';
-
-		$context['html_headers'] .= '
-	// ]]></script>';
-	}
 
 	// This looks weird, but it's because BoardIndex.php references the variable.
 	$context['common_stats']['latest_member'] = array(
@@ -3023,7 +2975,7 @@ function template_header()
 
 	setupThemeContext();
 
-	// Print stuff to prevent caching of pages (except on attachment errors, etc.)
+	// Print stuff to prevent caching of pages
 	if (empty($context['no_last_modified']))
 	{
 		header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
@@ -3056,19 +3008,6 @@ function template_header()
 					unset($securityFiles[$i]);
 			}
 
-			// We are already checking so many files...just few more doesn't make any difference! :P
-			if (!empty($modSettings['currentAttachmentUploadDir']))
-			{
-				if (!is_array($modSettings['attachmentUploadDir']))
-					$modSettings['attachmentUploadDir'] = @unserialize($modSettings['attachmentUploadDir']);
-				$path = $modSettings['attachmentUploadDir'][$modSettings['currentAttachmentUploadDir']];
-			}
-			else
-			{
-				$path = $modSettings['attachmentUploadDir'];
-				$id_folder_thumb = 1;
-			}
-			secureDirectory($path, true);
 			secureDirectory($cachedir);
 
 			// If agreement is enabled, at least the english version shall exists
@@ -3267,117 +3206,6 @@ function template_css()
 	foreach ($context['css_files'] as $id => $file)
 		echo '
 	<link rel="stylesheet" type="text/css" href="', $file['filename'], '" />';
-}
-
-/**
- * Get an attachment's encrypted filename. If $new is true, won't check for file existence.
- * @todo this currently returns the hash if new, and the full filename otherwise.
- * Something messy like that.
- * @todo and of course everything relies on this behavior and work around it. :P.
- * Converters included.
- *
- * @param $filename
- * @param $attachment_id
- * @param $dir
- * @param $new
- * @param $file_hash
- */
-function getAttachmentFilename($filename, $attachment_id, $dir = null, $new = false, $file_hash = '')
-{
-	global $modSettings, $smcFunc;
-
-	// Just make up a nice hash...
-	if ($new)
-		return sha1(md5($filename . time()) . mt_rand());
-
-	// Grab the file hash if it wasn't added.
-	// @todo: Locate all places that don't call a hash and fix that.
-	if ($file_hash === '')
-	{
-		$request = $smcFunc['db_query']('', '
-			SELECT file_hash
-			FROM {db_prefix}attachments
-			WHERE id_attach = {int:id_attach}',
-			array(
-				'id_attach' => $attachment_id,
-		));
-
-		if ($smcFunc['db_num_rows']($request) === 0)
-			return false;
-
-		list ($file_hash) = $smcFunc['db_fetch_row']($request);
-		$smcFunc['db_free_result']($request);
-	}
-
-	// In case of files from the old system, do a legacy call.
-	if (empty($file_hash))
-		return getLegacyAttachmentFilename($filename, $attachment_id, $dir, $new);
-
-	// Are we using multiple directories?
-	if (!empty($modSettings['currentAttachmentUploadDir']))
-	{
-		if (!is_array($modSettings['attachmentUploadDir']))
-			$modSettings['attachmentUploadDir'] = unserialize($modSettings['attachmentUploadDir']);
-		$path = $modSettings['attachmentUploadDir'][$dir];
-	}
-	else
-		$path = $modSettings['attachmentUploadDir'];
-
-	return $path . '/' . $attachment_id . '_' . $file_hash;
-}
-
-/**
- * Older attachments may still use this function.
- *
- * @param $filename
- * @param $attachment_id
- * @param $dir
- * @param $new
- */
-function getLegacyAttachmentFilename($filename, $attachment_id, $dir = null, $new = false)
-{
-	global $modSettings, $db_character_set;
-
-	$clean_name = $filename;
-	// Remove international characters (windows-1252)
-	// These lines should never be needed again. Still, behave.
-	if (empty($db_character_set) || $db_character_set != 'utf8')
-	{
-		$clean_name = strtr($filename,
-			"\x8a\x8e\x9a\x9e\x9f\xc0\xc1\xc2\xc3\xc4\xc5\xc7\xc8\xc9\xca\xcb\xcc\xcd\xce\xcf\xd1\xd2\xd3\xd4\xd5\xd6\xd8\xd9\xda\xdb\xdc\xdd\xe0\xe1\xe2\xe3\xe4\xe5\xe7\xe8\xe9\xea\xeb\xec\xed\xee\xef\xf1\xf2\xf3\xf4\xf5\xf6\xf8\xf9\xfa\xfb\xfc\xfd\xff",
-			'SZszYAAAAAACEEEEIIIINOOOOOOUUUUYaaaaaaceeeeiiiinoooooouuuuyy');
-		$clean_name = strtr($clean_name, array("\xde" => 'TH', "\xfe" =>
-			'th', "\xd0" => 'DH', "\xf0" => 'dh', "\xdf" => 'ss', "\x8c" => 'OE',
-			// @todo My IDE is showing \c6 as a bad escape sequence.
-			"\x9c" => 'oe', "\c6" => 'AE', "\xe6" => 'ae', "\xb5" => 'u'));
-	}
-	// Sorry, no spaces, dots, or anything else but letters allowed.
-	$clean_name = preg_replace(array('/\s/', '/[^\w_\.\-]/'), array('_', ''), $clean_name);
-
-	$enc_name = $attachment_id . '_' . strtr($clean_name, '.', '_') . md5($clean_name);
-	$clean_name = preg_replace('~\.[\.]+~', '.', $clean_name);
-
-	if ($attachment_id == false || ($new && empty($modSettings['attachmentEncryptFilenames'])))
-		return $clean_name;
-	elseif ($new)
-		return $enc_name;
-
-	// Are we using multiple directories?
-	if (!empty($modSettings['currentAttachmentUploadDir']))
-	{
-		if (!is_array($modSettings['attachmentUploadDir']))
-			$modSettings['attachmentUploadDir'] = unserialize($modSettings['attachmentUploadDir']);
-		$path = $modSettings['attachmentUploadDir'][$dir];
-	}
-	else
-		$path = $modSettings['attachmentUploadDir'];
-
-	if (file_exists($path . '/' . $enc_name))
-		$filename = $path . '/' . $enc_name;
-	else
-		$filename = $path . '/' . $clean_name;
-
-	return $filename;
 }
 
 /**
@@ -3705,7 +3533,7 @@ function setupMenuContext()
 
 	// Set up the menu privileges.
 	$context['allow_search'] = !empty($modSettings['allow_guestAccess']) ? allowedTo('search_posts') : (!$user_info['is_guest'] && allowedTo('search_posts'));
-	$context['allow_admin'] = allowedTo(array('admin_forum', 'manage_boards', 'manage_permissions', 'moderate_forum', 'manage_membergroups', 'manage_bans', 'send_mail', 'edit_news', 'manage_attachments', 'manage_smileys'));
+	$context['allow_admin'] = allowedTo(array('admin_forum', 'manage_boards', 'manage_permissions', 'moderate_forum', 'manage_membergroups', 'manage_bans', 'send_mail', 'edit_news', 'manage_smileys'));
 	$context['allow_edit_profile'] = !$user_info['is_guest'] && allowedTo(array('profile_view_own', 'profile_view_any', 'profile_identity_own', 'profile_identity_any', 'profile_extra_own', 'profile_extra_any', 'profile_remove_own', 'profile_remove_any', 'moderate_forum', 'manage_membergroups', 'profile_title_own', 'profile_title_any'));
 	$context['allow_memberlist'] = allowedTo('view_mlist');
 	$context['allow_moderation_center'] = $context['user']['can_mod'];
@@ -3790,11 +3618,6 @@ function setupMenuContext()
 					'poststopics' => array(
 						'title' => $txt['mc_unapproved_poststopics'],
 						'href' => $scripturl . '?action=moderate;area=postmod;sa=posts',
-						'show' => $modSettings['postmod_active'] && !empty($user_info['mod_cache']['ap']),
-					),
-					'attachments' => array(
-						'title' => $txt['mc_unapproved_attachments'],
-						'href' => $scripturl . '?action=moderate;area=attachmod;sa=attachments',
 						'show' => $modSettings['postmod_active'] && !empty($user_info['mod_cache']['ap']),
 					),
 					'reports' => array(

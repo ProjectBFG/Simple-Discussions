@@ -42,7 +42,7 @@ function db_packages_init()
 	}
 
 	// We setup an array of SMF tables we can't do auto-remove on - in case a mod writer cocks it up!
-	$reservedTables = array('admin_info_files', 'approval_queue', 'attachments', 'ban_groups', 'ban_items',
+	$reservedTables = array('admin_info_files', 'approval_queue', 'ban_groups', 'ban_items',
 		'board_permissions', 'boards', 'categories', 'collapsed_categories',
 		'custom_fields', 'group_moderators', 'log_actions', 'log_activity', 'log_banned', 'log_boards',
 		'log_digest', 'log_errors', 'log_floodcontrol', 'log_group_requests', 'log_mark_read',

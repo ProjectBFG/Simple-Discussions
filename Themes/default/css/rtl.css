@@ -34,10 +34,6 @@
 	margin-left: 0;
 	margin-right: 1em;
 }
-/* All the signatures used in the forum.  If your forum users use Mozilla, Opera, or Safari, you might add max-height here ;). */
-.signature, .attachments {
-	clear: left;
-}
 .custom_fields_above_signature {
 	clear: left;
 }
@@ -446,16 +442,6 @@ ul.post_options {
 ul.post_options li {
 	float: right;
 }
-#postAttachment dd, #postAttachment2 dd {
-	margin: .3em 1em .3em 0;
-}
-#postAttachment dt, #postAttachment2 dt {
-	font-weight: bold;
-}
-#postAttachment3 {
-	margin-left: 0;
-	margin-left: 1em;
-}
 .post_verification #verification_control {
 	margin: .3em 1em .3em 0;
 }
@@ -594,7 +580,7 @@ div#admin_menu {
 .topic_table td.lastpost {
 	background: none;
 }
-#info_center .cat_bar, .table_grid tr.catbg th, #show_attachments th, #searchform .roundframe .title_bar {
+#info_center .cat_bar, .table_grid tr.catbg th, #searchform .roundframe .title_bar {
 	text-align: right;
 }
 /* Styles for (fatal) errors.
@@ -624,15 +610,9 @@ div#admin_menu {
 #detailedinfo div.content dd, #tracking div.content dd {
 	float: right;
 }
-#avatar_server_stored div {
-	float: right;
-}
 
 #main_admsection #basicinfo h4 {
 	float: right;
-}
-#main_admsection #basicinfo img.avatar {
-	float: left;
 }
 #main_admsection #basicinfo ul {
 	clear: right;

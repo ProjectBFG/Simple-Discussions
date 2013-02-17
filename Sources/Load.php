@@ -175,17 +175,6 @@ function reloadSettings()
 	// Is post moderation alive and well?
 	$modSettings['postmod_active'] = isset($modSettings['admin_features']) ? in_array('pm', explode(',', $modSettings['admin_features'])) : true;
 
-	// Here to justify the name of this function. :P
-	// It should be added to the install and upgrade scripts.
-	// But since the convertors need to be updated also. This is easier.
-	if (empty($modSettings['currentAttachmentUploadDir']))
-	{
-		updateSettings(array(
-			'attachmentUploadDir' => serialize(array(1 => $modSettings['attachmentUploadDir'])),
-			'currentAttachmentUploadDir' => 1,
-		));
-	}
-
 	// Integration is cool.
 	if (defined('SMF_INTEGRATION_SETTINGS'))
 	{
@@ -269,9 +258,8 @@ function loadUserSettings()
 		if (empty($modSettings['cache_enable']) || $modSettings['cache_enable'] < 2 || ($user_settings = cache_get_data('user_settings-' . $id_member, 60)) == null)
 		{
 			$request = $smcFunc['db_query']('', '
-				SELECT mem.*, IFNULL(a.id_attach, 0) AS id_attach, a.filename, a.attachment_type
+				SELECT mem.*
 				FROM {db_prefix}members AS mem
-					LEFT JOIN {db_prefix}attachments AS a ON (a.id_member = {int:id_member})
 				WHERE mem.id_member = {int:id_member}
 				LIMIT 1',
 				array(
@@ -424,12 +412,6 @@ function loadUserSettings()
 		'posts' => empty($user_settings['posts']) ? 0 : $user_settings['posts'],
 		'time_format' => empty($user_settings['time_format']) ? $modSettings['time_format'] : $user_settings['time_format'],
 		'time_offset' => empty($user_settings['time_offset']) ? 0 : $user_settings['time_offset'],
-		'avatar' => array(
-			'url' => isset($user_settings['avatar']) && $user_settings['avatar'] === 'gravatar' && isset($user_settings['email_address']) ? get_gravatar($user_settings['email_address']) : (isset($user_settings['avatar']) ? $user_settings['avatar'] : ''),
-			'filename' => empty($user_settings['filename']) ? '' : $user_settings['filename'],
-			'custom_dir' => !empty($user_settings['attachment_type']) && $user_settings['attachment_type'] == 1,
-			'id_attach' => isset($user_settings['id_attach']) ? $user_settings['id_attach'] : 0
-		),
 		'smiley_set' => isset($user_settings['smiley_set']) ? $user_settings['smiley_set'] : '',
 		'messages' => empty($user_settings['instant_messages']) ? 0 : $user_settings['instant_messages'],
 		'unread_messages' => empty($user_settings['unread_messages']) ? 0 : $user_settings['unread_messages'],
@@ -730,8 +712,8 @@ function loadBoard()
 			)
 		);
 
-		// If it's a prefetching agent or we're requesting an attachment.
-		if ((isset($_SERVER['HTTP_X_MOZ']) && $_SERVER['HTTP_X_MOZ'] == 'prefetch') || (!empty($_REQUEST['action']) && $_REQUEST['action'] === 'dlattach'))
+		// If it's a prefetching agent.
+		if (isset($_SERVER['HTTP_X_MOZ']) && $_SERVER['HTTP_X_MOZ'] == 'prefetch')
 		{
 			ob_end_clean();
 			header('HTTP/1.1 403 Forbidden');
@@ -906,8 +888,8 @@ function loadMemberData($users, $is_name = false, $set = 'normal')
 
 	// Used by default
 	$select_columns = '
-			IFNULL(lo.log_time, 0) AS is_online, IFNULL(a.id_attach, 0) AS id_attach, a.filename, a.attachment_type,
-			mem.signature, mem.personal_text, mem.location, mem.gender, mem.avatar, mem.id_member, mem.member_name,
+			IFNULL(lo.log_time, 0) AS is_online,
+			mem.signature, mem.personal_text, mem.location, mem.gender, mem.id_member, mem.member_name,
 			mem.real_name, mem.email_address, mem.hide_email, mem.date_registered, mem.website_title, mem.website_url,
 			mem.birthdate, mem.member_ip, mem.member_ip2, mem.posts, mem.last_login,
 			mem.id_post_group, mem.lngfile, mem.id_group, mem.time_offset, mem.show_online,
@@ -917,7 +899,6 @@ function loadMemberData($users, $is_name = false, $set = 'normal')
 			CASE WHEN mem.id_group = 0 OR mg.icons = {string:blank_string} THEN pg.icons ELSE mg.icons END AS icons';
 	$select_tables = '
 			LEFT JOIN {db_prefix}log_online AS lo ON (lo.id_member = mem.id_member)
-			LEFT JOIN {db_prefix}attachments AS a ON (a.id_member = mem.id_member)
 			LEFT JOIN {db_prefix}membergroups AS pg ON (pg.id_group = mem.id_post_group)
 			LEFT JOIN {db_prefix}membergroups AS mg ON (mg.id_group = mem.id_group)';
 
@@ -1074,18 +1055,6 @@ function loadMemberContext($user, $display_custom_fields = false)
 	$profile['buddy'] = in_array($profile['id_member'], $user_info['buddies']);
 	$buddy_list = !empty($profile['buddy_list']) ? explode(',', $profile['buddy_list']) : array();
 
-	// If we're always html resizing, assume it's too large.
-	if ($modSettings['avatar_action_too_large'] == 'option_html_resize' || $modSettings['avatar_action_too_large'] == 'option_js_resize')
-	{
-		$avatar_width = !empty($modSettings['avatar_max_width_external']) ? ' width="' . $modSettings['avatar_max_width_external'] . '"' : '';
-		$avatar_height = !empty($modSettings['avatar_max_height_external']) ? ' height="' . $modSettings['avatar_max_height_external'] . '"' : '';
-	}
-	else
-	{
-		$avatar_width = '';
-		$avatar_height = '';
-	}
-
 	// These minimal values are always loaded
 	$memberContext[$user] = array(
 		'username' => $profile['member_name'],
@@ -1123,12 +1092,6 @@ function loadMemberContext($user, $display_custom_fields = false)
 			'location' => $profile['location'],
 			'real_posts' => $profile['posts'],
 			'posts' => $profile['posts'] > 500000 ? $txt['geek'] : comma_format($profile['posts']),
-			'avatar' => array(
-				'name' => $profile['avatar'],
-				'image' => $profile['avatar'] == '' ? ($profile['id_attach'] > 0 ? '<img class="avatar" src="' . (empty($profile['attachment_type']) ? $scripturl . '?action=dlattach;attach=' . $profile['id_attach'] . ';type=avatar' : $modSettings['custom_avatar_url'] . '/' . $profile['filename']) . '" alt="" />' : '') : (stristr($profile['avatar'], 'http://') ? '<img class="avatar" src="' . $profile['avatar'] . '"' . $avatar_width . $avatar_height . ' alt="" />' : ($profile['avatar'] === 'gravatar') ? '<img class="avatar" src="' . get_gravatar($profile['email_address']) . '"' . $avatar_width . $avatar_height . ' alt="" />' : '<img class="avatar" src="' . $modSettings['avatar_url'] . '/' . htmlspecialchars($profile['avatar']) . '" alt="" />'),
-				'href' => $profile['avatar'] == '' ? ($profile['id_attach'] > 0 ? (empty($profile['attachment_type']) ? $scripturl . '?action=dlattach;attach=' . $profile['id_attach'] . ';type=avatar' : $modSettings['custom_avatar_url'] . '/' . $profile['filename']) : '') : (stristr($profile['avatar'], 'http://') ? $profile['avatar'] : ($profile['avatar'] === 'gravatar') ? get_gravatar($profile['email_address']) : $modSettings['avatar_url'] . '/' . $profile['avatar']),
-				'url' => $profile['avatar'] == '' ? '' : (stristr($profile['avatar'], 'http://') ? $profile['avatar'] : ($profile['avatar'] === 'gravatar') ? get_gravatar($profile['email_address']) : $modSettings['avatar_url'] . '/' . $profile['avatar'])
-			),
 			'last_login' => empty($profile['last_login']) ? $txt['never'] : timeformat($profile['last_login']),
 			'last_login_timestamp' => empty($profile['last_login']) ? 0 : forum_time(0, $profile['last_login']),
 			'ip' => htmlspecialchars($profile['member_ip']),
@@ -1449,7 +1412,6 @@ function loadTheme($id_theme = 0, $initialize = true)
 
 			// And just a few mod settings :).
 			$modSettings['smileys_url'] = strtr($modSettings['smileys_url'], array($oldurl => $boardurl));
-			$modSettings['avatar_url'] = strtr($modSettings['avatar_url'], array($oldurl => $boardurl));
 
 			// Clean up after loadBoard().
 			if (isset($board_info['moderators']))
@@ -1528,7 +1490,7 @@ function loadTheme($id_theme = 0, $initialize = true)
 	// A bug in some versions of IIS under CGI (older ones) makes cookie setting not work with Location: headers.
 	$context['server']['needs_login_fix'] = $context['server']['is_cgi'] && $context['server']['is_iis'];
 
-	// Detect the browser. This is separated out because it's also used in attachment downloads
+	// Detect the browser.
 	detectBrowser();
 
 	// Set the top level linktree up.

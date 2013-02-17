@@ -1119,9 +1119,6 @@ function setPermissionLevel($level, $group, $profile = 'null')
 		'send_email_to_members',
 		'profile_view_any',
 		'profile_extra_own',
-		'profile_server_avatar',
-		'profile_upload_avatar',
-		'profile_remote_avatar',
 		'profile_remove_own',
 	));
 	$groupLevels['board']['standard'] = array_merge($groupLevels['board']['restrict'], array(
@@ -1129,10 +1126,8 @@ function setPermissionLevel($level, $group, $profile = 'null')
 		'poll_edit_own',
 		'poll_post',
 		'poll_add_own',
-		'post_attachment',
 		'lock_own',
 		'remove_own',
-		'view_attachments',
 	));
 
 	// Moderator - ie. moderators :P.  They can do what standard can, and more.
@@ -1158,7 +1153,6 @@ function setPermissionLevel($level, $group, $profile = 'null')
 
 	// Maintenance - wannabe admins.  They can do almost everything.
 	$groupLevels['global']['maintenance'] = array_merge($groupLevels['global']['moderator'], array(
-		'manage_attachments',
 		'manage_smileys',
 		'manage_boards',
 		'moderate_forum',
@@ -1184,7 +1178,6 @@ function setPermissionLevel($level, $group, $profile = 'null')
 		'mark_notify',
 		'report_any',
 		'send_topic',
-		'view_attachments',
 	);
 
 	// Publisher - just a little more...
@@ -1202,7 +1195,6 @@ function setPermissionLevel($level, $group, $profile = 'null')
 		'poll_post',
 		'poll_add_own',
 		'poll_remove_own',
-		'post_attachment',
 		'lock_own',
 		'remove_own',
 	));
@@ -1403,7 +1395,6 @@ function loadAllPermissions($loadType = 'classic')
 				'use_pm_system',
 				'edit_profile',
 				'delete_account',
-				'use_avatar',
 				'moderate_general',
 				'administrate',
 			),
@@ -1423,7 +1414,6 @@ function loadAllPermissions($loadType = 'classic')
 				'participate',
 				'modify',
 				'notification',
-				'attach',
 				'moderate',
 			),
 			'classic' => array(
@@ -1432,7 +1422,6 @@ function loadAllPermissions($loadType = 'classic')
 				'post',
 				'poll',
 				'notification',
-				'attachment',
 			),
 		),
 	);
@@ -1459,7 +1448,6 @@ function loadAllPermissions($loadType = 'classic')
 			'send_email_to_members' => array(false, 'pm', 'use_pm_system'),
 			'admin_forum' => array(false, 'maintenance', 'administrate'),
 			'manage_boards' => array(false, 'maintenance', 'administrate'),
-			'manage_attachments' => array(false, 'maintenance', 'administrate'),
 			'manage_smileys' => array(false, 'maintenance', 'administrate'),
 			'edit_news' => array(false, 'maintenance', 'administrate'),
 			'access_mod_center' => array(false, 'maintenance', 'moderate_general'),
@@ -1474,9 +1462,6 @@ function loadAllPermissions($loadType = 'classic')
 			'profile_extra' => array(true, 'profile', 'edit_profile', 'moderate_general'),
 			'profile_title' => array(true, 'profile', 'edit_profile', 'moderate_general'),
 			'profile_remove' => array(true, 'profile', 'delete_account', 'moderate_general'),
-			'profile_server_avatar' => array(false, 'profile', 'use_avatar'),
-			'profile_upload_avatar' => array(false, 'profile', 'use_avatar'),
-			'profile_remote_avatar' => array(false, 'profile', 'use_avatar'),
 		),
 		'board' => array(
 			'moderate_board' => array(false, 'general_board', 'moderate'),
@@ -1509,9 +1494,6 @@ function loadAllPermissions($loadType = 'classic')
 			'poll_remove' => array(true, 'poll', 'modify', 'moderate'),
 			'mark_any_notify' => array(false, 'notification', 'notification'),
 			'mark_notify' => array(false, 'notification', 'notification'),
-			'view_attachments' => array(false, 'attachment', 'participate'),
-			'post_unapproved_attachments' => array(false, 'attachment', 'make_unapproved_posts'),
-			'post_attachment' => array(false, 'attachment', 'attach'),
 		),
 	);
 
@@ -1540,7 +1522,6 @@ function loadAllPermissions($loadType = 'classic')
 		$hiddenPermissions[] = 'approve_posts';
 		$hiddenPermissions[] = 'post_unapproved_topics';
 		$hiddenPermissions[] = 'post_unapproved_replies';
-		$hiddenPermissions[] = 'post_unapproved_attachments';
 	}
 	// If we show them on classic view we change the name.
 	else
@@ -1550,18 +1531,6 @@ function loadAllPermissions($loadType = 'classic')
 
 		// Relabel the reply permissions
 		$relabelPermissions['post_reply'] = 'auto_approve_replies';
-
-		// Relabel the attachment permissions
-		$relabelPermissions['post_attachment'] = 'auto_approve_attachments';
-	}
-
-	// Are attachments enabled?
-	if (empty($modSettings['attachmentEnable']))
-	{
-		$hiddenPermissions[] = 'manage_attachments';
-		$hiddenPermissions[] = 'view_attachments';
-		$hiddenPermissions[] = 'post_unapproved_attachments';
-		$hiddenPermissions[] = 'post_attachment';
 	}
 
 	// Provide a practical way to modify permissions.
@@ -2207,15 +2176,11 @@ function loadIllegalGuestPermissions()
 		'profile_extra',
 		'profile_title',
 		'profile_remove',
-		'profile_server_avatar',
-		'profile_upload_avatar',
-		'profile_remote_avatar',
 		'profile_view_own',
 		'mark_any_notify',
 		'mark_notify',
 		'admin_forum',
 		'manage_boards',
-		'manage_attachments',
 		'manage_smileys',
 		'edit_news',
 		'access_mod_center',
@@ -2257,7 +2222,6 @@ function ModifyPostModeration()
 		'new_topic' => array('post_new', 'post_unapproved_topics'),
 		'replies_own' => array('post_reply_own', 'post_unapproved_replies_own'),
 		'replies_any' => array('post_reply_any', 'post_unapproved_replies_any'),
-		'attachment' => array('post_attachment', 'post_unapproved_attachments'),
 	);
 
 	call_integration_hook('integrate_post_moderation_mapping', array($mappings));
@@ -2271,7 +2235,6 @@ function ModifyPostModeration()
 			'new_topic' => 'disallow',
 			'replies_own' => 'disallow',
 			'replies_any' => 'disallow',
-			'attachment' => 'disallow',
 			'children' => array(),
 		),
 		0 => array(
@@ -2281,7 +2244,6 @@ function ModifyPostModeration()
 			'new_topic' => 'disallow',
 			'replies_own' => 'disallow',
 			'replies_any' => 'disallow',
-			'attachment' => 'disallow',
 			'children' => array(),
 		),
 	);
@@ -2309,7 +2271,6 @@ function ModifyPostModeration()
 				'new_topic' => 'disallow',
 				'replies_own' => 'disallow',
 				'replies_any' => 'disallow',
-				'attachment' => 'disallow',
 				'children' => array(),
 			);
 		}

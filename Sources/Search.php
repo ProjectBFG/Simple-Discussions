@@ -1853,8 +1853,6 @@ function PlushSearch2()
 /**
  * Callback to return messages - saves memory.
  * @todo Fix this, update it, whatever... from Display.php mainly.
- * Note that the call to loadAttachmentContext() doesn't work:
- * this function doesn't fulfill the pre-condition to fill $attachments global...
  * So all it does is to fallback and return.
  *
  * What it does:
@@ -2094,7 +2092,6 @@ function prepareSearchContext($reset = false)
 
 	$output['matches'][] = array(
 		'id' => $message['id_msg'],
-		'attachment' => loadAttachmentContext($message['id_msg']),
 		'alternate' => $counter % 2,
 		'member' => &$memberContext[$message['id_member']],
 		'icon' => $message['icon'],

@@ -500,7 +500,7 @@ div.pagesection div.floatright input, div.pagesection div.floatright select {
 }
 
 /* All the signatures used in the forum.  If your forum users use Mozilla, Opera, or Safari, you might add max-height here ;). */
-.signature, .attachments, .custom_fields_above_signature {
+.signature, .custom_fields_above_signature {
 	width: 100%;
 	overflow: auto;
 	clear: right;
@@ -1629,7 +1629,7 @@ div#pollmoderation {
 	display: table-cell;
 }
 
-/* The visible stuff below the avatar. */
+/* The visible stuff below the name. */
 .poster>ul>li.icons, .poster li.membergroup, .poster li.title, .poster li.poster_online, .poster li.warning,
 .poster>ul>li.icons:hover, .poster li.membergroup:hover, .poster li.title:hover, .poster li.poster_online:hover, .poster li.warning:hover {
 	font-size: 0.9em;
@@ -1717,20 +1717,6 @@ div#pollmoderation {
 }
 img.smiley {
 	vertical-align: bottom;
-}
-.attachments {
-	padding: 12px 0 0 0;
-}
-.attachments .floatleft {
-	padding: 0 6px 8px 6px;
-}
-.attachments_top  {
-	margin: 0 auto;
-	text-align: center;
-}
-.attachments hr {
-	clear: both;
-	margin: 12px 0;
 }
 
 /* The quick buttons */
@@ -1999,23 +1985,10 @@ ul.post_options li {
 	overflow: hidden;
 	border-radius: 0 0 4px 4px;
 }
-#postMoreOptions, #postAttachment, #postAttachment2 {
+#postMoreOptions {
 	border-top: 1px solid #ccc;
 	margin: -1px 0 0 0;
 	padding: 10px;
-}
-#postAttachment dd, #postAttachment2 dd {
-	margin: 4px 0 4px 12px;
-}
-#postAttachment dd {
-	width: 45%;
-	float: left;
-}
-#postAttachment dt, #postAttachment2 dt {
-	font-weight: bold;
-}
-#postAttachment3  /* Can't see this called anywhere in Post.template.php */{
-	margin-left: 12px;
 }
 #postDraftOptions {
 	background: #fdfdfd;
@@ -2530,10 +2503,6 @@ dl {
 	font-weight: 100;
 	display: block;
 }
-#basicinfo img.avatar {
-	display: block;
-	margin: 10px 0 0 0;
-}
 #basicinfo ul {
 	list-style-type: none;
 	margin: 10px 0 0 0;
@@ -2584,22 +2553,12 @@ dl {
 	display: block;
 	margin-bottom: 4px;
 }
-#avatar_server_stored div {
-	float: left;
-}
-#avatar_upload {
-	overflow: auto;
-}
 #main_admsection #basicinfo, #main_admsection #detailedinfo {
 	width: 100%;
 }
 #main_admsection #basicinfo h4 {
 	float: left;
 	width: 35%;
-}
-#main_admsection #basicinfo img.avatar {
-	float: right;
-	vertical-align: top;
 }
 #main_admsection #basicinfo ul {
 	clear: left;
@@ -3575,9 +3534,6 @@ span.hidelink {
 .table_grid tr.catbg th.centercol, .table_grid tr.windowbg2 td.centercol, .table_grid tr.windowbg td.centercol, .table_grid tr.highlight2 td.centercol {
 	text-align: center;
 }
-#show_attachments th {
-	text-align: left;
-}
 #info_center  {
 	border-right: 1px solid #ddd;
 	border-left: 1px solid #ddd;
@@ -3586,10 +3542,10 @@ span.hidelink {
 .table_grid tr.catbg th {
 	padding: 4px 3px 3px 3px;
 }
-tr.catbg th:first-child, #show_attachments th:first-child {
+tr.catbg th:first-child {
 	border-left: 1px solid #ddd;
 }
-tr.catbg th:last-child, #show_attachments th:last-child {
+tr.catbg th:last-child {
 	border-right: 1px solid #ddd;
 }
 #info_center .catbg {

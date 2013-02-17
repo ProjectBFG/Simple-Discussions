@@ -180,15 +180,7 @@ function template_folder()
 		// Show a link to the member's profile.
 		echo '
 						<a href="', $scripturl, '?action=profile;u=', $message['member']['id'], '">
-							<span style="padding: 6px; display: block;">', $message['member']['name'], '</span>';
-
-		// Show avatars, images, etc.?
-		if (!empty($settings['show_user_images']) && empty($options['show_no_avatars']) && !empty($message['member']['avatar']['image']))
-			echo '
-
-							', $message['member']['avatar']['image'], '';
-
-			echo '
+							<span style="padding: 6px; display: block;">', $message['member']['name'], '</span>
 						</a>
 					</h4>
 					<ul class="smalltext" id="msg_', $message['id'], '_extra_info">';

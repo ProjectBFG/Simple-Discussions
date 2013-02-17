@@ -358,7 +358,7 @@ function fixTags(&$message)
 		fixTag($message, $param['tag'], $param['protocols'], $param['embeddedUrl'], $param['hasEqualSign'], !empty($param['hasExtra']));
 
 	// Now fix possible security problems with images loading links automatically...
-	$message = preg_replace('~(\[img.*?\])(.+?)\[/img\]~eis', '\'$1\' . preg_replace(\'~action(=|%3d)(?!dlattach)~i\', \'action-\', \'$2\') . \'[/img]\'', $message);
+	$message = preg_replace('~(\[img.*?\])(.+?)\[/img\]~eis', '\'$1\' . preg_replace(\'~action(=|%3d)~i\', \'action-\', \'$2\') . \'[/img]\'', $message);
 
 	// Limit the size of images posted?
 	if (!empty($modSettings['max_image_width']) || !empty($modSettings['max_image_height']))
@@ -1747,7 +1747,6 @@ function createPost(&$msgOptions, &$topicOptions, &$posterOptions)
 	// Set optional parameters to the default value.
 	$msgOptions['icon'] = empty($msgOptions['icon']) ? 'xx' : $msgOptions['icon'];
 	$msgOptions['smileys_enabled'] = !empty($msgOptions['smileys_enabled']);
-	$msgOptions['attachments'] = empty($msgOptions['attachments']) ? array() : $msgOptions['attachments'];
 	$msgOptions['approved'] = isset($msgOptions['approved']) ? (int) $msgOptions['approved'] : 1;
 	$topicOptions['id'] = empty($topicOptions['id']) ? 0 : (int) $topicOptions['id'];
 	$topicOptions['poll'] = isset($topicOptions['poll']) ? (int) $topicOptions['poll'] : null;
@@ -1847,18 +1846,6 @@ function createPost(&$msgOptions, &$topicOptions, &$posterOptions)
 	// Something went wrong creating the message...
 	if (empty($msgOptions['id']))
 		return false;
-
-	// Fix the attachments.
-	if (!empty($msgOptions['attachments']))
-		$smcFunc['db_query']('', '
-			UPDATE {db_prefix}attachments
-			SET id_msg = {int:id_msg}
-			WHERE id_attach IN ({array_int:attachment_list})',
-			array(
-				'attachment_list' => $msgOptions['attachments'],
-				'id_msg' => $msgOptions['id'],
-			)
-		);
 
 	// Insert a new topic (if the topicID was left empty.)
 	if ($new_topic)
@@ -2428,11 +2415,9 @@ function approvePosts($msgs, $approve = true)
 
 		$smcFunc['db_query']('', '
 			DELETE FROM {db_prefix}approval_queue
-			WHERE id_msg IN ({array_int:message_list})
-				AND id_attach = {int:id_attach}',
+			WHERE id_msg IN ({array_int:message_list})',
 			array(
 				'message_list' => $msgs,
-				'id_attach' => 0,
 			)
 		);
 	}

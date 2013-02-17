@@ -931,7 +931,6 @@ function getXmlProfile($xml_format)
 			'published' => gmstrftime('%Y-%m-%dT%H:%M:%SZ', $user_profile[$profile['id']]['date_registered']),
 			'updated' => gmstrftime('%Y-%m-%dT%H:%M:%SZ', $user_profile[$profile['id']]['last_login']),
 			'id' => $scripturl . '?action=profile;u=' . $profile['id'],
-			'logo' => !empty($profile['avatar']) ? $profile['avatar']['url'] : '',
 		);
 	else
 	{
@@ -949,9 +948,6 @@ function getXmlProfile($xml_format)
 		// Everything below here might not be set, and thus maybe shouldn't be displayed.
 		if ($profile['gender']['name'] != '')
 			$data['gender'] = cdata_parse($profile['gender']['name']);
-
-		if ($profile['avatar']['name'] != '')
-			$data['avatar'] = $profile['avatar']['url'];
 
 		// If they are online, show an empty tag... no reason to put anything inside it.
 		if ($profile['online']['is_online'])

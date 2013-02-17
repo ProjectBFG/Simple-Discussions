@@ -59,7 +59,6 @@ function template_summary()
 				<div class="username">
 					<h4>', $context['member']['name'], '<span class="position">', (!empty($context['member']['group']) ? $context['member']['group'] : $context['member']['post_group']), '</span></h4>
 				</div>
-				', $context['member']['avatar']['image'], '
 				<ul class="reset">';
 	// @TODO fix the <ul> when no fields are visible
 	// What about if we allow email only via the forum??
@@ -323,7 +322,7 @@ function template_showPosts()
 
 	echo '
 			<h3 class="catbg">
-				', (!isset($context['attachments']) && empty($context['is_topics']) ? $txt['showMessages'] : (!empty($context['is_topics']) ? $txt['showTopics'] : $txt['showAttachments'])), ' - ', $context['member']['name'], '
+				', (empty($context['is_topics']) ? $txt['showMessages'] : $txt['showTopics']), ' - ', $context['member']['name'], '
 			</h3>
 		
 		', !empty($context['page_index']) ? '
@@ -337,76 +336,70 @@ function template_showPosts()
 	$remove_button = create_button('delete.png', 'remove_message', 'remove', 'class="centericon"');
 	$notify_button = create_button('notify_sm.png', 'notify_replies', 'notify', 'class="centericon"');
 
-	// Are we displaying posts or attachments?
-	if (!isset($context['attachments']))
+	// For every post to be displayed, give it its own div, and show the important details of the post.
+	foreach ($context['posts'] as $post)
 	{
-		// For every post to be displayed, give it its own div, and show the important details of the post.
-		foreach ($context['posts'] as $post)
-		{
-			echo '
-			<div class="', $post['alternate'] == 0 ? 'windowbg2' : 'windowbg', ' core_posts">
-				<div class="content">
-					<div class="counter">', $post['counter'], '</div>
-					<div class="topic_details">
-						<h5><strong><a href="', $scripturl, '?board=', $post['board']['id'], '.0">', $post['board']['name'], '</a> / <a href="', $scripturl, '?topic=', $post['topic'], '.', $post['start'], '#msg', $post['id'], '">', $post['subject'], '</a></strong></h5>
-						<span class="smalltext">', $post['time'], '</span>
-					</div>
-					<div class="list_posts">';
+		echo '
+		<div class="', $post['alternate'] == 0 ? 'windowbg2' : 'windowbg', ' core_posts">
+			<div class="content">
+				<div class="counter">', $post['counter'], '</div>
+				<div class="topic_details">
+					<h5><strong><a href="', $scripturl, '?board=', $post['board']['id'], '.0">', $post['board']['name'], '</a> / <a href="', $scripturl, '?topic=', $post['topic'], '.', $post['start'], '#msg', $post['id'], '">', $post['subject'], '</a></strong></h5>
+					<span class="smalltext">', $post['time'], '</span>
+				</div>
+				<div class="list_posts">';
 
-			if (!$post['approved'])
-				echo '
-						<div class="approve_post">
-							<em>', $txt['post_awaiting_approval'], '</em>
-						</div>';
-
+		if (!$post['approved'])
 			echo '
-					', $post['body'], '
+					<div class="approve_post">
+						<em>', $txt['post_awaiting_approval'], '</em>
 					</div>';
 
-			if ($post['can_reply'] || $post['can_mark_notify'] || $post['can_delete'])
-				echo '
-				<div class="floatright">
-					<ul class="reset smalltext quickbuttons">';
-
-			// If they *can* reply?
-			if ($post['can_reply'])
-				echo '
-						<li><a href="', $scripturl, '?action=post;topic=', $post['topic'], '.', $post['start'], '" class="reply_button"><span>', $txt['reply'], '</span></a></li>';
-
-			// If they *can* quote?
-			if ($post['can_quote'])
-				echo '
-						<li><a href="', $scripturl . '?action=post;topic=', $post['topic'], '.', $post['start'], ';quote=', $post['id'], '" class="quote_button"><span>', $txt['quote'], '</span></a></li>';
-
-			// Can we request notification of topics?
-			if ($post['can_mark_notify'])
-				echo '
-						<li><a href="', $scripturl, '?action=notify;topic=', $post['topic'], '.', $post['start'], '" class="notify_button"><span>', $txt['notify'], '</span></a></li>';
-
-			// How about... even... remove it entirely?!
-			if ($post['can_delete'])
-				echo '
-						<li><a href="', $scripturl, '?action=deletemsg;msg=', $post['id'], ';topic=', $post['topic'], ';profile;u=', $context['member']['id'], ';start=', $context['start'], ';', $context['session_var'], '=', $context['session_id'], '" onclick="return confirm(\'', $txt['remove_message'], '?\');" class="remove_button"><span>', $txt['remove'], '</span></a></li>';
-
-			if ($post['can_reply'] || $post['can_mark_notify'] || $post['can_delete'])
-				echo '
-					</ul>
+		echo '
+				', $post['body'], '
 				</div>';
 
+		if ($post['can_reply'] || $post['can_mark_notify'] || $post['can_delete'])
 			echo '
-				</div>
+			<div class="floatright">
+				<ul class="reset smalltext quickbuttons">';
+
+		// If they *can* reply?
+		if ($post['can_reply'])
+			echo '
+					<li><a href="', $scripturl, '?action=post;topic=', $post['topic'], '.', $post['start'], '" class="reply_button"><span>', $txt['reply'], '</span></a></li>';
+
+		// If they *can* quote?
+		if ($post['can_quote'])
+			echo '
+					<li><a href="', $scripturl . '?action=post;topic=', $post['topic'], '.', $post['start'], ';quote=', $post['id'], '" class="quote_button"><span>', $txt['quote'], '</span></a></li>';
+
+		// Can we request notification of topics?
+		if ($post['can_mark_notify'])
+			echo '
+					<li><a href="', $scripturl, '?action=notify;topic=', $post['topic'], '.', $post['start'], '" class="notify_button"><span>', $txt['notify'], '</span></a></li>';
+
+		// How about... even... remove it entirely?!
+		if ($post['can_delete'])
+			echo '
+					<li><a href="', $scripturl, '?action=deletemsg;msg=', $post['id'], ';topic=', $post['topic'], ';profile;u=', $context['member']['id'], ';start=', $context['start'], ';', $context['session_var'], '=', $context['session_id'], '" onclick="return confirm(\'', $txt['remove_message'], '?\');" class="remove_button"><span>', $txt['remove'], '</span></a></li>';
+
+		if ($post['can_reply'] || $post['can_mark_notify'] || $post['can_delete'])
+			echo '
+				</ul>
 			</div>';
-		}
+
+		echo '
+			</div>
+		</div>';
 	}
-	else
-		template_show_list('attachments');
 
 	// No posts? Just end the table with a informative message.
-	if ((isset($context['attachments']) && empty($context['attachments'])) || (!isset($context['attachments']) && empty($context['posts'])))
+	if (empty($context['posts']))
 		echo '
 				<tr>
 					<td class="tborder windowbg2 padding centertext" colspan="4">
-						', isset($context['attachments']) ? $txt['show_attachments_none'] : ($context['is_topics'] ? $txt['show_topics_none'] : $txt['show_posts_none']), '
+						', $context['is_topics'] ? $txt['show_topics_none'] : $txt['show_posts_none'], '
 					</td>
 				</tr>';
 
@@ -1496,13 +1489,6 @@ function template_profile_theme_settings()
 							<dd>
 								<input type="hidden" name="default_options[use_sidebar_menu]" value="0" />
 								<input type="checkbox" name="default_options[use_sidebar_menu]" id="use_sidebar_menu" value="1"', !empty($context['member']['options']['use_sidebar_menu']) ? ' checked="checked"' : '', ' class="input_check" />
-							</dd>
-							<dt>
-								<label for="show_no_avatars">', $txt['show_no_avatars'], '</label>
-							</dt>
-							<dd>
-								<input type="hidden" name="default_options[show_no_avatars]" value="0" />
-								<input type="checkbox" name="default_options[show_no_avatars]" id="show_no_avatars" value="1"', !empty($context['member']['options']['show_no_avatars']) ? ' checked="checked"' : '', ' class="input_check" />
 							</dd>
 							<dt>
 								<label for="show_no_signatures">', $txt['show_no_signatures'], '</label>
@@ -2646,133 +2632,6 @@ function template_profile_signature_modify()
 											return ajax_getSignaturePreview(true);
 										});
 									});
-								// ]]></script>
-							</dd>';
-}
-
-function template_profile_avatar_select()
-{
-	global $context, $txt, $modSettings;
-
-	// Start with the upper menu
-	echo '
-							<dt>
-								<strong id="personal_picture"><label for="avatar_upload_box">', $txt['personal_picture'], '</label></strong>
-								<input type="radio" onclick="swap_avatar(this); return true;" name="avatar_choice" id="avatar_choice_none" value="none"' . ($context['member']['avatar']['choice'] == 'none' ? ' checked="checked"' : '') . ' class="input_radio" /><label for="avatar_choice_none"' . (isset($context['modify_error']['bad_avatar']) ? ' class="error"' : '') . '>' . $txt['no_avatar'] . '</label><br />
-								', !empty($context['member']['avatar']['allow_server_stored']) ? '<input type="radio" onclick="swap_avatar(this); return true;" name="avatar_choice" id="avatar_choice_server_stored" value="server_stored"' . ($context['member']['avatar']['choice'] == 'server_stored' ? ' checked="checked"' : '') . ' class="input_radio" /><label for="avatar_choice_server_stored"' . (isset($context['modify_error']['bad_avatar']) ? ' class="error"' : '') . '>' . $txt['choose_avatar_gallery'] . '</label><br />' : '', '
-								', !empty($context['member']['avatar']['allow_external']) ? '<input type="radio" onclick="swap_avatar(this); return true;" name="avatar_choice" id="avatar_choice_external" value="external"' . ($context['member']['avatar']['choice'] == 'external' ? ' checked="checked"' : '') . ' class="input_radio" /><label for="avatar_choice_external"' . (isset($context['modify_error']['bad_avatar']) ? ' class="error"' : '') . '>' . $txt['my_own_pic'] . '</label><br />' : '', '
-								', !empty($context['member']['avatar']['allow_upload']) ? '<input type="radio" onclick="swap_avatar(this); return true;" name="avatar_choice" id="avatar_choice_upload" value="upload"' . ($context['member']['avatar']['choice'] == 'upload' ? ' checked="checked"' : '') . ' class="input_radio" /><label for="avatar_choice_upload"' . (isset($context['modify_error']['bad_avatar']) ? ' class="error"' : '') . '>' . $txt['avatar_will_upload'] . '</label><br />' : '', '
-								<input type="radio" onclick="swap_avatar(this); return true;" name="avatar_choice" id="avatar_choice_gravatar" value="gravatar"' . ($context['member']['avatar']['choice'] == 'gravatar' ? ' checked="checked"' : '') . ' class="input_radio" /><label for="avatar_choice_gravatar"' . (isset($context['modify_error']['bad_avatar']) ? ' class="error"' : '') . '>' . $txt['avatar_gravatar'] . '</label>
-							</dt>
-							<dd>';
-
-	// If users are allowed to choose avatars stored on the server show selection boxes to choice them from.
-	if (!empty($context['member']['avatar']['allow_server_stored']))
-	{
-		echo '
-								<div id="avatar_server_stored">
-									<div>
-										<select name="cat" id="cat" size="10" onchange="changeSel(\'\');" onfocus="selectRadioByName(document.forms.creator.avatar_choice, \'server_stored\');">';
-		// This lists all the file catergories.
-		foreach ($context['avatars'] as $avatar)
-			echo '
-											<option value="', $avatar['filename'] . ($avatar['is_dir'] ? '/' : ''), '"', ($avatar['checked'] ? ' selected="selected"' : ''), '>', $avatar['name'], '</option>';
-		echo '
-										</select>
-									</div>
-									<div>
-										<select name="file" id="file" size="10" style="display: none;" onchange="showAvatar()" onfocus="selectRadioByName(document.forms.creator.avatar_choice, \'server_stored\');" disabled="disabled"><option></option></select>
-									</div>
-									<div><img name="avatar" id="avatar" src="', !empty($context['member']['avatar']['allow_external']) && $context['member']['avatar']['choice'] == 'external' ? $context['member']['avatar']['external'] : $modSettings['avatar_url'] . '/blank.png', '" alt="Do Nothing" /></div>
-									<script type="text/javascript"><!-- // --><![CDATA[
-										var files = ["' . implode('", "', $context['avatar_list']) . '"];
-										var avatar = document.getElementById("avatar");
-										var cat = document.getElementById("cat");
-										var selavatar = "' . $context['avatar_selected'] . '";
-										var avatardir = "' . $modSettings['avatar_url'] . '/";
-										var size = avatar.alt.substr(3, 2) + " " + avatar.alt.substr(0, 2) + String.fromCharCode(117, 98, 116);
-										var file = document.getElementById("file");
-										var maxHeight = ', !empty($modSettings['avatar_max_height_external']) ? $modSettings['avatar_max_height_external'] : 0, ';
-										var maxWidth = ', !empty($modSettings['avatar_max_width_external']) ? $modSettings['avatar_max_width_external'] : 0, ';
-
-										if (avatar.src.indexOf("blank.png") > -1)
-											changeSel(selavatar);
-										else
-											previewExternalAvatar(avatar.src)
-
-									// ]]></script>
-								</div>';
-	}
-
-	// If the user can link to an off server avatar, show them a box to input the address.
-	if (!empty($context['member']['avatar']['allow_external']))
-	{
-		echo '
-								<div id="avatar_external">
-									<div class="smalltext">', $txt['avatar_by_url'], '</div>
-									<input type="text" name="userpicpersonal" size="45" value="', $context['member']['avatar']['external'], '" onfocus="selectRadioByName(document.forms.creator.avatar_choice, \'external\');" onchange="if (typeof(previewExternalAvatar) != \'undefined\') previewExternalAvatar(this.value);" class="input_text" />
-								</div>';
-	}
-
-	// If the user is able to upload avatars to the server show them an upload box.
-	if (!empty($context['member']['avatar']['allow_upload']))
-	{
-		echo '
-								<div id="avatar_upload">
-									<input type="file" size="44" name="attachment" id="avatar_upload_box" value="" onfocus="selectRadioByName(document.forms.creator.avatar_choice, \'upload\');" class="input_file" />
-									', ($context['member']['avatar']['id_attach'] > 0 ? '<br /><br /><img src="' . $context['member']['avatar']['href'] . (strpos($context['member']['avatar']['href'], '?') === false ? '?' : '&amp;') . 'time=' . time() . '" alt="" /><input type="hidden" name="id_attach" value="' . $context['member']['avatar']['id_attach'] . '" />' : ''), '
-								</div>';
-	}
-	
-	echo '
-								<div id="avatar_gravatar">
-									<div class="smalltext">', $txt['avatar_gravatar_desc'], '</div>
-									<img src="', get_gravatar($context['member']['email']), '" alt="" />
-								</div>';
-
-	echo '
-								<script type="text/javascript"><!-- // --><![CDATA[
-									', !empty($context['member']['avatar']['allow_server_stored']) ? 'document.getElementById("avatar_server_stored").style.display = "' . ($context['member']['avatar']['choice'] == 'server_stored' ? '' : 'none') . '";' : '', '
-									', !empty($context['member']['avatar']['allow_external']) ? 'document.getElementById("avatar_external").style.display = "' . ($context['member']['avatar']['choice'] == 'external' ? '' : 'none') . '";' : '', '
-									', !empty($context['member']['avatar']['allow_upload']) ? 'document.getElementById("avatar_upload").style.display = "' . ($context['member']['avatar']['choice'] == 'upload' ? '' : 'none') . '";' : '', '
-									document.getElementById("avatar_gravatar").style.display = "' . ($context['member']['avatar']['choice'] == 'gravatar' ? '' : 'none') . '";
-
-									function swap_avatar(type)
-									{
-										switch(type.id)
-										{
-											case "avatar_choice_server_stored":
-												', !empty($context['member']['avatar']['allow_server_stored']) ? 'document.getElementById("avatar_server_stored").style.display = "";' : '', '
-												', !empty($context['member']['avatar']['allow_external']) ? 'document.getElementById("avatar_external").style.display = "none";' : '', '
-												', !empty($context['member']['avatar']['allow_upload']) ? 'document.getElementById("avatar_upload").style.display = "none";' : '', '
-												document.getElementById("avatar_gravatar").style.display = "none";
-												break;
-											case "avatar_choice_external":
-												', !empty($context['member']['avatar']['allow_server_stored']) ? 'document.getElementById("avatar_server_stored").style.display = "none";' : '', '
-												', !empty($context['member']['avatar']['allow_external']) ? 'document.getElementById("avatar_external").style.display = "";' : '', '
-												', !empty($context['member']['avatar']['allow_upload']) ? 'document.getElementById("avatar_upload").style.display = "none";' : '', '
-												document.getElementById("avatar_gravatar").style.display = "none";
-												break;
-											case "avatar_choice_upload":
-												', !empty($context['member']['avatar']['allow_server_stored']) ? 'document.getElementById("avatar_server_stored").style.display = "none";' : '', '
-												', !empty($context['member']['avatar']['allow_external']) ? 'document.getElementById("avatar_external").style.display = "none";' : '', '
-												', !empty($context['member']['avatar']['allow_upload']) ? 'document.getElementById("avatar_upload").style.display = "";' : '', '
-												document.getElementById("avatar_gravatar").style.display = "none";
-												break;
-											case "avatar_choice_gravatar":
-												', !empty($context['member']['avatar']['allow_server_stored']) ? 'document.getElementById("avatar_server_stored").style.display = "none";' : '', '
-												', !empty($context['member']['avatar']['allow_external']) ? 'document.getElementById("avatar_external").style.display = "none";' : '', '
-												', !empty($context['member']['avatar']['allow_upload']) ? 'document.getElementById("avatar_upload").style.display = "none";' : '', '
-												document.getElementById("avatar_gravatar").style.display = "";
-												break;
-											case "avatar_choice_none":
-												', !empty($context['member']['avatar']['allow_server_stored']) ? 'document.getElementById("avatar_server_stored").style.display = "none";' : '', '
-												', !empty($context['member']['avatar']['allow_external']) ? 'document.getElementById("avatar_external").style.display = "none";' : '', '
-												', !empty($context['member']['avatar']['allow_upload']) ? 'document.getElementById("avatar_upload").style.display = "none";' : '', '
-												document.getElementById("avatar_gravatar").style.display = "none";
-												break;
-										}
-									}
 								// ]]></script>
 							</dd>';
 }

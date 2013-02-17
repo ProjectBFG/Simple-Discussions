@@ -114,9 +114,7 @@ function is_not_guest($message = '')
 	if (SMF != 'SSI' && empty($context['theme_loaded']))
 		loadTheme();
 
-	// Never redirect to an attachment
-	if (strpos($_SERVER['REQUEST_URL'], 'dlattach') === false)
-		$_SESSION['login_url'] = $_SERVER['REQUEST_URL'];
+	$_SESSION['login_url'] = $_SERVER['REQUEST_URL'];
 
 	// Load the Login template and language file.
 	loadLanguage('Login');
@@ -414,7 +412,7 @@ function banPermissions()
 			'poll_edit_own', 'poll_edit_any',
 			'poll_lock_own', 'poll_lock_any',
 			'poll_remove_own', 'poll_remove_any',
-			'manage_attachments', 'manage_smileys', 'manage_boards', 'admin_forum', 'manage_permissions',
+			'manage_smileys', 'manage_boards', 'admin_forum', 'manage_permissions',
 			'moderate_forum', 'manage_membergroups', 'manage_bans', 'send_mail', 'edit_news',
 			'profile_identity_any', 'profile_extra_any', 'profile_title_any',
 			'post_new', 'post_reply_own', 'post_reply_any',
@@ -439,7 +437,6 @@ function banPermissions()
 			'post_new' => 'post_unapproved_topics',
 			'post_reply_own' => 'post_unapproved_replies_own',
 			'post_reply_any' => 'post_unapproved_replies_any',
-			'post_attachment' => 'post_unapproved_attachments',
 		);
 		call_integration_hook('integrate_warn_permissions', array($permission_change));
 		foreach ($permission_change as $old => $new)
@@ -960,7 +957,6 @@ function isAllowedTo($permission, $boards = null)
 
 	static $heavy_permissions = array(
 		'admin_forum',
-		'manage_attachments',
 		'manage_smileys',
 		'manage_boards',
 		'edit_news',
@@ -1209,10 +1205,9 @@ function spamProtection($error_type)
  * A generic function to create a pair of index.php and .htaccess files in a directory
  *
  * @param string $path the (absolute) directory path
- * @param boolean $attachments if the directory is an attachments directory or not
  * @return true on success error string if anything fails
  */
-function secureDirectory($path, $attachments = false)
+function secureDirectory($path)
 {
 	if (empty($path))
 		return 'empty_path';

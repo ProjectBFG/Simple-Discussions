@@ -1624,8 +1624,6 @@ function parse_path($path)
 		'\\' => '/',
 		'$boarddir' => $boarddir,
 		'$sourcedir' => $sourcedir,
-		'$avatardir' => $modSettings['avatar_directory'],
-		'$avatars_dir' => $modSettings['avatar_directory'],
 		'$themedir' => $settings['default_theme_dir'],
 		'$imagesdir' => $settings['default_theme_dir'] . '/' . basename($settings['default_images_url']),
 		'$themes_dir' => $boarddir . '/Themes',

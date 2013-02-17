@@ -255,7 +255,7 @@ function template_main()
 		echo '
 					<div id="postAdditionalOptionsHeader" class="title_bar">
 						<h4 class="titlebg">
-							<img id="postMoreExpand" class="panel_toggle" style="display: none;" src="', $settings['images_url'], '/collapse.png" alt="-" /> <strong><a href="#" id="postMoreExpandLink">', $context['can_post_attachment'] ? $txt['post_additionalopt_attach'] : $txt['post_additionalopt'], '</a></strong>
+							<img id="postMoreExpand" class="panel_toggle" style="display: none;" src="', $settings['images_url'], '/collapse.png" alt="-" /> <strong><a href="#" id="postMoreExpandLink">', $txt['post_additionalopt'], '</a></strong>
 						</h4>
 					</div>
 					<div id="postAdditionalOptions">';
@@ -273,107 +273,7 @@ function template_main()
 								', $context['can_announce'] && $context['is_first_post'] ? '<li><label for="check_announce"><input type="checkbox" name="announce_topic" id="check_announce" value="1" class="input_check" ' . (!empty($context['announce']) ? 'checked="checked" ' : '') . '/> ' . $txt['announce_topic'] . '</label></li>' : '', '
 								', $context['show_approval'] ? '<li><label for="approve"><input type="checkbox" name="approve" id="approve" value="2" class="input_check" ' . ($context['show_approval'] === 2 ? 'checked="checked"' : '') . ' /> ' . $txt['approve_this_post'] . '</label></li>' : '', '
 							</ul>
-						</div>';
-
-	// If this post already has attachments on it - give information about them.
-	if (!empty($context['current_attachments']))
-	{
-		echo '
-						<dl id="postAttachment">
-							<dt>
-								', $txt['attached'], ':
-							</dt>
-							<dd class="smalltext" style="width: 100%;">
-								<input type="hidden" name="attach_del[]" value="0" />
-								', $txt['uncheck_unwatchd_attach'], ':
-							</dd>';
-		foreach ($context['current_attachments'] as $attachment)
-			echo '
-							<dd class="smalltext">
-								<label for="attachment_', $attachment['id'], '"><input type="checkbox" id="attachment_', $attachment['id'], '" name="attach_del[]" value="', $attachment['id'], '"', empty($attachment['unchecked']) ? ' checked="checked"' : '', ' class="input_check" /> ', $attachment['name'], (empty($attachment['approved']) ? ' (' . $txt['awaiting_approval'] . ')' : ''),
-								!empty($modSettings['attachmentPostLimit']) || !empty($modSettings['attachmentSizeLimit']) ? sprintf($txt['attach_kb'], comma_format(round(max($attachment['size'], 1028) / 1028), 0)) : '', '</label>
-							</dd>';
-
-		echo '
-						</dl>';
-
-		if (!empty($context['files_in_session_warning']))
-			echo '
-						<div class="smalltext">', $context['files_in_session_warning'], '</div>';
-	}
-
-	// Is the user allowed to post any additional ones? If so give them the boxes to do it!
-	if ($context['can_post_attachment'])
-	{
-		echo '
-						<dl id="postAttachment2">';
-
-		// But, only show them if they haven't reached a limit. Or a mod author hasn't hidden them.
-		if ($context['num_allowed_attachments'] > 0 || !empty($context['dont_show_them']))
-		{
-			echo '
-							<dt>
-								', $txt['attach'], ':
-							</dt>
-							<dd class="smalltext">
-								', empty($modSettings['attachmentSizeLimit']) ? '' : ('<input type="hidden" name="MAX_FILE_SIZE" value="' . $modSettings['attachmentSizeLimit'] * 1028 . '" />'), '
-								<input type="file" size="60" multiple="multiple" name="attachment[]" id="attachment1" class="input_file" /> (<a href="javascript:void(0);" onclick="cleanFileInput(\'attachment1\');">', $txt['clean_attach'], '</a>)';
-
-			// Show more boxes if they aren't approaching that limit.
-			if ($context['num_allowed_attachments'] > 1)
-				echo '
-								<script type="text/javascript"><!-- // --><![CDATA[
-									var allowed_attachments = ', $context['num_allowed_attachments'], ';
-									var current_attachment = 1;
-
-									function addAttachment()
-									{
-										allowed_attachments = allowed_attachments - 1;
-										current_attachment = current_attachment + 1;
-										if (allowed_attachments <= 0)
-											return alert("', $txt['more_attachments_error'], '");
-
-										setOuterHTML(document.getElementById("moreAttachments"), \'<dd class="smalltext"><input type="file" size="60" name="attachment[]" id="attachment\' + current_attachment + \'" class="input_file" /> (<a href="javascript:void(0);" onclick="cleanFileInput(\\\'attachment\' + current_attachment + \'\\\');">', $txt['clean_attach'], '<\/a>)\' + \'<\/dd><dd class="smalltext" id="moreAttachments"><a href="#" onclick="addAttachment(); return false;">(', $txt['more_attachments'], ')<\' + \'/a><\' + \'/dd>\');
-
-										return true;
-									}
-								// ]]></script>
-							</dd>
-							<dd class="smalltext" id="moreAttachments"><a href="#" onclick="addAttachment(); return false;">(', $txt['more_attachments'], ')</a></dd>';
-			else
-				echo '
-							</dd>';
-		}
-
-		// Add any template changes for an alternative upload system here.
-		call_integration_hook('integrate_upload_template');
-
-		echo '
-							<dd class="smalltext">';
-
-		// Show some useful information such as allowed extensions, maximum size and amount of attachments allowed.
-		if (!empty($modSettings['attachmentCheckExtensions']))
-			echo '
-								', $txt['allowed_types'], ': ', $context['allowed_extensions'], '<br />';
-
-		if (!empty($context['attachment_restrictions']))
-			echo '
-								', $txt['attach_restrictions'], ' ', implode(', ', $context['attachment_restrictions']), '<br />';
-
-		if ($context['num_allowed_attachments'] == 0)
-			echo '
-								', $txt['attach_limit_nag'], '<br />';
-
-		if (!$context['can_post_attachment_unapproved'])
-			echo '
-								<span class="alert">', $txt['attachment_requires_approval'], '</span>', '<br />';
-
-		echo '
-							</dd>
-						</dl>';
-	}
-
-		echo '
+						</div>
 					</div>';
 	// If the admin enabled the drafts feature, show a draft selection box
 	if (!empty($modSettings['drafts_enabled']) && !empty($context['drafts']) && !empty($options['drafts_show_saved_enabled']))
@@ -646,8 +546,8 @@ function template_main()
 				aSwapLinks: [
 					{
 						sId: \'postMoreExpandLink\',
-						msgExpanded: ', JavaScriptEscape($context['can_post_attachment'] ? $txt['post_additionalopt_attach'] : $txt['post_additionalopt']), ',
-						msgCollapsed: ', JavaScriptEscape($context['can_post_attachment'] ? $txt['post_additionalopt_attach'] : $txt['post_additionalopt']), '
+						msgExpanded: ', JavaScriptEscape($txt['post_additionalopt']), ',
+						msgCollapsed: ', JavaScriptEscape($txt['post_additionalopt']), '
 					}
 				]
 			});';

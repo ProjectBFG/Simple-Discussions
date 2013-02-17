@@ -44,7 +44,7 @@ function AdminMain()
 	$admin_areas = array(
 		'forum' => array(
 			'title' => $txt['admin_main'],
-			'permission' => array('admin_forum', 'manage_permissions', 'moderate_forum', 'manage_membergroups', 'manage_bans', 'send_mail', 'edit_news', 'manage_boards', 'manage_smileys', 'manage_attachments'),
+			'permission' => array('admin_forum', 'manage_permissions', 'moderate_forum', 'manage_membergroups', 'manage_bans', 'send_mail', 'edit_news', 'manage_boards', 'manage_smileys'),
 			'areas' => array(
 				'index' => array(
 					'label' => $txt['admin_center'],
@@ -191,7 +191,7 @@ function AdminMain()
 		),
 		'layout' => array(
 			'title' => $txt['layout_controls'],
-			'permission' => array('manage_boards', 'admin_forum', 'manage_smileys', 'manage_attachments', 'moderate_forum'),
+			'permission' => array('manage_boards', 'admin_forum', 'manage_smileys', 'moderate_forum'),
 			'areas' => array(
 				'manageboards' => array(
 					'label' => $txt['admin_boards'],
@@ -251,20 +251,6 @@ function AdminMain()
 						'setorder' => array($txt['smileys_set_order'], 'enabled' => !empty($modSettings['smiley_enable'])),
 						'editicons' => array($txt['icons_edit_message_icons'], 'enabled' => !empty($modSettings['messageIcons_enable'])),
 						'settings' => array($txt['settings']),
-					),
-				),
-				'manageattachments' => array(
-					'label' => $txt['attachments_avatars'],
-					'file' => 'ManageAttachments.php',
-					'function' => 'ManageAttachments',
-					'icon' => 'attachment.png',
-					'permission' => array('manage_attachments'),
-					'subsections' => array(
-						'browse' => array($txt['attachment_manager_browse']),
-						'attachments' => array($txt['attachment_manager_settings']),
-						'avatars' => array($txt['attachment_manager_avatar_settings']),
-						'attachpaths' => array($txt['attach_directories']),
-						'maintenance' => array($txt['attachment_manager_maintenance']),
 					),
 				),
 			),
@@ -505,7 +491,7 @@ function AdminMain()
  * It prepares all the data necessary for the administration front page.
  * It uses the Admin template along with the admin sub template.
  * It requires the moderate_forum, manage_membergroups, manage_bans,
- *  admin_forum, manage_permissions, manage_attachments, manage_smileys,
+ *  admin_forum, manage_permissions, manage_smileys,
  *  manage_boards, edit_news, or send_mail permission.
  *  It uses the index administrative area.
  *  It can be found by going to ?action=admin.
@@ -515,7 +501,7 @@ function AdminHome()
 	global $sourcedir, $forum_version, $txt, $scripturl, $context, $user_info, $boardurl, $modSettings, $smcFunc;
 
 	// You have to be able to do at least one of the below to see this page.
-	isAllowedTo(array('admin_forum', 'manage_permissions', 'moderate_forum', 'manage_membergroups', 'manage_bans', 'send_mail', 'edit_news', 'manage_boards', 'manage_smileys', 'manage_attachments'));
+	isAllowedTo(array('admin_forum', 'manage_permissions', 'moderate_forum', 'manage_membergroups', 'manage_bans', 'send_mail', 'edit_news', 'manage_boards', 'manage_smileys'));
 
 	// Find all of this forum's administrators...
 	require_once($sourcedir . '/Subs-Membergroups.php');
@@ -723,7 +709,7 @@ function AdminSearchInternal()
 
 	// All the files we need to include.
 	$include_files = array(
-		'ManageSettings', 'ManageBoards', 'ManageNews', 'ManageAttachments', 'ManageMail', 'ManagePaid', 'ManagePermissions',
+		'ManageSettings', 'ManageBoards', 'ManageNews', 'ManageMail', 'ManagePaid', 'ManagePermissions',
 		'ManagePosts', 'ManageRegistration', 'ManageSearch', 'ManageSearchEngines', 'ManageServer', 'ManageSmileys', 'ManageLanguages',
 	);
 
@@ -738,8 +724,6 @@ function AdminSearchInternal()
 		array('ModifyModerationSettings', 'area=securitysettings;sa=moderation'),
 		array('ModifyGeneralModSettings', 'area=modsettings;sa=general'),
 		// Mod authors if you want to be "real freaking good" then add any setting pages for your mod BELOW this line!
-		array('ManageAttachmentSettings', 'area=manageattachments;sa=attachments'),
-		array('ManageAvatarSettings', 'area=manageattachments;sa=avatars'),
 		array('EditBoardSettings', 'area=manageboards;sa=settings'),
 		array('ModifyMailSettings', 'area=mailqueue;sa=settings'),
 		array('ModifyNewsSettings', 'area=news;sa=settings'),

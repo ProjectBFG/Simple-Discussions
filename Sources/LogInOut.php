@@ -48,8 +48,8 @@ function Login()
 		'name' => $txt['login'],
 	);
 
-	// Set the login URL - will be used when the login process is done (but careful not to send us to an attachment).
-	if (isset($_SESSION['old_url']) && strpos($_SESSION['old_url'], 'dlattach') === false && preg_match('~(board|topic)[=,]~', $_SESSION['old_url']) != 0)
+	// Set the login URL - will be used when the login process is done.
+	if (isset($_SESSION['old_url']) && preg_match('~(board|topic)[=,]~', $_SESSION['old_url']) != 0)
 		$_SESSION['login_url'] = $_SESSION['old_url'];
 	else
 		unset($_SESSION['login_url']);
@@ -134,8 +134,8 @@ function Login2()
 	$tk = validateToken('login');
 	spamProtection('login');
 
-	// Set the login_url if it's not already set (but careful not to send us to an attachment).
-	if ((empty($_SESSION['login_url']) && isset($_SESSION['old_url']) && strpos($_SESSION['old_url'], 'dlattach') === false && preg_match('~(board|topic)[=,]~', $_SESSION['old_url']) != 0) || (isset($_GET['quicklogin']) && isset($_SESSION['old_url']) && strpos($_SESSION['old_url'], 'login') === false))
+	// Set the login_url if it's not already set.
+	if ((empty($_SESSION['login_url']) && isset($_SESSION['old_url']) && preg_match('~(board|topic)[=,]~', $_SESSION['old_url']) != 0) || (isset($_GET['quicklogin']) && isset($_SESSION['old_url']) && strpos($_SESSION['old_url'], 'login') === false))
 		$_SESSION['login_url'] = $_SESSION['old_url'];
 
 	// Been guessing a lot, haven't we?

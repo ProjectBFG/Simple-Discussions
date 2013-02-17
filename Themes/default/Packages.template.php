@@ -425,10 +425,7 @@ function template_extract_package()
 				', $txt['package_uninstall_done'];
 	elseif ($context['install_finished'])
 	{
-		if ($context['extract_type'] == 'avatar')
-			echo '
-				', $txt['avatars_extracted'];
-		elseif ($context['extract_type'] == 'language')
+		if ($context['extract_type'] == 'language')
 			echo '
 				', $txt['language_extracted'];
 		else

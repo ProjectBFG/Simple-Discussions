@@ -155,9 +155,7 @@ function KickGuest()
 	loadLanguage('Login');
 	loadTemplate('Login');
 
-	// Never redirect to an attachment
-	if (strpos($_SERVER['REQUEST_URL'], 'dlattach') === false)
-		$_SESSION['login_url'] = $_SERVER['REQUEST_URL'];
+	$_SESSION['login_url'] = $_SERVER['REQUEST_URL'];
 
 	$context['sub_template'] = 'kick_guest';
 	$context['page_title'] = $txt['login'];

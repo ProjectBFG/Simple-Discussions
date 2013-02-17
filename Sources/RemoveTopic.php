@@ -448,14 +448,6 @@ function removeTopics($topics, $decreasePostCount = true, $ignoreRecycling = fal
 		);
 	}
 
-	// Get rid of the attachment, if it exists.
-	require_once($sourcedir . '/ManageAttachments.php');
-	$attachmentQuery = array(
-		'attachment_type' => 0,
-		'id_topic' => $topics,
-	);
-	removeAttachments($attachmentQuery, 'messages');
-
 	// Delete possible search index entries.
 	if (!empty($modSettings['search_custom_index_config']))
 	{
@@ -902,11 +894,9 @@ function removeMessage($message, $decreasePostCount = true)
 		if (!$row['approved'])
 			$smcFunc['db_query']('', '
 				DELETE FROM {db_prefix}approval_queue
-				WHERE id_msg = {int:id_msg}
-					AND id_attach = {int:id_attach}',
+				WHERE id_msg = {int:id_msg}',
 				array(
 					'id_msg' => $message,
-					'id_attach' => 0,
 				)
 			);
 	}
@@ -956,14 +946,6 @@ function removeMessage($message, $decreasePostCount = true)
 					)
 				);
 		}
-
-		// Delete attachment(s) if they exist.
-		require_once($sourcedir . '/ManageAttachments.php');
-		$attachmentQuery = array(
-			'attachment_type' => 0,
-			'id_msg' => $message,
-		);
-		removeAttachments($attachmentQuery);
 
 		// Allow mods to remove message related data of their own (likes, maybe?)
 		call_integration_hook('integrate_remove_message', array($message));

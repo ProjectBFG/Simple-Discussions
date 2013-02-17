@@ -76,13 +76,6 @@ if (isset($_GET['scheduled']))
 	AutoTask();
 }
 
-// Displaying attached avatars
-elseif (isset($_GET['action']) && $_GET['action'] == 'dlattach' && isset($_GET['type']) && $_GET['type'] == 'avatar')
-{
-  require_once($sourcedir. '/Avatar.php');
-  showAvatar();
-}
-
 // And important includes.
 require_once($sourcedir . '/Session.php');
 require_once($sourcedir . '/Errors.php');
@@ -143,8 +136,7 @@ function smf_main()
 	// Load the current user's permissions.
 	loadPermissions();
 
-	// Attachments don't require the entire theme to be loaded.
-	if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'dlattach' && (!empty($modSettings['allow_guestAccess']) && $user_info['is_guest']))
+	if (!empty($modSettings['allow_guestAccess']) && $user_info['is_guest'])
 		detectBrowser();
 	// Load the current theme.  (note that ?theme=1 will also work, may be used for guest theming.)
 	else
@@ -157,9 +149,9 @@ function smf_main()
 	if (!empty($topic) && empty($board_info['cur_topic_approved']) && !allowedTo('approve_posts') && ($user_info['id'] != $board_info['cur_topic_starter'] || $user_info['is_guest']))
 		fatal_lang_error('not_a_topic', false);
 
-	$no_stat_actions = array('dlattach', 'findmember', 'jsoption', 'requestmembers', 'smstats', '.xml', 'xmlhttp', 'verificationcode', 'viewquery', 'viewsmfile');
+	$no_stat_actions = array('findmember', 'jsoption', 'requestmembers', 'smstats', '.xml', 'xmlhttp', 'verificationcode', 'viewquery', 'viewsmfile');
 	call_integration_hook('integrate_pre_log_stats', array($no_stat_actions));
-	// Do some logging, unless this is an attachment, avatar, toggle of editor buttons, theme option, XML feed etc.
+	// Do some logging, unless this is toggle of editor buttons, theme option, XML feed etc.
 	if (empty($_REQUEST['action']) || !in_array($_REQUEST['action'], $no_stat_actions))
 	{
 		// Log this user as online.
@@ -229,7 +221,6 @@ function smf_main()
 		'activate' => array('Register.php', 'Activate'),
 		'admin' => array('Admin.php', 'AdminMain'),
 		'announce' => array('Post.php', 'AnnounceTopic'),
-		'attachapprove' => array('ManageAttachments.php', 'ApproveAttach'),
 		'blog' => array('Blog.php', 'BlogMain'),
 		'buddy' => array('Subs-Members.php', 'BuddyListToggle'),
 		'collapse' => array('BoardIndex.php', 'CollapseCategory'),
@@ -237,7 +228,6 @@ function smf_main()
 		'credits' => array('Who.php', 'Credits'),
 		'deletemsg' => array('RemoveTopic.php', 'DeleteMessage'),
 		'disregardtopic' => array('Notify.php', 'TopicDisregard'),
-		'dlattach' => array('Display.php', 'Download'),
 		'editpoll' => array('Poll.php', 'EditPoll'),
 		'editpoll2' => array('Poll.php', 'EditPoll2'),
 		'emailuser' => array('SendTopic.php', 'EmailUser'),

@@ -187,15 +187,7 @@ function template_main()
 		// Show a link to the member's profile.
 		echo '
 										<a href="', $scripturl, '?action=profile;u=', $message['member']['id'], '">
-											<span style="padding: 6px; display: block;">', $message['member']['name'], '</span>';
-
-		// Show avatars, images, etc.?
-		if (!empty($settings['show_user_images']) && empty($options['show_no_avatars']) && !empty($message['member']['avatar']['image']))
-			echo '
-
-											', $message['member']['avatar']['image'], '';
-
-			echo '
+											<span style="padding: 6px; display: block;">', $message['member']['name'], '</span>
 										</a>
 									</h4>';
 
@@ -418,85 +410,7 @@ function template_main()
 								</div>';
 		echo '
 								<div class="inner" id="msg_', $message['id'], '"', $ignoring ? ' style="display:none;"' : '', '>', $message['body'], '</div>
-							</div>';
-
-		// Assuming there are attachments...
-		if (!empty($message['attachment']))
-		{
-			echo '
-							<div id="msg_', $message['id'], '_footer" class="attachments"', $ignoring ? ' style="display:none;"' : '', '>';
-
-			$last_approved_state = 1;
-			$attachments_per_line = 4;
-			$i = 0;
-
-			foreach ($message['attachment'] as $attachment)
-			{
-				// Show a special box for unapproved attachments...
-				if ($attachment['is_approved'] != $last_approved_state)
-				{
-					$last_approved_state = 0;
-					echo '
-								<fieldset>
-									<legend>', $txt['attach_awaiting_approve'];
-
-					if ($context['can_approve'])
-						echo '
-										&nbsp;[<a href="', $scripturl, '?action=attachapprove;sa=all;mid=', $message['id'], ';', $context['session_var'], '=', $context['session_id'], '">', $txt['approve_all'], '</a>]';
-
-					echo '
-									</legend>';
-				}
-
-				echo '
-									<div class="floatleft">';
-
-				if ($attachment['is_image'])
-				{
-						echo '
-										<div class="attachments_top">';
-
-					if ($attachment['thumbnail']['has_thumb'])
-						echo '
-											<a href="', $attachment['href'], ';image" id="link_', $attachment['id'], '" onclick="', $attachment['thumbnail']['javascript'], '"><img src="', $attachment['thumbnail']['href'], '" alt="" id="thumb_', $attachment['id'], '" /></a>';
-					else
-						echo '
-											<img src="' . $attachment['href'] . ';image" alt="" width="' . $attachment['width'] . '" height="' . $attachment['height'] . '"/>';
-
-						echo '
-										</div>';
-				}
-
-				echo '
-										<div class="attachments_bot">
-											<a href="' . $attachment['href'] . '"><img src="' . $settings['images_url'] . '/icons/clip.png" class="centericon" alt="*" />&nbsp;' . $attachment['name'] . '</a> ';
-
-				if (!$attachment['is_approved'] && $context['can_approve'])
-					echo '
-											[<a href="', $scripturl, '?action=attachapprove;sa=approve;aid=', $attachment['id'], ';', $context['session_var'], '=', $context['session_id'], '">', $txt['approve'], '</a>]&nbsp;|&nbsp;[<a href="', $scripturl, '?action=attachapprove;sa=reject;aid=', $attachment['id'], ';', $context['session_var'], '=', $context['session_id'], '">', $txt['delete'], '</a>] ';
-				echo '
-											<br />', $attachment['size'], ($attachment['is_image'] ? ', ' . $attachment['real_width'] . 'x' . $attachment['real_height'] . '<br />' . sprintf($txt['attach_viewed'], $attachment['downloads']) : '<br />' . sprintf($txt['attach_downloaded'], $attachment['downloads'])), '
-										</div>';
-
-				echo '
-									</div>';
-
-				// Next attachment line ?
-				if (++$i % $attachments_per_line === 0)
-					echo '
-									<hr />';
-			}
-
-			// If we had unapproved attachments clean up.
-			if ($last_approved_state == 0)
-				echo '
-								</fieldset>';
-
-			echo '
-							</div>';
-		}
-
-		echo '
+							</div>
 						</div>';
 
 		// Show the quickbuttons, for various operations on posts.

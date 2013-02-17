@@ -25,7 +25,7 @@ if (!defined('SMF'))
  *   - changes author of messages, topics and polls to guest authors.
  *   - removes all log entries concerning the deleted members, except the
  * error logs, ban logs and moderation logs.
- *   - removes these members' personal messages (only the inbox), avatars,
+ *   - removes these members' personal messages (only the inbox),
  * ban entries, theme settings, moderator positions, poll votes
  *   - updates member statistics afterwards.
  *
@@ -328,10 +328,6 @@ function deleteMembers($users, $check_not_admin = false)
 		)
 	);
 
-	// Delete avatar.
-	require_once($sourcedir . '/ManageAttachments.php');
-	removeAttachments(array('id_member' => $users));
-
 	// It's over, no more moderation for you.
 	$smcFunc['db_query']('', '
 		DELETE FROM {db_prefix}moderators
@@ -594,7 +590,6 @@ function registerMember(&$regOptions, $return_errors = false)
 		'location' => '',
 		'time_format' => '',
 		'signature' => '',
-		'avatar' => '',
 		'usertitle' => '',
 		'secret_question' => '',
 		'secret_answer' => '',
