@@ -659,7 +659,7 @@ dl.settings dt a img {
 }
 img#newsupshrink, img.panel_toggle, img#quickReplyExpand {
 	float: right;
-	margin: 0;
+	margin: 10px 0px 0px 0px;
 	padding: 4px 4px 0 4px;
 }
 table.table_list a.unreadlink, table.table_list a.collapse {
@@ -3683,4 +3683,9 @@ ul.dropdown-menu a.active
 }
 .nav-pills .dropdown-menu {
  margin-top: 0px;
+}
+.tiptop
+{
+	margin-bottom: 10px;
+	margin-top: 10px;
 }
