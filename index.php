@@ -136,10 +136,10 @@ function smf_main()
 	// Load the current user's permissions.
 	loadPermissions();
 
-	if (!empty($modSettings['allow_guestAccess']) && $user_info['is_guest'])
-		detectBrowser();
+	// if (!empty($modSettings['allow_guestAccess']) && $user_info['is_guest'])
+		// detectBrowser();
 	// Load the current theme.  (note that ?theme=1 will also work, may be used for guest theming.)
-	else
+	// else
 		loadTheme();
 
 	// Check if the user should be disallowed access.
