@@ -368,63 +368,6 @@ function template_main()
 	// Show breadcrumbs at the bottom too.
 	theme_linktree();
 
-	echo '
-	<div class="tborder" id="topic_icons">
-		<div class="description">
-			<p class="floatright" id="message_index_jump_to">&nbsp;</p>';
-
-	if (!$context['no_topic_listing'])
-		echo '
-			<p class="floatleft">', !empty($modSettings['enableParticipation']) && $context['user']['is_logged'] ? '
-				<img src="' . $settings['images_url'] . '/icons/profile_sm.png" alt="" class="centericon" /> ' . $txt['participation_caption'] . '<br />' : '', '
-				'. ($modSettings['pollMode'] == '1' ? '<img src="' . $settings['images_url'] . '/topic/normal_poll.png" alt="" class="centericon" /> ' . $txt['poll'] : '') . '
-			</p>
-			<p>
-				<img src="' . $settings['images_url'] . '/icons/quick_lock.png" alt="" class="centericon" /> ' . $txt['locked_topic'] . '<br />' . ($modSettings['enableStickyTopics'] == '1' ? '
-				<img src="' . $settings['images_url'] . '/icons/quick_sticky.png" alt="" class="centericon" /> ' . $txt['sticky_topic'] . '<br />' : '') . '
-			</p>';
-
-	echo '
-			<script type="text/javascript"><!-- // --><![CDATA[';
-
-	if (!empty($context['can_quick_mod']) && $options['display_quick_mod'] == 1 && !empty($context['topics']) && $context['can_move'])
-		echo '
-				if (typeof(window.XMLHttpRequest) != "undefined")
-					aJumpTo[aJumpTo.length] = new JumpTo({
-						sContainerId: "quick_mod_jump_to",
-						sClassName: "qaction",
-						sJumpToTemplate: "%dropdown_list%",
-						iCurBoardId: ', $context['current_board'], ',
-						iCurBoardChildLevel: ', $context['jump_to']['child_level'], ',
-						sCurBoardName: "', $context['jump_to']['board_name'], '",
-						sBoardChildLevelIndicator: "==",
-						sBoardPrefix: "=> ",
-						sCatSeparator: "-----------------------------",
-						sCatPrefix: "",
-						bNoRedirect: true,
-						bDisabled: true,
-						sCustomName: "move_to"
-					});';
-
-	echo '
-				if (typeof(window.XMLHttpRequest) != "undefined")
-					aJumpTo[aJumpTo.length] = new JumpTo({
-						sContainerId: "message_index_jump_to",
-						sJumpToTemplate: "<label class=\"smalltext\" for=\"%select_id%\">', $context['jump_to']['label'], ':<" + "/label> %dropdown_list%",
-						iCurBoardId: ', $context['current_board'], ',
-						iCurBoardChildLevel: ', $context['jump_to']['child_level'], ',
-						sCurBoardName: "', $context['jump_to']['board_name'], '",
-						sBoardChildLevelIndicator: "==",
-						sBoardPrefix: "=> ",
-						sCatSeparator: "-----------------------------",
-						sCatPrefix: "",
-						sGoButtonLabel: "', $txt['quick_mod_go'], '"
-					});
-			// ]]></script>
-			<br class="clear" />
-		</div>
-	</div>';
-
 	// Javascript for inline editing.
 	echo '
 <script type="text/javascript" src="', $settings['default_theme_url'], '/scripts/topic.js"></script>

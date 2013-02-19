@@ -541,10 +541,6 @@ function template_main()
 	echo '
 			<div id="moderationbuttons">', template_button_strip($context['mod_buttons'], 'bottom', array('id' => 'moderationbuttons_strip')), '</div>';
 
-	// Show the jumpto box, or actually...let Javascript do it.
-	echo '
-			<div class="plainbox" id="display_jump_to">&nbsp;</div>';
-
 	if ($context['can_reply'] && !empty($options['display_quick_reply']))
 	{
 		echo '
@@ -748,19 +744,6 @@ function template_main()
 							sTemplateTopSubject: ', JavaScriptEscape($txt['topic'] . ': %subject% &nbsp;(' . $context['num_views_text'] . ')'), ',
 							sErrorBorderStyle: ', JavaScriptEscape('1px solid red'), ($context['can_reply'] && !empty($options['display_quick_reply'])) ? ',
 							sFormRemoveAccessKeys: \'postmodify\'' : '', '
-						});
-
-						aJumpTo[aJumpTo.length] = new JumpTo({
-							sContainerId: "display_jump_to",
-							sJumpToTemplate: "<label class=\"smalltext\" for=\"%select_id%\">', $context['jump_to']['label'], ':<" + "/label> %dropdown_list%",
-							iCurBoardId: ', $context['current_board'], ',
-							iCurBoardChildLevel: ', $context['jump_to']['child_level'], ',
-							sCurBoardName: "', $context['jump_to']['board_name'], '",
-							sBoardChildLevelIndicator: "==",
-							sBoardPrefix: "=> ",
-							sCatSeparator: "-----------------------------",
-							sCatPrefix: "",
-							sGoButtonLabel: "', $txt['go'], '"
 						});
 
 						aIconLists[aIconLists.length] = new IconList({
