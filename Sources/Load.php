@@ -1514,14 +1514,14 @@ function loadTheme($id_theme = 0, $initialize = true)
 	// Output is fully XML, so no need for the index template.
 	if (isset($_REQUEST['xml']))
 	{
-		loadLanguage('index+Modifications');
+		loadLanguage('index+Modifications+Blog');
 		loadTemplate('Xml');
 		$context['template_layers'] = array();
 	}
 	// These actions don't require the index template at all.
 	elseif (!empty($_REQUEST['action']) && in_array($_REQUEST['action'], $simpleActions))
 	{
-		loadLanguage('index+Modifications');
+		loadLanguage('index+Modifications+Blog');
 		$context['template_layers'] = array();
 	}
 	else
