@@ -137,7 +137,7 @@ function template_generic_menu_dropdown_above()
 			$li_class = 'dropdown active';
 			
 		echo '
-			<li', !empty($li_class) ? ' class="' . $li_class . '"' : '', '><a ', !empty($section['areas']) ? 'class="dropdown-toggle" role="button" data-toggle="dropdown"' : '' ,' href="', $section['url'], $menu_context['extra_parameters'], '">', $section['title'], '</a>
+			<li', !empty($li_class) ? ' class="' . $li_class . '"' : '', '><a ', !empty($section['areas']) ? 'class="dropdown-toggle disabled" role="button" data-toggle="dropdown"' : '' ,' href="', $section['url'], $menu_context['extra_parameters'], '">', $section['title'], '</a>
 				<ul class="dropdown-menu" role="menu">';
 
 		// For every area of this section show a link to that area (bold if it's currently selected.)
@@ -193,15 +193,12 @@ function template_generic_menu_dropdown_above()
 	</ul>
 </div>
 <script>
-jQuery(\'#admin_menu ul.nav li.dropdown\').hover(function() {
-  jQuery(this).find(\'.dropdown-menu\').stop(true, true).fadeIn(50);
+jQuery(\'ul.nav li.dropdown\').hover(function() {
+	jQuery(this).closest(\'.dropdown-menu\').stop(true, true).show();
+	jQuery(this).addClass(\'open\');
 }, function() {
-  jQuery(this).find(\'.dropdown-menu\').stop(true, true).fadeOut(50);
-});
-jQuery(\'#admin_menu ul.nav li.dropdown ul.dropdown-menu li.dropdown-submenu\').hover(function() {
-  jQuery(this).find(\'.dropdown-menu\').stop(true, true).show();
-}, function() {
-  jQuery(this).find(\'.dropdown-menu\').stop(true, true).hide();
+	jQuery(this).closest(\'.dropdown-menu\').stop(true, true).hide();
+	jQuery(this).removeClass(\'open\');
 });
 </script>';
 

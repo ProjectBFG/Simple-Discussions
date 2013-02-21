@@ -286,9 +286,9 @@ function template_menu()
 	// Note: Menu markup has been cleaned up to remove unnecessary spans and classes.
 	foreach ($context['menu_buttons'] as $act => $button)
 	{
-		if ($button['active_button'])
+		if ($button['active_button'] && empty($button['sub_buttons']))
 			$li_class = 'active';
-		elseif (!empty($button['sub_buttons']))
+		elseif (!empty($button['sub_buttons']) && !$button['active_button'])
 			$li_class = 'dropdown';
 		elseif ($button['active_button'] && !empty($button['sub_buttons']))
 			$li_class = 'active dropdown';
@@ -325,9 +325,11 @@ function template_menu()
 			</ul>
 			<script>
 				jQuery(\'ul.nav li.dropdown\').hover(function() {
-				  jQuery(this).find(\'.dropdown-menu\').stop(true, true).fadeIn(50);
+					jQuery(this).closest(\'.dropdown-menu\').stop(true, true).show();
+					jQuery(this).addClass(\'open\');
 				}, function() {
-				  jQuery(this).find(\'.dropdown-menu\').stop(true, true).fadeOut(50);
+					jQuery(this).closest(\'.dropdown-menu\').stop(true, true).hide();
+					jQuery(this).removeClass(\'open\');
 				});
 			</script>';
 }
