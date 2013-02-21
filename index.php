@@ -20,7 +20,7 @@
  * @version 2.1 Alpha 1
  */
 
-$forum_version = 'ProjectBFG 0.1 Alpha 1';
+$forum_version = 'ProjectGLS 0.1 Alpha 1';
 
 // Get everything started up...
 define('SMF', 1);
