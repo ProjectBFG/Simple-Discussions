@@ -182,19 +182,26 @@ function template_body_above()
 						<form class="navbar-search pull-right" action="', $scripturl, '?action=search2" method="post" accept-charset="', $context['character_set'], '">
 							<input type="text" name="search" placeholder="', $txt['search'], '" />
 						</form>
-						<ul class="nav">
-							<li class="active"><a href="',$scripturl, '">Home</a></li>
-							<li><a href="',$scripturl, '?action=blog">Blog</a></li>
-							<li><a href="',$scripturl, '?action=gallery">Gallery</a></li>
-						</ul>
+						', template_menu(), '
 					</div>
 				</div>
 			</div>
 		</div>
-		<div class="container-fluid">
-			<div class="row-fluid">';
-				template_menu();
-				theme_linktree();
+		<div id="mainpage">
+			<div id="leftside" class="span3 pull-left">
+				<div id="index">
+					<div id="partial">
+						<div id="date">', $context['current_time'], '</div>
+						<ul class="entrylist">';
+			for ($i=1;$i<=50;$i++)
+				echo '
+							<li>topic ', $i, '</li>';
+			echo '
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div id="rightside" class="offset2">';
 }
 
 function template_body_below()
@@ -204,10 +211,8 @@ function template_body_below()
 	echo '
 			</div>
 			<hr />
-			<footer>
-				<p>', theme_copyright(), '</p>
-			</footer>
-		</div>';
+			<div id="footer">
+				', theme_copyright(), '';
 }
 
 function template_html_below()
@@ -218,6 +223,8 @@ function template_html_below()
 	template_javascript(true);
 
 	echo '
+			</div>
+		</div>
 	<script src="', $settings['theme_url'], '/scripts/bootstrap.min.js"></script>
 </body>
 </html>';
@@ -281,11 +288,12 @@ function template_menu()
 	global $context, $settings, $options, $scripturl, $txt;
 
 	echo '
-			<ul class="nav nav-pills" id="dropdown_main_menu">';
+			<ul class="nav">';
 
 	// Note: Menu markup has been cleaned up to remove unnecessary spans and classes.
 	foreach ($context['menu_buttons'] as $act => $button)
 	{
+
 		if ($button['active_button'] && empty($button['sub_buttons']))
 			$li_class = 'active';
 		elseif (!empty($button['sub_buttons']) && !$button['active_button'])
@@ -294,12 +302,14 @@ function template_menu()
 			$li_class = 'active dropdown';
 		else
 			$li_class = '';
-		
+
 		echo '
-				<li', $li_class ? ' class="' . $li_class . '"' : '', '>
-					<a', !empty($button['sub_buttons']) ? ' class="dropdown-toggle disabled" role="button" data-toggle="dropdown"' : '' ,' href="', $button['href'], '" ', isset($button['target']) ? 'target="' . $button['target'] . '"' : '', '>
-						', $button['title'], '
+				<li', !empty($li_class) ? ' class="' . $li_class . '"' : '', '>
+					<a', !empty($button['sub_buttons']) ? ' class="dropdown-toggle disabled" data-toggle="dropdown"' : '' , ' href="', $button['href'], '" ', isset($button['target']) ? 'target="' . $button['target'] . '"' : '', '>
+						', $button['title'], !empty($button['sub_buttons']) ? '
+						<b class="caret"></b>' : '' , '
 					</a>';
+
 		if (!empty($button['sub_buttons']))
 		{
 			echo '

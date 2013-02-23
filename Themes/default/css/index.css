@@ -3677,15 +3677,76 @@ ul.dropdown-menu a.active
 	font-weight: bold;
 }
 
-#admincenter h3.catbg
-{
-	margin-left: 5px;
+
+.nav-pills .dropdown-menu, .navbar .dropdown-menu {
+	margin-top: 0px;
 }
-.nav-pills .dropdown-menu {
- margin-top: 0px;
-}
-.tiptop
-{
+
+.tiptop {
 	margin-bottom: 10px;
 	margin-top: 10px;
+}
+
+#mainpage {
+	padding-top: 60px;
+	width: 100%;
+	overflow: hidden;
+}
+
+#leftside {
+	display: block;
+	margin: 0;
+	padding: 0;
+	margin-left: 15px;
+}
+
+#rightside {
+	display: block;
+	margin-top: 30px;
+	min-height: 500px;
+}
+
+.entrylist {
+	margin:0px;	
+	line-height: 24px;
+}
+
+.entrylist li {	
+	list-style-type:none;
+	display:list-item;
+	display:block;	
+	width: 230px;
+	padding: 0px 15px 0px 13px;
+}
+
+#index {
+	width: 190px;
+	float: left;
+	position:fixed;
+	top:50px;
+	margin-bottom:0;
+	bottom:0;
+	z-index: 10;
+}
+
+#partial {
+	position:absolute;
+	bottom:0;
+	top:0;
+	right:0;
+	overflow-y:scroll;
+	overflow-x:hidden;
+	width:100%;
+	padding-right:3px;
+}
+
+#leftside #date{
+	text-align: center;
+}
+
+#footer {
+	text-align: center;
+	margin: 10px 10px 10px 10px;
+	font-size:9px;
+	
 }
