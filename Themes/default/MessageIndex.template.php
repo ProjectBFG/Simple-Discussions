@@ -365,9 +365,6 @@ function template_main()
 	</div>';
 	}
 
-	// Show breadcrumbs at the bottom too.
-	theme_linktree();
-
 	// Javascript for inline editing.
 	echo '
 <script type="text/javascript" src="', $settings['default_theme_url'], '/scripts/topic.js"></script>

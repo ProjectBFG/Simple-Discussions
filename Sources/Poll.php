@@ -562,16 +562,6 @@ function EditPoll()
 	}
 	$context['page_title'] = $context['is_edit'] ? $txt['poll_edit'] : $txt['add_poll'];
 
-	// Build the link tree.
-	censorText($pollinfo['subject']);
-	$context['linktree'][] = array(
-		'url' => $scripturl . '?topic=' . $topic . '.0',
-		'name' => $pollinfo['subject'],
-	);
-	$context['linktree'][] = array(
-		'name' => $context['page_title'],
-	);
-
 	// Register this form in the session variables.
 	checkSubmitOnce('register');
 }

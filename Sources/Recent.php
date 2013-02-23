@@ -106,11 +106,6 @@ function RecentPosts()
 
 			if (empty($name))
 				fatal_lang_error('no_access', false);
-
-			$context['linktree'][] = array(
-				'url' => $scripturl . '#c' . (int) $_REQUEST['c'],
-				'name' => $name
-			);
 		}
 
 		$request = $smcFunc['db_query']('', '
@@ -227,11 +222,6 @@ function RecentPosts()
 		// @todo This isn't accurate because we ignore the recycle bin.
 		$context['page_index'] = constructPageIndex($scripturl . '?action=recent', $_REQUEST['start'], min(100, $modSettings['totalMessages']), 10, false);
 	}
-
-	$context['linktree'][] = array(
-		'url' => $scripturl . '?action=recent' . (empty($board) ? (empty($_REQUEST['c']) ? '' : ';c=' . (int) $_REQUEST['c']) : ';board=' . $board . '.0'),
-		'name' => $context['page_title']
-	);
 
 	$key = 'recent-' . $user_info['id'] . '-' . md5(serialize(array_diff_key($query_parameters, array('max_id_msg' => 0)))) . '-' . (int) $_REQUEST['start'];
 	if (empty($modSettings['cache_enable']) || ($messages = cache_get_data($key, 120)) == null)
@@ -626,24 +616,9 @@ function UnreadTopics()
 		);
 		list ($name) = $smcFunc['db_fetch_row']($request);
 		$smcFunc['db_free_result']($request);
-
-		$context['linktree'][] = array(
-			'url' => $scripturl . '#c' . (int) $_REQUEST['c'][0],
-			'name' => $name
-		);
 	}
 
-	$context['linktree'][] = array(
-		'url' => $scripturl . '?action=' . $_REQUEST['action'] . sprintf($context['querystring_board_limits'], 0) . $context['querystring_sort_limits'],
-		'name' => $_REQUEST['action'] == 'unread' ? $txt['unread_topics_visit'] : $txt['unread_replies']
-	);
-
-	if ($context['showing_all_topics'])
-		$context['linktree'][] = array(
-			'url' => $scripturl . '?action=' . $_REQUEST['action'] . ';all' . sprintf($context['querystring_board_limits'], 0) . $context['querystring_sort_limits'],
-			'name' => $txt['unread_topics_all']
-		);
-	else
+	if (!$context['showing_all_topics'])
 		$txt['unread_topics_visit_none'] = strtr($txt['unread_topics_visit_none'], array('?action=unread;all' => '?action=unread;all' . sprintf($context['querystring_board_limits'], 0) . $context['querystring_sort_limits']));
 
 	loadTemplate('Recent');

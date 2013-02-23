@@ -129,11 +129,6 @@ function PackageInstallTest()
 
 	$context['uninstalling'] = $_REQUEST['sa'] == 'uninstall';
 
-	// Change our last link tree item for more information on this Packages area.
-	$context['linktree'][count($context['linktree']) - 1] = array(
-		'url' => $scripturl . '?action=admin;area=packages;sa=browse',
-		'name' => $context['uninstalling'] ? $txt['package_uninstall_actions'] : $txt['install_actions']
-	);
 	$context['page_title'] .= ' - ' . ($context['uninstalling'] ? $txt['package_uninstall_actions'] : $txt['install_actions']);
 
 	$context['sub_template'] = 'view_package';
@@ -780,12 +775,7 @@ function PackageInstall()
 	// @todo Perhaps do it in steps, if necessary?
 
 	$context['uninstalling'] = $_REQUEST['sa'] == 'uninstall2';
-
-	// Set up the linktree for other.
-	$context['linktree'][count($context['linktree']) - 1] = array(
-		'url' => $scripturl . '?action=admin;area=packages;sa=browse',
-		'name' => $context['uninstalling'] ? $txt['uninstall'] : $txt['extracting']
-	);
+	
 	$context['page_title'] .= ' - ' . ($context['uninstalling'] ? $txt['uninstall'] : $txt['extracting']);
 
 	$context['sub_template'] = 'extract_package';
@@ -1217,11 +1207,7 @@ function PackageList()
 	// No package?  Show him or her the door.
 	if (!isset($_REQUEST['package']) || $_REQUEST['package'] == '')
 		redirectexit('action=admin;area=packages');
-
-	$context['linktree'][] = array(
-		'url' => $scripturl . '?action=admin;area=packages;sa=list;package=' . $_REQUEST['package'],
-		'name' => $txt['list_file']
-	);
+		
 	$context['page_title'] .= ' - ' . $txt['list_file'];
 	$context['sub_template'] = 'list';
 
@@ -1265,10 +1251,6 @@ function ExamineFile()
 		obExit(false);
 	}
 
-	$context['linktree'][count($context['linktree']) - 1] = array(
-		'url' => $scripturl . '?action=admin;area=packages;sa=list;package=' . $_REQUEST['package'],
-		'name' => $txt['package_examine_file']
-	);
 	$context['page_title'] .= ' - ' . $txt['package_examine_file'];
 	$context['sub_template'] = 'examine';
 

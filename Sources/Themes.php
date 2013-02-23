@@ -944,12 +944,6 @@ function PickTheme()
 	loadLanguage('Profile');
 	loadTemplate('Themes');
 
-	// Build the link tree.
-	$context['linktree'][] = array(
-		'url' => $scripturl . '?action=theme;sa=pick;u=' . (!empty($_REQUEST['u']) ? (int) $_REQUEST['u'] : 0),
-		'name' => $txt['theme_pick'],
-	);
-
 	$_SESSION['id_theme'] = 0;
 
 	if (isset($_GET['id']))

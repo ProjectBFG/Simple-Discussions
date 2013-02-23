@@ -50,12 +50,6 @@ function PlushSearch1()
 	// Check the user's permissions.
 	isAllowedTo('search_posts');
 
-	// Link tree....
-	$context['linktree'][] = array(
-		'url' => $scripturl . '?action=search',
-		'name' => $txt['search']
-	);
-
 	// This is hard coded maximum string length.
 	$context['search_string_limit'] = 100;
 
@@ -953,16 +947,6 @@ function PlushSearch2()
 		// Base64 encode, then replace +/= with uri safe ones that can be reverted
 		$context['params'] = str_replace(array('+', '/', '='), array('-', '_', '.'), base64_encode($params));
 	}
-
-	// ... and add the links to the link tree.
-	$context['linktree'][] = array(
-		'url' => $scripturl . '?action=search;params=' . $context['params'],
-		'name' => $txt['search']
-	);
-	$context['linktree'][] = array(
-		'url' => $scripturl . '?action=search2;params=' . $context['params'],
-		'name' => $txt['search_results']
-	);
 
 	// *** A last error check
 	call_integration_hook('integrate_search_errors');

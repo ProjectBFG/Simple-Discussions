@@ -51,11 +51,6 @@ function Groups()
 	else
 	{
 		isAllowedTo('view_mlist');
-
-		$context['linktree'][] = array(
-			'url' => $scripturl . '?action=groups',
-			'name' => $txt['groups'],
-		);
 	}
 
 	// Call the actual function.
@@ -243,10 +238,6 @@ function MembergroupMembers()
 	$context['group']['icons'] = !empty($context['group']['icons'][0]) && !empty($context['group']['icons'][1]) ? str_repeat('<img src="' . $settings['images_url'] . '/' . $context['group']['icons'][1] . '" alt="*" />', $context['group']['icons'][0]) : '';
 	$context['group']['can_moderate'] = allowedTo('manage_membergroups') && (allowedTo('admin_forum') || $context['group']['group_type'] != 1);
 
-	$context['linktree'][] = array(
-		'url' => $scripturl . '?action=groups;sa=members;group=' . $context['group']['id'],
-		'name' => $context['group']['name'],
-	);
 	$context['can_send_email'] = allowedTo('send_email_to_members');
 
 	// Load all the group moderators, for fun.

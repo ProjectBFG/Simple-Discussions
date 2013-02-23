@@ -42,12 +42,6 @@ function Login()
 	$context['default_password'] = '';
 	$context['never_expire'] = false;
 
-	// Add the login chain to the link tree.
-	$context['linktree'][] = array(
-		'url' => $scripturl . '?action=login',
-		'name' => $txt['login'],
-	);
-
 	// Set the login URL - will be used when the login process is done.
 	if (isset($_SESSION['old_url']) && preg_match('~(board|topic)[=,]~', $_SESSION['old_url']) != 0)
 		$_SESSION['login_url'] = $_SESSION['old_url'];
@@ -159,12 +153,6 @@ function Login2()
 	$context['never_expire'] = $modSettings['cookieTime'] == 525600 || $modSettings['cookieTime'] == 3153600;
 	$context['login_errors'] = array($txt['error_occured']);
 	$context['page_title'] = $txt['login'];
-
-	// Add the login chain to the link tree.
-	$context['linktree'][] = array(
-		'url' => $scripturl . '?action=login',
-		'name' => $txt['login'],
-	);
 
 	// You forgot to type your username, dummy!
 	if (!isset($_POST['user']) || $_POST['user'] == '')

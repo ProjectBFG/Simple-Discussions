@@ -470,12 +470,6 @@ function Display()
 			$context['page_index'] .= '&nbsp;<a href="' . $scripturl . '?topic=' . $topic . '.0;all">' . $txt['all'] . '</a> ';
 	}
 
-	// Build the link tree.
-	$context['linktree'][] = array(
-		'url' => $scripturl . '?topic=' . $topic . '.0',
-		'name' => $topicinfo['subject'],
-	);
-
 	// Build a list of this board's moderators.
 	$context['moderators'] = &$board_info['moderators'];
 	$context['link_moderators'] = array();
@@ -484,9 +478,6 @@ function Display()
 		// Add a link for each moderator...
 		foreach ($board_info['moderators'] as $mod)
 			$context['link_moderators'][] = '<a href="' . $scripturl . '?action=profile;u=' . $mod['id'] . '" title="' . $txt['board_moderator'] . '">' . $mod['name'] . '</a>';
-
-		// And show it after the board's name.
-		$context['linktree'][count($context['linktree']) - 2]['extra_after'] = '<span class="board_moderators"> (' . (count($context['link_moderators']) == 1 ? $txt['moderator'] : $txt['moderators']) . ': ' . implode(', ', $context['link_moderators']) . ')</span>';
 	}
 
 	// Information about the current topic...

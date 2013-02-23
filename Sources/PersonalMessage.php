@@ -174,12 +174,6 @@ function MessageMain()
 	$context['drafts_pm_save'] = !empty($modSettings['drafts_enabled']) && !empty($modSettings['drafts_pm_enabled']) && allowedTo('pm_draft');
 	$context['drafts_autosave'] = !empty($context['drafts_pm_save']) && !empty($modSettings['drafts_autosave_enabled']) && allowedTo('pm_autosave_draft');
 
-	// Build the linktree for all the actions...
-	$context['linktree'][] = array(
-		'url' => $scripturl . '?action=pm',
-		'name' => $txt['personal_messages']
-	);
-
 	// Preferences...
 	$context['display_mode'] = WIRELESS ? 0 : $user_settings['pm_prefs'] & 3;
 
@@ -424,20 +418,6 @@ function MessageFolder()
 	// Set the text to resemble the current folder.
 	$pmbox = $context['folder'] != 'sent' ? $txt['inbox'] : $txt['sent_items'];
 	$txt['delete_all'] = str_replace('PMBOX', $pmbox, $txt['delete_all']);
-
-	// Now, build the link tree!
-	if ($context['current_label_id'] == -1)
-		$context['linktree'][] = array(
-			'url' => $scripturl . '?action=pm;f=' . $context['folder'],
-			'name' => $pmbox
-		);
-
-	// Build it further for a label.
-	if ($context['current_label_id'] != -1)
-		$context['linktree'][] = array(
-			'url' => $scripturl . '?action=pm;f=' . $context['folder'] . ';l=' . $context['current_label_id'],
-			'name' => $txt['pm_current_label'] . ': ' . $context['current_label']
-		);
 
 	// Figure out how many messages there are.
 	if ($context['folder'] == 'sent')
@@ -1012,10 +992,6 @@ function MessageSearch()
 	$context['simple_search'] = isset($context['search_params']['advanced']) ? empty($context['search_params']['advanced']) : !empty($modSettings['simpleSearch']) && !isset($_REQUEST['advanced']);
 	$context['page_title'] = $txt['pm_search_title'];
 	$context['sub_template'] = 'search';
-	$context['linktree'][] = array(
-		'url' => $scripturl . '?action=pm;sa=search',
-		'name' => $txt['pm_search_bar_title'],
-	);
 }
 
 /**
@@ -1475,10 +1451,6 @@ function MessageSearch2()
 	$context['page_title'] = $txt['pm_search_title'];
 	$context['sub_template'] = 'search_results';
 	$context['menu_data_' . $context['pm_menu_id']]['current_area'] = 'search';
-	$context['linktree'][] = array(
-		'url' => $scripturl . '?action=pm;sa=search',
-		'name' => $txt['pm_search_bar_title'],
-	);
 }
 
 /**
@@ -1716,12 +1688,6 @@ function MessagePost()
 	$context['post_error'] = array();
 	$context['copy_to_outbox'] = !empty($options['copy_to_outbox']);
 
-	// And build the link tree.
-	$context['linktree'][] = array(
-		'url' => $scripturl . '?action=pm;sa=send',
-		'name' => $txt['new_message']
-	);
-
 	$modSettings['disable_wysiwyg'] = !empty($modSettings['disable_wysiwyg']) || empty($modSettings['enableBBC']);
 
 	// Generate a list of drafts that they can load in to the editor
@@ -1892,12 +1858,6 @@ function messagePostError($error_types, $named_recipients, $recipient_ids = arra
 			'body' => parse_bbc($row_quoted['body'], true, 'pm' . $row_quoted['id_pm']),
 		);
 	}
-
-	// Build the link tree....
-	$context['linktree'][] = array(
-		'url' => $scripturl . '?action=pm;sa=send',
-		'name' => $txt['new_message']
-	);
 
 	// Set each of the errors for the template.
 	loadLanguage('Errors');
@@ -2511,12 +2471,6 @@ function MessagePrune()
 		redirectexit($context['current_label_redirect']);
 	}
 
-	// Build the link tree elements.
-	$context['linktree'][] = array(
-		'url' => $scripturl . '?action=pm;sa=prune',
-		'name' => $txt['pm_prune']
-	);
-
 	$context['sub_template'] = 'prune';
 	$context['page_title'] = $txt['pm_prune'];
 }
@@ -2738,12 +2692,6 @@ function markMessages($personal_messages = null, $label = null, $owner = null)
 function ManageLabels()
 {
 	global $txt, $context, $user_info, $scripturl, $smcFunc;
-
-	// Build the link tree elements...
-	$context['linktree'][] = array(
-		'url' => $scripturl . '?action=pm;sa=manlabels',
-		'name' => $txt['pm_manage_labels']
-	);
 
 	$context['page_title'] = $txt['pm_manage_labels'];
 	$context['sub_template'] = 'labels';
@@ -2976,12 +2924,6 @@ function MessageSettings()
 	$context['submit_button_text'] = $txt['pm_settings'];
 	$context['profile_header_text'] = $txt['personal_messages'];
 
-	// Add our position to the linktree.
-	$context['linktree'][] = array(
-		'url' => $scripturl . '?action=pm;sa=settings',
-		'name' => $txt['pm_settings']
-	);
-
 	// Are they saving?
 	if (isset($_REQUEST['save']))
 	{
@@ -3183,12 +3125,6 @@ function ReportMessage()
 function ManageRules()
 {
 	global $txt, $context, $user_info, $scripturl, $smcFunc;
-
-	// The link tree - gotta have this :o
-	$context['linktree'][] = array(
-		'url' => $scripturl . '?action=pm;sa=manrules',
-		'name' => $txt['pm_manage_rules']
-	);
 
 	$context['page_title'] = $txt['pm_manage_rules'];
 	$context['sub_template'] = 'rules';

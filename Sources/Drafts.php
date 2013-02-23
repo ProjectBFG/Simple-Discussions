@@ -826,10 +826,6 @@ function showPMDrafts($memID = -1)
 	// off to the template we go
 	$context['page_title'] = $txt['drafts'];
 	$context['sub_template'] = 'showPMDrafts';
-	$context['linktree'][] = array(
-		'url' => $scripturl . '?action=pm;sa=showpmdrafts',
-		'name' => $txt['drafts'],
-	);
 }
 
 /**

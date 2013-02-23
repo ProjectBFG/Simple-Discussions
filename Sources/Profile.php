@@ -469,24 +469,6 @@ function ModifyProfile($post_errors = array())
 		fatal_lang_error('no_access', false);
 	}
 
-	// Build the link tree.
-	$context['linktree'][] = array(
-		'url' => $scripturl . '?action=profile' . ($memID != $user_info['id'] ? ';u=' . $memID : ''),
-		'name' => sprintf($txt['profile_of_username'], $context['member']['name']),
-	);
-
-	if (!empty($profile_include_data['label']))
-		$context['linktree'][] = array(
-			'url' => $scripturl . '?action=profile' . ($memID != $user_info['id'] ? ';u=' . $memID : '') . ';area=' . $profile_include_data['current_area'],
-			'name' => $profile_include_data['label'],
-		);
-
-	if (!empty($profile_include_data['current_subsection']) && $profile_include_data['subsections'][$profile_include_data['current_subsection']][0] != $profile_include_data['label'])
-		$context['linktree'][] = array(
-			'url' => $scripturl . '?action=profile' . ($memID != $user_info['id'] ? ';u=' . $memID : '') . ';area=' . $profile_include_data['current_area'] . ';sa=' . $profile_include_data['current_subsection'],
-			'name' => $profile_include_data['subsections'][$profile_include_data['current_subsection']][0],
-		);
-
 	// Set the template for this area and add the profile layer.
 	$context['sub_template'] = $profile_include_data['function'];
 	$context['template_layers'][] = 'profile';

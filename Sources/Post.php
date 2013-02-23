@@ -696,19 +696,6 @@ function Post($post_errors = array())
 	else
 		$context['page_title'] = $txt['post_reply'];
 
-	// Build the link tree.
-	if (empty($topic))
-		$context['linktree'][] = array(
-			'name' => '<em>' . $txt['start_new_topic'] . '</em>'
-		);
-	else
-		$context['linktree'][] = array(
-			'url' => $scripturl . '?topic=' . $topic . '.' . $_REQUEST['start'],
-			'name' => $form_subject,
-			'extra_before' => '<span><strong class="nav">' . $context['page_title'] . ' ( </strong></span>',
-			'extra_after' => '<span><strong class="nav"> )</strong></span>'
-		);
-
 	$context['subject'] = addcslashes($form_subject, '"');
 	$context['message'] = str_replace(array('"', '<', '>', '&nbsp;'), array('&quot;', '&lt;', '&gt;', ' '), $form_message);
 

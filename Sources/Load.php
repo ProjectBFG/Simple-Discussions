@@ -479,9 +479,6 @@ function loadBoard()
 	$user_info['is_mod'] = false;
 	$context['user']['is_mod'] = &$user_info['is_mod'];
 
-	// Start the linktree off empty..
-	$context['linktree'] = array();
-
 	// Have they by chance specified a message id but nothing else?
 	if (empty($_REQUEST['action']) && empty($topic) && empty($board) && !empty($_REQUEST['msg']))
 	{
@@ -673,20 +670,6 @@ function loadBoard()
 			$board_info['error'] = 'access';
 		if (!empty($modSettings['deny_boards_access']) && count(array_intersect($user_info['groups'], $board_info['deny_groups'])) != 0 && !$user_info['is_admin'])
 			$board_info['error'] = 'access';
-
-		// Build up the linktree.
-		$context['linktree'] = array_merge(
-			$context['linktree'],
-			array(array(
-				'url' => $scripturl . '#c' . $board_info['cat']['id'],
-				'name' => $board_info['cat']['name']
-			)),
-			array_reverse($board_info['parent_boards']),
-			array(array(
-				'url' => $scripturl . '?board=' . $board . '.0',
-				'name' => $board_info['name']
-			))
-		);
 	}
 
 	// Set the template contextual information.
@@ -703,14 +686,6 @@ function loadBoard()
 
 		$_GET['board'] = '';
 		$_GET['topic'] = '';
-
-		// The linktree should not give the game away mate!
-		$context['linktree'] = array(
-			array(
-				'url' => $scripturl,
-				'name' => $context['forum_name_html_safe']
-			)
-		);
 
 		// If it's a prefetching agent.
 		if (isset($_SERVER['HTTP_X_MOZ']) && $_SERVER['HTTP_X_MOZ'] == 'prefetch')
@@ -1422,8 +1397,6 @@ function loadTheme($id_theme = 0, $initialize = true)
 					$board_info['moderators'][$k]['link'] = strtr($dummy['link'], array('"' . $oldurl => '"' . $boardurl));
 				}
 			}
-			foreach ($context['linktree'] as $k => $dummy)
-				$context['linktree'][$k]['url'] = strtr($dummy['url'], array($oldurl => $boardurl));
 		}
 	}
 	// Set up the contextual user array.
@@ -1492,12 +1465,6 @@ function loadTheme($id_theme = 0, $initialize = true)
 
 	// Detect the browser.
 	detectBrowser();
-
-	// Set the top level linktree up.
-	array_unshift($context['linktree'], array(
-		'url' => $scripturl,
-		'name' => $context['forum_name_html_safe']
-	));
 
 	// This allows sticking some HTML on the page output - useful for controls.
 	$context['insert_after_template'] = '';

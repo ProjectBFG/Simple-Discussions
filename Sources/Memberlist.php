@@ -136,11 +136,6 @@ function Memberlist()
 	end($context['columns']);
 	$context['columns'][key($context['columns'])]['class'] = 'last_th';
 
-	$context['linktree'][] = array(
-		'url' => $scripturl . '?action=mlist',
-		'name' => $txt['members_list']
-	);
-
 	$context['can_send_pm'] = allowedTo('pm_send');
 	$context['can_send_email'] = allowedTo('send_email_to_members');
 
@@ -293,11 +288,6 @@ function MLAll()
 
 	$context['can_moderate_forum'] = allowedTo('moderate_forum');
 	$context['page_title'] = sprintf($txt['viewing_members'], $context['start'], $context['end']);
-	$context['linktree'][] = array(
-		'url' => $scripturl . '?action=mlist;sort=' . $_REQUEST['sort'] . ';start=' . $_REQUEST['start'],
-		'name' => &$context['page_title'],
-		'extra_after' => ' (' . sprintf($txt['of_total_members'], $context['num_members']) . ')'
-	);
 
 	$limit = $_REQUEST['start'];
 	$query_parameters = array(
@@ -538,11 +528,6 @@ function MLSearch()
 		$context['sub_template'] = 'search';
 		$context['old_search'] = isset($_GET['search']) ? $_GET['search'] : (isset($_POST['search']) ? htmlspecialchars($_POST['search']) : '');
 	}
-
-	$context['linktree'][] = array(
-		'url' => $scripturl . '?action=mlist;sa=search',
-		'name' => &$context['page_title']
-	);
 
 	// Highlight the correct button, too!
 	unset($context['memberlist_buttons']['view_all_members']['active']);

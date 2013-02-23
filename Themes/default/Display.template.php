@@ -352,9 +352,6 @@ function template_main()
 				', $context['page_index'], '
 			</div>';
 
-	// Show the lower breadcrumbs.
-	theme_linktree();
-
 	echo '
 			<div id="moderationbuttons">', template_button_strip($context['mod_buttons'], 'bottom', array('id' => 'moderationbuttons_strip')), '</div>';
 

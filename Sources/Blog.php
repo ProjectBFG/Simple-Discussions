@@ -9,12 +9,6 @@ function BlogMain()
 	
 	loadTemplate('Blog');
 	
-	// Build the linktree.
-	$context['linktree'][] = array(
-		'url' => $scripturl . '?action=blog',
-		'name' => $txt['blog']
-	);
-	
 	$subActions = array(
 	);
 

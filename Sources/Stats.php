@@ -71,11 +71,6 @@ function DisplayStats()
 	loadLanguage('Stats');
 	loadTemplate('Stats');
 
-	// Build the link tree......
-	$context['linktree'][] = array(
-		'url' => $scripturl . '?action=stats',
-		'name' => $txt['stats_center']
-	);
 	$context['page_title'] = $context['forum_name'] . ' - ' . $txt['stats_center'];
 
 	$context['show_member_list'] = allowedTo('view_mlist');

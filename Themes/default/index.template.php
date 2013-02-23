@@ -14,8 +14,7 @@
 	contains the main template layer that displays the header and footer of
 	the forum, namely with main_above and main_below. It also contains the
 	menu sub template, which appropriately displays the menu; the init sub
-	template, which is there to set the theme up; (init can be missing.) and
-	the linktree sub template, which sorts out the link tree.
+	template, which is there to set the theme up; (init can be missing.).
 
 	The init sub template should load any data and set any hardcoded options.
 
@@ -24,9 +23,6 @@
 
 	The main_below sub template, conversely, is shown after the main content.
 	It should probably contain the copyright statement and some other things.
-
-	The linktree sub template should display the link tree, using the data
-	in the $context['linktree'] variable.
 
 	The menu sub template should display all the relevant buttons the user
 	wants and or needs.
@@ -228,56 +224,6 @@ function template_html_below()
 	<script src="', $settings['theme_url'], '/scripts/bootstrap.min.js"></script>
 </body>
 </html>';
-}
-
-/**
- * Show a linktree. This is that thing that shows "My Community | General Category | General Discussion"..
- * @param bool $force_show = false
- */
-function theme_linktree($force_show = false)
-{
-	global $context, $settings, $options, $shown_linktree, $scripturl, $txt;
-
-	// If linktree is empty, just return - also allow an override.
-	if (empty($context['linktree']) || (!empty($context['dont_default_linktree']) && !$force_show))
-		return;
-
-	echo '
-		<ul class="breadcrumb">';
-
-	// Each tree item has a URL and name. Some may have extra_before and extra_after.
-	foreach ($context['linktree'] as $link_num => $tree)
-	{
-		echo '
-			<li', ($link_num == count($context['linktree']) - 1) ? ' class="active"' : '', '>';
-
-		// Show something before the link?
-		if (isset($tree['extra_before']))
-			echo $tree['extra_before'];
-
-		// Show the link, including a URL if it should have one.
-		echo $settings['linktree_link'] && isset($tree['url']) && $link_num != count($context['linktree']) - 1 ? '
-				<a href="' . $tree['url'] . '">' . $tree['name'] . '</a>' : $tree['name'];
-
-		// Show something after the link...?
-		if (isset($tree['extra_after']))
-			echo $tree['extra_after'];
-			
-		// Don't show a separator for the first one.
-		// Better here. Always points to the next level when the linktree breaks to a second line.
-		// Picked a better looking HTML entity, and added support for RTL plus a span for styling.
-		if (!($link_num == count($context['linktree']) - 1))
-			echo '
-				<span class="divider">', $context['right_to_left'] ? ' &#9668; ' : ' &#9658; ', '</span>';
-
-		echo '
-			</li>';
-	}
-
-	echo '
-		</ul>';
-
-	$shown_linktree = true;
 }
 
 /**

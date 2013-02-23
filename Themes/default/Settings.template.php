@@ -169,10 +169,6 @@ function template_settings()
 		),
 	'',
 		array(
-			'id' => 'linktree_link',
-			'label' => $txt['current_pos_text_img'],
-		),
-		array(
 			'id' => 'show_mark_read',
 			'label' => $txt['enable_mark_as_read'],
 		),

@@ -89,12 +89,6 @@ function Register($reg_errors = array())
 	$context['sub_template'] = $current_step == 1 ? 'registration_agreement' : 'registration_form';
 	$context['page_title'] = $current_step == 1 ? $txt['registration_agreement'] : $txt['registration_form'];
 
-	// Add the register chain to the link tree.
-	$context['linktree'][] = array(
-		'url' => $scripturl . '?action=register',
-		'name' => $txt['register'],
-	);
-
 	// If you have to agree to the agreement, it needs to be fetched from the file.
 	if ($context['require_agreement'])
 	{
