@@ -47,7 +47,6 @@ $txt['thumbs_up'] = 'Thumb Up';
 $txt['thumbs_down'] = 'Thumb Down';
 $txt['excamation_point'] = 'Exclamation point';
 $txt['question_mark'] = 'Question mark';
-$txt['icon_poll'] = 'Poll';
 $txt['lamp'] = 'Lamp';
 $txt['add_smileys'] = 'Add smileys';
 $txt['flash'] = 'Insert Flash';
@@ -88,9 +87,6 @@ $txt['shortcuts_drafts'] = 'shortcuts: alt+s submit/post, alt+p preview or alt+d
 $txt['shortcuts_firefox'] = 'shortcuts: shift+alt+s submit/post or shift+alt+p preview';
 $txt['shortcuts_drafts_firefox'] = 'shortcuts: shift+alt+s submit/post, shift+alt+p preview or shift+alt+d save draft';
 $txt['option'] = 'Option';
-$txt['reset_votes'] = 'Reset vote count';
-$txt['reset_votes_check'] = 'Check this if you want to reset all vote counts to 0.';
-$txt['votes'] = 'votes';
 $txt['attach'] = 'Attach';
 $txt['clean_attach'] = 'Clear attachment';
 $txt['attached'] = 'Attached';
@@ -132,19 +128,6 @@ $txt['retrieving_quote'] = 'Retrieving quote...';
 
 $txt['post_visual_verification_label'] = 'Verification';
 $txt['post_visual_verification_desc'] = 'Please enter the code in the image above to make this post.';
-
-$txt['poll_options'] = 'Poll Options';
-$txt['poll_run'] = 'Run the poll for';
-$txt['poll_run_limit'] = '(Leave blank for no limit.)';
-$txt['poll_results_visibility'] = 'Result visibility';
-$txt['poll_results_anyone'] = 'Show the poll\'s results to anyone.';
-$txt['poll_results_voted'] = 'Only show the results after someone has voted.';
-$txt['poll_results_after'] = 'Only show the results after the poll has expired.';
-$txt['poll_max_votes'] = 'Maximum votes per user';
-$txt['poll_do_change_vote'] = 'Allow users to change vote';
-$txt['poll_too_many_votes'] = 'You selected too many options.  For this poll, you may only select %1$s options.';
-$txt['poll_add_option'] = 'Add Option';
-$txt['poll_guest_vote'] = 'Allow guests to vote';
 
 $txt['spellcheck_done'] = 'Spell checking complete.';
 $txt['spellcheck_change_to'] = 'Change To:';

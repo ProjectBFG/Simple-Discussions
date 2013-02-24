@@ -23,7 +23,6 @@ if (!defined('SMF'))
  * - additionally handles previews of posts.
  * - @uses the Post template and language file, main sub template.
  * - requires different permissions depending on the actions, but most notably post_new, post_reply_own, and post_reply_any.
- * - shows options the posting of polls.
  * - accessed from ?action=post.
  *
  *  @param array $post_errors holds any errors found tyring to post
@@ -35,10 +34,6 @@ function Post($post_errors = array())
 	global $sourcedir, $options, $smcFunc, $language;
 
 	loadLanguage('Post');
-
-	// You can't reply with a poll... hacker.
-	if (isset($_REQUEST['poll']) && !empty($topic) && !isset($_REQUEST['msg']))
-		unset($_REQUEST['poll']);
 
 	$context['robot_no_index'] = true;
 
@@ -79,7 +74,7 @@ function Post($post_errors = array())
 	{
 		$request = $smcFunc['db_query']('', '
 			SELECT
-				t.locked, IFNULL(ln.id_topic, 0) AS notify, t.is_sticky, t.id_poll, t.id_last_msg, mf.id_member,
+				t.locked, IFNULL(ln.id_topic, 0) AS notify, t.is_sticky, t.id_last_msg, mf.id_member,
 				t.id_first_msg, mf.subject,
 				CASE WHEN ml.poster_time > ml.modified_time THEN ml.poster_time ELSE ml.modified_time END AS last_post_time
 			FROM {db_prefix}topics AS t
@@ -93,12 +88,8 @@ function Post($post_errors = array())
 				'current_topic' => $topic,
 			)
 		);
-		list ($locked, $context['notify'], $sticky, $pollID, $context['topic_last_message'], $id_member_poster, $id_first_msg, $first_subject, $lastPostTime) = $smcFunc['db_fetch_row']($request);
+		list ($locked, $context['notify'], $sticky, $context['topic_last_message'], $id_member_poster, $id_first_msg, $first_subject, $lastPostTime) = $smcFunc['db_fetch_row']($request);
 		$smcFunc['db_free_result']($request);
-
-		// If this topic already has a poll, they sure can't add another.
-		if (isset($_REQUEST['poll']) && $pollID > 0)
-			unset($_REQUEST['poll']);
 
 		if (empty($_REQUEST['msg']))
 		{
@@ -170,42 +161,6 @@ function Post($post_errors = array())
 	// Don't allow a post if it's locked and you aren't all powerful.
 	if ($locked && !allowedTo('moderate_board'))
 		fatal_lang_error('topic_locked', false);
-	// Check the users permissions - is the user allowed to add or post a poll?
-	if (isset($_REQUEST['poll']) && $modSettings['pollMode'] == '1')
-	{
-		// New topic, new poll.
-		if (empty($topic))
-			isAllowedTo('poll_post');
-		// This is an old topic - but it is yours!  Can you add to it?
-		elseif ($user_info['id'] == $id_member_poster && !allowedTo('poll_add_any'))
-			isAllowedTo('poll_add_own');
-		// If you're not the owner, can you add to any poll?
-		else
-			isAllowedTo('poll_add_any');
-
-		require_once($sourcedir . '/Subs-Members.php');
-		$allowedVoteGroups = groupsAllowedTo('poll_vote', $board);
-
-		// Set up the poll options.
-		$context['poll_options'] = array(
-			'max_votes' => empty($_POST['poll_max_votes']) ? '1' : max(1, $_POST['poll_max_votes']),
-			'hide' => empty($_POST['poll_hide']) ? 0 : $_POST['poll_hide'],
-			'expire' => !isset($_POST['poll_expire']) ? '' : $_POST['poll_expire'],
-			'change_vote' => isset($_POST['poll_change_vote']),
-			'guest_vote' => isset($_POST['poll_guest_vote']),
-			'guest_vote_enabled' => in_array(-1, $allowedVoteGroups['allowed']),
-		);
-
-		// Make all five poll choices empty.
-		$context['choices'] = array(
-			array('id' => 0, 'number' => 1, 'label' => '', 'is_last' => false),
-			array('id' => 1, 'number' => 2, 'label' => '', 'is_last' => false),
-			array('id' => 2, 'number' => 3, 'label' => '', 'is_last' => false),
-			array('id' => 3, 'number' => 4, 'label' => '', 'is_last' => false),
-			array('id' => 4, 'number' => 5, 'label' => '', 'is_last' => true)
-		);
-		$context['last_choice_id'] = 4;
-	}
 
 	// See if any new replies have come along.
 	// Huh, $_REQUEST['msg'] is set upon submit, so this doesn't get executed at submit
@@ -294,48 +249,6 @@ function Post($post_errors = array())
 		if ($smcFunc['strlen']($form_subject) > 100)
 			$form_subject = $smcFunc['substr']($form_subject, 0, 100);
 
-		if (isset($_REQUEST['poll']))
-		{
-			$context['question'] = isset($_REQUEST['question']) ? $smcFunc['htmlspecialchars'](trim($_REQUEST['question'])) : '';
-
-			$context['choices'] = array();
-			$choice_id = 0;
-
-			$_POST['options'] = empty($_POST['options']) ? array() : htmlspecialchars__recursive($_POST['options']);
-			foreach ($_POST['options'] as $option)
-			{
-				if (trim($option) == '')
-					continue;
-
-				$context['choices'][] = array(
-					'id' => $choice_id++,
-					'number' => $choice_id,
-					'label' => $option,
-					'is_last' => false
-				);
-			}
-
-			// One empty option for those with js disabled...I know are few... :P
-			$context['choices'][] = array(
-				'id' => $choice_id++,
-				'number' => $choice_id,
-				'label' => '',
-				'is_last' => false
-			);
-
-			if (count($context['choices']) < 2)
-			{
-				$context['choices'][] = array(
-					'id' => $choice_id++,
-					'number' => $choice_id,
-					'label' => '',
-					'is_last' => false
-				);
-			}
-			$context['last_choice_id'] = $choice_id;
-			$context['choices'][count($context['choices']) - 1]['is_last'] = true;
-		}
-
 		// Are you... a guest?
 		if ($user_info['is_guest'])
 		{
@@ -383,7 +296,7 @@ function Post($post_errors = array())
 		$context['icon'] = isset($_REQUEST['icon']) ? preg_replace('~[\./\\\\*\':"<>]~', '', $_REQUEST['icon']) : 'xx';
 
 		// Set the destination action for submission.
-		$context['destination'] = 'post2;start=' . $_REQUEST['start'] . (isset($_REQUEST['msg']) ? ';msg=' . $_REQUEST['msg'] . ';' . $context['session_var'] . '=' . $context['session_id'] : '') . (isset($_REQUEST['poll']) ? ';poll' : '');
+		$context['destination'] = 'post2;start=' . $_REQUEST['start'] . (isset($_REQUEST['msg']) ? ';msg=' . $_REQUEST['msg'] . ';' . $context['session_var'] . '=' . $context['session_id'] : '');
 		$context['submit_label'] = isset($_REQUEST['msg']) ? $txt['save'] : $txt['post'];
 
 		// Previewing an edit?
@@ -540,7 +453,7 @@ function Post($post_errors = array())
 		}
 
 		// Set the destinaton.
-		$context['destination'] = 'post2;start=' . $_REQUEST['start'] . ';msg=' . $_REQUEST['msg'] . ';' . $context['session_var'] . '=' . $context['session_id'] . (isset($_REQUEST['poll']) ? ';poll' : '');
+		$context['destination'] = 'post2;start=' . $_REQUEST['start'] . ';msg=' . $_REQUEST['msg'] . ';' . $context['session_var'] . '=' . $context['session_id'] .'';
 		$context['submit_label'] = $txt['save'];
 	}
 	// Posting...
@@ -555,7 +468,7 @@ function Post($post_errors = array())
 			$context['name'] = isset($_SESSION['guest_name']) ? $_SESSION['guest_name'] : '';
 			$context['email'] = isset($_SESSION['guest_email']) ? $_SESSION['guest_email'] : '';
 		}
-		$context['destination'] = 'post2;start=' . $_REQUEST['start'] . (isset($_REQUEST['poll']) ? ';poll' : '');
+		$context['destination'] = 'post2;start=' . $_REQUEST['start'] .'';
 
 		$context['submit_label'] = $txt['post'];
 
@@ -684,10 +597,8 @@ function Post($post_errors = array())
 			}
 	}
 
-	// What are you doing? Posting a poll, modifying, previewing, new post, or reply...
-	if (isset($_REQUEST['poll']))
-		$context['page_title'] = $txt['new_poll'];
-	elseif (isset($_REQUEST['msg']))
+	// What are you doing? Modifying, previewing, new post, or reply...
+	if (isset($_REQUEST['msg']))
 		$context['page_title'] = $txt['modify_msg'];
 	elseif (isset($_REQUEST['subject'], $context['preview_subject']))
 		$context['page_title'] = $txt['preview'] . ' - ' . strip_tags($context['preview_subject']);
@@ -731,27 +642,11 @@ function Post($post_errors = array())
 	// Store the ID.
 	$context['post_box_name'] = $editorOptions['id'];
 
-	$context['make_poll'] = isset($_REQUEST['poll']);
-
 	// Message icons - customized icons are off?
 	$context['icons'] = getMessageIcons($board);
 
 	if (!empty($context['icons']))
 		$context['icons'][count($context['icons']) - 1]['is_last'] = true;
-
-	// Are we starting a poll? if set the poll icon as selected if its available
-	if (isset($_REQUEST['poll']))
-	{
-	    foreach ($context['icons'] as $icons)
-		{
-			if (isset($icons['value']) && $icons['value'] == 'poll')
-			{
-				// if found we are done
-				$context['icon'] = 'poll';
-				break;
-			}
-		}
-	}
 
 	$context['icon_url'] = '';
 	for ($i = 0, $n = count($context['icons']); $i < $n; $i++)
@@ -857,7 +752,7 @@ function Post2()
 	if (!empty($topic))
 	{
 		$request = $smcFunc['db_query']('', '
-			SELECT locked, is_sticky, id_poll, approved, id_first_msg, id_last_msg, id_member_started, id_board
+			SELECT locked, is_sticky, approved, id_first_msg, id_last_msg, id_member_started, id_board
 			FROM {db_prefix}topics
 			WHERE id_topic = {int:current_topic}
 			LIMIT 1',
@@ -883,10 +778,6 @@ function Post2()
 		// Don't allow a post if it's locked.
 		if ($topic_info['locked'] != 0 && !allowedTo('moderate_board'))
 			fatal_lang_error('topic_locked', false);
-
-		// Sorry, multiple polls aren't allowed... yet.  You should stop giving me ideas :P.
-		if (isset($_REQUEST['poll']) && $topic_info['id_poll'] > 0)
-			unset($_REQUEST['poll']);
 
 		// Do the permissions and approval stuff...
 		$becomesApproved = true;
@@ -1146,39 +1037,6 @@ function Post2()
 	if (isset($_POST['message']) && strtolower($_POST['message']) == 'i am the administrator.' && !$user_info['is_admin'])
 		fatal_error('Knave! Masquerader! Charlatan!', false);
 
-	// Validate the poll...
-	if (isset($_REQUEST['poll']) && $modSettings['pollMode'] == '1')
-	{
-		if (!empty($topic) && !isset($_REQUEST['msg']))
-			fatal_lang_error('no_access', false);
-
-		// This is a new topic... so it's a new poll.
-		if (empty($topic))
-			isAllowedTo('poll_post');
-		// Can you add to your own topics?
-		elseif ($user_info['id'] == $topic_info['id_member_started'] && !allowedTo('poll_add_any'))
-			isAllowedTo('poll_add_own');
-		// Can you add polls to any topic, then?
-		else
-			isAllowedTo('poll_add_any');
-
-		if (!isset($_POST['question']) || trim($_POST['question']) == '')
-			$post_errors[] = 'no_question';
-
-		$_POST['options'] = empty($_POST['options']) ? array() : htmltrim__recursive($_POST['options']);
-
-		// Get rid of empty ones.
-		foreach ($_POST['options'] as $k => $option)
-			if ($option == '')
-				unset($_POST['options'][$k], $_POST['options'][$k]);
-
-		// What are you going to vote between with one choice?!?
-		if (count($_POST['options']) < 2)
-			$post_errors[] = 'poll_few';
-		elseif (count($_POST['options']) > 256)
-			$post_errors[] = 'poll_many';
-	}
-
 	if ($posterIsGuest)
 	{
 		// If user is a guest, make sure the chosen name isn't taken.
@@ -1219,90 +1077,6 @@ function Post2()
 	if ($smcFunc['strlen']($_POST['subject']) > 100)
 		$_POST['subject'] = $smcFunc['substr']($_POST['subject'], 0, 100);
 
-	// Make the poll...
-	if (isset($_REQUEST['poll']))
-	{
-		// Make sure that the user has not entered a ridiculous number of options..
-		if (empty($_POST['poll_max_votes']) || $_POST['poll_max_votes'] <= 0)
-			$_POST['poll_max_votes'] = 1;
-		elseif ($_POST['poll_max_votes'] > count($_POST['options']))
-			$_POST['poll_max_votes'] = count($_POST['options']);
-		else
-			$_POST['poll_max_votes'] = (int) $_POST['poll_max_votes'];
-
-		$_POST['poll_expire'] = (int) $_POST['poll_expire'];
-		$_POST['poll_expire'] = $_POST['poll_expire'] > 9999 ? 9999 : ($_POST['poll_expire'] < 0 ? 0 : $_POST['poll_expire']);
-
-		// Just set it to zero if it's not there..
-		if (!isset($_POST['poll_hide']))
-			$_POST['poll_hide'] = 0;
-		else
-			$_POST['poll_hide'] = (int) $_POST['poll_hide'];
-		$_POST['poll_change_vote'] = isset($_POST['poll_change_vote']) ? 1 : 0;
-
-		$_POST['poll_guest_vote'] = isset($_POST['poll_guest_vote']) ? 1 : 0;
-		// Make sure guests are actually allowed to vote generally.
-		if ($_POST['poll_guest_vote'])
-		{
-			require_once($sourcedir . '/Subs-Members.php');
-			$allowedVoteGroups = groupsAllowedTo('poll_vote', $board);
-			if (!in_array(-1, $allowedVoteGroups['allowed']))
-				$_POST['poll_guest_vote'] = 0;
-		}
-
-		// If the user tries to set the poll too far in advance, don't let them.
-		if (!empty($_POST['poll_expire']) && $_POST['poll_expire'] < 1)
-			fatal_lang_error('poll_range_error', false);
-		// Don't allow them to select option 2 for hidden results if it's not time limited.
-		elseif (empty($_POST['poll_expire']) && $_POST['poll_hide'] == 2)
-			$_POST['poll_hide'] = 1;
-
-		// Clean up the question and answers.
-		$_POST['question'] = htmlspecialchars($_POST['question']);
-		$_POST['question'] = $smcFunc['truncate']($_POST['question'], 255);
-		$_POST['question'] = preg_replace('~&amp;#(\d{4,5}|[2-9]\d{2,4}|1[2-9]\d);~', '&#$1;', $_POST['question']);
-		$_POST['options'] = htmlspecialchars__recursive($_POST['options']);
-	}
-
-	// Make the poll...
-	if (isset($_REQUEST['poll']))
-	{
-		// Create the poll.
-		$smcFunc['db_insert']('',
-			'{db_prefix}polls',
-			array(
-				'question' => 'string-255', 'hide_results' => 'int', 'max_votes' => 'int', 'expire_time' => 'int', 'id_member' => 'int',
-				'poster_name' => 'string-255', 'change_vote' => 'int', 'guest_vote' => 'int'
-			),
-			array(
-				$_POST['question'], $_POST['poll_hide'], $_POST['poll_max_votes'], (empty($_POST['poll_expire']) ? 0 : time() + $_POST['poll_expire'] * 3600 * 24), $user_info['id'],
-				$_POST['guestname'], $_POST['poll_change_vote'], $_POST['poll_guest_vote'],
-			),
-			array('id_poll')
-		);
-		$id_poll = $smcFunc['db_insert_id']('{db_prefix}polls', 'id_poll');
-
-		// Create each answer choice.
-		$i = 0;
-		$pollOptions = array();
-		foreach ($_POST['options'] as $option)
-		{
-			$pollOptions[] = array($id_poll, $i, $option);
-			$i++;
-		}
-
-		$smcFunc['db_insert']('insert',
-			'{db_prefix}poll_choices',
-			array('id_poll' => 'int', 'id_choice' => 'int', 'label' => 'string-255'),
-			$pollOptions,
-			array('id_poll', 'id_choice')
-		);
-
-		call_integration_hook('integrate_poll_add_edit', array($id_poll, false));
-	}
-	else
-		$id_poll = 0;
-
 	// Creating a new topic?
 	$newTopic = empty($_REQUEST['msg']) && empty($topic);
 
@@ -1318,7 +1092,6 @@ function Post2()
 	$topicOptions = array(
 		'id' => empty($topic) ? 0 : $topic,
 		'board' => $board,
-		'poll' => isset($_REQUEST['poll']) ? $id_poll : null,
 		'lock_mode' => isset($_POST['lock']) ? (int) $_POST['lock'] : null,
 		'sticky_mode' => isset($_POST['sticky']) && !empty($modSettings['enableStickyTopics']) ? (int) $_POST['sticky'] : null,
 		'mark_as_read' => true,

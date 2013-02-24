@@ -1119,7 +1119,7 @@ function template_send()
 						if (!(\'setRequestHeader\' in test))
 							return submitThisOnce(document.forms.postmodify);
 					}
-					// @todo Currently not sending poll options and option checkboxes.
+
 					var x = new Array();
 					var textFields = [\'subject\', ', JavaScriptEscape($context['post_box_name']), ', \'to\', \'bcc\'];
 					var numericFields = [\'recipient_to[]\', \'recipient_bcc[]\'];

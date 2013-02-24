@@ -40,17 +40,6 @@ $txt['board_perms_name_modify_own'] = 'Modify own posts';
 $txt['board_perms_name_modify_replies'] = 'Modify replies to own topics';
 $txt['board_perms_name_move_any'] = 'Move Any Topic';
 $txt['board_perms_name_move_own'] = 'Move Own Topics';
-$txt['board_perms_name_poll_add_any'] = 'Add poll to any topics';
-$txt['board_perms_name_poll_add_own'] = 'Add poll to own topics';
-$txt['board_perms_name_poll_edit_any'] = 'Edit any poll';
-$txt['board_perms_name_poll_edit_own'] = 'Edit own polls';
-$txt['board_perms_name_poll_lock_any'] = 'Lock any poll';
-$txt['board_perms_name_poll_lock_own'] = 'Lock own polls';
-$txt['board_perms_name_poll_post'] = 'Post new poll';
-$txt['board_perms_name_poll_remove_any'] = 'Remove any poll';
-$txt['board_perms_name_poll_remove_own'] = 'Remove own polls';
-$txt['board_perms_name_poll_view'] = 'View polls';
-$txt['board_perms_name_poll_vote'] = 'Vote in polls';
 $txt['board_perms_name_post_attachment'] = 'Post attachments';
 $txt['board_perms_name_post_new'] = 'Post new topics';
 $txt['board_perms_name_post_reply_any'] = 'Post replies in any topic';
@@ -66,7 +55,6 @@ $txt['board_perms_name_send_topic'] = 'Send topics to friends';
 $txt['board_perms_name_split_any'] = 'Split any topics';
 $txt['board_perms_name_view_attachments'] = 'View attachments';
 
-$txt['board_perms_group_no_polls'] = 'This board does not allow polls';
 $txt['board_perms_group_reply_only'] = 'This board only allows users to make replies to topics';
 $txt['board_perms_group_read_only'] = 'This board does not allow posting';
 

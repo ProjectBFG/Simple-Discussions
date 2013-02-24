@@ -22,11 +22,11 @@ if (!defined('SMF'))
  * respectively removing your own account or any account.
  * Non-admins cannot delete admins.
  * The function:
- *   - changes author of messages, topics and polls to guest authors.
+ *   - changes author of messages, topics to guest authors.
  *   - removes all log entries concerning the deleted members, except the
  * error logs, ban logs and moderation logs.
  *   - removes these members' personal messages (only the inbox),
- * ban entries, theme settings, moderator positions, poll votes
+ * ban entries, theme settings, moderator positions
  *   - updates member statistics afterwards.
  *
  * @param array $users
@@ -136,15 +136,6 @@ function deleteMembers($users, $check_not_admin = false)
 		array(
 			'guest_id' => 0,
 			'blank_email' => '',
-			'users' => $users,
-		)
-	);
-	$smcFunc['db_query']('', '
-		UPDATE {db_prefix}polls
-		SET id_member = {int:guest_id}
-		WHERE id_member IN ({array_int:users})',
-		array(
-			'guest_id' => 0,
 			'users' => $users,
 		)
 	);
@@ -289,18 +280,6 @@ function deleteMembers($users, $check_not_admin = false)
 		DELETE FROM {db_prefix}collapsed_categories
 		WHERE id_member IN ({array_int:users})',
 		array(
-			'users' => $users,
-		)
-	);
-
-	// Make their votes appear as guest votes - at least it keeps the totals right.
-	// @todo Consider adding back in cookie protection.
-	$smcFunc['db_query']('', '
-		UPDATE {db_prefix}log_polls
-		SET id_member = {int:guest_id}
-		WHERE id_member IN ({array_int:users})',
-		array(
-			'guest_id' => 0,
 			'users' => $users,
 		)
 	);

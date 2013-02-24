@@ -112,8 +112,6 @@ $txt['notifications_boards_howto'] = 'To request notifications from a specific b
 $txt['notifications_update'] = 'Unnotify';
 
 $txt['statPanel_showStats'] = 'User statistics for: ';
-$txt['statPanel_users_votes'] = 'Number of Votes Cast';
-$txt['statPanel_users_polls'] = 'Number of Polls Created';
 $txt['statPanel_total_time_online'] = 'Total Time Spent Online';
 $txt['statPanel_noPosts'] = 'No posts to speak of!';
 $txt['statPanel_generalStats'] = 'General Statistics';
@@ -121,8 +119,6 @@ $txt['statPanel_posts'] = 'posts';
 $txt['statPanel_topics'] = 'topics';
 $txt['statPanel_total_posts'] = 'Total Posts';
 $txt['statPanel_total_topics'] = 'Total Topics Started';
-$txt['statPanel_votes'] = 'votes';
-$txt['statPanel_polls'] = 'polls';
 $txt['statPanel_topBoards'] = 'Most Popular Boards By Posts';
 $txt['statPanel_topBoards_posts'] = '%1$d posts of the board\'s %2$d posts (%3$01.2f%%)';
 $txt['statPanel_topBoards_memberposts'] = '%1$d posts of the member\'s %2$d posts (%3$01.2f%%)';

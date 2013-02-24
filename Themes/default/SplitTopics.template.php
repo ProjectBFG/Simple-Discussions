@@ -410,24 +410,6 @@ function template_merge_extra_options()
 						</ul>
 					</fieldset>';
 	}
-	if (!empty($context['polls']))
-	{
-		echo '
-					<fieldset id="merge_poll" class="merge_options">
-						<legend>' . $txt['merge_select_poll'] . '</legend>
-						<ul class="reset">';
-		foreach ($context['polls'] as $poll)
-			echo '
-							<li>
-								<input type="radio" name="poll" value="' . $poll['id'] . '"' . ($poll['selected'] ? ' checked="checked"' : '') . ' class="input_radio" /> ' . $poll['question'] . ' (' . $txt['topic'] . ': <a href="' . $scripturl . '?topic=' . $poll['topic']['id'] . '.0" target="_blank" class="new_win">' . $poll['topic']['subject'] . '</a>)
-							</li>';
-		echo '
-							<li>
-								<input type="radio" name="poll" value="-1" class="input_radio" /> (' . $txt['merge_no_poll'] . ')
-							</li>
-						</ul>
-					</fieldset>';
-	}
 	echo '
 					<div class="auto_flow">
 						<input type="submit" value="' . $txt['merge'] . '" class="button_submit" />

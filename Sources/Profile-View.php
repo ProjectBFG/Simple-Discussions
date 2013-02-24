@@ -751,38 +751,8 @@ function statPanel($memID)
 	list ($context['num_topics']) = $smcFunc['db_fetch_row']($result);
 	$smcFunc['db_free_result']($result);
 
-	// Number polls started.
-	$result = $smcFunc['db_query']('', '
-		SELECT COUNT(*)
-		FROM {db_prefix}topics
-		WHERE id_member_started = {int:current_member}' . (!empty($modSettings['recycle_enable']) && $modSettings['recycle_board'] > 0 ? '
-			AND id_board != {int:recycle_board}' : '') . '
-			AND id_poll != {int:no_poll}',
-		array(
-			'current_member' => $memID,
-			'recycle_board' => $modSettings['recycle_board'],
-			'no_poll' => 0,
-		)
-	);
-	list ($context['num_polls']) = $smcFunc['db_fetch_row']($result);
-	$smcFunc['db_free_result']($result);
-
-	// Number polls voted in.
-	$result = $smcFunc['db_query']('distinct_poll_votes', '
-		SELECT COUNT(DISTINCT id_poll)
-		FROM {db_prefix}log_polls
-		WHERE id_member = {int:current_member}',
-		array(
-			'current_member' => $memID,
-		)
-	);
-	list ($context['num_votes']) = $smcFunc['db_fetch_row']($result);
-	$smcFunc['db_free_result']($result);
-
 	// Format the numbers...
 	$context['num_topics'] = comma_format($context['num_topics']);
-	$context['num_polls'] = comma_format($context['num_polls']);
-	$context['num_votes'] = comma_format($context['num_votes']);
 
 	// Grab the board this member posted in most often.
 	$result = $smcFunc['db_query']('', '

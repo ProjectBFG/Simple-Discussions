@@ -33,28 +33,6 @@ function template_main()
 	echo '
 			};';
 
-	// If this is a poll - use some javascript to ensure the user doesn't create a poll with illegal option combinations.
-	if ($context['make_poll'])
-		echo '
-			var pollOptionNum = 0, pollTabIndex;
-			var pollOptionId = ', $context['last_choice_id'], ';
-			function addPollOption()
-			{
-				if (pollOptionNum == 0)
-				{
-					for (var i = 0, n = document.forms.postmodify.elements.length; i < n; i++)
-						if (document.forms.postmodify.elements[i].id.substr(0, 8) == \'options-\')
-						{
-							pollOptionNum++;
-							pollTabIndex = document.forms.postmodify.elements[i].tabIndex;
-						}
-				}
-				pollOptionNum++
-				pollOptionId++
-
-				setOuterHTML(document.getElementById(\'pollMoreOptions\'), ', JavaScriptEscape('<li><label for="options-'), ' + pollOptionId + ', JavaScriptEscape('">' . $txt['option'] . ' '), ' + pollOptionNum + ', JavaScriptEscape('</label>: <input type="text" name="options['), ' + pollOptionId + ', JavaScriptEscape(']" id="options-'), ' + pollOptionId + ', JavaScriptEscape('" value="" size="80" maxlength="255" tabindex="'), ' + pollTabIndex + ', JavaScriptEscape('" class="input_text" /></li><li id="pollMoreOptions"></li>'), ');
-			}';
-
 	// End of the javascript, start the form and display the link tree.
 	echo '
 		// ]]></script>
@@ -167,78 +145,6 @@ function template_main()
 						</dd>
 					</dl>';
 
-	// If this is a poll then display all the poll options!
-	if ($context['make_poll'])
-	{
-		echo '
-					<hr class="clear" />
-					<div id="edit_poll">
-						<fieldset id="poll_main">
-							<legend><span ', (isset($context['poll_error']['no_question']) ? ' class="error"' : ''), '>', $txt['poll_question'], '</span></legend>
-							<input type="text" name="question" value="', isset($context['question']) ? $context['question'] : '', '" tabindex="', $context['tabindex']++, '" size="80" class="input_text" />
-							<ul class="poll_main">';
-
-		// Loop through all the choices and print them out.
-		foreach ($context['choices'] as $choice)
-		{
-			echo '
-								<li>
-									<label for="options-', $choice['id'], '">', $txt['option'], ' ', $choice['number'], '</label>:
-									<input type="text" name="options[', $choice['id'], ']" id="options-', $choice['id'], '" value="', $choice['label'], '" tabindex="', $context['tabindex']++, '" size="80" maxlength="255" class="input_text" />
-								</li>';
-		}
-
-		echo '
-								<li id="pollMoreOptions"></li>
-							</ul>
-							<strong><a href="javascript:addPollOption(); void(0);">(', $txt['poll_add_option'], ')</a></strong>
-						</fieldset>
-						<fieldset id="poll_options">
-							<legend>', $txt['poll_options'], '</legend>
-							<dl class="settings poll_options">
-								<dt>
-									<label for="poll_max_votes">', $txt['poll_max_votes'], ':</label>
-								</dt>
-								<dd>
-									<input type="text" name="poll_max_votes" id="poll_max_votes" size="2" value="', $context['poll_options']['max_votes'], '" class="input_text" />
-								</dd>
-								<dt>
-									<label for="poll_expire">', $txt['poll_run'], ':</label><br />
-									<em class="smalltext">', $txt['poll_run_limit'], '</em>
-								</dt>
-								<dd>
-									<input type="text" name="poll_expire" id="poll_expire" size="2" value="', $context['poll_options']['expire'], '" onchange="pollOptions();" maxlength="4" class="input_text" /> ', $txt['days_word'], '
-								</dd>
-								<dt>
-									<label for="poll_change_vote">', $txt['poll_do_change_vote'], ':</label>
-								</dt>
-								<dd>
-									<input type="checkbox" id="poll_change_vote" name="poll_change_vote"', !empty($context['poll']['change_vote']) ? ' checked="checked"' : '', ' class="input_check" />
-								</dd>';
-
-		if ($context['poll_options']['guest_vote_enabled'])
-			echo '
-								<dt>
-									<label for="poll_guest_vote">', $txt['poll_guest_vote'], ':</label>
-								</dt>
-								<dd>
-									<input type="checkbox" id="poll_guest_vote" name="poll_guest_vote"', !empty($context['poll_options']['guest_vote']) ? ' checked="checked"' : '', ' class="input_check" />
-								</dd>';
-
-		echo '
-								<dt>
-									', $txt['poll_results_visibility'], ':
-								</dt>
-								<dd>
-									<input type="radio" name="poll_hide" id="poll_results_anyone" value="0"', $context['poll_options']['hide'] == 0 ? ' checked="checked"' : '', ' class="input_radio" /> <label for="poll_results_anyone">', $txt['poll_results_anyone'], '</label><br />
-									<input type="radio" name="poll_hide" id="poll_results_voted" value="1"', $context['poll_options']['hide'] == 1 ? ' checked="checked"' : '', ' class="input_radio" /> <label for="poll_results_voted">', $txt['poll_results_voted'], '</label><br />
-									<input type="radio" name="poll_hide" id="poll_results_expire" value="2"', $context['poll_options']['hide'] == 2 ? ' checked="checked"' : '', empty($context['poll_options']['expire']) ? 'disabled="disabled"' : '', ' class="input_radio" /> <label for="poll_results_expire">', $txt['poll_results_after'], '</label>
-								</dd>
-							</dl>
-						</fieldset>
-					</div>';
-	}
-
 	// Show the actual posting area...
 	echo '
 					', template_control_richedit($context['post_box_name'], 'smileyBox_message', 'bbcBox_message');
@@ -337,7 +243,6 @@ function template_main()
 	// The functions used to preview a posts without loading a new page.
 	echo '
 			var current_board = ', empty($context['current_board']) ? 'null' : $context['current_board'], ';
-			var make_poll = ', $context['make_poll'] ? 'true' : 'false', ';
 			var txt_preview_title = "', $txt['preview_title'], '";
 			var txt_preview_fetch = "', $txt['preview_fetch'], '";
 			var new_replies = new Array();
@@ -361,12 +266,11 @@ function template_main()
 						if (!(\'setRequestHeader\' in test))
 							return submitThisOnce(document.forms.postmodify);
 					}
-					// @todo Currently not sending poll options and option checkboxes.
+
 					var x = new Array();
 					var textFields = [\'subject\', ', JavaScriptEscape($context['post_box_name']), ', ', JavaScriptEscape($context['session_var']), ', \'icon\', \'guestname\', \'email\', \'evtitle\', \'question\', \'topic\'];
 					var numericFields = [
-						\'board\', \'topic\', \'last_msg\',
-						\'poll_max_votes\', \'poll_expire\', \'poll_change_vote\', \'poll_hide\'
+						\'board\', \'topic\', \'last_msg\'
 					];
 					var checkboxFields = [
 						\'ns\'
@@ -388,7 +292,7 @@ function template_main()
 						if (checkboxFields[i] in document.forms.postmodify && document.forms.postmodify.elements[checkboxFields[i]].checked)
 							x[x.length] = checkboxFields[i] + \'=\' + document.forms.postmodify.elements[checkboxFields[i]].value;
 
-					sendXMLDocument(smf_prepareScriptUrl(smf_scripturl) + \'action=post2\' + (current_board ? \';board=\' + current_board : \'\') + (make_poll ? \';poll\' : \'\') + \';preview;xml\', x.join(\'&\'), onDocSent);
+					sendXMLDocument(smf_prepareScriptUrl(smf_scripturl) + \'action=post2\' + (current_board ? \';board=\' + current_board : \'\') + \';preview;xml\', x.join(\'&\'), onDocSent);
 
 					document.getElementById(\'preview_section\').style.display = \'\';
 					setInnerHTML(document.getElementById(\'preview_subject\'), txt_preview_title);

@@ -279,33 +279,6 @@ img#upshrink_ic, img#newsupshrink {
 	float: left;
 }
 
-h4#pollquestion {
-	padding: 0.5em 2em 0.5em 0;
-}
-/* Poll vote options */
-#poll_options ul.options {
-	padding: 1em 2em 0 2.5em;
-	margin: 0 0 1em 0;
-}
-#poll_options div.submitbutton {
-	clear: both;
-	padding: 0 2em 1em 0;
-	margin: 0 0 1em 0;
-}
-
-/* Poll results */
-#poll_options dl.options {
-	padding: 1em 2em 1em 2.5em;
-	margin: 0 0 1em 1em;
-}
-#poll_options dl.options dt {
-	float: right;
-	clear: right;
-}
-#poll_options dl.options dd {
-	margin: 0 2em 0 0;
-	float: right;
-}
 span.percent {
 	float: left;
 }
@@ -466,31 +439,6 @@ ul.post_options li {
 }
 #post_event #event_main select, #post_event ul.event_options li select, #post_event ul.event_options li .input_check {
 	margin: 0 0 0 1em;
-}
-
-/* Styles for edit poll section.
----------------------------------------------------- */
-
-#edit_poll fieldset input {
-	margin-right: 7em;	
-}
-#edit_poll ul.poll_main li {
-	padding-right: 1em;
-}
-#edit_poll ul.poll_main input {
-	margin-right: 1em;
-}
-#edit_poll div.poll_options {
-	float: right;
-}
-#edit_poll ul.poll_main, dl.poll_options {
-	padding: 0 .7em 0 0;
-}
-#edit_poll dl.poll_options dt {
-	padding: 0 1em 0 0;
-}
-#edit_poll dl.poll_options dd input {
-	margin-right: 0; 
 }
 
 /* Styles for the personal messages section.

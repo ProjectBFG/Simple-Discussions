@@ -407,11 +407,6 @@ function banPermissions()
 	{
 		$denied_permissions = array(
 			'pm_send',
-			'poll_post',
-			'poll_add_own', 'poll_add_any',
-			'poll_edit_own', 'poll_edit_any',
-			'poll_lock_own', 'poll_lock_any',
-			'poll_remove_own', 'poll_remove_any',
 			'manage_smileys', 'manage_boards', 'admin_forum', 'manage_permissions',
 			'moderate_forum', 'manage_membergroups', 'manage_bans', 'send_mail', 'edit_news',
 			'profile_identity_any', 'profile_extra_any', 'profile_title_any',

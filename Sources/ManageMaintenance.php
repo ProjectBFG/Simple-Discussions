@@ -959,8 +959,6 @@ function ConvertEntities()
 		'package_servers',
 		'personal_messages',
 		'pm_recipients',
-		'polls',
-		'poll_choices',
 		'smileys',
 		'themes',
 	);

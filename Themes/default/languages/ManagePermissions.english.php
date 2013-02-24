@@ -19,7 +19,6 @@ $txt['permissions_profile'] = 'Profile';
 $txt['permissions_profiles_desc'] = 'Permission profiles are assigned to individual boards to allow you to easily manage your security settings. From this area you can create, edit and delete permission profiles.';
 $txt['permissions_profiles_change_for_board'] = 'Edit Permission Profile For: &quot;%1$s&quot;';
 $txt['permissions_profile_default'] = 'Default';
-$txt['permissions_profile_no_polls'] = 'No Polls';
 $txt['permissions_profile_reply_only'] = 'Reply Only';
 $txt['permissions_profile_read_only'] = 'Read Only';
 
@@ -153,7 +152,7 @@ $txt['permissionhelp_profile_remote_avatar'] = 'Because avatars might influence 
 
 $txt['permissiongroup_general_board'] = 'General';
 $txt['permissionname_moderate_board'] = 'Moderate board';
-$txt['permissionhelp_moderate_board'] = 'The moderate board permission adds a few small permissions that make a moderator a real moderator. Permissions include replying to locked topics, changing the poll expire time and viewing poll results.';
+$txt['permissionhelp_moderate_board'] = 'The moderate board permission adds a few small permissions that make a moderator a real moderator. Permissions include replying to locked topics.';
 
 $txt['permissiongroup_topic'] = 'Topics';
 $txt['permissionname_post_new'] = 'Post new topics';
@@ -200,30 +199,6 @@ $txt['permissionname_modify_own'] = 'Own post';
 $txt['permissionname_modify_any'] = 'Any post';
 $txt['permissionname_report_any'] = 'Report posts to the moderators';
 $txt['permissionhelp_report_any'] = 'This permission adds a link to each message, allowing a user to report a post to a moderator. On reporting, all moderators on that board will receive an email with a link to the reported post and a description of the problem (as given by the reporting user).';
-
-$txt['permissiongroup_poll'] = 'Polls';
-$txt['permissionname_poll_view'] = 'View polls';
-$txt['permissionhelp_poll_view'] = 'This permission allows a user to view a poll. Without this permission, the user will only see the topic.';
-$txt['permissionname_poll_vote'] = 'Vote in polls';
-$txt['permissionhelp_poll_vote'] = 'This permission allows a (registered) user to cast one vote. It doesn\'t apply to guests.';
-$txt['permissionname_poll_post'] = 'Post polls';
-$txt['permissionhelp_poll_post'] = 'This permission allows a user to post a new poll. The user needs to have the \'Post new topics\' permission.';
-$txt['permissionname_poll_add'] = 'Add poll to topics';
-$txt['permissionhelp_poll_add'] = 'Add poll to topics allows a user to add a poll after the topic has been created. This permission requires sufficient rights to edit the first post of a topic.';
-$txt['permissionname_poll_add_own'] = 'Own topics';
-$txt['permissionname_poll_add_any'] = 'Any topics';
-$txt['permissionname_poll_edit'] = 'Edit polls';
-$txt['permissionhelp_poll_edit'] = 'This permission allows a user to edit the options of a poll and to reset the poll. In order to edit the maximum number of votes and the expiration time, a user needs to have the \'Moderate board\' permission.';
-$txt['permissionname_poll_edit_own'] = 'Own poll';
-$txt['permissionname_poll_edit_any'] = 'Any poll';
-$txt['permissionname_poll_lock'] = 'Lock polls';
-$txt['permissionhelp_poll_lock'] = 'Locking polls prevents the poll from accepting any more votes.';
-$txt['permissionname_poll_lock_own'] = 'Own poll';
-$txt['permissionname_poll_lock_any'] = 'Any poll';
-$txt['permissionname_poll_remove'] = 'Remove polls';
-$txt['permissionhelp_poll_remove'] = 'This permission allows removal of polls.';
-$txt['permissionname_poll_remove_own'] = 'Own poll';
-$txt['permissionname_poll_remove_any'] = 'Any poll';
 
 $txt['permissionname_post_draft'] = 'Save drafts of new posts';
 $txt['permissionname_simple_post_draft'] = 'Save drafts of new posts';
@@ -288,7 +263,6 @@ $txt['permissionname_simple_profile_remove_any'] = 'Delete other user\'s account
 
 $txt['permissiongroup_simple_make_unapproved_posts'] = 'Post topics and replies to the board <span style="text-decoration: underline">only</span> after they have been approved';
 $txt['permissiongroup_simple_make_posts'] = 'Post topics and replies to the board';
-$txt['permissiongroup_simple_post_polls'] = 'Make new polls';
 $txt['permissiongroup_simple_participate'] = 'View additional board content';
 $txt['permissiongroup_simple_modify'] = 'Modify their posts';
 $txt['permissiongroup_simple_notification'] = 'Request notifications';
@@ -309,14 +283,6 @@ $txt['permissionname_simple_delete_own'] = 'Delete a post that they made';
 $txt['permissionname_simple_delete_any'] = 'Delete a post made by anyone';
 $txt['permissionname_simple_modify_own'] = 'Modify their own post';
 $txt['permissionname_simple_modify_any'] = 'Modify someone else\'s post';
-$txt['permissionname_simple_poll_add_own'] = 'Add a poll to a topic they created';
-$txt['permissionname_simple_poll_add_any'] = 'Add a poll to any topic';
-$txt['permissionname_simple_poll_edit_own'] = 'Edit a poll they created';
-$txt['permissionname_simple_poll_edit_any'] = 'Edit anyone\'s poll';
-$txt['permissionname_simple_poll_lock_own'] = 'Lock their own poll';
-$txt['permissionname_simple_poll_lock_any'] = 'Lock anyone\'s poll';
-$txt['permissionname_simple_poll_remove_own'] = 'Remove a poll they created';
-$txt['permissionname_simple_poll_remove_any'] = 'Remove anyone\'s poll';
 
 $txt['permissionicon'] = '';
 

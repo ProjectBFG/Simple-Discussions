@@ -46,11 +46,11 @@ function db_packages_init()
 		'board_permissions', 'boards', 'categories', 'collapsed_categories',
 		'custom_fields', 'group_moderators', 'log_actions', 'log_activity', 'log_banned', 'log_boards',
 		'log_digest', 'log_errors', 'log_floodcontrol', 'log_group_requests', 'log_mark_read',
-		'log_notify', 'log_online', 'log_packages', 'log_polls', 'log_reported', 'log_reported_comments',
+		'log_notify', 'log_online', 'log_packages', 'log_reported', 'log_reported_comments',
 		'log_scheduled_tasks', 'log_search_messages', 'log_search_results', 'log_search_subjects',
 		'log_search_topics', 'log_topics', 'mail_queue', 'membergroups', 'members', 'message_icons',
 		'messages', 'moderators', 'package_servers', 'permission_profiles', 'permissions', 'personal_messages',
-		'pm_recipients', 'poll_choices', 'polls', 'scheduled_tasks', 'sessions', 'settings', 'smileys',
+		'pm_recipients', 'scheduled_tasks', 'sessions', 'settings', 'smileys',
 		'themes', 'topics');
 	foreach ($reservedTables as $k => $table_name)
 		$reservedTables[$k] = strtolower($db_prefix . $table_name);

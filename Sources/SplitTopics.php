@@ -1007,10 +1007,10 @@ function MergeExecute($topics = array())
 	if ($modSettings['postmod_active'])
 		$can_approve_boards = boardsAllowedTo('approve_posts');
 
-	// Get info about the topics and polls that will be merged.
+	// Get info about the topics that will be merged.
 	$request = $smcFunc['db_query']('', '
 		SELECT
-			t.id_topic, t.id_board, t.id_poll, t.num_views, t.is_sticky, t.approved, t.num_replies, t.unapproved_posts,
+			t.id_topic, t.id_board, t.num_views, t.is_sticky, t.approved, t.num_replies, t.unapproved_posts,
 			m1.subject, m1.poster_time AS time_started, IFNULL(mem1.id_member, 0) AS id_member_started, IFNULL(mem1.real_name, m1.poster_name) AS name_started,
 			m2.poster_time AS time_updated, IFNULL(mem2.id_member, 0) AS id_member_updated, IFNULL(mem2.real_name, m2.poster_name) AS name_updated
 		FROM {db_prefix}topics AS t
@@ -1031,7 +1031,6 @@ function MergeExecute($topics = array())
 	$is_sticky = 0;
 	$boardTotals = array();
 	$boards = array();
-	$polls = array();
 	$firstTopic = 0;
 	while ($row = $smcFunc['db_fetch_assoc']($request))
 	{
@@ -1058,7 +1057,6 @@ function MergeExecute($topics = array())
 		$topic_data[$row['id_topic']] = array(
 			'id' => $row['id_topic'],
 			'board' => $row['id_board'],
-			'poll' => $row['id_poll'],
 			'num_views' => $row['num_views'],
 			'subject' => $row['subject'],
 			'started' => array(
@@ -1077,9 +1075,6 @@ function MergeExecute($topics = array())
 		$num_views += $row['num_views'];
 		$boards[] = $row['id_board'];
 
-		// If there's no poll, id_poll == 0...
-		if ($row['id_poll'] > 0)
-			$polls[] = $row['id_poll'];
 		// Store the id_topic with the lowest id_first_msg.
 		if (empty($firstTopic))
 			$firstTopic = $row['id_topic'];
@@ -1126,31 +1121,6 @@ function MergeExecute($topics = array())
 
 	if (empty($_REQUEST['sa']) || $_REQUEST['sa'] == 'options')
 	{
-		if (count($polls) > 1)
-		{
-			$request = $smcFunc['db_query']('', '
-				SELECT t.id_topic, t.id_poll, m.subject, p.question
-				FROM {db_prefix}polls AS p
-					INNER JOIN {db_prefix}topics AS t ON (t.id_poll = p.id_poll)
-					INNER JOIN {db_prefix}messages AS m ON (m.id_msg = t.id_first_msg)
-				WHERE p.id_poll IN ({array_int:polls})
-				LIMIT ' . count($polls),
-				array(
-					'polls' => $polls,
-				)
-			);
-			while ($row = $smcFunc['db_fetch_assoc']($request))
-				$context['polls'][] = array(
-					'id' => $row['id_poll'],
-					'topic' => array(
-						'id' => $row['id_topic'],
-						'subject' => $row['subject']
-					),
-					'question' => $row['question'],
-					'selected' => $row['id_topic'] == $firstTopic
-				);
-			$smcFunc['db_free_result']($request);
-		}
 		if (count($boards) > 1)
 		{
 			$request = $smcFunc['db_query']('', '
@@ -1185,12 +1155,6 @@ function MergeExecute($topics = array())
 	$target_board = count($boards) > 1 ? (int) $_REQUEST['board'] : $boards[0];
 	if (!in_array($target_board, $boards))
 		fatal_lang_error('no_board');
-
-	// Determine which poll will survive and which polls won't.
-	$target_poll = count($polls) > 1 ? (int) $_POST['poll'] : (count($polls) == 1 ? $polls[0] : 0);
-	if ($target_poll > 0 && !in_array($target_poll, $polls))
-		fatal_lang_error('no_access', false);
-	$deleted_polls = empty($target_poll) ? $polls : array_diff($polls, array($target_poll));
 
 	// Determine the subject of the newly merged topic - was a custom subject specified?
 	if (empty($_POST['subject']) && isset($_POST['custom_subject']) && $_POST['custom_subject'] != '')
@@ -1339,7 +1303,6 @@ function MergeExecute($topics = array())
 			id_member_updated = {int:id_member_updated},
 			id_first_msg = {int:id_first_msg},
 			id_last_msg = {int:id_last_msg},
-			id_poll = {int:id_poll},
 			num_replies = {int:num_replies},
 			unapproved_posts = {int:unapproved_posts},
 			num_views = {int:num_views},
@@ -1355,7 +1318,6 @@ function MergeExecute($topics = array())
 			'id_member_updated' => $member_updated,
 			'id_first_msg' => $first_msg,
 			'id_last_msg' => $last_msg,
-			'id_poll' => $target_poll,
 			'num_replies' => $num_replies,
 			'unapproved_posts' => $num_unapproved,
 			'num_views' => $num_views,
@@ -1489,32 +1451,6 @@ function MergeExecute($topics = array())
 			);
 		}
 		$smcFunc['db_free_result']($request);
-	}
-
-	// Get rid of the redundant polls.
-	if (!empty($deleted_polls))
-	{
-		$smcFunc['db_query']('', '
-			DELETE FROM {db_prefix}polls
-			WHERE id_poll IN ({array_int:deleted_polls})',
-			array(
-				'deleted_polls' => $deleted_polls,
-			)
-		);
-		$smcFunc['db_query']('', '
-			DELETE FROM {db_prefix}poll_choices
-			WHERE id_poll IN ({array_int:deleted_polls})',
-			array(
-				'deleted_polls' => $deleted_polls,
-			)
-		);
-		$smcFunc['db_query']('', '
-			DELETE FROM {db_prefix}log_polls
-			WHERE id_poll IN ({array_int:deleted_polls})',
-			array(
-				'deleted_polls' => $deleted_polls,
-			)
-		);
 	}
 
 	// Cycle through each board...

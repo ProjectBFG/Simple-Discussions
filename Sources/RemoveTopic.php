@@ -406,48 +406,6 @@ function removeTopics($topics, $decreasePostCount = true, $ignoreRecycling = fal
 		);
 	}
 
-	// Remove Polls.
-	$request = $smcFunc['db_query']('', '
-		SELECT id_poll
-		FROM {db_prefix}topics
-		WHERE id_topic IN ({array_int:topics})
-			AND id_poll > {int:no_poll}
-		LIMIT ' . count($topics),
-		array(
-			'no_poll' => 0,
-			'topics' => $topics,
-		)
-	);
-	$polls = array();
-	while ($row = $smcFunc['db_fetch_assoc']($request))
-		$polls[] = $row['id_poll'];
-	$smcFunc['db_free_result']($request);
-
-	if (!empty($polls))
-	{
-		$smcFunc['db_query']('', '
-			DELETE FROM {db_prefix}polls
-			WHERE id_poll IN ({array_int:polls})',
-			array(
-				'polls' => $polls,
-			)
-		);
-		$smcFunc['db_query']('', '
-			DELETE FROM {db_prefix}poll_choices
-			WHERE id_poll IN ({array_int:polls})',
-			array(
-				'polls' => $polls,
-			)
-		);
-		$smcFunc['db_query']('', '
-			DELETE FROM {db_prefix}log_polls
-			WHERE id_poll IN ({array_int:polls})',
-			array(
-				'polls' => $polls,
-			)
-		);
-	}
-
 	// Delete possible search index entries.
 	if (!empty($modSettings['search_custom_index_config']))
 	{

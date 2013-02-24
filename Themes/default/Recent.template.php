@@ -238,8 +238,7 @@ function template_unread()
 			</p>
 			<p class="smalltext para2">
 				<img src="', $settings['images_url'], '/icons/quick_lock.png" alt="" class="centericon" /> ', $txt['locked_topic'], '<br />', ($modSettings['enableStickyTopics'] == '1' ? '
-				<img src="' . $settings['images_url'] . '/icons/quick_sticky.png" alt="" class="centericon" /> ' . $txt['sticky_topic'] . '<br />' : ''), ($modSettings['pollMode'] == '1' ? '
-				<img src="' . $settings['images_url'] . '/topic/normal_poll.png" alt="" class="centericon" /> ' . $txt['poll'] : ''), '
+				<img src="' . $settings['images_url'] . '/icons/quick_sticky.png" alt="" class="centericon" /> ' . $txt['sticky_topic'] . '<br />' : ''),' 
 			</p>
 		</div>
 	</div>';
@@ -403,8 +402,7 @@ function template_replies()
 			</p>
 			<p class="smalltext para2">
 				<img src="', $settings['images_url'], '/icons/quick_lock.png" alt="" class="centericon" /> ', $txt['locked_topic'], '<br />', ($modSettings['enableStickyTopics'] == '1' ? '
-				<img src="' . $settings['images_url'] . '/icons/quick_sticky.png" alt="" class="centericon" /> ' . $txt['sticky_topic'] . '<br />' : '') . ($modSettings['pollMode'] == '1' ? '
-				<img src="' . $settings['images_url'] . '/topic/normal_poll.png" alt="" class="centericon" /> ' . $txt['poll'] : '') . '
+				<img src="' . $settings['images_url'] . '/icons/quick_sticky.png" alt="" class="centericon" /> ' . $txt['sticky_topic'] . '<br />' : '').'
 			</p>
 		</div>
 	</div>';

@@ -197,7 +197,6 @@ function MessageIndex()
 	// Set the variables up for the template.
 	$context['can_mark_notify'] = allowedTo('mark_notify') && !$user_info['is_guest'];
 	$context['can_post_new'] = allowedTo('post_new') || ($modSettings['postmod_active'] && allowedTo('post_unapproved_topics'));
-	$context['can_post_poll'] = $modSettings['pollMode'] == '1' && allowedTo('poll_post') && $context['can_post_new'];
 	$context['can_moderate_forum'] = allowedTo('moderate_forum');
 	$context['can_approve_posts'] = allowedTo('approve_posts');
 
@@ -316,7 +315,7 @@ function MessageIndex()
 		$fake_ascending = false;
 
 	// Setup the default topic icons...
-	$stable_icons = array('xx', 'thumbup', 'thumbdown', 'exclamation', 'question', 'lamp', 'smiley', 'angry', 'cheesy', 'grin', 'sad', 'wink', 'poll', 'moved', 'recycled', 'clip');
+	$stable_icons = array('xx', 'thumbup', 'thumbdown', 'exclamation', 'question', 'lamp', 'smiley', 'angry', 'cheesy', 'grin', 'sad', 'wink', 'moved', 'recycled', 'clip');
 	$context['icon_sources'] = array();
 	foreach ($stable_icons as $icon)
 		$context['icon_sources'][$icon] = 'images_url';
@@ -361,7 +360,7 @@ function MessageIndex()
 
 		$result = $smcFunc['db_query']('substring', '
 			SELECT
-				t.id_topic, t.num_replies, t.locked, t.num_views, t.is_sticky, t.id_poll, t.id_previous_board,
+				t.id_topic, t.num_replies, t.locked, t.num_views, t.is_sticky, t.id_previous_board,
 				' . ($user_info['is_guest'] ? '0' : 'IFNULL(lt.id_msg, IFNULL(lmr.id_msg, -1)) + 1') . ' AS new_from,
 				t.id_last_msg, t.approved, t.unapproved_posts, ml.poster_time AS last_poster_time,
 				ml.id_msg_modified, ml.subject AS last_subject, ml.icon AS last_icon,
@@ -397,9 +396,6 @@ function MessageIndex()
 		// Begin 'printing' the message index for current board.
 		while ($row = $smcFunc['db_fetch_assoc']($result))
 		{
-			if ($row['id_poll'] > 0 && $modSettings['pollMode'] == '0')
-				continue;
-
 			if (!$pre_query)
 				$topic_ids[] = $row['id_topic'];
 
@@ -517,7 +513,6 @@ function MessageIndex()
 				),
 				'is_sticky' => !empty($modSettings['enableStickyTopics']) && !empty($row['is_sticky']),
 				'is_locked' => !empty($row['locked']),
-				'is_poll' => $modSettings['pollMode'] == '1' && $row['id_poll'] > 0,
 				'is_hot' => $row['num_replies'] >= $modSettings['hotTopicPosts'],
 				'is_very_hot' => $row['num_replies'] >= $modSettings['hotTopicVeryPosts'],
 				'is_posted_in' => false,
@@ -623,7 +618,6 @@ function MessageIndex()
 	// Build the message index button array.
 	$context['normal_buttons'] = array(
 		'new_topic' => array('test' => 'can_post_new', 'text' => 'new_topic', 'image' => 'new_topic.png', 'lang' => true, 'url' => $scripturl . '?action=post;board=' . $context['current_board'] . '.0', 'active' => true),
-		'post_poll' => array('test' => 'can_post_poll', 'text' => 'new_poll', 'image' => 'new_poll.png', 'lang' => true, 'url' => $scripturl . '?action=post;board=' . $context['current_board'] . '.0;poll'),
 		'notify' => array('test' => 'can_mark_notify', 'text' => $context['is_marked_notify'] ? 'unnotify' : 'notify', 'image' => ($context['is_marked_notify'] ? 'un' : ''). 'notify.png', 'lang' => true, 'custom' => 'onclick="return confirm(\'' . ($context['is_marked_notify'] ? $txt['notification_disable_board'] : $txt['notification_enable_board']) . '\');"', 'url' => $scripturl . '?action=notifyboard;sa=' . ($context['is_marked_notify'] ? 'off' : 'on') . ';board=' . $context['current_board'] . '.' . $context['start'] . ';' . $context['session_var'] . '=' . $context['session_id']),
 		'markread' => array('text' => 'mark_read_short', 'image' => 'markread.png', 'lang' => true, 'url' => $scripturl . '?action=markasread;sa=board;board=' . $context['current_board'] . '.0;' . $context['session_var'] . '=' . $context['session_id']),
 	);

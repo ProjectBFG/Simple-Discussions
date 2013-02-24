@@ -388,19 +388,10 @@ $txt['template_parse_error_details'] = 'There was a problem loading the <tt><str
 
 $txt['today'] = '<strong>Today</strong> at ';
 $txt['yesterday'] = '<strong>Yesterday</strong> at ';
-$txt['new_poll'] = 'New poll';
-$txt['poll_question'] = 'Question';
-$txt['poll_vote'] = 'Submit Vote';
-$txt['poll_total_voters'] = 'Total Members Voted';
 $txt['shortcuts'] = 'shortcuts: alt+s submit/post, alt+p preview';
 $txt['shortcuts_firefox'] = 'shortcuts: shift+alt+s submit/post, shift+alt+p preview';
 $txt['shortcuts_drafts'] = ', alt+d save draft';
 $txt['shortcuts_drafts_firefox'] = ', shift+alt+d save draft';
-$txt['poll_results'] = 'View results';
-$txt['poll_lock'] = 'Lock Voting';
-$txt['poll_unlock'] = 'Unlock Voting';
-$txt['poll_edit'] = 'Edit Poll';
-$txt['poll'] = 'Poll';
 $txt['one_day'] = '1 Day';
 $txt['one_week'] = '1 Week';
 $txt['two_weeks'] = '2 Weeks';
@@ -536,17 +527,6 @@ $txt['ban_reason'] = 'Reason';
 
 $txt['tables_optimized'] = 'Database tables optimized';
 
-$txt['add_poll'] = 'Add poll';
-$txt['poll_options6'] = 'You may only select up to %1$s options.';
-$txt['poll_remove'] = 'Remove Poll';
-$txt['poll_remove_warn'] = 'Are you sure you want to remove this poll from the topic?';
-$txt['poll_results_expire'] = 'Results will be shown when voting has closed';
-$txt['poll_expires_on'] = 'Voting closes';
-$txt['poll_expired_on'] = 'Voting closed';
-$txt['poll_change_vote'] = 'Remove Vote';
-$txt['poll_return_vote'] = 'Voting options';
-$txt['poll_cannot_see'] = 'You cannot see the results of this poll at the moment.';
-
 $txt['quick_mod_approve'] = 'Approve selected';
 $txt['quick_mod_remove'] = 'Remove selected';
 $txt['quick_mod_lock'] = 'Lock/Unlock selected';
@@ -613,14 +593,12 @@ $txt['most_online_ever'] = 'Most Online Ever';
 $txt['most_online_today'] = 'Most Online Today';
 
 $txt['merge_select_target_board'] = 'Select the target board of the merged topic';
-$txt['merge_select_poll'] = 'Select which poll the merged topic should have';
 $txt['merge_topic_list'] = 'Select topics to be merged';
 $txt['merge_select_subject'] = 'Select subject of merged topic';
 $txt['merge_custom_subject'] = 'Custom subject';
 $txt['merge_enforce_subject'] = 'Change the subject of all the messages';
 $txt['merge_include_notifications'] = 'Include notifications?';
 $txt['merge_check'] = 'Merge?';
-$txt['merge_no_poll'] = 'No poll';
 
 $txt['response_prefix'] = 'Re: ';
 $txt['current_icon'] = 'Current Icon';

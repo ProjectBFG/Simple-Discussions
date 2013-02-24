@@ -163,18 +163,12 @@ CREATE TABLE {$db_prefix}board_permissions (
 
 INSERT INTO {$db_prefix}board_permissions
 	(id_group, id_profile, permission)
-VALUES (-1, 1, 'poll_view'),
+VALUES 
 	(0, 1, 'remove_own'),
 	(0, 1, 'lock_own'),
 	(0, 1, 'mark_any_notify'),
 	(0, 1, 'mark_notify'),
 	(0, 1, 'modify_own'),
-	(0, 1, 'poll_add_own'),
-	(0, 1, 'poll_edit_own'),
-	(0, 1, 'poll_lock_own'),
-	(0, 1, 'poll_post'),
-	(0, 1, 'poll_view'),
-	(0, 1, 'poll_vote'),
 	(0, 1, 'post_new'),
 	(0, 1, 'post_draft'),
 	(0, 1, 'post_autosave_draft'),
@@ -195,13 +189,6 @@ VALUES (-1, 1, 'poll_view'),
 	(2, 1, 'post_unapproved_topics'),
 	(2, 1, 'post_unapproved_replies_any'),
 	(2, 1, 'post_unapproved_replies_own'),
-	(2, 1, 'poll_post'),
-	(2, 1, 'poll_add_any'),
-	(2, 1, 'poll_remove_any'),
-	(2, 1, 'poll_view'),
-	(2, 1, 'poll_vote'),
-	(2, 1, 'poll_lock_any'),
-	(2, 1, 'poll_edit_any'),
 	(2, 1, 'report_any'),
 	(2, 1, 'lock_own'),
 	(2, 1, 'send_topic'),
@@ -227,13 +214,6 @@ VALUES (-1, 1, 'poll_view'),
 	(3, 1, 'post_unapproved_topics'),
 	(3, 1, 'post_unapproved_replies_any'),
 	(3, 1, 'post_unapproved_replies_own'),
-	(3, 1, 'poll_post'),
-	(3, 1, 'poll_add_any'),
-	(3, 1, 'poll_remove_any'),
-	(3, 1, 'poll_view'),
-	(3, 1, 'poll_vote'),
-	(3, 1, 'poll_lock_any'),
-	(3, 1, 'poll_edit_any'),
 	(3, 1, 'report_any'),
 	(3, 1, 'lock_own'),
 	(3, 1, 'send_topic'),
@@ -250,14 +230,11 @@ VALUES (-1, 1, 'poll_view'),
 	(3, 1, 'delete_any'),
 	(3, 1, 'modify_any'),
 	(3, 1, 'approve_posts'),
-	(-1, 2, 'poll_view'),
 	(0, 2, 'remove_own'),
 	(0, 2, 'lock_own'),
 	(0, 2, 'mark_any_notify'),
 	(0, 2, 'mark_notify'),
 	(0, 2, 'modify_own'),
-	(0, 2, 'poll_view'),
-	(0, 2, 'poll_vote'),
 	(0, 2, 'post_new'),
 	(0, 2, 'post_draft'),
 	(0, 2, 'post_autosave_draft'),
@@ -278,13 +255,6 @@ VALUES (-1, 1, 'poll_view'),
 	(2, 2, 'post_unapproved_topics'),
 	(2, 2, 'post_unapproved_replies_any'),
 	(2, 2, 'post_unapproved_replies_own'),
-	(2, 2, 'poll_post'),
-	(2, 2, 'poll_add_any'),
-	(2, 2, 'poll_remove_any'),
-	(2, 2, 'poll_view'),
-	(2, 2, 'poll_vote'),
-	(2, 2, 'poll_lock_any'),
-	(2, 2, 'poll_edit_any'),
 	(2, 2, 'report_any'),
 	(2, 2, 'lock_own'),
 	(2, 2, 'send_topic'),
@@ -310,13 +280,6 @@ VALUES (-1, 1, 'poll_view'),
 	(3, 2, 'post_unapproved_topics'),
 	(3, 2, 'post_unapproved_replies_any'),
 	(3, 2, 'post_unapproved_replies_own'),
-	(3, 2, 'poll_post'),
-	(3, 2, 'poll_add_any'),
-	(3, 2, 'poll_remove_any'),
-	(3, 2, 'poll_view'),
-	(3, 2, 'poll_vote'),
-	(3, 2, 'poll_lock_any'),
-	(3, 2, 'poll_edit_any'),
 	(3, 2, 'report_any'),
 	(3, 2, 'lock_own'),
 	(3, 2, 'send_topic'),
@@ -333,14 +296,11 @@ VALUES (-1, 1, 'poll_view'),
 	(3, 2, 'delete_any'),
 	(3, 2, 'modify_any'),
 	(3, 2, 'approve_posts'),
-	(-1, 3, 'poll_view'),
 	(0, 3, 'remove_own'),
 	(0, 3, 'lock_own'),
 	(0, 3, 'mark_any_notify'),
 	(0, 3, 'mark_notify'),
 	(0, 3, 'modify_own'),
-	(0, 3, 'poll_view'),
-	(0, 3, 'poll_vote'),
 	(0, 3, 'post_reply_any'),
 	(0, 3, 'post_reply_own'),
 	(0, 3, 'post_unapproved_replies_any'),
@@ -357,13 +317,6 @@ VALUES (-1, 1, 'poll_view'),
 	(2, 3, 'post_unapproved_topics'),
 	(2, 3, 'post_unapproved_replies_any'),
 	(2, 3, 'post_unapproved_replies_own'),
-	(2, 3, 'poll_post'),
-	(2, 3, 'poll_add_any'),
-	(2, 3, 'poll_remove_any'),
-	(2, 3, 'poll_view'),
-	(2, 3, 'poll_vote'),
-	(2, 3, 'poll_lock_any'),
-	(2, 3, 'poll_edit_any'),
 	(2, 3, 'report_any'),
 	(2, 3, 'lock_own'),
 	(2, 3, 'send_topic'),
@@ -389,13 +342,6 @@ VALUES (-1, 1, 'poll_view'),
 	(3, 3, 'post_unapproved_topics'),
 	(3, 3, 'post_unapproved_replies_any'),
 	(3, 3, 'post_unapproved_replies_own'),
-	(3, 3, 'poll_post'),
-	(3, 3, 'poll_add_any'),
-	(3, 3, 'poll_remove_any'),
-	(3, 3, 'poll_view'),
-	(3, 3, 'poll_vote'),
-	(3, 3, 'poll_lock_any'),
-	(3, 3, 'poll_edit_any'),
 	(3, 3, 'report_any'),
 	(3, 3, 'lock_own'),
 	(3, 3, 'send_topic'),
@@ -412,11 +358,8 @@ VALUES (-1, 1, 'poll_view'),
 	(3, 3, 'delete_any'),
 	(3, 3, 'modify_any'),
 	(3, 3, 'approve_posts'),
-	(-1, 4, 'poll_view'),
 	(0, 4, 'mark_any_notify'),
 	(0, 4, 'mark_notify'),
-	(0, 4, 'poll_view'),
-	(0, 4, 'poll_vote'),
 	(0, 4, 'report_any'),
 	(0, 4, 'send_topic'),
 	(2, 4, 'moderate_board'),
@@ -428,13 +371,6 @@ VALUES (-1, 1, 'poll_view'),
 	(2, 4, 'post_unapproved_topics'),
 	(2, 4, 'post_unapproved_replies_any'),
 	(2, 4, 'post_unapproved_replies_own'),
-	(2, 4, 'poll_post'),
-	(2, 4, 'poll_add_any'),
-	(2, 4, 'poll_remove_any'),
-	(2, 4, 'poll_view'),
-	(2, 4, 'poll_vote'),
-	(2, 4, 'poll_lock_any'),
-	(2, 4, 'poll_edit_any'),
 	(2, 4, 'report_any'),
 	(2, 4, 'lock_own'),
 	(2, 4, 'send_topic'),
@@ -460,13 +396,6 @@ VALUES (-1, 1, 'poll_view'),
 	(3, 4, 'post_unapproved_topics'),
 	(3, 4, 'post_unapproved_replies_any'),
 	(3, 4, 'post_unapproved_replies_own'),
-	(3, 4, 'poll_post'),
-	(3, 4, 'poll_add_any'),
-	(3, 4, 'poll_remove_any'),
-	(3, 4, 'poll_view'),
-	(3, 4, 'poll_vote'),
-	(3, 4, 'poll_lock_any'),
-	(3, 4, 'poll_edit_any'),
 	(3, 4, 'report_any'),
 	(3, 4, 'lock_own'),
 	(3, 4, 'send_topic'),
@@ -815,17 +744,6 @@ CREATE TABLE {$db_prefix}log_packages (
 ) ENGINE=MyISAM;
 
 #
-# Table structure for table `log_polls`
-#
-
-CREATE TABLE {$db_prefix}log_polls (
-  id_poll mediumint(8) unsigned NOT NULL default '0',
-  id_member mediumint(8) unsigned NOT NULL default '0',
-  id_choice tinyint(3) unsigned NOT NULL default '0',
-  KEY id_poll (id_poll, id_member, id_choice)
-) ENGINE=MyISAM;
-
-#
 # Table structure for table `log_reported`
 #
 
@@ -1167,7 +1085,6 @@ VALUES ('xx', 'Standard', '0'),
 	('grin', 'Grin', '9'),
 	('sad', 'Sad', '10'),
 	('wink', 'Wink', '11'),
-	('poll', 'Poll', '12');
 # --------------------------------------------------------
 
 #
@@ -1275,7 +1192,7 @@ CREATE TABLE {$db_prefix}permission_profiles (
 
 INSERT INTO {$db_prefix}permission_profiles
 	(id_profile, profile_name)
-VALUES (1, 'default'), (2, 'no_polls'), (3, 'reply_only'), (4, 'read_only');
+VALUES (1, 'default'), (2, 'reply_only'), (3, 'read_only');
 # --------------------------------------------------------
 
 #
@@ -1383,38 +1300,6 @@ CREATE TABLE {$db_prefix}pm_rules (
 ) ENGINE=MyISAM;
 
 #
-# Table structure for table `polls`
-#
-
-CREATE TABLE {$db_prefix}polls (
-  id_poll mediumint(8) unsigned NOT NULL auto_increment,
-  question varchar(255) NOT NULL default '',
-  voting_locked tinyint(1) NOT NULL default '0',
-  max_votes tinyint(3) unsigned NOT NULL default '1',
-  expire_time int(10) unsigned NOT NULL default '0',
-  hide_results tinyint(3) unsigned NOT NULL default '0',
-  change_vote tinyint(3) unsigned NOT NULL default '0',
-  guest_vote tinyint(3) unsigned NOT NULL default '0',
-  num_guest_voters int(10) unsigned NOT NULL default '0',
-  reset_poll int(10) unsigned NOT NULL default '0',
-  id_member mediumint(8) NOT NULL default '0',
-  poster_name varchar(255) NOT NULL default '',
-  PRIMARY KEY (id_poll)
-) ENGINE=MyISAM;
-
-#
-# Table structure for table `poll_choices`
-#
-
-CREATE TABLE {$db_prefix}poll_choices (
-  id_poll mediumint(8) unsigned NOT NULL default '0',
-  id_choice tinyint(3) unsigned NOT NULL default '0',
-  label varchar(255) NOT NULL default '',
-  votes smallint(5) unsigned NOT NULL default '0',
-  PRIMARY KEY (id_poll, id_choice)
-) ENGINE=MyISAM;
-
-#
 # Table structure for table `scheduled_tasks`
 #
 
@@ -1476,7 +1361,6 @@ VALUES ('smfVersion', '{$smf_version}'),
 	('enableStickyTopics', '1'),
 	('todayMod', '1'),
 	('enablePreviousNext', '1'),
-	('pollMode', '1'),
 	('enableVBStyleLogin', '1'),
 	('enableCompressedOutput', '{$enableCompressedOutput}'),
 	('censorIgnoreCase', '1'),
@@ -1775,7 +1659,6 @@ CREATE TABLE {$db_prefix}topics (
   id_last_msg int(10) unsigned NOT NULL default '0',
   id_member_started mediumint(8) unsigned NOT NULL default '0',
   id_member_updated mediumint(8) unsigned NOT NULL default '0',
-  id_poll mediumint(8) unsigned NOT NULL default '0',
   id_previous_board smallint(5) NOT NULL default '0',
   id_previous_topic mediumint(8) NOT NULL default '0',
   num_replies int(10) unsigned NOT NULL default '0',
@@ -1788,7 +1671,6 @@ CREATE TABLE {$db_prefix}topics (
   PRIMARY KEY (id_topic),
   UNIQUE last_message (id_last_msg, id_board),
   UNIQUE first_message (id_first_msg, id_board),
-  UNIQUE poll (id_poll, id_topic),
   KEY is_sticky (is_sticky),
   KEY approved (approved),
   KEY id_board (id_board),

@@ -330,7 +330,7 @@ function PermissionIndex()
 		);
 	}
 
-	// We can modify any permission set apart from the read only, reply only and no polls ones as they are redefined.
+	// We can modify any permission set apart from the read only, reply only ones as they are redefined.
 	$context['can_modify'] = empty($_REQUEST['pid']) || $_REQUEST['pid'] == 1 || $_REQUEST['pid'] > 4;
 
 	// Load the proper template.
@@ -1099,7 +1099,6 @@ function setPermissionLevel($level, $group, $profile = 'null')
 		'profile_identity_own',
 	);
 	$groupLevels['board']['restrict'] = array(
-		'poll_view',
 		'post_new',
 		'post_reply_own',
 		'post_reply_any',
@@ -1122,10 +1121,6 @@ function setPermissionLevel($level, $group, $profile = 'null')
 		'profile_remove_own',
 	));
 	$groupLevels['board']['standard'] = array_merge($groupLevels['board']['restrict'], array(
-		'poll_vote',
-		'poll_edit_own',
-		'poll_post',
-		'poll_add_own',
 		'lock_own',
 		'remove_own',
 	));
@@ -1137,7 +1132,6 @@ function setPermissionLevel($level, $group, $profile = 'null')
 	));
 	$groupLevels['board']['moderator'] = array_merge($groupLevels['board']['standard'], array(
 		'make_sticky',
-		'poll_edit_any',
 		'delete_any',
 		'modify_any',
 		'lock_any',
@@ -1145,9 +1139,6 @@ function setPermissionLevel($level, $group, $profile = 'null')
 		'move_any',
 		'merge_any',
 		'split_any',
-		'poll_lock_any',
-		'poll_remove_any',
-		'poll_add_any',
 		'approve_posts',
 	));
 
@@ -1174,7 +1165,6 @@ function setPermissionLevel($level, $group, $profile = 'null')
 
 	// Locked - just that, you can't post here.
 	$boardLevels['locked'] = array(
-		'poll_view',
 		'mark_notify',
 		'report_any',
 		'send_topic',
@@ -1190,21 +1180,12 @@ function setPermissionLevel($level, $group, $profile = 'null')
 		'mark_any_notify',
 		'delete_replies',
 		'modify_replies',
-		'poll_vote',
-		'poll_edit_own',
-		'poll_post',
-		'poll_add_own',
-		'poll_remove_own',
 		'lock_own',
 		'remove_own',
 	));
 
 	// Free for All - Scary.  Just scary.
 	$boardLevels['free'] = array_merge($boardLevels['publish'], array(
-		'poll_lock_any',
-		'poll_edit_any',
-		'poll_add_any',
-		'poll_remove_any',
 		'make_sticky',
 		'lock_any',
 		'remove_any',
@@ -1410,7 +1391,6 @@ function loadAllPermissions($loadType = 'classic')
 			'simple' => array(
 				'make_posts',
 				'make_unapproved_posts',
-				'post_polls',
 				'participate',
 				'modify',
 				'notification',
@@ -1420,7 +1400,6 @@ function loadAllPermissions($loadType = 'classic')
 				'general_board',
 				'topic',
 				'post',
-				'poll',
 				'notification',
 			),
 		),
@@ -1485,13 +1464,6 @@ function loadAllPermissions($loadType = 'classic')
 			'delete' => array(true, 'post', 'modify', 'moderate'),
 			'modify' => array(true, 'post', 'modify', 'moderate'),
 			'report_any' => array(false, 'post', 'participate'),
-			'poll_view' => array(false, 'poll', 'participate'),
-			'poll_vote' => array(false, 'poll', 'participate'),
-			'poll_post' => array(false, 'poll', 'post_polls'),
-			'poll_add' => array(true, 'poll', 'post_polls', 'moderate'),
-			'poll_edit' => array(true, 'poll', 'modify', 'moderate'),
-			'poll_lock' => array(true, 'poll', 'moderate', 'moderate'),
-			'poll_remove' => array(true, 'poll', 'modify', 'moderate'),
 			'mark_any_notify' => array(false, 'notification', 'notification'),
 			'mark_notify' => array(false, 'notification', 'notification'),
 		),
@@ -2169,7 +2141,6 @@ function loadIllegalGuestPermissions()
 
 	$context['non_guest_permissions'] = array(
 		'delete_replies',
-		'poll_add_own',
 		'pm_read',
 		'pm_send',
 		'profile_identity',

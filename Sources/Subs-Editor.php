@@ -1386,7 +1386,6 @@ function getMessageIcons($board_id)
 			array('value' => 'grin', 'name' => $txt['icon_grin']),
 			array('value' => 'sad', 'name' => $txt['icon_sad']),
 			array('value' => 'wink', 'name' => $txt['icon_wink']),
-			array('value' => 'poll', 'name' => $txt['icon_poll']),
 		);
 
 		foreach ($icons as $k => $dummy)

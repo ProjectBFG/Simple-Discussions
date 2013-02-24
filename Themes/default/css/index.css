@@ -1414,94 +1414,6 @@ td#quick_actions {
 	margin: 0 10px;
 	vertical-align: top;
 }
-/* Poll question */
-#poll {
-	overflow: hidden;
-}
-#poll .content {
-	padding: 0 12px;
-}
-h4#pollquestion {
-	padding: 0 0 6px 25px;
-}
-
-/* Poll vote options */
-#poll_options ul.options {
-	border-top: 1px solid #9999aa;
-	padding: 12px 30px 0 25px;
-	margin: 0 0 12px 0;
-}
-#poll_options div.submitbutton {
-	border-bottom: 1px solid #9999aa;
-	clear: both;
-	padding: 0 0 12px 25px;
-	margin: 0 0 12px 0;
-}
-
-/* Poll results */
-#poll_options dl.options {
-	border: solid #9999aa;
-	border-width: 1px 0;
-	padding: 12px 0 12px 25px;
-	margin: 0 0 12px 0;
-	line-height: 1.4em;
-}
-#poll_options dl.options dt {
-	padding: 4px 0;
-	width: 30%;
-	max-width: 30em;
-	float: left;
-	margin: 0;
-	clear: left;
-}
-#poll_options dl.options .voted {
-	font-weight: bold;
-}
-#poll_options dl.options dd {
-	margin: 0 0 0 15px;
-	padding: 1px 0 0 0;
-	width: 60%;
-	max-width: 45em;
-	float: left;
-	margin: 0 0 4px 0;
-	padding: 0 4px 0 0;
-	line-height: 1.4em;
-	min-height: 1.4em;
-	background: #fff;
-	border: 1px solid #aaa;
-	border-radius: 2px;
-	position: relative;
-}
-/* Absolute positioning stops these breaking the bars on narrow screens. */
-#poll_options dl.options .percentage {
-	display: block;
-	float: right;
-	margin: 0 0 0 0;
-	padding: 0 2px;
-	position: absolute;
-	right: 0;
-	top: 0;
-	z-index: 2;
-	background: #fff;
-	white-space: pre;
-}
-
-/* Poll notices */
-#poll_options p {
-	margin: 0 18px 2px 18px;
-	padding: 0 6px 6px 6px;
-}
-
-div#pollmoderation {
-	margin: 0;
-	padding: 0;
-	overflow: auto;
-}
-
-#poll_options .submitbutton {
-	float: right;
-	width: 100%;
-}
 
 /* On to the posts */
 #forumposts {
@@ -2083,44 +1995,6 @@ ul.post_options li {
 }
 #post_event #event_main select, #post_event ul.event_options li select, #post_event ul.event_options li .input_check {
 	margin: 0 12px 0 0;
-}
-
-/* Styles for edit poll section.
----------------------------------------------------- */
-
-#edit_poll {
-	overflow: hidden;
-}
-#edit_poll fieldset {
-	padding: 6px;
-	clear: both;
-	overflow: hidden;
-}
-#edit_poll fieldset input {
-	margin-left: 8.1em;
-}
-#edit_poll ul.poll_main li {
-	padding-left: 12px;
-}
-#edit_poll ul.poll_main input {
-	margin-left: 12px;
-}
-#edit_poll ul.poll_main, dl.poll_options {
-	overflow: hidden;
-	padding: 0 0 8px 8px;
-}
-#edit_poll ul.poll_main li {
-	margin: 2px 0;
-}
-#edit_poll dl.poll_options dt {
-	width: 33%;
-	padding: 0 0 0 12px;
-}
-#edit_poll dl.poll_options dd {
-	width: 65%;
-}
-#edit_poll dl.poll_options dd input {
-	margin-left: 0;
 }
 
 /* Styles for the recent messages section.

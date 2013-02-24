@@ -348,7 +348,7 @@ function determineActions($urls, $preferred_prefix = false)
 			elseif (($actions['action'] == 'post' || $actions['action'] == 'post2') && empty($actions['topic']) && isset($actions['board']))
 			{
 				$data[$k] = $txt['who_hidden'];
-				$board_ids[(int) $actions['board']][$k] = isset($actions['poll']) ? $txt['who_poll'] : $txt['who_post'];
+				$board_ids[(int) $actions['board']][$k] = $txt['who_post'];
 			}
 			// A subaction anyone can view... if the language string is there, show it.
 			elseif (isset($actions['sa']) && isset($txt['whoall_' . $actions['action'] . '_' . $actions['sa']]))

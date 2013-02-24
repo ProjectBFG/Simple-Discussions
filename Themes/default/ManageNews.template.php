@@ -288,7 +288,7 @@ function template_email_members_compose()
 						if (!(\'setRequestHeader\' in test))
 							return submitThisOnce(document.forms.newsmodify);
 					}
-					// @todo Currently not sending poll options and option checkboxes.
+
 					var x = new Array();
 					var textFields = [\'subject\', ', JavaScriptEscape($context['post_box_name']), '];
 					var checkboxFields = [\'send_html\', \'send_pm\'];

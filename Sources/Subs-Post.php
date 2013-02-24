@@ -1749,7 +1749,6 @@ function createPost(&$msgOptions, &$topicOptions, &$posterOptions)
 	$msgOptions['smileys_enabled'] = !empty($msgOptions['smileys_enabled']);
 	$msgOptions['approved'] = isset($msgOptions['approved']) ? (int) $msgOptions['approved'] : 1;
 	$topicOptions['id'] = empty($topicOptions['id']) ? 0 : (int) $topicOptions['id'];
-	$topicOptions['poll'] = isset($topicOptions['poll']) ? (int) $topicOptions['poll'] : null;
 	$topicOptions['lock_mode'] = isset($topicOptions['lock_mode']) ? $topicOptions['lock_mode'] : null;
 	$topicOptions['sticky_mode'] = isset($topicOptions['sticky_mode']) ? $topicOptions['sticky_mode'] : null;
 	$topicOptions['redirect_expires'] = isset($topicOptions['redirect_expires']) ? $topicOptions['redirect_expires'] : null;
@@ -1853,13 +1852,11 @@ function createPost(&$msgOptions, &$topicOptions, &$posterOptions)
 		$topic_columns = array(
 			'id_board' => 'int', 'id_member_started' => 'int', 'id_member_updated' => 'int', 'id_first_msg' => 'int',
 			'id_last_msg' => 'int', 'locked' => 'int', 'is_sticky' => 'int', 'num_views' => 'int',
-			'id_poll' => 'int', 'unapproved_posts' => 'int', 'approved' => 'int',
 			'redirect_expires' => 'int', 'id_redirect_topic' => 'int',
 		);
 		$topic_parameters = array(
 			$topicOptions['board'], $posterOptions['id'], $posterOptions['id'], $msgOptions['id'],
 			$msgOptions['id'], $topicOptions['lock_mode'] === null ? 0 : $topicOptions['lock_mode'], $topicOptions['sticky_mode'] === null ? 0 : $topicOptions['sticky_mode'], 0,
-			$topicOptions['poll'] === null ? 0 : $topicOptions['poll'], $msgOptions['approved'] ? 0 : 1, $msgOptions['approved'],
 			$topicOptions['redirect_expires'] === null ? 0 : $topicOptions['redirect_expires'], $topicOptions['redirect_topic'] === null ? 0 : $topicOptions['redirect_topic'],
 		);
 
@@ -2078,7 +2075,6 @@ function modifyPost(&$msgOptions, &$topicOptions, &$posterOptions)
 {
 	global $user_info, $modSettings, $smcFunc, $context, $sourcedir;
 
-	$topicOptions['poll'] = isset($topicOptions['poll']) ? (int) $topicOptions['poll'] : null;
 	$topicOptions['lock_mode'] = isset($topicOptions['lock_mode']) ? $topicOptions['lock_mode'] : null;
 	$topicOptions['sticky_mode'] = isset($topicOptions['sticky_mode']) ? $topicOptions['sticky_mode'] : null;
 
@@ -2147,19 +2143,17 @@ function modifyPost(&$msgOptions, &$topicOptions, &$posterOptions)
 	);
 
 	// Lock and or sticky the post.
-	if ($topicOptions['sticky_mode'] !== null || $topicOptions['lock_mode'] !== null || $topicOptions['poll'] !== null)
+	if ($topicOptions['sticky_mode'] !== null || $topicOptions['lock_mode'] !== null)
 	{
 		$smcFunc['db_query']('', '
 			UPDATE {db_prefix}topics
 			SET
 				is_sticky = {raw:is_sticky},
-				locked = {raw:locked},
-				id_poll = {raw:id_poll}
+				locked = {raw:locked}
 			WHERE id_topic = {int:id_topic}',
 			array(
 				'is_sticky' => $topicOptions['sticky_mode'] === null ? 'is_sticky' : (int) $topicOptions['sticky_mode'],
 				'locked' => $topicOptions['lock_mode'] === null ? 'locked' : (int) $topicOptions['lock_mode'],
-				'id_poll' => $topicOptions['poll'] === null ? 'id_poll' : (int) $topicOptions['poll'],
 				'id_topic' => $topicOptions['id'],
 			)
 		);
