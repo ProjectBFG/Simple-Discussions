@@ -3578,6 +3578,7 @@ ul.dropdown-menu a.active
 	display: block;
 	margin-top: 30px;
 	min-height: 500px;
+	margin-right: 15px;
 }
 
 .entrylist {
@@ -3614,13 +3615,12 @@ ul.dropdown-menu a.active
 	padding-right:3px;
 }
 
-#leftside #date{
+#leftside #date {
 	text-align: center;
 }
 
 #footer {
 	text-align: center;
 	margin: 10px 10px 10px 10px;
-	font-size:9px;
-	
+	font-size:9px;	
 }
