@@ -314,10 +314,6 @@ function removeTopics($topics, $decreasePostCount = true, $ignoreRecycling = fal
 				)
 			);
 
-			// Move the topics to the recycle board.
-			require_once($sourcedir . '/MoveTopic.php');
-			moveTopics($recycleTopics, $modSettings['recycle_board']);
-
 			// Close reports that are being recycled.
 			require_once($sourcedir . '/ModerationCenter.php');
 
@@ -939,9 +935,6 @@ function RestoreTopic()
 
 	// Can we be in here?
 	isAllowedTo('move_any', $modSettings['recycle_board']);
-
-	// We need this file.
-	require_once($sourcedir . '/MoveTopic.php');
 
 	$unfound_messages = array();
 	$topics_to_restore = array();

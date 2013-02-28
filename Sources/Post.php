@@ -1230,9 +1230,6 @@ function Post2()
 	if (!empty($_POST['announce_topic']))
 		redirectexit('action=announce;sa=selectgroup;topic=' . $topic . (!empty($_POST['move']) && allowedTo('move_any') ? ';move' : '') . (empty($_REQUEST['goback']) ? '' : ';goback'));
 
-	if (!empty($_POST['move']) && allowedTo('move_any'))
-		redirectexit('action=movetopic;topic=' . $topic . '.0' . (empty($_REQUEST['goback']) ? '' : ';goback'));
-
 	// Return to post if the mod is on.
 	if (isset($_REQUEST['msg']) && !empty($_REQUEST['goback']))
 		redirectexit('topic=' . $topic . '.msg' . $_REQUEST['msg'] . '#msg' . $_REQUEST['msg'], isBrowser('ie'));
@@ -1430,9 +1427,7 @@ function AnnouncementSend()
 	if ($smcFunc['db_num_rows']($request) == 0)
 	{
 		logAction('announce_topic', array('topic' => $topic), 'user');
-		if (!empty($_REQUEST['move']) && allowedTo('move_any'))
-			redirectexit('action=movetopic;topic=' . $topic . '.0' . (empty($_REQUEST['goback']) ? '' : ';goback'));
-		elseif (!empty($_REQUEST['goback']))
+		if (!empty($_REQUEST['goback']))
 			redirectexit('topic=' . $topic . '.new;boardseen#new', isBrowser('ie'));
 		else
 			redirectexit('board=' . $board . '.0');

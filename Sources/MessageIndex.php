@@ -792,19 +792,6 @@ function QuickModeration()
 			$markCache[] = $topic;
 		elseif ($action == 'sticky')
 			$stickyCache[] = $topic;
-		elseif ($action == 'move')
-		{
-			require_once($sourcedir . '/MoveTopic.php');
-			moveTopicConcurrence();
-
-			// $moveCache[0] is the topic, $moveCache[1] is the board to move to.
-			$moveCache[1][$topic] = (int) (isset($_REQUEST['move_tos'][$topic]) ? $_REQUEST['move_tos'][$topic] : $_REQUEST['move_to']);
-
-			if (empty($moveCache[1][$topic]))
-				continue;
-
-			$moveCache[0][] = $topic;
-		}
 		elseif ($action == 'remove')
 			$removeCache[] = $topic;
 		elseif ($action == 'lock')
@@ -891,12 +878,6 @@ function QuickModeration()
 		$smcFunc['db_free_result']($request);
 
 		$moveCache = $moveCache2;
-
-		require_once($sourcedir . '/MoveTopic.php');
-
-		// Do the actual moves...
-		foreach ($moveTos as $to => $topics)
-			moveTopics($topics, $to);
 
 		// Does the post counts need to be updated?
 		if (!empty($moveTos))
@@ -999,9 +980,6 @@ function QuickModeration()
 				logAction('remove', array((empty($modSettings['recycle_enable']) || $modSettings['recycle_board'] != $removeCacheBoards[$topic] ? 'topic' : 'old_topic_id') => $topic, 'board' => $removeCacheBoards[$topic]));
 				sendNotifications($topic, 'remove');
 			}
-
-			require_once($sourcedir . '/RemoveTopic.php');
-			removeTopics($removeCache);
 		}
 	}
 
