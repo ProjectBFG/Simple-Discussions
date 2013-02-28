@@ -27,6 +27,10 @@ function template_main()
 	echo '
 
 			<a id="msg', $context['first_message'], '"></a>', $context['first_new_message'] ? '<a id="new"></a>' : '';
+			
+	// H1 SEO Title	
+	echo '
+			<h1><a href="',$scripturl,'?topic=',$context['current_topic'],'.0">',$context['subject'],'</a></h1>';
 
 	// Show the page index... "Pages: [1]".
 	echo '
@@ -40,7 +44,6 @@ function template_main()
 	echo '
 			<div id="forumposts">
 					<h3 class="catbg">
-						<img src="', $settings['images_url'], '/topic/', $context['class'], '.png" alt="" />
 						', $txt['topic'], ': ', $context['subject'], '&nbsp;<span>(', $context['num_views_text'], ')</span>
 						<span class="nextlinks floatright">', $context['previous_next'], '</span>
 					</h3>';
