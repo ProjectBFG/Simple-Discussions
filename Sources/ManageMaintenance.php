@@ -80,7 +80,6 @@ function ManageMaintenance()
 			'function' => 'MaintainTopics',
 			'template' => 'maintain_topics',
 			'activities' => array(
-				'massmove' => 'MaintainMassMoveTopics',
 				'pruneold' => 'MaintainRemoveOldPosts',
 				'olddrafts' => 'MaintainRemoveOldDrafts',
 			),
@@ -1905,114 +1904,6 @@ function MaintainRemoveOldDrafts()
 		require_once($sourcedir . '/Drafts.php');
 		DeleteDraft($drafts, false);
 	}
-}
-
-/**
- * Moves topics from one board to another.
- *
- * @uses not_done template to pause the process.
- */
-function MaintainMassMoveTopics()
-{
-	global $smcFunc, $sourcedir, $context, $txt;
-
-	// Only admins.
-	isAllowedTo('admin_forum');
-
-	checkSession('request');
-	validateToken('admin-maint');
-
-	// Set up to the context.
-	$context['page_title'] = $txt['not_done_title'];
-	$context['continue_countdown'] = 3;
-	$context['continue_post_data'] = '';
-	$context['continue_get_data'] = '';
-	$context['sub_template'] = 'not_done';
-	$context['start'] = empty($_REQUEST['start']) ? 0 : (int) $_REQUEST['start'];
-	$context['start_time'] = time();
-
-	// First time we do this?
-	$id_board_from = isset($_POST['id_board_from']) ? (int) $_POST['id_board_from'] : (int) $_REQUEST['id_board_from'];
-	$id_board_to = isset($_POST['id_board_to']) ? (int) $_POST['id_board_to'] : (int) $_REQUEST['id_board_to'];
-
-	// No boards then this is your stop.
-	if (empty($id_board_from) || empty($id_board_to))
-		return;
-
-	// How many topics are we converting?
-	if (!isset($_REQUEST['totaltopics']))
-	{
-		$request = $smcFunc['db_query']('', '
-			SELECT COUNT(*)
-			FROM {db_prefix}topics
-			WHERE id_board = {int:id_board_from}',
-			array(
-				'id_board_from' => $id_board_from,
-			)
-		);
-		list ($total_topics) = $smcFunc['db_fetch_row']($request);
-		$smcFunc['db_free_result']($request);
-	}
-	else
-		$total_topics = (int) $_REQUEST['totaltopics'];
-
-	// Seems like we need this here.
-	$context['continue_get_data'] = '?action=admin;area=maintain;sa=topics;activity=massmove;id_board_from=' . $id_board_from . ';id_board_to=' . $id_board_to . ';totaltopics=' . $total_topics . ';start=' . $context['start'] . ';' . $context['session_var'] . '=' . $context['session_id'];
-
-	// We have topics to move so start the process.
-	if (!empty($total_topics))
-	{
-		while ($context['start'] <= $total_topics)
-		{
-			// Lets get the topics.
-			$request = $smcFunc['db_query']('', '
-				SELECT id_topic
-				FROM {db_prefix}topics
-				WHERE id_board = {int:id_board_from}
-				LIMIT 10',
-				array(
-					'id_board_from' => $id_board_from,
-				)
-			);
-
-			// Get the ids.
-			$topics = array();
-			while ($row = $smcFunc['db_fetch_assoc']($request))
-				$topics[] = $row['id_topic'];
-
-			// Just return if we don't have any topics left to move.
-			if (empty($topics))
-			{
-				cache_put_data('board-' . $id_board_from, null, 120);
-				cache_put_data('board-' . $id_board_to, null, 120);
-				redirectexit('action=admin;area=maintain;sa=topics;done=massmove');
-			}
-
-			// Lets move them.
-			require_once($sourcedir . '/MoveTopic.php');
-			moveTopics($topics, $id_board_to);
-
-			// We've done at least ten more topics.
-			$context['start'] += 10;
-
-			// Lets wait a while.
-			if (time() - $context['start_time'] > 3)
-			{
-				// What's the percent?
-				$context['continue_percent'] = round(100 * ($context['start'] / $total_topics), 1);
-				$context['continue_get_data'] = '?action=admin;area=maintain;sa=topics;activity=massmove;id_board_from=' . $id_board_from . ';id_board_to=' . $id_board_to . ';totaltopics=' . $total_topics . ';start=' . $context['start'] . ';' . $context['session_var'] . '=' . $context['session_id'];
-
-				// Let the template system do it's thang.
-				return;
-			}
-		}
-	}
-
-	// Don't confuse admins by having an out of date cache.
-	cache_put_data('board-' . $id_board_from, null, 120);
-	cache_put_data('board-' . $id_board_to, null, 120);
-
-	redirectexit('action=admin;area=maintain;sa=topics;done=massmove');
 }
 
 /**
