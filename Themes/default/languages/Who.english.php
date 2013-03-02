@@ -26,7 +26,6 @@ $txt['whospider_reminder'] = 'Viewing the reminder page.';
 
 $txt['whoall_activate'] = 'Activating their account.';
 $txt['whoall_buddy'] = 'Modifying their buddy list.';
-$txt['whoall_coppa'] = 'Filling out parent/guardian consent form.';
 $txt['whoall_credits'] = 'Viewing credits page.';
 $txt['whoall_emailuser'] = 'Sending email to another member.';
 $txt['whoall_groups'] = 'Viewing the member groups page.';

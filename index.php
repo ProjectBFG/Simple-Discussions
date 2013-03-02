@@ -180,7 +180,7 @@ function smf_main()
 		}
 	}
 	// If guest access is off, a guest can only do one of the very few following actions.
-	elseif (empty($modSettings['allow_guestAccess']) && $user_info['is_guest'] && (!isset($_REQUEST['action']) || !in_array($_REQUEST['action'], array('coppa', 'login', 'login2', 'register', 'register2', 'reminder', 'activate', 'smstats', 'mailq', 'verificationcode'))))
+	elseif (empty($modSettings['allow_guestAccess']) && $user_info['is_guest'] && (!isset($_REQUEST['action']) || !in_array($_REQUEST['action'], array('login', 'login2', 'register', 'register2', 'reminder', 'activate', 'smstats', 'mailq', 'verificationcode'))))
 	{
 		require_once($sourcedir . '/Subs-Auth.php');
 		return 'KickGuest';
@@ -223,7 +223,6 @@ function smf_main()
 		'announce' => array('Post.php', 'AnnounceTopic'),
 		'blog' => array('Blog.php', 'BlogMain'),
 		'buddy' => array('Subs-Members.php', 'BuddyListToggle'),
-		'coppa' => array('Register.php', 'CoppaForm'),
 		'credits' => array('Who.php', 'Credits'),
 		'deletemsg' => array('RemoveTopic.php', 'DeleteMessage'),
 		'disregardtopic' => array('Notify.php', 'TopicDisregard'),

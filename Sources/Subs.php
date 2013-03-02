@@ -92,7 +92,7 @@ function updateStats($type, $parameter1 = null, $parameter2 = null)
 			// Are we using registration approval?
 			if ((!empty($modSettings['registration_method']) && $modSettings['registration_method'] == 2) || !empty($modSettings['approveAccountDeletion']))
 			{
-				// Update the amount of members awaiting approval - ignoring COPPA accounts, as you can't approve them until you get permission.
+				// Update the amount of members awaiting approval.
 				$result = $smcFunc['db_query']('', '
 					SELECT COUNT(*)
 					FROM {db_prefix}members

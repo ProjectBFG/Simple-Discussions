@@ -191,7 +191,6 @@ $txt['pm_too_many_per_hour'] = 'You have exceeded the limit of %1$d personal mes
 $txt['labels_too_many'] = 'Sorry, %1$s messages already had the maximum amount of labels allowed!';
 
 $txt['register_only_once'] = 'Sorry, but you\'re not allowed to register multiple accounts at the same time from the same computer.';
-$txt['admin_setting_coppa_require_contact'] = 'You must enter either a postal or fax contact if parent/guardian approval is required.';
 
 $txt['error_long_name'] = 'The name you tried to use was too long.';
 $txt['error_no_name'] = 'No name was provided.';

@@ -264,7 +264,7 @@ function SetReserved()
 
 /**
  * This function handles registration settings, and provides a few pretty stats too while it's at it.
- * General registration settings and Coppa compliance settings.
+ * General registration settings.
  * Accessed by ?action=admin;area=regcenter;sa=settings.
  * Requires the admin_forum permission.
  *
@@ -281,12 +281,6 @@ function ModifyRegistrationSettings($return_config = false)
 			array('select', 'registration_method', array($txt['setting_registration_standard'], $txt['setting_registration_activate'], $txt['setting_registration_approval'], $txt['setting_registration_disabled'])),
 			array('check', 'notify_new_registration'),
 			array('check', 'send_welcomeEmail'),
-		'',
-			array('int', 'coppaAge', 'subtext' => $txt['setting_coppaAge_desc'], 'onchange' => 'checkCoppa();', 'onkeyup' => 'checkCoppa();'),
-			array('select', 'coppaType', array($txt['setting_coppaType_reject'], $txt['setting_coppaType_approval']), 'onchange' => 'checkCoppa();'),
-			array('large_text', 'coppaPost', 'subtext' => $txt['setting_coppaPost_desc']),
-			array('text', 'coppaFax'),
-			array('text', 'coppaPhone'),
 	);
 
 	call_integration_hook('integrate_modify_registration_settings', array($config_vars));
@@ -302,13 +296,6 @@ function ModifyRegistrationSettings($return_config = false)
 	{
 		checkSession();
 
-		// Are there some contacts missing?
-		if (!empty($_POST['coppaAge']) && !empty($_POST['coppaType']) && empty($_POST['coppaPost']) && empty($_POST['coppaFax']))
-			fatal_lang_error('admin_setting_coppa_require_contact');
-
-		// Post needs to take into account line breaks.
-		$_POST['coppaPost'] = str_replace("\n", '<br />', empty($_POST['coppaPost']) ? '' : $_POST['coppaPost']);
-
 		call_integration_hook('integrate_save_registration_settings');
 
 		saveDBSettings($config_vars);
@@ -318,23 +305,6 @@ function ModifyRegistrationSettings($return_config = false)
 
 	$context['post_url'] = $scripturl . '?action=admin;area=regcenter;save;sa=settings';
 	$context['settings_title'] = $txt['settings'];
-
-	// Define some javascript for COPPA.
-	$context['settings_post_javascript'] = '
-		function checkCoppa()
-		{
-			var coppaDisabled = document.getElementById(\'coppaAge\').value == 0;
-			document.getElementById(\'coppaType\').disabled = coppaDisabled;
-
-			var disableContacts = coppaDisabled || document.getElementById(\'coppaType\').options[document.getElementById(\'coppaType\').selectedIndex].value != 1;
-			document.getElementById(\'coppaPost\').disabled = disableContacts;
-			document.getElementById(\'coppaFax\').disabled = disableContacts;
-			document.getElementById(\'coppaPhone\').disabled = disableContacts;
-		}
-		checkCoppa();';
-
-	// Turn the postal address into something suitable for a textbox.
-	$modSettings['coppaPost'] = !empty($modSettings['coppaPost']) ? preg_replace('~<br ?/?' . '>~', "\n", $modSettings['coppaPost']) : '';
 
 	prepareDBSettingContext($config_vars);
 }
