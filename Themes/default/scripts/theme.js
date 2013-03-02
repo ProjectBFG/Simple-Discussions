@@ -18,15 +18,15 @@ function smf_codeBoxFix()
 		if (is_webkit && $(tag).height() < 20)
 			$(tag).css({height: ($(tag).height + 20) + 'px'});
 
-		else if (is_ff && ($(tag)[0].scrollWidth > $(tag).innerWidth() || $(tag).innerWidth() == 0))
+		else if (is_ff && ($(tag)[0].scrollWidth > $(tag).innerWidth() || $(tag).innerWidth() === 0))
 			$(tag).css({overflow: 'scroll'});
 
 		// Holy conditional, Batman!
 		else if (
-			'currentStyle' in $(tag) && $(tag)[0].currentStyle.overflow == 'auto'
-			&& ($(tag).innerHeight() == '' || $(tag).innerHeight() == 'auto')
-			&& ($(tag)[0].scrollWidth > $(tag).innerWidth() || $(tag).innerWidth == 0)
-			&& ($(tag).outerHeight() != 0)			
+			'currentStyle' in $(tag) && $(tag)[0].currentStyle.overflow === 'auto'
+			&& ($(tag).innerHeight() === '' || $(tag).innerHeight() === 'auto')
+			&& ($(tag)[0].scrollWidth > $(tag).innerWidth() || $(tag).innerWidth === 0)
+			&& ($(tag).outerHeight() !== 0)			
 		)
 			$(tag).css({height: ($(tag).height + 24) + 'px'});
 	});
