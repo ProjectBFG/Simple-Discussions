@@ -466,7 +466,6 @@ CREATE TABLE {$db_prefix}categories (
   id_cat tinyint(4) unsigned NOT NULL auto_increment,
   cat_order tinyint(4) NOT NULL default '0',
   name varchar(255) NOT NULL default '',
-  can_collapse tinyint(1) NOT NULL default '1',
   PRIMARY KEY (id_cat)
 ) ENGINE=MyISAM;
 
@@ -477,16 +476,6 @@ CREATE TABLE {$db_prefix}categories (
 INSERT INTO {$db_prefix}categories
 VALUES (1, 0, '{$default_category_name}', 1);
 # --------------------------------------------------------
-
-#
-# Table structure for table `collapsed_categories`
-#
-
-CREATE TABLE {$db_prefix}collapsed_categories (
-  id_cat tinyint(4) unsigned NOT NULL default '0',
-  id_member mediumint(8) unsigned NOT NULL default '0',
-  PRIMARY KEY (id_cat, id_member)
-) ENGINE=MyISAM;
 
 #
 # Table structure for table `custom_fields`

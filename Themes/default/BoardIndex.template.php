@@ -90,35 +90,16 @@ function template_main()
 	and boards. (see below.) */
 	foreach ($context['categories'] as $category)
 	{
-		// If theres no parent boards we can see, avoid showing an empty category (unless its collapsed)
-		if (empty($category['boards']) && !$category['is_collapsed'])
-			continue;
-
 		echo '
 			<thead id="category_', $category['id'], '">
 				<tr>
 					<td colspan="4">
-						<h3 class="catbg">';
-
-		// If this category even can collapse, show a link to collapse it.
-		if ($category['can_collapse'])
-			echo '
-							<a href="', $category['collapse_href'], '" title="', $category['is_collapsed'] ? $txt['show'] : $txt['hide'], '">
-								<span class="', !$category['is_collapsed'] ? 'icon-arrow-down' : 'icon-arrow-up', '"></span>
-							</a>';
-
-		echo '
+						<h3 class="catbg">
 							', $category['link'], '
 						</h3>
 					</td>
 				</tr>
-			</thead>';
-
-		// Assuming the category hasn't been collapsed...
-		if (!$category['is_collapsed'])
-		{
-
-		echo '
+			</thead>
 			<tbody id="category_', $category['id'], '_boards">';
 			/* Each board in each category's boards has:
 			new (is it new?), id, name, description, moderators (see below), link_moderators (just a list.),
@@ -211,8 +192,6 @@ function template_main()
 			}
 		echo '
 			</tbody>';
-		}
-
 	}
 	echo '
 		</table>
@@ -238,7 +217,7 @@ function template_main()
 
 function template_info_center()
 {
-	global $context, $settings, $options, $txt, $scripturl, $modSettings;
+	global $context, $settings, $txt, $scripturl, $modSettings;
 
 	// Here's where the "Info Center" starts...
 	echo '

@@ -1059,7 +1059,7 @@ function getBoardTree()
 		SELECT
 			IFNULL(b.id_board, 0) AS id_board, b.id_parent, b.name AS board_name, b.description, b.child_level,
 			b.board_order, b.count_posts, b.member_groups, b.id_theme, b.override_theme, b.id_profile, b.redirect,
-			b.num_posts, b.num_topics, b.deny_member_groups, c.id_cat, c.name AS cat_name, c.cat_order, c.can_collapse
+			b.num_posts, b.num_topics, b.deny_member_groups, c.id_cat, c.name AS cat_name, c.cat_order
 		FROM {db_prefix}categories AS c
 			LEFT JOIN {db_prefix}boards AS b ON (b.id_cat = c.id_cat)
 		ORDER BY c.cat_order, b.child_level, b.board_order',
@@ -1077,8 +1077,7 @@ function getBoardTree()
 				'node' => array(
 					'id' => $row['id_cat'],
 					'name' => $row['cat_name'],
-					'order' => $row['cat_order'],
-					'can_collapse' => $row['can_collapse']
+					'order' => $row['cat_order']
 				),
 				'is_first' => empty($cat_tree),
 				'last_board_order' => $last_board_order,

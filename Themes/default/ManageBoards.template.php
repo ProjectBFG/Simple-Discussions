@@ -138,7 +138,7 @@ function template_modify_category()
 						</dd>';
 	}
 
-	// Allow the user to edit the category name and/or choose whether you can collapse the category.
+	// Allow the user to edit the category name.
 	echo '
 						<dt>
 							<strong>', $txt['full_name'], ':</strong><br />
@@ -146,13 +146,6 @@ function template_modify_category()
 						</dt>
 						<dd>
 							<input type="text" name="cat_name" value="', $context['category']['editable_name'], '" size="30" tabindex="', $context['tabindex']++, '" class="input_text" />
-						</dd>
-						<dt>
-							<strong>', $txt['collapse_enable'], '</strong><br />
-							<span class="smalltext">', $txt['collapse_desc'], '</span>
-						</dt>
-						<dd>
-							<input type="checkbox" name="collapse"', $context['category']['can_collapse'] ? ' checked="checked"' : '', ' tabindex="', $context['tabindex']++, '" class="input_check" />
 						</dd>';
 
 	// Table footer.

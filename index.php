@@ -223,7 +223,6 @@ function smf_main()
 		'announce' => array('Post.php', 'AnnounceTopic'),
 		'blog' => array('Blog.php', 'BlogMain'),
 		'buddy' => array('Subs-Members.php', 'BuddyListToggle'),
-		'collapse' => array('BoardIndex.php', 'CollapseCategory'),
 		'coppa' => array('Register.php', 'CoppaForm'),
 		'credits' => array('Who.php', 'Credits'),
 		'deletemsg' => array('RemoveTopic.php', 'DeleteMessage'),
