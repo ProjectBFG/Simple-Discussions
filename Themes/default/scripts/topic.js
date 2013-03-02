@@ -18,7 +18,7 @@ function QuickModifyTopic(oOptions)
 // Ajax supported?
 QuickModifyTopic.prototype.isXmlHttpCapable = function ()
 {
-	if (typeof(window.XMLHttpRequest) == 'undefined')
+	if (typeof(window.XMLHttpRequest) === 'undefined')
 		return false;
 
 	// Opera didn't always support POST requests. So test it first.
@@ -49,14 +49,14 @@ QuickModifyTopic.prototype.init = function ()
 QuickModifyTopic.prototype.modify_topic = function (topic_id, first_msg_id)
 {
 	// Add backwards compatibility with old themes.
-	if (typeof(cur_session_var) == 'undefined')
+	if (typeof(cur_session_var) === 'undefined')
 		cur_session_var = 'sesc';
 
 	// already editing
 	if (this.bInEditMode)
 	{
 		// same message then just return, otherwise drop out of this edit.
-		if (this.iCurTopicId == topic_id)
+		if (this.iCurTopicId === topic_id)
 			return;
 		else
 			this.modify_topic_cancel();
@@ -108,7 +108,7 @@ QuickModifyTopic.prototype.set_hidden_topic_areas = function (set_style)
 {
 	for (var i = 0; i < this.aHidePrefixes.length; i++)
 	{
-		if (document.getElementById(this.aHidePrefixes[i] + this.sCurMessageId.substr(4)) != null)
+		if (document.getElementById(this.aHidePrefixes[i] + this.sCurMessageId.substr(4)) !== null)
 			document.getElementById(this.aHidePrefixes[i] + this.sCurMessageId.substr(4)).style.display = set_style;
 	}
 }
@@ -132,7 +132,7 @@ QuickModifyTopic.prototype.modify_topic_save = function (cur_session_id, cur_ses
 		return true;
 
 	// Add backwards compatibility with old themes.
-	if (typeof(cur_session_var) == 'undefined')
+	if (typeof(cur_session_var) === 'undefined')
 		cur_session_var = 'sesc';
 
 	var i, x = new Array();
@@ -189,20 +189,20 @@ QuickModifyTopic.prototype.modify_topic_hide_edit = function (subject)
 // keypress event ... like enter or escape
 QuickModifyTopic.prototype.modify_topic_keypress = function (oEvent)
 {
-	if (typeof(oEvent.keyCode) != "undefined" && this.bInEditMode)
+	if (typeof(oEvent.keyCode) !== "undefined" && this.bInEditMode)
 	{
-		if (oEvent.keyCode == 27)
+		if (oEvent.keyCode === 27)
 		{
 			this.modify_topic_cancel();
-			if (typeof(oEvent.preventDefault) == "undefined")
+			if (typeof(oEvent.preventDefault) === "undefined")
 				oEvent.returnValue = false;
 			else
 				oEvent.preventDefault();
 		}
-		else if (oEvent.keyCode == 13)
+		else if (oEvent.keyCode === 13)
 		{
 			this.modify_topic_save(smf_session_id, smf_session_var);
-			if (typeof(oEvent.preventDefault) == "undefined")
+			if (typeof(oEvent.preventDefault) === "undefined")
 				oEvent.returnValue = false;
 			else
 				oEvent.preventDefault();
@@ -241,7 +241,7 @@ function QuickReply(oOptions)
 QuickReply.prototype.quote = function (iMessageId, xDeprecated)
 {
 	// Compatibility with older templates.
-	if (typeof(xDeprecated) != 'undefined')
+	if (typeof(xDeprecated) !== 'undefined')
 		return true;
 
 	if (this.bCollapsed)
@@ -265,7 +265,7 @@ QuickReply.prototype.quote = function (iMessageId, xDeprecated)
 			reqWin(smf_prepareScriptUrl(this.opt.sScriptUrl) + 'action=quotefast;quote=' + iMessageId, 240, 90);
 
 		// Move the view to the quick reply box.
-		if (navigator.appName == 'Microsoft Internet Explorer')
+		if (navigator.appName === 'Microsoft Internet Explorer')
 			window.location.hash = this.opt.sJumpAnchor;
 		else
 			window.location.hash = '#' + this.opt.sJumpAnchor;
@@ -322,7 +322,7 @@ function QuickModify(oOptions)
 // Determine whether the quick modify can actually be used.
 QuickModify.prototype.isXmlHttpCapable = function ()
 {
-	if (typeof(window.XMLHttpRequest) == 'undefined')
+	if (typeof(window.XMLHttpRequest) === 'undefined')
 		return false;
 
 	// Opera didn't always support POST requests. So test it first.
@@ -343,18 +343,18 @@ QuickModify.prototype.modifyMsg = function (iMessageId)
 		return;
 
 	// Add backwards compatibility with old themes.
-	if (typeof(sSessionVar) == 'undefined')
+	if (typeof(sSessionVar) === 'undefined')
 		sSessionVar = 'sesc';
 
 	// Removes the accesskeys from the quickreply inputs and saves them in an array to use them later
-	if (typeof(this.opt.sFormRemoveAccessKeys) != 'undefined')
+	if (typeof(this.opt.sFormRemoveAccessKeys) !== 'undefined')
 	{
 		if (typeof(document.forms[this.opt.sFormRemoveAccessKeys]))
 		{
 			var aInputs = document.forms[this.opt.sFormRemoveAccessKeys].getElementsByTagName('input');
 			for (var i = 0; i < aInputs.length; i++)
 			{
-				if (aInputs[i].accessKey != '')
+				if (aInputs[i].accessKey !== '')
 				{
 					this.aAccessKeys[aInputs[i].name] = aInputs[i].accessKey;
 					aInputs[i].accessKey = '';
@@ -426,14 +426,14 @@ QuickModify.prototype.modifyCancel = function ()
 	this.bInEditMode = false;
 
 	// Let's put back the accesskeys to their original place
-	if (typeof(this.opt.sFormRemoveAccessKeys) != 'undefined')
+	if (typeof(this.opt.sFormRemoveAccessKeys) !== 'undefined')
 	{
 		if (typeof(document.forms[this.opt.sFormRemoveAccessKeys]))
 		{
 			var aInputs = document.forms[this.opt.sFormRemoveAccessKeys].getElementsByTagName('input');
 			for (var i = 0; i < aInputs.length; i++)
 			{
-				if (typeof(this.aAccessKeys[aInputs[i].name]) != 'undefined')
+				if (typeof(this.aAccessKeys[aInputs[i].name]) !== 'undefined')
 				{
 					aInputs[i].name = this.aAccessKeys[aInputs[i].name];
 				}
@@ -452,18 +452,18 @@ QuickModify.prototype.modifySave = function (sSessionId, sSessionVar)
 		return true;
 
 	// Add backwards compatibility with old themes.
-	if (typeof(sSessionVar) == 'undefined')
+	if (typeof(sSessionVar) === 'undefined')
 		sSessionVar = 'sesc';
 
 	// Let's put back the accesskeys to their original place
-	if (typeof(this.opt.sFormRemoveAccessKeys) != 'undefined')
+	if (typeof(this.opt.sFormRemoveAccessKeys) !== 'undefined')
 	{
 		if (typeof(document.forms[this.opt.sFormRemoveAccessKeys]))
 		{
 			var aInputs = document.forms[this.opt.sFormRemoveAccessKeys].getElementsByTagName('input');
 			for (var i = 0; i < aInputs.length; i++)
 			{
-				if (typeof(this.aAccessKeys[aInputs[i].name]) != 'undefined')
+				if (typeof(this.aAccessKeys[aInputs[i].name]) !== 'undefined')
 				{
 					aInputs[i].name = this.aAccessKeys[aInputs[i].name];
 				}
@@ -495,7 +495,7 @@ QuickModify.prototype.onModifyDone = function (XMLDoc)
 	if (!XMLDoc || !XMLDoc.getElementsByTagName('smf')[0])
 	{
 		// Mozilla will nicely tell us what's wrong.
-		if (XMLDoc.childNodes.length > 0 && XMLDoc.firstChild.nodeName == 'parsererror')
+		if (XMLDoc.childNodes.length > 0 && XMLDoc.firstChild.nodeName === 'parsererror')
 			setInnerHTML(document.getElementById('error_box'), XMLDoc.firstChild.textContent);
 		else
 			this.modifyCancel();
@@ -523,7 +523,7 @@ QuickModify.prototype.onModifyDone = function (XMLDoc)
 		setInnerHTML(this.oCurSubjectDiv, this.sSubjectBuffer);
 
 		// If this is the first message, also update the topic subject.
-		if (oSubject.getAttribute('is_first') == '1')
+		if (oSubject.getAttribute('is_first') === '1')
 			setInnerHTML(document.getElementById('top_subject'), this.opt.sTemplateTopSubject.replace(/%subject%/, sSubjectText).replace(/\{&dollarfix;\$\}/g, '$'));
 
 		// Show this message as 'modified on x by y'.
@@ -533,8 +533,8 @@ QuickModify.prototype.onModifyDone = function (XMLDoc)
 	else if (error)
 	{
 		setInnerHTML(document.getElementById('error_box'), error.childNodes[0].nodeValue);
-		document.forms.quickModForm.message.style.border = error.getAttribute('in_body') == '1' ? this.opt.sErrorBorderStyle : '';
-		document.forms.quickModForm.subject.style.border = error.getAttribute('in_subject') == '1' ? this.opt.sErrorBorderStyle : '';
+		document.forms.quickModForm.message.style.border = error.getAttribute('in_body') === '1' ? this.opt.sErrorBorderStyle : '';
+		document.forms.quickModForm.subject.style.border = error.getAttribute('in_subject') === '1' ? this.opt.sErrorBorderStyle : '';
 	}
 }
 
@@ -545,7 +545,7 @@ function InTopicModeration(oOptions)
 	this.iNumSelected = 0;
 
 	// Add backwards compatibility with old themes.
-	if (typeof(this.opt.sSessionVar) == 'undefined')
+	if (typeof(this.opt.sSessionVar) === 'undefined')
 		this.opt.sSessionVar = 'sesc';
 
 	this.init();
@@ -582,7 +582,7 @@ InTopicModeration.prototype.handleClick = function(oCheckbox)
 		var oButtonStripDisplay = document.getElementById(this.opt.sButtonStripDisplay);
 
 		// Make sure it can go somewhere.
-		if (typeof(oButtonStripDisplay) == 'object' && oButtonStripDisplay != null)
+		if (typeof(oButtonStripDisplay) === 'object' && oButtonStripDisplay !== null)
 			oButtonStripDisplay.style.display = "";
 		else
 		{

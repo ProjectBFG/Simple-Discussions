@@ -45,7 +45,7 @@ smf_DraftAutoSave.prototype.init = function ()
 // Moved away from the page, where did you go? ... till you return we pause autosaving
 smf_DraftAutoSave.prototype.draftBlur = function(oEvent, source)
 {
-	if ($('#' + this.opt.sSceditorID).data("sceditor").inSourceMode() == source)
+	if ($('#' + this.opt.sSceditorID).data("sceditor").inSourceMode() === source)
 	{
 		// save what we have and turn of the autosave
 		if (this.bPM)
@@ -53,7 +53,7 @@ smf_DraftAutoSave.prototype.draftBlur = function(oEvent, source)
 		else
 			this.draftSave();
 		
-		if (this.interval_id != "")
+		if (this.interval_id !== "")
 			window.clearInterval(this.interval_id);
 		this.interval_id = "";
 	}
@@ -63,9 +63,9 @@ smf_DraftAutoSave.prototype.draftBlur = function(oEvent, source)
 // Since your back we resume the autosave timer
 smf_DraftAutoSave.prototype.draftFocus = function(oEvent, source)
 {
-	if ($('#' + this.opt.sSceditorID).data("sceditor").inSourceMode() == source)
+	if ($('#' + this.opt.sSceditorID).data("sceditor").inSourceMode() === source)
 	{
-		if (this.interval_id == "")
+		if (this.interval_id === "")
 			this.interval_id = window.setInterval(this.opt.sSelf + '.draft' + (this.bPM ? 'PM' : '') + 'Save();', this.opt.iFreq);
 	}
 	return;
@@ -77,7 +77,7 @@ smf_DraftAutoSave.prototype.draftSave = function ()
 	var sPostdata = $('#' + this.opt.sSceditorID).data("sceditor").getText(true);
 
 	// nothing to save or already posting or nothing changed?
-	if (isEmptyText(sPostdata) || smf_formSubmitted || this.sCheckDraft == sPostdata)
+	if (isEmptyText(sPostdata) || smf_formSubmitted || this.sCheckDraft === sPostdata)
 		return false;
 	
 	// Still saving the last one or other?
@@ -100,7 +100,7 @@ smf_DraftAutoSave.prototype.draftSave = function ()
 	];
 
 	// Get the locked an/or sticky values if they have been selected or set that is
-	if (this.opt.sType == 'post')
+	if (this.opt.sType === 'post')
 	{
 		if (document.getElementById('check_lock').checked)
 			aSections[aSections.length] = 'lock=1';
@@ -124,7 +124,7 @@ smf_DraftAutoSave.prototype.draftPMSave = function ()
 	var sPostdata = $('#' + this.opt.sSceditorID).data("sceditor").getText();
 	
 	// nothing to save or already posting or nothing changed?
-	if (isEmptyText(sPostdata) || smf_formSubmitted || this.sCheckDraft == sPostdata)
+	if (isEmptyText(sPostdata) || smf_formSubmitted || this.sCheckDraft === sPostdata)
 		return false;
 
 	// Still saving the last one or some other?
@@ -156,7 +156,7 @@ smf_DraftAutoSave.prototype.draftPMSave = function ()
 		aSections[aSections.length] = 'outbox=' + parseInt(document.getElementById('outbox').value);
 
 	// account for wysiwyg
-	if (this.opt.sType == 'post')
+	if (this.opt.sType === 'post')
 		aSections[aSections.length] = 'message_mode=' + parseInt(document.forms.postmodify.elements['message_mode'].value);
 
 	// Send in (post) the document for saving
@@ -183,7 +183,7 @@ smf_DraftAutoSave.prototype.onDraftDone = function (XMLDoc)
 	setInnerHTML(oCurDraftDiv, this.sLastSaved);
 
 	// hide the saved draft infobox in the event they pressed the save draft button at some point
-	if (this.opt.sType == 'post')
+	if (this.opt.sType === 'post')
 		document.getElementById('draft_section').style.display = 'none';
 
 	// thank you sir, may I have another
@@ -197,7 +197,7 @@ smf_DraftAutoSave.prototype.draftGetRecipient = function (sField)
 	var oRecipient = document.forms.postmodify.elements[sField];
 	var aRecipient = []
 
-	if (typeof(oRecipient) != 'undefined')
+	if (typeof(oRecipient) !== 'undefined')
 	{
 		// just one recipient
 		if ('value' in oRecipient)

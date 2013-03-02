@@ -87,19 +87,19 @@ function smfRegister(formID, passwordDifficultyLevel, regTextStrings)
 			curElement = document.getElementById(formID).elements[i];
 
 			// Does the ID contain the keyword 'autov'?
-			if (curElement.id.indexOf('autov') != -1 && (curElement.type == 'text' || curElement.type == 'password'))
+			if (curElement.id.indexOf('autov') !== -1 && (curElement.type == 'text' || curElement.type == 'password'))
 			{
 				// This is probably it - but does it contain a field type?
 				curType = 0;
 				// Username can only be done with XML.
-				if (curElement.id.indexOf('username') != -1 && window.XMLHttpRequest)
+				if (curElement.id.indexOf('username') !== -1 && window.XMLHttpRequest)
 					curType = 'username';
-				else if (curElement.id.indexOf('pwmain') != -1)
+				else if (curElement.id.indexOf('pwmain') !== -1)
 					curType = 'pwmain';
-				else if (curElement.id.indexOf('pwverify') != -1)
+				else if (curElement.id.indexOf('pwverify') !== -1)
 					curType = 'pwverify';
 				// This means this field is reserved and cannot be contained in the password!
-				else if (curElement.id.indexOf('reserve') != -1)
+				else if (curElement.id.indexOf('reserve') !== -1)
 					curType = 'reserved';
 
 				// If we're happy let's add this element!
@@ -134,13 +134,13 @@ function smfRegister(formID, passwordDifficultyLevel, regTextStrings)
 		if (passwordLevel >= 1)
 		{
 			// If there is a username check it's not in the password!
-			if (verificationFields['username'] && verificationFields['username'][1].value && curPass.indexOf(verificationFields['username'][1].value) != -1)
+			if (verificationFields['username'] && verificationFields['username'][1].value && curPass.indexOf(verificationFields['username'][1].value) !== -1)
 				stringIndex = 'password_reserved';
 
 			// Any reserved fields?
 			for (var i in verificationFields)
 			{
-				if (verificationFields[i][4] == 'reserved' && verificationFields[i][1].value && curPass.indexOf(verificationFields[i][1].value) != -1)
+				if (verificationFields[i][4] == 'reserved' && verificationFields[i][1].value && curPass.indexOf(verificationFields[i][1].value) !== -1)
 					stringIndex = 'password_reserved';
 			}
 
@@ -280,10 +280,10 @@ function updateAuthMethod()
 	document.forms.registration.openid_url.disabled = currentAuthMethod == 'openid' ? false : true;
 	document.forms.registration.smf_autov_pwmain.disabled = currentAuthMethod == 'passwd' ? false : true;
 	document.forms.registration.smf_autov_pwverify.disabled = currentAuthMethod == 'passwd' ? false : true;
-	document.getElementById('smf_autov_pwmain_div').style.display = currentAuthMethod == 'passwd' ? '' : 'none';
-	document.getElementById('smf_autov_pwverify_div').style.display = currentAuthMethod == 'passwd' ? '' : 'none';
+	document.getElementById('smf_autov_pwmain_div').style.display = currentAuthMethod === 'passwd' ? '' : 'none';
+	document.getElementById('smf_autov_pwverify_div').style.display = currentAuthMethod === 'passwd' ? '' : 'none';
 
-	if (currentAuthMethod == 'passwd')
+	if (currentAuthMethod === 'passwd')
 	{
 		verificationHandle.refreshMainPassword();
 		verificationHandle.refreshVerifyPassword();
@@ -307,7 +307,7 @@ function updateAuthMethod()
 
 function onCheckChange()
 {
-	if (document.forms.postForm.emailActivate.checked || document.forms.postForm.password.value == '')
+	if (document.forms.postForm.emailActivate.checked || document.forms.postForm.password.value === '')
 	{
 		document.forms.postForm.emailPassword.disabled = true;
 		document.forms.postForm.emailPassword.checked = true;

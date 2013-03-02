@@ -15,7 +15,7 @@ smf_StatsCenter.prototype.init = function ()
 	this.oTable = document.getElementById(this.opt.sTableId);
 
 	// Is the table actually present?
-	if (typeof(this.oTable) != 'object')
+	if (typeof(this.oTable) !== 'object')
 		return;
 
 	// Find all months and years defined in the table.
@@ -30,7 +30,7 @@ smf_StatsCenter.prototype.init = function ()
 	for (var i = 0, n = aRows.length; i < n; i++)
 	{
 		// Check if the current row represents a year.
-		if ((aResults = this.opt.reYearPattern.exec(aRows[i].id)) != null)
+		if ((aResults = this.opt.reYearPattern.exec(aRows[i].id)) !== null)
 		{
 			// The id is part of the pattern match.
 			sYearId = aResults[1];
@@ -78,7 +78,7 @@ smf_StatsCenter.prototype.init = function ()
 		}
 
 		// Or maybe the current row represents a month.
-		else if ((aResults = this.opt.reMonthPattern.exec(aRows[i].id)) != null)
+		else if ((aResults = this.opt.reMonthPattern.exec(aRows[i].id)) !== null)
 		{
 			// Set the id to the matched pattern.
 			sMonthId = aResults[1];
@@ -131,7 +131,7 @@ smf_StatsCenter.prototype.init = function ()
 			oCurYear.oToggle.opt.aSwappableContainers[oCurYear.oToggle.opt.aSwappableContainers.length] = aRows[i].id;
 		}
 
-		else if((aResults = this.opt.reDayPattern.exec(aRows[i].id)) != null)
+		else if((aResults = this.opt.reDayPattern.exec(aRows[i].id)) !== null)
 		{
 			oCurMonth.oToggle.opt.aSwappableContainers[oCurMonth.oToggle.opt.aSwappableContainers.length] = aRows[i].id;
 			oCurYear.oToggle.opt.aSwappableContainers[oCurYear.oToggle.opt.aSwappableContainers.length] = aRows[i].id;
@@ -178,7 +178,7 @@ smf_StatsCenter.prototype.onBeforeExpandMonth = function (oToggle)
 	if (this.bIsLoading)
 		return;
 
-	if (oToggle.opt.aSwappableContainers.length == 0)
+	if (oToggle.opt.aSwappableContainers.length === 0)
 	{
 		// Make the xml call
 		sendXMLDocument.call(this, smf_prepareScriptUrl(smf_scripturl) + 'action=stats;expand=' + oToggle.opt.sMonthId + ';xml', '', this.onDocReceived);
@@ -216,7 +216,7 @@ smf_StatsCenter.prototype.onDocReceived = function (oXMLDoc)
 			{
 				var oCurCell = oCurRow.insertCell(-1);
 
-				if (this.opt.aDataCells[iCellIndex] == 'date')
+				if (this.opt.aDataCells[iCellIndex] === 'date')
 					oCurCell.style.paddingLeft = '6ex';
 				else
 					oCurCell.style.textAlign = 'center';
@@ -232,6 +232,6 @@ smf_StatsCenter.prototype.onDocReceived = function (oXMLDoc)
 	}
 
 	this.bIsLoading = false;
-	if (typeof(window.ajax_indicator) == 'function')
+	if (typeof(window.ajax_indicator) === 'function')
 		ajax_indicator(false);
 }

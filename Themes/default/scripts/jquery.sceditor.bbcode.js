@@ -530,7 +530,7 @@
 						if(attrs.charAt(0) === "=")
 							attrs = "defaultattr" + attrs;
 
-						if (typeof base.bbcodes[bbcode] != 'undefined' && typeof base.bbcodes[bbcode].attrs == 'function')
+						if (typeof base.bbcodes[bbcode] !== 'undefined' && typeof base.bbcodes[bbcode].attrs == 'function')
 						{
 							var declaredAttrs = base.bbcodes[bbcode].attrs();
 							var attrArray = new Array;
@@ -538,7 +538,7 @@
 							for (var i = 0; i < declaredAttrs.length; i++)
 							{
 								var attrPos = attrs.indexOf(declaredAttrs[i]);
-								if (attrPos != -1)
+								if (attrPos !== -1)
 								{
 									attrArray[attrPos] = [declaredAttrs[i], attrPos + declaredAttrs[i].length + 1];
 								}
@@ -548,7 +548,7 @@
 								compatArray.push(attrArray[attrElem]);
 							for (var i = 0; i < compatArray.length; i++)
 							{
-								if (typeof compatArray[i+1] != 'undefined')
+								if (typeof compatArray[i+1] !== 'undefined')
 									attrsMap[compatArray[i][0].toLowerCase()] = attrs.substr(compatArray[i][1], attrs.indexOf(compatArray[i+1][0]) - compatArray[i][1]).trim();
 								else
 									attrsMap[compatArray[i][0].toLowerCase()] = attrs.substr(compatArray[i][1], attrs.length);
@@ -1038,7 +1038,7 @@
 
 				var width = ' width=' + $(element).width();
 				var height = ' height=' + $(element).height();
-				var alt = $(element).attr('alt') != undefined ? ' alt=' + $(element).attr('alt').php_unhtmlspecialchars() : '';
+				var alt = $(element).attr('alt') !== undefined ? ' alt=' + $(element).attr('alt').php_unhtmlspecialchars() : '';
 
 				return '[img' + width + height + alt + ']' + element.attr('src') + '[/img]';
 			},
@@ -1210,7 +1210,7 @@
 				}
 				else
 				{
-					if ($(element).attr('from') != undefined)
+					if ($(element).attr('from') !== undefined)
 					{
 						from = '=' + $(element).attr('from').php_unhtmlspecialchars();
 					}
@@ -1362,7 +1362,7 @@
 			html: function(element, attrs, content) {
 				if(typeof attrs.defaultattr === "undefined" || attrs.defaultattr.length === 0)
 					return content;
-				if (attrs.defaultattr != 'rtl' && attrs.defaultattr != 'ltr')
+				if (attrs.defaultattr !== 'rtl' && attrs.defaultattr !== 'ltr')
 					return '[bdo=' + attrs.defaultattr + ']' + content + '[/bdo]';
 
 				return '<bdo dir="' + attrs.defaultattr + '">' + content + '</bdo>';

@@ -1,7 +1,7 @@
 var localTime = new Date();
 function autoDetectTimeOffset(currentTime)
 {
-	if (typeof(currentTime) != 'string')
+	if (typeof(currentTime) !== 'string')
 		var serverTime = currentTime;
 	else
 		var serverTime = new Date(currentTime);
@@ -34,7 +34,7 @@ function disableAutoCompleteNow()
 		var die = document.forms[i].elements;
 		for (var j = 0, m = die.length; j < m; j++)
 			// Only bother with text/password fields?
-			if (die[j].type == "text" || die[j].type == "password")
+			if (die[j].type === "text" || die[j].type === "password")
 				die[j].setAttribute("autocomplete", "off");
 	}
 }
@@ -47,7 +47,7 @@ function calcCharLeft()
 	if (!document.getElementById("signatureLeft"))
 		return;
 
-	if (oldSignature != currentSignature)
+	if (oldSignature !== currentSignature)
 	{
 		oldSignature = currentSignature;
 
@@ -75,7 +75,7 @@ function calcCharLeft()
 
 function ajax_getSignaturePreview (showPreview)
 {
-	showPreview = (typeof showPreview == 'undefined') ? false : showPreview;
+	showPreview = (typeof showPreview === 'undefined') ? false : showPreview;
 	$.ajax({
 		type: "POST",
 		url: smf_scripturl + "?action=xmlhttp;sa=previews;xml",
@@ -92,7 +92,7 @@ function ajax_getSignaturePreview (showPreview)
 				}
 			}
 
-			if ($(request).find("error").text() != '')
+			if ($(request).find("error").text() !== '')
 			{
 				if (!$("#profile_error").is(":visible"))
 					$("#profile_error").css({display: "", position: "fixed", top: 0, left: 0, width: "100%"});

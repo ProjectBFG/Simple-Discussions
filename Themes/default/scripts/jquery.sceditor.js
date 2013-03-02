@@ -1343,7 +1343,7 @@
 		textEditorSelectedText = function () {
 			textEditor.focus();
 
-			if(textEditor.selectionStart != null)
+			if(textEditor.selectionStart !== null)
 				return textEditor.value.substring(textEditor.selectionStart, textEditor.selectionEnd);
 			else if(document.selection.createRange)
 				return document.selection.createRange().text;
@@ -2916,7 +2916,7 @@
 			if(includeAfter)
 				after	= _getOuterText(false, maxKeyLen);
 
-			str	= before + (curChar!=null?curChar:"") + after;
+			str	= before + (curChar!==null?curChar:"") + after;
 			i	= rep.length;
 			while(i--)
 			{
@@ -2940,7 +2940,7 @@
 						continue;
 
 					left = before.length - start;
-					_selectOuterText(left, rep[i][0].length-left-(curChar!=null&&/^\S/.test(curChar)?1:0));
+					_selectOuterText(left, rep[i][0].length-left-(curChar!==null&&/^\S/.test(curChar)?1:0));
 					base.insertHTML(rep[i][1]);
 					return true;
 				}
@@ -2975,7 +2975,7 @@
 			{
 				node = reverse ? node.lastChild : node.firstChild;
 
-				while(node != null)
+				while(node !== null)
 				{
 					var next = reverse ? node.previousSibling : node.nextSibling;
 

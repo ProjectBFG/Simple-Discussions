@@ -23,7 +23,7 @@ function spellCheck(formName, fieldName)
 	var iOffset1, iOffset2;
 
 	// Loop through all words.
-	while ((aResult = regexpWordMatch.exec(sText)) && typeof(aResult) != 'undefined')
+	while ((aResult = regexpWordMatch.exec(sText)) && typeof(aResult) !== 'undefined')
 	{
 		iOffset1 = 0;
 		iOffset2 = aResult[0].length - 1;
@@ -37,19 +37,19 @@ function spellCheck(formName, fieldName)
 			iOffset2--;
 
 		// I guess there's only dashes and hyphens in this word...
-		if (iOffset1 == iOffset2)
+		if (iOffset1 === iOffset2)
 			continue;
 
 		// Ignore code blocks.
-		if (aResult[0].substr(0, 5).toLowerCase() == '[code')
+		if (aResult[0].substr(0, 5).toLowerCase() === '[code')
 			bInCode = true;
 
 		// Glad we're out of that code block!
-		else if (bInCode && aResult[0].substr(0, 7).toLowerCase() == '[/code]')
+		else if (bInCode && aResult[0].substr(0, 7).toLowerCase() === '[/code]')
 			bInCode = false;
 
 		// Now let's get to business.
-		else if (!bInCode && !in_array(aResult[0].charAt(0), ['[', '<']) && aResult[0].toUpperCase() != aResult[0])
+		else if (!bInCode && !in_array(aResult[0].charAt(0), ['[', '<']) && aResult[0].toUpperCase() !== aResult[0])
 			aWords[aWords.length] = aResult[0].substr(iOffset1, iOffset2 - iOffset1 + 1) + '|' + (iOffset1 + sText.substr(0, aResult.index).length) + '|' + (iOffset2 + sText.substr(0, aResult.index).length);
 	}
 
@@ -91,7 +91,7 @@ function replaceWord()
 
 	// If this isn't the beginning of the string then get all of the string
 	// that is before the word we are replacing.
-	if (misps[wordindex].start != 0)
+	if (misps[wordindex].start !== 0)
 		strstart = mispstr.slice(0, misps[wordindex].start + offsetindex);
 
 	// Get the end of the string after the word we are replacing.
@@ -134,10 +134,10 @@ function replaceAll()
 
 	for (idx = 0; idx < misps.length; idx++)
 	{
-		if (misps[idx].word == origword)
+		if (misps[idx].word === origword)
 		{
 			var strstart = "";
-			if (misps[idx].start != 0)
+			if (misps[idx].start !== 0)
 				strstart = mispstr.slice(0, misps[idx].start + localoffsetindex);
 
 			// Get the end of the string after the word we are replacing.
@@ -173,7 +173,7 @@ function highlightWord()
 
 	// If this isn't the beginning of the string then get all of the string
 	// that is before the word we are replacing.
-	if (misps[wordindex].start != 0)
+	if (misps[wordindex].start !== 0)
 		strstart = mispstr.slice(0, misps[wordindex].start + offsetindex);
 
 	// Get the end of the string after the word we are replacing.
@@ -188,7 +188,7 @@ function highlightWord()
 	setInnerHTML(divptr, newValue.replace(/_\|_/g, '<br />'));
 
 	// We could use scrollIntoView, but it's just not that great anyway.
-	var spellview_height = typeof(document.getElementById("spellview").currentStyle) != "undefined" ? parseInt(document.getElementById("spellview").currentStyle.height) : document.getElementById("spellview").offsetHeight;
+	var spellview_height = typeof(document.getElementById("spellview").currentStyle) !== "undefined" ? parseInt(document.getElementById("spellview").currentStyle.height) : document.getElementById("spellview").offsetHeight;
 	var word_position = document.getElementById("h1").offsetTop;
 	var current_position = document.getElementById("spellview").scrollTop;
 
@@ -242,7 +242,7 @@ function nextWord(ignoreall)
 	}
 
 	// Check to see if word is supposed to be ignored.
-	if (typeof(ignoredWords[misps[wordindex].word]) != "undefined")
+	if (typeof(ignoredWords[misps[wordindex].word]) !== "undefined")
 	{
 		nextWord(false);
 		return false;
@@ -260,7 +260,7 @@ function nextWord(ignoreall)
 			var newopt = new Option(misps[wordindex].suggestions[sugidx], misps[wordindex].suggestions[sugidx]);
 			document.forms.spellingForm.suggestions.options[sugidx] = newopt;
 
-			if (sugidx == 0)
+			if (sugidx === 0)
 			{
 				newopt.selected = true;
 				document.forms.spellingForm.changeto.value = newopt.value;
@@ -269,7 +269,7 @@ function nextWord(ignoreall)
 		}
 	}
 
-	if (document.forms.spellingForm.suggestions.options.length == 0)
+	if (document.forms.spellingForm.suggestions.options.length === 0)
 		document.forms.spellingForm.changeto.value = "";
 
 	highlightWord();

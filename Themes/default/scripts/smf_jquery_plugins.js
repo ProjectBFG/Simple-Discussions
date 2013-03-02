@@ -146,7 +146,7 @@
 					var tt = $('#' + oSettings.tooltipID);
 					var ttContent = $('#' + oSettings.tooltipID + ' #' + oSettings.tooltipTextID);
 					
-					if (oSettings.tooltipContent == 'html')
+					if (oSettings.tooltipContent === 'html')
 						ttContent.html($(this).children('.' + oSettings.tooltipSwapClass).html());
 					else
 						ttContent.text($(this).children('.' + oSettings.tooltipSwapClass).text());
@@ -283,9 +283,9 @@
 		var handleHover = function(e) {
 
 			// next three lines copied from jQuery.hover, ignore children onMouseOver/onMouseOut
-			var p = (e.type == "mouseenter" ? e.fromElement : e.toElement) || e.relatedTarget;
-			while ( p && p != this ) { try { p = p.parentNode; } catch(e) { p = this; } }
-			if ( p == this ) { return false; }
+			var p = (e.type === "mouseenter" ? e.fromElement : e.toElement) || e.relatedTarget;
+			while ( p && p !== this ) { try { p = p.parentNode; } catch(e) { p = this; } }
+			if ( p === this ) { return false; }
 
 			// copy objects to be passed into t (required for event object to be passed in IE)
 			var ev = jQuery.extend({},e);
@@ -294,21 +294,21 @@
 			// cancel hoverIntent timer if it exists
 			if (ob.hoverIntent_t) { ob.hoverIntent_t = clearTimeout(ob.hoverIntent_t); }
 
-			// if e.type == "mouseenter"
-			if (e.type == "mouseenter") {
+			// if e.type === "mouseenter"
+			if (e.type === "mouseenter") {
 				// set "previous" X and Y position based on initial entry point
 				pX = ev.pageX; pY = ev.pageY;
 				// update "current" X and Y position based on mousemove
 				$(ob).bind("mousemove",track);
 				// start polling interval (self-calling timeout) to compare mouse coordinates over time
-				if (ob.hoverIntent_s != 1) { ob.hoverIntent_t = setTimeout( function(){compare(ev,ob);} , cfg.interval );}
+				if (ob.hoverIntent_s !== 1) { ob.hoverIntent_t = setTimeout( function(){compare(ev,ob);} , cfg.interval );}
 
-			// else e.type == "mouseleave"
+			// else e.type === "mouseleave"
 			} else {
 				// unbind expensive mousemove event
 				$(ob).unbind("mousemove",track);
 				// if hoverIntent state is true, then call the mouseOut function after the specified delay
-				if (ob.hoverIntent_s == 1) { ob.hoverIntent_t = setTimeout( function(){delay(ev,ob);} , cfg.timeout );}
+				if (ob.hoverIntent_s === 1) { ob.hoverIntent_t = setTimeout( function(){delay(ev,ob);} , cfg.timeout );}
 			}
 		};
 
@@ -469,7 +469,7 @@
 			before: function(e) {},
 			afterEachAnimation: function(e) {}
 		}
-		if(typeof callback == 'function') {
+		if(typeof callback === 'function') {
 				defaults.after = callback;
 		}
 		o = $.extend(defaults, o || {});
@@ -500,7 +500,7 @@
 					cursor: o.cursor,
 					zIndex: '1010'
 				}).addClass('anima-drag').appendTo(document.body);
-				if(o.overlay && $('#anima-drag-overlay').length == 0) {
+				if(o.overlay && $('#anima-drag-overlay').length === 0) {
 					$('<div id="anima-drag-overlay"></div>').css({
 						position: 'absolute',
 						top: '0',
@@ -514,7 +514,7 @@
 					$('#anima-drag-overlay').show();
 				}
 				id = setInterval(function() {
-					if(lastX != Ev.pageX || lastY != Ev.pageY) {
+					if(lastX !== Ev.pageX || lastY !== Ev.pageY) {
 						var positionX = draggableStartX - (startX - Ev.pageX), positionY = draggableStartY - (startY - Ev.pageY);
 						if(positionX < limitLeft && o.boundary) {
 							positionX = limitLeft;

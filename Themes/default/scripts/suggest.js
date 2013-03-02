@@ -127,7 +127,7 @@ smc_AutoSuggest.prototype.handleKey = function(oEvent)
 		case 9:
 			if (this.aDisplayData.length > 0)
 			{
-				if (this.oSelectedDiv != null)
+				if (this.oSelectedDiv !== null)
 					this.itemClicked(this.oSelectedDiv);
 				else
 					this.handleSubmit();
@@ -139,7 +139,7 @@ smc_AutoSuggest.prototype.handleKey = function(oEvent)
 
 		// Enter.
 		case 13:
-			if (this.aDisplayData.length > 0 && this.oSelectedDiv != null)
+			if (this.aDisplayData.length > 0 && this.oSelectedDiv !== null)
 			{
 				this.itemClicked(this.oSelectedDiv);
 
@@ -154,7 +154,7 @@ smc_AutoSuggest.prototype.handleKey = function(oEvent)
 		// Up/Down arrow?
 		case 38:
 		case 40:
-			if (this.aDisplayData.length && this.oSuggestDivHandle.style.visibility != 'hidden')
+			if (this.aDisplayData.length && this.oSuggestDivHandle.style.visibility !== 'hidden')
 			{
 				// Loop through the display data trying to find our entry.
 				var bPrevHandle = false;
@@ -162,26 +162,26 @@ smc_AutoSuggest.prototype.handleKey = function(oEvent)
 				for (var i = 0; i < this.aDisplayData.length; i++)
 				{
 					// If we're going up and yet the top one was already selected don't go around.
-					if (this.oSelectedDiv != null && this.oSelectedDiv == this.aDisplayData[i] && i == 0 && iKeyPress == 38)
+					if (this.oSelectedDiv !== null && this.oSelectedDiv === this.aDisplayData[i] && i === 0 && iKeyPress === 38)
 					{
 						oToHighlight = this.oSelectedDiv;
 						break;
 					}
 					// If nothing is selected and we are going down then we select the first one.
-					if (this.oSelectedDiv == null && iKeyPress == 40)
+					if (this.oSelectedDiv === null && iKeyPress === 40)
 					{
 						oToHighlight = this.aDisplayData[i];
 						break;
 					}
 
 					// If the previous handle was the actual previously selected one and we're hitting down then this is the one we want.
-					if (bPrevHandle != false && bPrevHandle == this.oSelectedDiv && iKeyPress == 40)
+					if (bPrevHandle !== false && bPrevHandle === this.oSelectedDiv && iKeyPress === 40)
 					{
 						oToHighlight = this.aDisplayData[i];
 						break;
 					}
 					// If we're going up and this is the previously selected one then we want the one before, if there was one.
-					if (bPrevHandle != false && this.aDisplayData[i] == this.oSelectedDiv && iKeyPress == 38)
+					if (bPrevHandle !== false && this.aDisplayData[i] === this.oSelectedDiv && iKeyPress === 38)
 					{
 						oToHighlight = bPrevHandle;
 						break;
@@ -195,7 +195,7 @@ smc_AutoSuggest.prototype.handleKey = function(oEvent)
 					oToHighlight = bPrevHandle;
 
 				// Remove any old highlighting.
-				if (this.oSelectedDiv != null)
+				if (this.oSelectedDiv !== null)
 					this.itemMouseOut(this.oSelectedDiv);
 				// Mark what the selected div now is.
 				this.oSelectedDiv = oToHighlight;
@@ -238,10 +238,10 @@ smc_AutoSuggest.prototype.handleSubmit = function()
 	// Do we have something that matches the current text?
 	for (var i = 0; i < this.aCache.length; i++)
 	{
-		if (this.sLastSearch.toLowerCase() == this.aCache[i].sItemName.toLowerCase().substr(0, this.sLastSearch.length))
+		if (this.sLastSearch.toLowerCase() === this.aCache[i].sItemName.toLowerCase().substr(0, this.sLastSearch.length))
 		{
 			// Exact match?
-			if (this.sLastSearch.length == this.aCache[i].sItemName.length)
+			if (this.sLastSearch.length === this.aCache[i].sItemName.length)
 			{
 				// This is the one!
 				oFoundEntry = {
@@ -255,7 +255,7 @@ smc_AutoSuggest.prototype.handleSubmit = function()
 			else
 			{
 				// If we have two matches don't find anything.
-				if (oFoundEntry != null)
+				if (oFoundEntry !== null)
 					bReturnValue = false;
 				else
 					oFoundEntry = {
@@ -266,7 +266,7 @@ smc_AutoSuggest.prototype.handleSubmit = function()
 		}
 	}
 
-	if (oFoundEntry == null || bReturnValue == false)
+	if (oFoundEntry === null || bReturnValue === false)
 		return bReturnValue;
 	else
 	{
@@ -317,14 +317,14 @@ smc_AutoSuggest.prototype.removeLastSearchString = function ()
 	var sTempText = this.oTextHandle.value.toLowerCase();
 	var iStartString = sTempText.indexOf(this.sLastSearch.toLowerCase());
 	// Just attempt to remove the bits we just searched for.
-	if (iStartString != -1)
+	if (iStartString !== -1)
 	{
 		while (iStartString > 0)
 		{
-			if (sTempText.charAt(iStartString - 1) == '"' || sTempText.charAt(iStartString - 1) == ',' || sTempText.charAt(iStartString - 1) == ' ')
+			if (sTempText.charAt(iStartString - 1) === '"' || sTempText.charAt(iStartString - 1) === ',' || sTempText.charAt(iStartString - 1) === ' ')
 			{
 				iStartString--;
-				if (sTempText.charAt(iStartString - 1) == ',')
+				if (sTempText.charAt(iStartString - 1) === ',')
 					break;
 			}
 			else
@@ -346,7 +346,7 @@ smc_AutoSuggest.prototype.addItemLink = function (sItemId, sItemName, bFromSubmi
 	this.iItemCount ++;
 
 	// If there's a callback then call it.
-	if ('oCallback' in this && 'onBeforeAddItem' in this.oCallback && typeof(this.oCallback.onBeforeAddItem) == 'string')
+	if ('oCallback' in this && 'onBeforeAddItem' in this.oCallback && typeof(this.oCallback.onBeforeAddItem) === 'string')
 	{
 		// If it returns false the item must not be added.
 		if (!eval(this.oCallback.onBeforeAddItem + '(' + this.opt.sSelf + ', \'' + sItemId + '\');'))
@@ -359,14 +359,14 @@ smc_AutoSuggest.prototype.addItemLink = function (sItemId, sItemName, bFromSubmi
 	this.oItemList.appendChild(oNewDiv);
 
 	// If there's a registered callback, call it.
-	if ('oCallback' in this && 'onAfterAddItem' in this.oCallback && typeof(this.oCallback.onAfterAddItem) == 'string')
+	if ('oCallback' in this && 'onAfterAddItem' in this.oCallback && typeof(this.oCallback.onAfterAddItem) === 'string')
 		eval(this.oCallback.onAfterAddItem + '(' + this.opt.sSelf + ', \'' + oNewDiv.id + '\', ' + this.iItemCount + ');');
 
 	// Clear the div a bit.
 	this.removeLastSearchString();
 
 	// If we came from a submit, and there's still more to go, turn on auto add for all the other things.
-	this.bDoAutoAdd = this.oTextHandle.value != '' && bFromSubmit;
+	this.bDoAutoAdd = this.oTextHandle.value !== '' && bFromSubmit;
 
 	// Update the fellow..
 	this.autoSuggestUpdate();
@@ -378,7 +378,7 @@ smc_AutoSuggest.prototype.deleteAddedItem = function (sItemId)
 	var oDiv = document.getElementById('suggest_' + this.opt.sSuggestId + '_' + sItemId);
 
 	// Remove the div if it exists.
-	if (typeof(oDiv) == 'object' && oDiv != null)
+	if (typeof(oDiv) == 'object' && oDiv !== null)
 	{
 		oDiv.parentNode.removeChild(document.getElementById('suggest_' + this.opt.sSuggestId + '_' + sItemId));
 
@@ -578,7 +578,7 @@ smc_AutoSuggest.prototype.autoSuggestUpdate = function ()
 	}
 
 	// Nothing?
-	if (sRealLastSearch == sSearchString)
+	if (sRealLastSearch === sSearchString)
 		return true;
 
 	// Too small?
@@ -588,7 +588,7 @@ smc_AutoSuggest.prototype.autoSuggestUpdate = function ()
 		this.autoSuggestHide();
 		return true;
 	}
-	else if (sSearchString.substr(0, sRealLastSearch.length) == sRealLastSearch)
+	else if (sSearchString.substr(0, sRealLastSearch.length) === sRealLastSearch)
 	{
 		// Instead of hitting the server again, just narrow down the results...
 		var aNewCache = [];
@@ -596,12 +596,12 @@ smc_AutoSuggest.prototype.autoSuggestUpdate = function ()
 		var sLowercaseSearch = sSearchString.toLowerCase();
 		for (var k = 0; k < this.aCache.length; k++)
 		{
-			if (this.aCache[k].sItemName.substr(0, sSearchString.length).toLowerCase() == sLowercaseSearch)
+			if (this.aCache[k].sItemName.substr(0, sSearchString.length).toLowerCase() === sLowercaseSearch)
 				aNewCache[j++] = this.aCache[k];
 		}
 
 		this.aCache = [];
-		if (aNewCache.length != 0)
+		if (aNewCache.length !== 0)
 		{
 			this.aCache = aNewCache;
 			// Repopulate.
@@ -615,7 +615,7 @@ smc_AutoSuggest.prototype.autoSuggestUpdate = function ()
 	}
 
 	// In progress means destroy!
-	if (typeof(this.oXmlRequestHandle) == 'object' && this.oXmlRequestHandle != null)
+	if (typeof(this.oXmlRequestHandle) === 'object' && this.oXmlRequestHandle !== null)
 		this.oXmlRequestHandle.abort();
 
 	// Clean the text handle.
