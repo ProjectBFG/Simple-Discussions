@@ -48,7 +48,7 @@ function smc_toggleImageDimensions()
 			$(img).css({cursor: 'pointer'});
 			$(img).on('click', function()
 			{
-				var size = $(this)[0].style.width == 'auto' ? '' : 'auto';
+				var size = $(this)[0].style.width === 'auto' ? '' : 'auto';
 				$(this).css({width: size, height: size});
 			});
 		}

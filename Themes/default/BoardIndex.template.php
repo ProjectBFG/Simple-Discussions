@@ -12,7 +12,7 @@
 
 function template_main()
 {
-	global $context, $settings, $options, $txt, $scripturl, $modSettings;
+	global $context, $settings, $options, $txt, $scripturl;
 
 	// Show some statistics if stat info is off.
 	if (!$settings['show_stats_index'])
@@ -374,6 +374,8 @@ function template_info_center()
 	echo '
 	<script>
 		$(\'#upshrinkHeaderIC\').on(\'show hide\', function(e){
+			console.log(this, e.target, e.currentTarget)
+			if(!$(this).is(e.target))return;
 			$(\'#collapseIC\').toggleClass(\'icon-arrow-up icon-arrow-down\', 200);
 		});
 	</script>';
