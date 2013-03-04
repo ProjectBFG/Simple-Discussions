@@ -601,8 +601,8 @@ function Display()
 		'can_report_moderator' => 'report_any',
 		'can_moderate_forum' => 'moderate_forum',
 		'can_issue_warning' => 'issue_warning',
-		'can_restore_topic' => 'move_any',
-		'can_restore_msg' => 'move_any',
+		// 'can_restore_topic' => 'move_any',
+		// 'can_restore_msg' => 'move_any',
 	);
 	foreach ($common_permissions as $contextual => $perm)
 		$context[$contextual] = allowedTo($perm);
@@ -692,8 +692,8 @@ function Display()
 	);
 
 	// Restore topic. eh?  No monkey business.
-	if ($context['can_restore_topic'])
-		$context['mod_buttons'][] = array('text' => 'restore_topic', 'image' => '', 'lang' => true, 'url' => $scripturl . '?action=restoretopic;topics=' . $context['current_topic'] . ';' . $context['session_var'] . '=' . $context['session_id']);
+	// if ($context['can_restore_topic'])
+		// $context['mod_buttons'][] = array('text' => 'restore_topic', 'image' => '', 'lang' => true, 'url' => $scripturl . '?action=restoretopic;topics=' . $context['current_topic'] . ';' . $context['session_var'] . '=' . $context['session_id']);
 
 	// Allow adding new mod buttons easily.
 	// Note: $context['normal_buttons'] and $context['mod_buttons'] are added for backward compatibility with 2.0, but are deprecated and should not be used

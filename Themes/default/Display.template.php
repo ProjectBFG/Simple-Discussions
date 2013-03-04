@@ -143,7 +143,8 @@ function template_main()
 						</div>';
 						
 		// Show the quickbuttons, for various operations on posts.
-		if ($message['can_approve'] || $context['can_reply'] || $message['can_modify'] || $message['can_remove'] || $context['can_split'] || $context['can_restore_msg'])
+		// if ($message['can_approve'] || $context['can_reply'] || $message['can_modify'] || $message['can_remove'] || $context['can_split'] || $context['can_restore_msg'])
+		if ($message['can_approve'] || $context['can_reply'] || $message['can_modify'] || $message['can_remove'] || $context['can_split'])
 			echo '
 						<div class="btn-toolbar">
 							<div class="btn-group pull-right">';
@@ -164,7 +165,8 @@ function template_main()
 								<span class="btn"><img src="', $settings['images_url'], '/icons/modify_inline.png" alt="', $txt['modify_msg'], '" title="', $txt['modify_msg'], '" class="modifybutton" id="modify_button_', $message['id'], '" style="cursor: pointer; margin: 0;" onclick="oQuickModify.modifyMsg(\'', $message['id'], '\')" />', $txt['quick_edit'], '</span>';
 							
 		// Can the user modify the contents of this post?
-		if ($message['can_modify'] || $message['can_remove'] || ($context['can_split'] && !empty($context['real_num_replies'])) || $context['can_restore_msg'] || $message['can_approve'] || $message['can_unapprove'])
+		// if ($message['can_modify'] || $message['can_remove'] || ($context['can_split'] && !empty($context['real_num_replies'])) || $context['can_restore_msg'] || $message['can_approve'] || $message['can_unapprove'])
+		if ($message['can_modify'] || $message['can_remove'] || ($context['can_split'] && !empty($context['real_num_replies'])) || $message['can_approve'] || $message['can_unapprove'])
 			echo '
 								<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">', $txt['post_options'], '<span class="caret"></span></a>
 								<ul class="dropdown-menu">';
@@ -185,9 +187,9 @@ function template_main()
 									<li><a href="', $scripturl, '?action=splittopics;topic=', $context['current_topic'], '.0;at=', $message['id'], '" class="split_button">', $txt['split'], '</a></li>';
 
 			// Can we restore topics?
-			if ($context['can_restore_msg'])
-				echo '
-									<li><a href="', $scripturl, '?action=restoretopic;msgs=', $message['id'], ';', $context['session_var'], '=', $context['session_id'], '" class="restore_button">', $txt['restore_message'], '</a></li>';
+			// if ($context['can_restore_msg'])
+				// echo '
+									// <li><a href="', $scripturl, '?action=restoretopic;msgs=', $message['id'], ';', $context['session_var'], '=', $context['session_id'], '" class="restore_button">', $txt['restore_message'], '</a></li>';
 
 			// Maybe we can approve it, maybe we should?
 			if ($message['can_approve'])
@@ -199,7 +201,8 @@ function template_main()
 				echo '
 									<li><a href="', $scripturl, '?action=moderate;area=postmod;sa=approve;topic=', $context['current_topic'], '.', $context['start'], ';msg=', $message['id'], ';', $context['session_var'], '=', $context['session_id'], '"  class="unapprove_button">', $txt['unapprove'], '</a></li>';
 
-			if ($message['can_modify'] || $message['can_remove'] || $context['can_split'] || $context['can_restore_msg'] || $message['can_approve'] || $message['can_unapprove'])
+			// if ($message['can_modify'] || $message['can_remove'] || $context['can_split'] || $context['can_restore_msg'] || $message['can_approve'] || $message['can_unapprove'])
+			if ($message['can_modify'] || $message['can_remove'] || $context['can_split'] || $message['can_approve'] || $message['can_unapprove'])
 				echo '
 								</ul>';
 								
@@ -208,7 +211,8 @@ function template_main()
 			echo '
 								<span class="inline_mod_check" style="display: none;" id="in_topic_mod_check_', $message['id'], '"></span>';
 		
-			if ($message['can_approve'] || $context['can_reply'] || $message['can_modify'] || $message['can_remove'] || $context['can_split'] || $context['can_restore_msg'])
+			// if ($message['can_approve'] || $context['can_reply'] || $message['can_modify'] || $message['can_remove'] || $context['can_split'] || $context['can_restore_msg'])
+			if ($message['can_approve'] || $context['can_reply'] || $message['can_modify'] || $message['can_remove'] || $context['can_split'])
 				echo '
 							</div>
 						</div>';
@@ -433,10 +437,10 @@ function template_main()
 						sRemoveButtonLabel: \'', $txt['quickmod_delete_selected'], '\',
 						sRemoveButtonImage: \'delete_selected.png\',
 						sRemoveButtonConfirm: \'', $txt['quickmod_confirm'], '\',
-						bCanRestore: ', $context['can_restore_msg'] ? 'true' : 'false', ',
-						sRestoreButtonLabel: \'', $txt['quick_mod_restore'], '\',
-						sRestoreButtonImage: \'restore_selected.png\',
-						sRestoreButtonConfirm: \'', $txt['quickmod_confirm'], '\',
+						// bCanRestore: ', $context['can_restore_msg'] ? 'true' : 'false', ',
+						// sRestoreButtonLabel: \'', $txt['quick_mod_restore'], '\',
+						// sRestoreButtonImage: \'restore_selected.png\',
+						// sRestoreButtonConfirm: \'', $txt['quickmod_confirm'], '\',
 						bCanSplit: ', $context['can_split'] ? 'true' : 'false', ',
 						sSplitButtonLabel: \'', $txt['quickmod_split_selected'], '\',
 						sSplitButtonImage: \'split_selected.png\',
