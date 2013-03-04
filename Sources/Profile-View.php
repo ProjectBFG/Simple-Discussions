@@ -190,7 +190,7 @@ function summary($memID)
 function showPosts($memID)
 {
 	global $txt, $user_info, $scripturl, $modSettings;
-	global $context, $user_profile, $sourcedir, $smcFunc, $board;
+	global $context, $user_profile, $sourcedir, $smcFunc;
 
 	// Some initial context.
 	$context['start'] = (int) $_REQUEST['start'];
@@ -232,7 +232,7 @@ function showPosts($memID)
 
 		// We need msg info for logging.
 		$request = $smcFunc['db_query']('', '
-			SELECT subject, id_member, id_topic, id_board
+			SELECT subject, id_member, id_topic
 			FROM {db_prefix}messages
 			WHERE id_msg = {int:id_msg}',
 			array(
@@ -252,7 +252,7 @@ function showPosts($memID)
 
 		// Add it to the mod log.
 		if (allowedTo('delete_any') && (!allowedTo('delete_own') || $info[1] != $user_info['id']))
-			logAction('delete', array('topic' => $info[2], 'subject' => $info[0], 'member' => $info[1], 'board' => $info[3]));
+			logAction('delete', array('topic' => $info[2], 'subject' => $info[0], 'member' => $info[1]));
 
 		// Back to... where we are now ;).
 		redirectexit('action=profile;u=' . $memID . ';area=showposts;start=' . $_GET['start']);
@@ -265,29 +265,23 @@ function showPosts($memID)
 	if ($context['is_topics'])
 		$request = $smcFunc['db_query']('', '
 			SELECT COUNT(*)
-			FROM {db_prefix}topics AS t' . ($user_info['query_see_board'] == '1=1' ? '' : '
-				INNER JOIN {db_prefix}boards AS b ON (b.id_board = t.id_board AND {query_see_board})') . '
-			WHERE t.id_member_started = {int:current_member}' . (!empty($board) ? '
-				AND t.id_board = {int:board}' : '') . (!$modSettings['postmod_active'] || $context['user']['is_owner'] ? '' : '
+			FROM {db_prefix}topics AS t
+			WHERE t.id_member_started = {int:current_member}' . (!$modSettings['postmod_active'] || $context['user']['is_owner'] ? '' : '
 				AND t.approved = {int:is_approved}'),
 			array(
 				'current_member' => $memID,
 				'is_approved' => 1,
-				'board' => $board,
 			)
 		);
 	else
 		$request = $smcFunc['db_query']('', '
 			SELECT COUNT(*)
-			FROM {db_prefix}messages AS m' . ($user_info['query_see_board'] == '1=1' ? '' : '
-				INNER JOIN {db_prefix}boards AS b ON (b.id_board = m.id_board AND {query_see_board})') . '
-			WHERE m.id_member = {int:current_member}' . (!empty($board) ? '
-				AND m.id_board = {int:board}' : '') . (!$modSettings['postmod_active'] || $context['user']['is_owner'] ? '' : '
+			FROM {db_prefix}messages AS m
+			WHERE m.id_member = {int:current_member}' . (!$modSettings['postmod_active'] || $context['user']['is_owner'] ? '' : '
 				AND m.approved = {int:is_approved}'),
 			array(
 				'current_member' => $memID,
 				'is_approved' => 1,
-				'board' => $board,
 			)
 		);
 	list ($msgCount) = $smcFunc['db_fetch_row']($request);
@@ -296,13 +290,11 @@ function showPosts($memID)
 	$request = $smcFunc['db_query']('', '
 		SELECT MIN(id_msg), MAX(id_msg)
 		FROM {db_prefix}messages AS m
-		WHERE m.id_member = {int:current_member}' . (!empty($board) ? '
-			AND m.id_board = {int:board}' : '') . (!$modSettings['postmod_active'] || $context['user']['is_owner'] ? '' : '
+		WHERE m.id_member = {int:current_member}' . (!$modSettings['postmod_active'] || $context['user']['is_owner'] ? '' : '
 			AND m.approved = {int:is_approved}'),
 		array(
 			'current_member' => $memID,
 			'is_approved' => 1,
-			'board' => $board,
 		)
 	);
 	list ($min_msg_member, $max_msg_member) = $smcFunc['db_fetch_row']($request);
@@ -313,7 +305,7 @@ function showPosts($memID)
 	$maxIndex = (int) $modSettings['defaultMaxMessages'];
 
 	// Make sure the starting place makes sense and construct our friend the page index.
-	$context['page_index'] = constructPageIndex($scripturl . '?action=profile;u=' . $memID . ';area=showposts' . ($context['is_topics'] ? ';sa=topics' : '') . (!empty($board) ? ';board=' . $board : ''), $context['start'], $msgCount, $maxIndex);
+	$context['page_index'] = constructPageIndex($scripturl . '?action=profile;u=' . $memID . ';area=showposts' . ($context['is_topics'] ? ';sa=topics' : ''), $context['start'], $msgCount, $maxIndex);
 	$context['current_page'] = $context['start'] / $maxIndex;
 
 	// Reverse the query if we're past 50% of the pages for better performance.
@@ -339,7 +331,7 @@ function showPosts($memID)
 			$range_limit = $reverse ? 'm.id_msg < ' . ($min_msg_member + $margin) : 'm.id_msg > ' . ($max_msg_member - $margin);
 	}
 
-	// Find this user's posts.  The left join on categories somehow makes this faster, weird as it looks.
+	// Find this user's posts. 
 	$looped = false;
 	while (true)
 	{
@@ -347,23 +339,18 @@ function showPosts($memID)
 		{
 			$request = $smcFunc['db_query']('', '
 				SELECT
-					b.id_board, b.name AS bname, c.id_cat, c.name AS cname, t.id_member_started, t.id_first_msg, t.id_last_msg,
+					t.id_member_started, t.id_first_msg, t.id_last_msg,
 					t.approved, m.body, m.smileys_enabled, m.subject, m.poster_time, m.id_topic, m.id_msg
 				FROM {db_prefix}topics AS t
-					INNER JOIN {db_prefix}boards AS b ON (b.id_board = t.id_board)
-					LEFT JOIN {db_prefix}categories AS c ON (c.id_cat = b.id_cat)
 					INNER JOIN {db_prefix}messages AS m ON (m.id_msg = t.id_first_msg)
-				WHERE t.id_member_started = {int:current_member}' . (!empty($board) ? '
-					AND t.id_board = {int:board}' : '') . (empty($range_limit) ? '' : '
-					AND ' . $range_limit) . '
-					AND {query_see_board}' . (!$modSettings['postmod_active'] || $context['user']['is_owner'] ? '' : '
+				WHERE t.id_member_started = {int:current_member}' . (empty($range_limit) ? '' : '
+					AND ' . $range_limit) . (!$modSettings['postmod_active'] || $context['user']['is_owner'] ? '' : '
 					AND t.approved = {int:is_approved} AND m.approved = {int:is_approved}') . '
 				ORDER BY t.id_first_msg ' . ($reverse ? 'ASC' : 'DESC') . '
 				LIMIT ' . $start . ', ' . $maxIndex,
 				array(
 					'current_member' => $memID,
 					'is_approved' => 1,
-					'board' => $board,
 				)
 			);
 		}
@@ -371,24 +358,18 @@ function showPosts($memID)
 		{
 			$request = $smcFunc['db_query']('', '
 				SELECT
-					b.id_board, b.name AS bname, c.id_cat, c.name AS cname, m.id_topic, m.id_msg,
-					t.id_member_started, t.id_first_msg, t.id_last_msg, m.body, m.smileys_enabled,
-					m.subject, m.poster_time, m.approved
+					m.id_topic, m.id_msg, m.subject, m.poster_time, m.approved,
+					t.id_member_started, t.id_first_msg, t.id_last_msg, m.body, m.smileys_enabled
 				FROM {db_prefix}messages AS m
 					INNER JOIN {db_prefix}topics AS t ON (t.id_topic = m.id_topic)
-					INNER JOIN {db_prefix}boards AS b ON (b.id_board = t.id_board)
-					LEFT JOIN {db_prefix}categories AS c ON (c.id_cat = b.id_cat)
-				WHERE m.id_member = {int:current_member}' . (!empty($board) ? '
-					AND b.id_board = {int:board}' : '') . (empty($range_limit) ? '' : '
-					AND ' . $range_limit) . '
-					AND {query_see_board}' . (!$modSettings['postmod_active'] || $context['user']['is_owner'] ? '' : '
+				WHERE m.id_member = {int:current_member}' . (empty($range_limit) ? '' : '
+					AND ' . $range_limit) . (!$modSettings['postmod_active'] || $context['user']['is_owner'] ? '' : '
 					AND t.approved = {int:is_approved} AND m.approved = {int:is_approved}') . '
 				ORDER BY m.id_msg ' . ($reverse ? 'ASC' : 'DESC') . '
 				LIMIT ' . $start . ', ' . $maxIndex,
 				array(
 					'current_member' => $memID,
 					'is_approved' => 1,
-					'board' => $board,
 				)
 			);
 		}
@@ -403,7 +384,6 @@ function showPosts($memID)
 	// Start counting at the number of the first message displayed.
 	$counter = $reverse ? $context['start'] + $maxIndex + 1 : $context['start'];
 	$context['posts'] = array();
-	$board_ids = array('own' => array(), 'any' => array());
 	while ($row = $smcFunc['db_fetch_assoc']($request))
 	{
 		// Censor....
@@ -418,14 +398,6 @@ function showPosts($memID)
 			'body' => $row['body'],
 			'counter' => $counter,
 			'alternate' => $counter % 2,
-			'category' => array(
-				'name' => $row['cname'],
-				'id' => $row['id_cat']
-			),
-			'board' => array(
-				'name' => $row['bname'],
-				'id' => $row['id_board']
-			),
 			'topic' => $row['id_topic'],
 			'subject' => $row['subject'],
 			'start' => 'msg' . $row['id_msg'],
@@ -438,10 +410,6 @@ function showPosts($memID)
 			'delete_possible' => ($row['id_first_msg'] != $row['id_msg'] || $row['id_last_msg'] == $row['id_msg']) && (empty($modSettings['edit_disable_time']) || $row['poster_time'] + $modSettings['edit_disable_time'] * 60 >= time()),
 			'approved' => $row['approved'],
 		);
-
-		if ($user_info['id'] == $row['id_member_started'])
-			$board_ids['own'][$row['id_board']][] = $counter;
-		$board_ids['any'][$row['id_board']][] = $counter;
 	}
 	$smcFunc['db_free_result']($request);
 
@@ -449,7 +417,7 @@ function showPosts($memID)
 	if ($reverse)
 		$context['posts'] = array_reverse($context['posts'], true);
 
-	// These are all the permissions that are different from board to board..
+	// These are all the permissions needed.
 	if ($context['is_topics'])
 		$permissions = array(
 			'own' => array(
@@ -473,32 +441,6 @@ function showPosts($memID)
 			)
 		);
 
-	// For every permission in the own/any lists...
-	foreach ($permissions as $type => $list)
-	{
-		foreach ($list as $permission => $allowed)
-		{
-			// Get the boards they can do this on...
-			$boards = boardsAllowedTo($permission);
-
-			// Hmm, they can do it on all boards, can they?
-			if (!empty($boards) && $boards[0] == 0)
-				$boards = array_keys($board_ids[$type]);
-
-			// Now go through each board they can do the permission on.
-			foreach ($boards as $board_id)
-			{
-				// There aren't any posts displayed from this board.
-				if (!isset($board_ids[$type][$board_id]))
-					continue;
-
-				// Set the permission to true ;).
-				foreach ($board_ids[$type][$board_id] as $counter)
-					$context['posts'][$counter][$allowed] = true;
-			}
-		}
-	}
-
 	// Clean up after posts that cannot be deleted and quoted.
 	$quote_enabled = empty($modSettings['disabledBBC']) || !in_array('quote', explode(',', $modSettings['disabledBBC']));
 	foreach ($context['posts'] as $counter => $dummy)
@@ -515,7 +457,7 @@ function showPosts($memID)
  */
 function showDisregarded($memID)
 {
-	global $txt, $user_info, $scripturl, $modSettings, $board, $context, $sourcedir, $smcFunc;
+	global $txt, $user_info, $scripturl, $modSettings, $context, $sourcedir, $smcFunc;
 
 	// Only the owner can see the list (if the function is enabled of course)
 	if ($user_info['id'] != $memID || !$modSettings['enable_disregard'])
@@ -635,19 +577,17 @@ function showDisregarded($memID)
  */
 function list_getDisregarded($start, $items_per_page, $sort, $memID)
 {
-	global $smcFunc, $board, $modSettings, $context;
+	global $smcFunc, $modSettings, $context;
 
 	// Get the list of topics we can see
 	$request = $smcFunc['db_query']('', '
 		SELECT lt.id_topic
 		FROM {db_prefix}log_topics as lt
 			LEFT JOIN {db_prefix}topics as t ON (lt.id_topic = t.id_topic)
-			LEFT JOIN {db_prefix}boards as b ON (t.id_board = b.id_board)
 			LEFT JOIN {db_prefix}messages as m ON (t.id_first_msg = m.id_msg)' . (in_array($sort, array('mem.real_name', 'mem.real_name DESC', 'mem.poster_time', 'mem.poster_time DESC')) ? '
 			LEFT JOIN {db_prefix}members as mem ON (m.id_member = mem.id_member)' : '') . '
 		WHERE lt.id_member = {int:current_member}
 			AND disregarded = 1
-			AND {query_see_board}
 		ORDER BY {raw:sort}
 		LIMIT {int:offset}, {int:limit}',
 		array(
@@ -702,10 +642,8 @@ function list_getNumDisregarded($memID)
 		SELECT COUNT(*)
 		FROM {db_prefix}log_topics as lt
 		LEFT JOIN {db_prefix}topics as t ON (lt.id_topic = t.id_topic)
-		LEFT JOIN {db_prefix}boards as b ON (t.id_board = b.id_board)
 		WHERE id_member = {int:current_member}
-			AND disregarded = 1
-			AND {query_see_board}',
+			AND disregarded = 1',
 		array(
 			'current_member' => $memID,
 		)
@@ -741,11 +679,9 @@ function statPanel($memID)
 	$result = $smcFunc['db_query']('', '
 		SELECT COUNT(*)
 		FROM {db_prefix}topics
-		WHERE id_member_started = {int:current_member}' . (!empty($modSettings['recycle_enable']) && $modSettings['recycle_board'] > 0 ? '
-			AND id_board != {int:recycle_board}' : ''),
+		WHERE id_member_started = {int:current_member}',
 		array(
 			'current_member' => $memID,
-			'recycle_board' => $modSettings['recycle_board'],
 		)
 	);
 	list ($context['num_topics']) = $smcFunc['db_fetch_row']($result);
@@ -753,69 +689,6 @@ function statPanel($memID)
 
 	// Format the numbers...
 	$context['num_topics'] = comma_format($context['num_topics']);
-
-	// Grab the board this member posted in most often.
-	$result = $smcFunc['db_query']('', '
-		SELECT
-			b.id_board, MAX(b.name) AS name, MAX(b.num_posts) AS num_posts, COUNT(*) AS message_count
-		FROM {db_prefix}messages AS m
-			INNER JOIN {db_prefix}boards AS b ON (b.id_board = m.id_board)
-		WHERE m.id_member = {int:current_member}
-			AND b.count_posts = {int:count_enabled}
-			AND {query_see_board}
-		GROUP BY b.id_board
-		ORDER BY message_count DESC
-		LIMIT 10',
-		array(
-			'current_member' => $memID,
-			'count_enabled' => 0,
-		)
-	);
-	$context['popular_boards'] = array();
-	while ($row = $smcFunc['db_fetch_assoc']($result))
-	{
-		$context['popular_boards'][$row['id_board']] = array(
-			'id' => $row['id_board'],
-			'posts' => $row['message_count'],
-			'href' => $scripturl . '?board=' . $row['id_board'] . '.0',
-			'link' => '<a href="' . $scripturl . '?board=' . $row['id_board'] . '.0">' . $row['name'] . '</a>',
-			'posts_percent' => $user_profile[$memID]['posts'] == 0 ? 0 : ($row['message_count'] * 100) / $user_profile[$memID]['posts'],
-			'total_posts' => $row['num_posts'],
-			'total_posts_member' => $user_profile[$memID]['posts'],
-		);
-	}
-	$smcFunc['db_free_result']($result);
-
-	// Now get the 10 boards this user has most often participated in.
-	$result = $smcFunc['db_query']('profile_board_stats', '
-		SELECT
-			b.id_board, MAX(b.name) AS name, b.num_posts, COUNT(*) AS message_count,
-			CASE WHEN COUNT(*) > MAX(b.num_posts) THEN 1 ELSE COUNT(*) / MAX(b.num_posts) END * 100 AS percentage
-		FROM {db_prefix}messages AS m
-			INNER JOIN {db_prefix}boards AS b ON (b.id_board = m.id_board)
-		WHERE m.id_member = {int:current_member}
-			AND {query_see_board}
-		GROUP BY b.id_board, b.num_posts
-		ORDER BY percentage DESC
-		LIMIT 10',
-		array(
-			'current_member' => $memID,
-		)
-	);
-	$context['board_activity'] = array();
-	while ($row = $smcFunc['db_fetch_assoc']($result))
-	{
-		$context['board_activity'][$row['id_board']] = array(
-			'id' => $row['id_board'],
-			'posts' => $row['message_count'],
-			'href' => $scripturl . '?board=' . $row['id_board'] . '.0',
-			'link' => '<a href="' . $scripturl . '?board=' . $row['id_board'] . '.0">' . $row['name'] . '</a>',
-			'percent' => comma_format((float) $row['percentage'], 2),
-			'posts_percent' => (float) $row['percentage'],
-			'total_posts' => $row['num_posts'],
-		);
-	}
-	$smcFunc['db_free_result']($result);
 
 	// Posting activity by time.
 	$result = $smcFunc['db_query']('user_activity_by_time', '
@@ -1226,8 +1099,7 @@ function list_getIPMessageCount($where, $where_vars = array())
 	$request = $smcFunc['db_query']('', '
 		SELECT COUNT(*) AS message_count
 		FROM {db_prefix}messages AS m
-			INNER JOIN {db_prefix}boards AS b ON (b.id_board = m.id_board)
-		WHERE {query_see_board} AND ' . $where,
+		WHERE ' . $where,
 		$where_vars
 	);
 	list ($count) = $smcFunc['db_fetch_row']($request);
@@ -1256,11 +1128,10 @@ function list_getIPMessages($start, $items_per_page, $sort, $where, $where_vars 
 	$request = $smcFunc['db_query']('', '
 		SELECT
 			m.id_msg, m.poster_ip, IFNULL(mem.real_name, m.poster_name) AS display_name, mem.id_member,
-			m.subject, m.poster_time, m.id_topic, m.id_board
+			m.subject, m.poster_time, m.id_topic
 		FROM {db_prefix}messages AS m
-			INNER JOIN {db_prefix}boards AS b ON (b.id_board = m.id_board)
 			LEFT JOIN {db_prefix}members AS mem ON (mem.id_member = m.id_member)
-		WHERE {query_see_board} AND ' . $where . '
+		WHERE ' . $where . '
 		ORDER BY ' . $sort . '
 		LIMIT ' . $start . ', ' . $items_per_page,
 		array_merge($where_vars, array(
@@ -1271,10 +1142,6 @@ function list_getIPMessages($start, $items_per_page, $sort, $where, $where_vars 
 		$messages[] = array(
 			'ip' => $row['poster_ip'],
 			'member_link' => empty($row['id_member']) ? $row['display_name'] : '<a href="' . $scripturl . '?action=profile;u=' . $row['id_member'] . '">' . $row['display_name'] . '</a>',
-			'board' => array(
-				'id' => $row['id_board'],
-				'href' => $scripturl . '?board=' . $row['id_board']
-			),
 			'topic' => $row['id_topic'],
 			'id' => $row['id_msg'],
 			'subject' => $row['subject'],
@@ -1932,7 +1799,7 @@ function list_getProfileEdits($start, $items_per_page, $sort, $memID)
  */
 function showPermissions($memID)
 {
-	global $scripturl, $txt, $board, $modSettings;
+	global $scripturl, $txt, $modSettings;
 	global $user_profile, $context, $user_info, $sourcedir, $smcFunc;
 
 	// Verify if the user has sufficient permissions.
@@ -1950,8 +1817,6 @@ function showPermissions($memID)
 	$context['member']['name'] = $user_profile[$memID]['real_name'];
 
 	$context['page_title'] = $txt['showPermissions'];
-	$board = empty($board) ? 0 : (int) $board;
-	$context['board'] = $board;
 
 	// Determine which groups this user is in.
 	if (empty($user_profile[$memID]['additional_groups']))
@@ -1961,43 +1826,8 @@ function showPermissions($memID)
 	$curGroups[] = $user_profile[$memID]['id_group'];
 	$curGroups[] = $user_profile[$memID]['id_post_group'];
 
-	// Load a list of boards for the jump box - except the defaults.
-	$request = $smcFunc['db_query']('order_by_board_order', '
-		SELECT b.id_board, b.name, b.id_profile, b.member_groups, IFNULL(mods.id_member, 0) AS is_mod
-		FROM {db_prefix}boards AS b
-			LEFT JOIN {db_prefix}moderators AS mods ON (mods.id_board = b.id_board AND mods.id_member = {int:current_member})
-		WHERE {query_see_board}',
-		array(
-			'current_member' => $memID,
-		)
-	);
-	$context['boards'] = array();
-	$context['no_access_boards'] = array();
-	while ($row = $smcFunc['db_fetch_assoc']($request))
-	{
-		if (count(array_intersect($curGroups, explode(',', $row['member_groups']))) === 0 && !$row['is_mod'])
-			$context['no_access_boards'][] = array(
-				'id' => $row['id_board'],
-				'name' => $row['name'],
-				'is_last' => false,
-			);
-		elseif ($row['id_profile'] != 1 || $row['is_mod'])
-			$context['boards'][$row['id_board']] = array(
-				'id' => $row['id_board'],
-				'name' => $row['name'],
-				'selected' => $board == $row['id_board'],
-				'profile' => $row['id_profile'],
-				'profile_name' => $context['profiles'][$row['id_profile']]['name'],
-			);
-	}
-	$smcFunc['db_free_result']($request);
-
-	if (!empty($context['no_access_boards']))
-		$context['no_access_boards'][count($context['no_access_boards']) - 1]['is_last'] = true;
-
 	$context['member']['permissions'] = array(
-		'general' => array(),
-		'board' => array()
+		'general' => array()
 	);
 
 	// If you're an admin we know you can do everything, we might as well leave.
@@ -2054,57 +1884,6 @@ function showPermissions($memID)
 		$context['member']['permissions']['general'][$row['permission']]['is_denied'] |= empty($row['add_deny']);
 	}
 	$smcFunc['db_free_result']($result);
-
-	$request = $smcFunc['db_query']('', '
-		SELECT
-			bp.add_deny, bp.permission, bp.id_group, mg.group_name' . (empty($board) ? '' : ',
-			b.id_profile, CASE WHEN mods.id_member IS NULL THEN 0 ELSE 1 END AS is_moderator') . '
-		FROM {db_prefix}board_permissions AS bp' . (empty($board) ? '' : '
-			INNER JOIN {db_prefix}boards AS b ON (b.id_board = {int:current_board})
-			LEFT JOIN {db_prefix}moderators AS mods ON (mods.id_board = b.id_board AND mods.id_member = {int:current_member})') . '
-			LEFT JOIN {db_prefix}membergroups AS mg ON (mg.id_group = bp.id_group)
-		WHERE bp.id_profile = {raw:current_profile}
-			AND bp.id_group IN ({array_int:group_list}' . (empty($board) ? ')' : ', {int:moderator_group})
-			AND (mods.id_member IS NOT NULL OR bp.id_group != {int:moderator_group})'),
-		array(
-			'current_board' => $board,
-			'group_list' => $curGroups,
-			'current_member' => $memID,
-			'current_profile' => empty($board) ? '1' : 'b.id_profile',
-			'moderator_group' => 3,
-		)
-	);
-
-	while ($row = $smcFunc['db_fetch_assoc']($request))
-	{
-		// We don't know about this permission, it doesn't exist :P.
-		if (!isset($txt['permissionname_' . $row['permission']]))
-			continue;
-
-		// The name of the permission using the format 'permission name' - 'own/any topic/etc.'.
-		if (in_array(substr($row['permission'], -4), array('_own', '_any')) && isset($txt['permissionname_' . substr($row['permission'], 0, -4)]))
-			$name = $txt['permissionname_' . substr($row['permission'], 0, -4)] . ' - ' . $txt['permissionname_' . $row['permission']];
-		else
-			$name = $txt['permissionname_' . $row['permission']];
-
-		// Create the structure for this permission.
-		if (!isset($context['member']['permissions']['board'][$row['permission']]))
-			$context['member']['permissions']['board'][$row['permission']] = array(
-				'id' => $row['permission'],
-				'groups' => array(
-					'allowed' => array(),
-					'denied' => array()
-				),
-				'name' => $name,
-				'is_denied' => false,
-				'is_global' => empty($board),
-			);
-
-		$context['member']['permissions']['board'][$row['permission']]['groups'][empty($row['add_deny']) ? 'denied' : 'allowed'][$row['id_group']] = $row['id_group'] == 0 ? $txt['membergroups_members'] : $row['group_name'];
-
-		$context['member']['permissions']['board'][$row['permission']]['is_denied'] |= empty($row['add_deny']);
-	}
-	$smcFunc['db_free_result']($request);
 }
 
 /**

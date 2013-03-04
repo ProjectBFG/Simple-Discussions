@@ -315,14 +315,13 @@ function list_getModLogEntryCount($query_string = '', $query_params = array(), $
 {
 	global $smcFunc, $user_info;
 
-	$modlog_query = allowedTo('admin_forum') || $user_info['mod_cache']['bq'] == '1=1' ? '1=1' : ($user_info['mod_cache']['bq'] == '0=1' ? 'lm.id_board = 0 AND lm.id_topic = 0' : (strtr($user_info['mod_cache']['bq'], array('id_board' => 'b.id_board')) . ' AND ' . strtr($user_info['mod_cache']['bq'], array('id_board' => 't.id_board'))));
+	$modlog_query = allowedTo('admin_forum') || $user_info['mod_cache']['bq'] == '1=1' ? '1=1' : ($user_info['mod_cache']['bq'] == '0=1' ? 'lm.id_topic = 0' : '');
 
 	$result = $smcFunc['db_query']('', '
 		SELECT COUNT(*)
 		FROM {db_prefix}log_actions AS lm
 			LEFT JOIN {db_prefix}members AS mem ON (mem.id_member = lm.id_member)
 			LEFT JOIN {db_prefix}membergroups AS mg ON (mg.id_group = CASE WHEN mem.id_group = {int:reg_group_id} THEN mem.id_post_group ELSE mem.id_group END)
-			LEFT JOIN {db_prefix}boards AS b ON (b.id_board = lm.id_board)
 			LEFT JOIN {db_prefix}topics AS t ON (t.id_topic = lm.id_topic)
 		WHERE id_log = {int:log_type}
 			AND {raw:modlog_query}'
@@ -355,7 +354,7 @@ function list_getModLogEntries($start, $items_per_page, $sort, $query_string = '
 {
 	global $context, $scripturl, $txt, $smcFunc, $user_info;
 
-	$modlog_query = allowedTo('admin_forum') || $user_info['mod_cache']['bq'] == '1=1' ? '1=1' : ($user_info['mod_cache']['bq'] == '0=1' ? 'lm.id_board = 0 AND lm.id_topic = 0' : (strtr($user_info['mod_cache']['bq'], array('id_board' => 'b.id_board')) . ' AND ' . strtr($user_info['mod_cache']['bq'], array('id_board' => 't.id_board'))));
+	$modlog_query = allowedTo('admin_forum') || $user_info['mod_cache']['bq'] == '1=1' ? '1=1' : ($user_info['mod_cache']['bq'] == '0=1' ? 'lm.id_topic = 0' : '');
 
 	// Do a little bit of self protection.
 	if (!isset($context['hoursdisable']))
@@ -367,12 +366,11 @@ function list_getModLogEntries($start, $items_per_page, $sort, $query_string = '
 	// Here we have the query getting the log details.
 	$result = $smcFunc['db_query']('', '
 		SELECT
-			lm.id_action, lm.id_member, lm.ip, lm.log_time, lm.action, lm.id_board, lm.id_topic, lm.id_msg, lm.extra,
+			lm.id_action, lm.id_member, lm.ip, lm.log_time, lm.action, lm.id_topic, lm.id_msg, lm.extra,
 			mem.real_name, mg.group_name
 		FROM {db_prefix}log_actions AS lm
 			LEFT JOIN {db_prefix}members AS mem ON (mem.id_member = lm.id_member)
 			LEFT JOIN {db_prefix}membergroups AS mg ON (mg.id_group = CASE WHEN mem.id_group = {int:reg_group_id} THEN mem.id_post_group ELSE mem.id_group END)
-			LEFT JOIN {db_prefix}boards AS b ON (b.id_board = lm.id_board)
 			LEFT JOIN {db_prefix}topics AS t ON (t.id_topic = lm.id_topic)
 			WHERE id_log = {int:log_type}
 				AND {raw:modlog_query}'
@@ -389,7 +387,6 @@ function list_getModLogEntries($start, $items_per_page, $sort, $query_string = '
 
 	// Arrays for decoding objects into.
 	$topics = array();
-	$boards = array();
 	$members = array();
 	$messages = array();
 	$entries = array();
@@ -399,15 +396,6 @@ function list_getModLogEntries($start, $items_per_page, $sort, $query_string = '
 
 		// Corrupt?
 		$row['extra'] = is_array($row['extra']) ? $row['extra'] : array();
-
-		// Add on some of the column stuff info
-		if (!empty($row['id_board']))
-		{
-			if ($row['action'] == 'move')
-				$row['extra']['board_to'] = $row['id_board'];
-			else
-				$row['extra']['board'] = $row['id_board'];
-		}
 
 		if (!empty($row['id_topic']))
 			$row['extra']['topic'] = $row['id_topic'];
@@ -432,14 +420,6 @@ function list_getModLogEntries($start, $items_per_page, $sort, $query_string = '
 				$members[(int) $row['extra']['member']][] = $row['id_action'];
 			}
 		}
-
-		// Associated with a board?
-		if (isset($row['extra']['board_to']))
-			$boards[(int) $row['extra']['board_to']][] = $row['id_action'];
-		if (isset($row['extra']['board_from']))
-			$boards[(int) $row['extra']['board_from']][] = $row['id_action'];
-		if (isset($row['extra']['board']))
-			$boards[(int) $row['extra']['board']][] = $row['id_action'];
 
 		// A message?
 		if (isset($row['extra']['message']))
@@ -480,33 +460,6 @@ function list_getModLogEntries($start, $items_per_page, $sort, $query_string = '
 		);
 	}
 	$smcFunc['db_free_result']($result);
-
-	if (!empty($boards))
-	{
-		$request = $smcFunc['db_query']('', '
-			SELECT id_board, name
-			FROM {db_prefix}boards
-			WHERE id_board IN ({array_int:board_list})
-			LIMIT ' . count(array_keys($boards)),
-			array(
-				'board_list' => array_keys($boards),
-			)
-		);
-		while ($row = $smcFunc['db_fetch_assoc']($request))
-		{
-			foreach ($boards[$row['id_board']] as $action)
-			{
-				// Make the board number into a link - dealing with moving too.
-				if (isset($entries[$action]['extra']['board_to']) && $entries[$action]['extra']['board_to'] == $row['id_board'])
-					$entries[$action]['extra']['board_to'] = '<a href="' . $scripturl . '?board=' . $row['id_board'] . '.0">' . $row['name'] . '</a>';
-				elseif (isset($entries[$action]['extra']['board_from']) && $entries[$action]['extra']['board_from'] == $row['id_board'])
-					$entries[$action]['extra']['board_from'] = '<a href="' . $scripturl . '?board=' . $row['id_board'] . '.0">' . $row['name'] . '</a>';
-				elseif (isset($entries[$action]['extra']['board']) && $entries[$action]['extra']['board'] == $row['id_board'])
-					$entries[$action]['extra']['board'] = '<a href="' . $scripturl . '?board=' . $row['id_board'] . '.0">' . $row['name'] . '</a>';
-			}
-		}
-		$smcFunc['db_free_result']($request);
-	}
 
 	if (!empty($topics))
 	{
@@ -613,8 +566,8 @@ function list_getModLogEntries($start, $items_per_page, $sort, $query_string = '
 		if (isset($entry['extra']['message']) && (empty($entry['message']) || empty($entry['message']['id'])))
 			$entries[$k]['extra']['message'] = '<a href="' . $scripturl . '?msg=' . $entry['extra']['message'] . '">' . $entry['extra']['message'] . '</a>';
 
-		// Mark up any deleted members, topics and boards.
-		foreach (array('board', 'board_from', 'board_to', 'member', 'topic', 'new_topic') as $type)
+		// Mark up any deleted members and topics.
+		foreach (array('member', 'topic', 'new_topic') as $type)
 			if (!empty($entry['extra'][$type]) && is_numeric($entry['extra'][$type]))
 				$entries[$k]['extra'][$type] = sprintf($txt['modlog_id'], $entry['extra'][$type]);
 

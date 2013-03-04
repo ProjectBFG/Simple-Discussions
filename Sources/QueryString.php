@@ -25,13 +25,13 @@ if (!defined('SMF'))
  *	 makes sure the query string was parsed correctly.
  * - handles the URLs passed by the queryless URLs option.
  * - makes sure, regardless of php.ini, everything has slashes.
- * - sets up $board, $topic, and $scripturl and $_REQUEST['start'].
+ * - sets up $topic, and $scripturl and $_REQUEST['start'].
  * - determines, or rather tries to determine, the client's IP.
  */
 
 function cleanRequest()
 {
-	global $board, $topic, $boardurl, $scripturl, $modSettings, $smcFunc;
+	global $topic, $boardurl, $scripturl, $modSettings, $smcFunc;
 
 	// Makes it easier to refer to things this way.
 	$scripturl = $boardurl . '/index.php';
@@ -152,29 +152,6 @@ function cleanRequest()
 
 	// Let's not depend on the ini settings... why even have COOKIE in there, anyway?
 	$_REQUEST = $_POST + $_GET;
-
-	// Make sure $board and $topic are numbers.
-	if (isset($_REQUEST['board']))
-	{
-		// Make sure its a string and not something else like an array
-		$_REQUEST['board'] = (string) $_REQUEST['board'];
-
-		// If there's a slash in it, we've got a start value! (old, compatible links.)
-		if (strpos($_REQUEST['board'], '/') !== false)
-			list ($_REQUEST['board'], $_REQUEST['start']) = explode('/', $_REQUEST['board']);
-		// Same idea, but dots.  This is the currently used format - ?board=1.0...
-		elseif (strpos($_REQUEST['board'], '.') !== false)
-			list ($_REQUEST['board'], $_REQUEST['start']) = explode('.', $_REQUEST['board']);
-		// Now make absolutely sure it's a number.
-		$board = (int) $_REQUEST['board'];
-		$_REQUEST['start'] = isset($_REQUEST['start']) ? (int) $_REQUEST['start'] : 0;
-
-		// This is for "Who's Online" because it might come via POST - and it should be an int here.
-		$_GET['board'] = $board;
-	}
-	// Well, $board is going to be a number no matter what.
-	else
-		$board = 0;
 
 	// If there's a threadid, it's probably an old YaBB SE link.  Flow with it.
 	if (isset($_REQUEST['threadid']) && !isset($_REQUEST['topic']))
@@ -617,9 +594,9 @@ function ob_sessrewrite($buffer)
 	{
 		// Let's do something special for session ids!
 		if (defined('SID') && SID != '')
-			$buffer = preg_replace('/"' . preg_quote($scripturl, '/') . '\?(?:' . SID . '(?:;|&|&amp;))((?:board|topic)=[^#"]+?)(#[^"]*?)?"/e', "'\"' . \$scripturl . '/' . strtr('\$1', '&;=', '//,') . '.html?' . SID . '\$2\"'", $buffer);
+			$buffer = preg_replace('/"' . preg_quote($scripturl, '/') . '\?(?:' . SID . '(?:;|&|&amp;))((?:topic)=[^#"]+?)(#[^"]*?)?"/e', "'\"' . \$scripturl . '/' . strtr('\$1', '&;=', '//,') . '.html?' . SID . '\$2\"'", $buffer);
 		else
-			$buffer = preg_replace('/"' . preg_quote($scripturl, '/') . '\?((?:board|topic)=[^#"]+?)(#[^"]*?)?"/e', "'\"' . \$scripturl . '/' . strtr('\$1', '&;=', '//,') . '.html\$2\"'", $buffer);
+			$buffer = preg_replace('/"' . preg_quote($scripturl, '/') . '\?((?:topic)=[^#"]+?)(#[^"]*?)?"/e', "'\"' . \$scripturl . '/' . strtr('\$1', '&;=', '//,') . '.html\$2\"'", $buffer);
 	}
 
 	// Return the changed buffer.

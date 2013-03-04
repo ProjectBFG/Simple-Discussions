@@ -29,17 +29,13 @@ if (!defined('SMF'))
  */
 function Post($post_errors = array())
 {
-	global $txt, $scripturl, $topic, $modSettings, $board;
-	global $user_info, $sc, $board_info, $context, $settings;
+	global $txt, $scripturl, $topic, $modSettings;
+	global $user_info, $sc, $context, $settings;
 	global $sourcedir, $options, $smcFunc, $language;
 
 	loadLanguage('Post');
 
 	$context['robot_no_index'] = true;
-
-	// You must be posting to *some* board.
-	if (empty($board))
-		fatal_lang_error('no_board', false);
 
 	require_once($sourcedir . '/Subs-Post.php');
 
@@ -129,13 +125,11 @@ function Post($post_errors = array())
 	else
 	{
 		$context['becomes_approved'] = true;
-		if (!empty($board))
-		{
-			if ($modSettings['postmod_active'] && !allowedTo('post_new') && allowedTo('post_unapproved_topics'))
-				$context['becomes_approved'] = false;
-			else
-				isAllowedTo('post_new');
-		}
+
+		if ($modSettings['postmod_active'] && !allowedTo('post_new') && allowedTo('post_unapproved_topics'))
+			$context['becomes_approved'] = false;
+		else
+			isAllowedTo('post_new');
 
 		$locked = 0;
 
@@ -229,8 +223,6 @@ function Post($post_errors = array())
 				$_REQUEST['subject'] = '';
 			if (!isset($_REQUEST['message']))
 				$_REQUEST['message'] = '';
-			if (!isset($_REQUEST['icon']))
-				$_REQUEST['icon'] = 'xx';
 
 			// They are previewing if they asked to preview (i.e. came from quick reply).
 			$really_previewing = !empty($_POST['preview']);
@@ -293,8 +285,6 @@ function Post($post_errors = array())
 		$context['notify'] = !empty($_REQUEST['notify']);
 		$context['use_smileys'] = !isset($_REQUEST['ns']);
 
-		$context['icon'] = isset($_REQUEST['icon']) ? preg_replace('~[\./\\\\*\':"<>]~', '', $_REQUEST['icon']) : 'xx';
-
 		// Set the destination action for submission.
 		$context['destination'] = 'post2;start=' . $_REQUEST['start'] . (isset($_REQUEST['msg']) ? ';msg=' . $_REQUEST['msg'] . ';' . $context['session_var'] . '=' . $context['session_id'] : '');
 		$context['submit_label'] = isset($_REQUEST['msg']) ? $txt['save'] : $txt['post'];
@@ -306,7 +296,7 @@ function Post($post_errors = array())
 			$request = $smcFunc['db_query']('', '
 				SELECT
 					m.id_member, m.modified_time, m.smileys_enabled, m.body,
-					m.poster_name, m.poster_email, m.subject, m.icon, m.approved,
+					m.poster_name, m.poster_email, m.subject, m.approved,
 					t.id_member_started AS id_member_poster, m.poster_time, log.id_action
 				FROM {db_prefix}messages AS m
 					INNER JOIN {db_prefix}topics AS t ON (t.id_topic = {int:current_topic})
@@ -383,7 +373,7 @@ function Post($post_errors = array())
 		$request = $smcFunc['db_query']('', '
 			SELECT
 				m.id_member, m.modified_time, m.modified_name, m.smileys_enabled, m.body,
-				m.poster_name, m.poster_email, m.subject, m.icon, m.approved,
+				m.poster_name, m.poster_email, m.subject, m.approved,
 				t.id_member_started AS id_member_poster, m.poster_time, log.id_action
 			FROM {db_prefix}messages AS m
 				INNER JOIN {db_prefix}topics AS t ON (t.id_topic = {int:current_topic})
@@ -439,7 +429,6 @@ function Post($post_errors = array())
 
 		// Check the boxes that should be checked.
 		$context['use_smileys'] = !empty($row['smileys_enabled']);
-		$context['icon'] = $row['icon'];
 
 		// Show an "approve" box if the user can approve it, and the message isn't approved.
 		if (!$row['approved'] && !$context['show_approval'])
@@ -461,7 +450,6 @@ function Post($post_errors = array())
 	{
 		// By default....
 		$context['use_smileys'] = true;
-		$context['icon'] = 'xx';
 
 		if ($user_info['is_guest'])
 		{
@@ -479,7 +467,6 @@ function Post($post_errors = array())
 			$request = $smcFunc['db_query']('', '
 				SELECT m.subject, IFNULL(mem.real_name, m.poster_name) AS poster_name, m.poster_time, m.body
 				FROM {db_prefix}messages AS m
-					INNER JOIN {db_prefix}boards AS b ON (b.id_board = m.id_board AND {query_see_board})
 					LEFT JOIN {db_prefix}members AS mem ON (mem.id_member = m.id_member)
 				WHERE m.id_msg = {int:id_msg}' . (!$modSettings['postmod_active'] || allowedTo('approve_posts') ? '' : '
 					AND m.approved = {int:is_approved}') . '
@@ -621,7 +608,7 @@ function Post($post_errors = array())
 		ShowDrafts($user_info['id'], $topic);
 	}
 
-	// Needed for the editor and message icons.
+	// Needed for the editor.
 	require_once($sourcedir . '/Subs-Editor.php');
 
 	// Now create the editor.
@@ -641,31 +628,6 @@ function Post($post_errors = array())
 
 	// Store the ID.
 	$context['post_box_name'] = $editorOptions['id'];
-
-	// Message icons - customized icons are off?
-	$context['icons'] = getMessageIcons($board);
-
-	if (!empty($context['icons']))
-		$context['icons'][count($context['icons']) - 1]['is_last'] = true;
-
-	$context['icon_url'] = '';
-	for ($i = 0, $n = count($context['icons']); $i < $n; $i++)
-	{
-		$context['icons'][$i]['selected'] = $context['icon'] == $context['icons'][$i]['value'];
-		if ($context['icons'][$i]['selected'])
-			$context['icon_url'] = $context['icons'][$i]['url'];
-	}
-	if (empty($context['icon_url']))
-	{
-		$context['icon_url'] = $settings[file_exists($settings['theme_dir'] . '/images/post/' . $context['icon'] . '.png') ? 'images_url' : 'default_images_url'] . '/post/' . $context['icon'] . '.png';
-		array_unshift($context['icons'], array(
-			'value' => $context['icon'],
-			'name' => $txt['current_icon'],
-			'url' => $context['icon_url'],
-			'is_last' => empty($context['icons']),
-			'selected' => true,
-		));
-	}
 
 	if (!empty($topic) && !empty($modSettings['topicSummaryPosts']))
 		getTopic();
@@ -698,16 +660,13 @@ function Post($post_errors = array())
  */
 function Post2()
 {
-	global $board, $topic, $txt, $modSettings, $sourcedir, $context;
-	global $user_info, $board_info, $options, $smcFunc;
+	global $topic, $txt, $modSettings, $sourcedir, $context;
+	global $user_info, $options, $smcFunc;
 
 	// Sneaking off, are we?
 	if (empty($_POST) && empty($topic))
 	{
-		if (empty($_SERVER['CONTENT_LENGTH']))
-			redirectexit('action=post;board=' . $board . '.0');
-		else
-			fatal_lang_error('post_upload_error', false);
+		fatal_lang_error('post_upload_error', false);
 	}
 	elseif (empty($_POST) && !empty($topic))
 		redirectexit('action=post;topic=' . $topic . '.0');
@@ -752,7 +711,7 @@ function Post2()
 	if (!empty($topic))
 	{
 		$request = $smcFunc['db_query']('', '
-			SELECT locked, is_sticky, approved, id_first_msg, id_last_msg, id_member_started, id_board
+			SELECT locked, is_sticky, approved, id_first_msg, id_last_msg, id_member_started
 			FROM {db_prefix}topics
 			WHERE id_topic = {int:current_topic}
 			LIMIT 1',
@@ -766,10 +725,6 @@ function Post2()
 		// Though the topic should be there, it might have vanished.
 		if (!is_array($topic_info))
 			fatal_lang_error('topic_doesnt_exist');
-
-		// Did this topic suddenly move? Just checking...
-		if ($topic_info['id_board'] != $board)
-			fatal_lang_error('not_a_topic');
 	}
 
 	// Replying to a topic?
@@ -1085,23 +1040,21 @@ function Post2()
 		'id' => empty($_REQUEST['msg']) ? 0 : (int) $_REQUEST['msg'],
 		'subject' => $_POST['subject'],
 		'body' => $_POST['message'],
-		'icon' => preg_replace('~[\./\\\\*:"\'<>]~', '', $_POST['icon']),
 		'smileys_enabled' => !isset($_POST['ns']),
 		'approved' => $becomesApproved,
 	);
 	$topicOptions = array(
 		'id' => empty($topic) ? 0 : $topic,
-		'board' => $board,
 		'lock_mode' => isset($_POST['lock']) ? (int) $_POST['lock'] : null,
 		'sticky_mode' => isset($_POST['sticky']) && !empty($modSettings['enableStickyTopics']) ? (int) $_POST['sticky'] : null,
 		'mark_as_read' => true,
-		'is_approved' => !$modSettings['postmod_active'] || empty($topic) || !empty($board_info['cur_topic_approved']),
+		'is_approved' => !$modSettings['postmod_active'] || empty($topic),
 	);
 	$posterOptions = array(
 		'id' => $user_info['id'],
 		'name' => $_POST['guestname'],
 		'email' => $_POST['email'],
-		'update_post_count' => !$user_info['is_guest'] && !isset($_REQUEST['msg']) && $board_info['posts_count'],
+		'update_post_count' => !$user_info['is_guest'] && !isset($_REQUEST['msg']),
 	);
 
 	// This is an already existing message. Edit it.
@@ -1133,31 +1086,14 @@ function Post2()
 	if (!empty($modSettings['drafts_enabled']) && !empty($_POST['id_draft']))
 		DeleteDraft($_POST['id_draft']);
 
-	// Marking read should be done even for editing messages....
-	// Mark all the parents read.  (since you just posted and they will be unread.)
-	if (!$user_info['is_guest'] && !empty($board_info['parent_boards']))
-	{
-		$smcFunc['db_query']('', '
-			UPDATE {db_prefix}log_boards
-			SET id_msg = {int:id_msg}
-			WHERE id_member = {int:current_member}
-				AND id_board IN ({array_int:board_list})',
-			array(
-				'current_member' => $user_info['id'],
-				'board_list' => array_keys($board_info['parent_boards']),
-				'id_msg' => $modSettings['maxMsgID'],
-			)
-		);
-	}
-
 	// Turn notification on or off.  (note this just blows smoke if it's already on or off.)
 	if (!empty($_POST['notify']) && allowedTo('mark_any_notify'))
 	{
 		$smcFunc['db_insert']('ignore',
 			'{db_prefix}log_notify',
-			array('id_member' => 'int', 'id_topic' => 'int', 'id_board' => 'int'),
-			array($user_info['id'], $topic, 0),
-			array('id_member', 'id_topic', 'id_board')
+			array('id_member' => 'int', 'id_topic' => 'int'),
+			array($user_info['id'], $topic),
+			array('id_member', 'id_topic')
 		);
 	}
 	elseif (!$newTopic)
@@ -1173,31 +1109,18 @@ function Post2()
 
 	// Log an act of moderation - modifying.
 	if (!empty($moderationAction))
-		logAction('modify', array('topic' => $topic, 'message' => (int) $_REQUEST['msg'], 'member' => $row['id_member'], 'board' => $board));
+		logAction('modify', array('topic' => $topic, 'message' => (int) $_REQUEST['msg'], 'member' => $row['id_member']));
 
 	if (isset($_POST['lock']) && $_POST['lock'] != 2)
-		logAction(empty($_POST['lock']) ? 'unlock' : 'lock', array('topic' => $topicOptions['id'], 'board' => $topicOptions['board']));
+		logAction(empty($_POST['lock']) ? 'unlock' : 'lock', array('topic' => $topicOptions['id']));
 
 	if (isset($_POST['sticky']) && !empty($modSettings['enableStickyTopics']))
-		logAction('sticky', array('topic' => $topicOptions['id'], 'board' => $topicOptions['board']));
+		logAction('sticky', array('topic' => $topicOptions['id']));
 
 	// Notify any members who have notification turned on for this topic - only do this if it's going to be approved(!)
 	if ($becomesApproved)
 	{
-		if ($newTopic)
-		{
-			$notifyData = array(
-				'body' => $_POST['message'],
-				'subject' => $_POST['subject'],
-				'name' => $user_info['name'],
-				'poster' => $user_info['id'],
-				'msg' => $msgOptions['id'],
-				'board' => $board,
-				'topic' => $topic,
-			);
-			notifyMembersBoard($notifyData);
-		}
-		elseif (empty($_REQUEST['msg']))
+		if (!$newTopic && empty($_REQUEST['msg']))
 		{
 			// Only send it to everyone if the topic is approved, otherwise just to the topic starter if they want it.
 			if ($topic_info['approved'])
@@ -1206,26 +1129,6 @@ function Post2()
 				sendNotifications($topic, 'reply', array(), $topic_info['id_member_started']);
 		}
 	}
-
-	// Returning to the topic?
-	if (!empty($_REQUEST['goback']))
-	{
-		// Mark the board as read.... because it might get confusing otherwise.
-		$smcFunc['db_query']('', '
-			UPDATE {db_prefix}log_boards
-			SET id_msg = {int:maxMsgID}
-			WHERE id_member = {int:current_member}
-				AND id_board = {int:current_board}',
-			array(
-				'current_board' => $board,
-				'current_member' => $user_info['id'],
-				'maxMsgID' => $modSettings['maxMsgID'],
-			)
-		);
-	}
-
-	if ($board_info['num_topics'] == 0)
-		cache_put_data('board-' . $board, null, 120);
 
 	if (!empty($_POST['announce_topic']))
 		redirectexit('action=announce;sa=selectgroup;topic=' . $topic . (!empty($_POST['move']) && allowedTo('move_any') ? ';move' : '') . (empty($_REQUEST['goback']) ? '' : ';goback'));
@@ -1237,7 +1140,7 @@ function Post2()
 		redirectexit('topic=' . $topic . '.new#new', isBrowser('ie'));
 	// Dut-dut-duh-duh-DUH-duh-dut-duh-duh!  *dances to the Final Fantasy Fanfare...*
 	else
-		redirectexit('board=' . $board . '.0');
+		redirectexit();
 }
 
 /**
@@ -1280,32 +1183,22 @@ function AnnounceTopic()
  */
 function AnnouncementSelectMembergroup()
 {
-	global $txt, $context, $topic, $board, $board_info, $smcFunc;
-
-	$groups = array_merge($board_info['groups'], array(1));
-	foreach ($groups as $id => $group)
-		$groups[$id] = (int) $group;
+	global $txt, $context, $topic, $smcFunc;
 
 	$context['groups'] = array();
-	if (in_array(0, $groups))
-	{
-		$context['groups'][0] = array(
-			'id' => 0,
-			'name' => $txt['announce_regular_members'],
-			'member_count' => 'n/a',
-		);
-	}
+	$context['groups'][0] = array(
+		'id' => 0,
+		'name' => $txt['announce_regular_members'],
+		'member_count' => 'n/a',
+	);
 
-	// Get all membergroups that have access to the board the announcement was made on.
+	// Get all membergroups.
 	$request = $smcFunc['db_query']('', '
 		SELECT mg.id_group, COUNT(mem.id_member) AS num_members
 		FROM {db_prefix}membergroups AS mg
 			LEFT JOIN {db_prefix}members AS mem ON (mem.id_group = mg.id_group OR FIND_IN_SET(mg.id_group, mem.additional_groups) != 0 OR mg.id_group = mem.id_post_group)
-		WHERE mg.id_group IN ({array_int:group_list})
 		GROUP BY mg.id_group',
 		array(
-			'group_list' => $groups,
-			'newbie_id_group' => 4,
 		)
 	);
 	while ($row = $smcFunc['db_fetch_assoc']($request))
@@ -1321,10 +1214,8 @@ function AnnouncementSelectMembergroup()
 	// Now get the membergroup names.
 	$request = $smcFunc['db_query']('', '
 		SELECT id_group, group_name
-		FROM {db_prefix}membergroups
-		WHERE id_group IN ({array_int:group_list})',
+		FROM {db_prefix}membergroups',
 		array(
-			'group_list' => $groups,
 		)
 	);
 	while ($row = $smcFunc['db_fetch_assoc']($request))
@@ -1362,13 +1253,12 @@ function AnnouncementSelectMembergroup()
  */
 function AnnouncementSend()
 {
-	global $topic, $board, $board_info, $context, $modSettings;
+	global $topic, $context, $modSettings;
 	global $language, $scripturl, $txt, $user_info, $sourcedir, $smcFunc;
 
 	checkSession();
 
 	$context['start'] = empty($_REQUEST['start']) ? 0 : (int) $_REQUEST['start'];
-	$groups = array_merge($board_info['groups'], array(1));
 
 	if (isset($_POST['membergroups']))
 		$_POST['who'] = explode(',', $_POST['membergroups']);
@@ -1377,9 +1267,9 @@ function AnnouncementSend()
 	if (empty($_POST['who']))
 		fatal_lang_error('no_membergroup_selected');
 
-	// Make sure all membergroups are integers and can access the board of the announcement.
+	// Make sure all membergroups are integers.
 	foreach ($_POST['who'] as $id => $mg)
-		$_POST['who'][$id] = in_array((int) $mg, $groups) ? (int) $mg : 0;
+		$_POST['who'][$id] = (int) $mg;
 
 	// Get the topic subject and censor it.
 	$request = $smcFunc['db_query']('', '
@@ -1428,9 +1318,9 @@ function AnnouncementSend()
 	{
 		logAction('announce_topic', array('topic' => $topic), 'user');
 		if (!empty($_REQUEST['goback']))
-			redirectexit('topic=' . $topic . '.new;boardseen#new', isBrowser('ie'));
+			redirectexit('topic=' . $topic . '.new#new', isBrowser('ie'));
 		else
-			redirectexit('board=' . $board . '.0');
+			redirectexit();
 	}
 
 	$announcements = array();
@@ -1476,164 +1366,6 @@ function AnnouncementSend()
 	// Go back to the correct language for the user ;).
 	if (!empty($modSettings['userLanguage']))
 		loadLanguage('Post');
-}
-
-/**
- * Notifies members who have requested notification for new topics posted on a board of said posts.
- *
- * receives data on the topics to send out notifications to by the passed in array.
- * only sends notifications to those who can *currently* see the topic (it doesn't matter if they could when they requested notification.)
- * loads the Post language file multiple times for each language if the userLanguage setting is set.
- * @param array &$topicData
- */
-function notifyMembersBoard(&$topicData)
-{
-	global $txt, $scripturl, $language, $user_info;
-	global $modSettings, $sourcedir, $board, $smcFunc, $context;
-
-	require_once($sourcedir . '/Subs-Post.php');
-
-	// Do we have one or lots of topics?
-	if (isset($topicData['body']))
-		$topicData = array($topicData);
-
-	// Find out what boards we have... and clear out any rubbish!
-	$boards = array();
-	foreach ($topicData as $key => $topic)
-	{
-		if (!empty($topic['board']))
-			$boards[$topic['board']][] = $key;
-		else
-		{
-			unset($topic[$key]);
-			continue;
-		}
-
-		// Censor the subject and body...
-		censorText($topicData[$key]['subject']);
-		censorText($topicData[$key]['body']);
-
-		$topicData[$key]['subject'] = un_htmlspecialchars($topicData[$key]['subject']);
-		$topicData[$key]['body'] = trim(un_htmlspecialchars(strip_tags(strtr(parse_bbc($topicData[$key]['body'], false), array('<br />' => "\n", '</div>' => "\n", '</li>' => "\n", '&#91;' => '[', '&#93;' => ']')))));
-	}
-
-	// Just the board numbers.
-	$board_index = array_unique(array_keys($boards));
-
-	if (empty($board_index))
-		return;
-
-	// Yea, we need to add this to the digest queue.
-	$digest_insert = array();
-	foreach ($topicData as $id => $data)
-		$digest_insert[] = array($data['topic'], $data['msg'], 'topic', $user_info['id']);
-	$smcFunc['db_insert']('',
-		'{db_prefix}log_digest',
-		array(
-			'id_topic' => 'int', 'id_msg' => 'int', 'note_type' => 'string', 'exclude' => 'int',
-		),
-		$digest_insert,
-		array()
-	);
-
-	// Find the members with notification on for these boards.
-	$members = $smcFunc['db_query']('', '
-		SELECT
-			mem.id_member, mem.email_address, mem.notify_regularity, mem.notify_send_body, mem.lngfile,
-			ln.sent, ln.id_board, mem.id_group, mem.additional_groups, b.member_groups,
-			mem.id_post_group
-		FROM {db_prefix}log_notify AS ln
-			INNER JOIN {db_prefix}boards AS b ON (b.id_board = ln.id_board)
-			INNER JOIN {db_prefix}members AS mem ON (mem.id_member = ln.id_member)
-		WHERE ln.id_board IN ({array_int:board_list})
-			AND mem.id_member != {int:current_member}
-			AND mem.is_activated = {int:is_activated}
-			AND mem.notify_types != {int:notify_types}
-			AND mem.notify_regularity < {int:notify_regularity}
-		ORDER BY mem.lngfile',
-		array(
-			'current_member' => $user_info['id'],
-			'board_list' => $board_index,
-			'is_activated' => 1,
-			'notify_types' => 4,
-			'notify_regularity' => 2,
-		)
-	);
-	while ($rowmember = $smcFunc['db_fetch_assoc']($members))
-	{
-		if ($rowmember['id_group'] != 1)
-		{
-			$allowed = explode(',', $rowmember['member_groups']);
-			$rowmember['additional_groups'] = explode(',', $rowmember['additional_groups']);
-			$rowmember['additional_groups'][] = $rowmember['id_group'];
-			$rowmember['additional_groups'][] = $rowmember['id_post_group'];
-
-			if (count(array_intersect($allowed, $rowmember['additional_groups'])) == 0)
-				continue;
-		}
-
-		$langloaded = loadLanguage('index', empty($rowmember['lngfile']) || empty($modSettings['userLanguage']) ? $language : $rowmember['lngfile'], false);
-
-		// Now loop through all the notifications to send for this board.
-		if (empty($boards[$rowmember['id_board']]))
-			continue;
-
-		$sentOnceAlready = 0;
-		foreach ($boards[$rowmember['id_board']] as $key)
-		{
-			// Don't notify the guy who started the topic!
-			// @todo In this case actually send them a "it's approved hooray" email :P
-			if ($topicData[$key]['poster'] == $rowmember['id_member'])
-				continue;
-
-			// Setup the string for adding the body to the message, if a user wants it.
-			$send_body = empty($modSettings['disallow_sendBody']) && !empty($rowmember['notify_send_body']);
-
-			$replacements = array(
-				'TOPICSUBJECT' => $topicData[$key]['subject'],
-				'TOPICLINK' => $scripturl . '?topic=' . $topicData[$key]['topic'] . '.new#new',
-				'MESSAGE' => $topicData[$key]['body'],
-				'UNSUBSCRIBELINK' => $scripturl . '?action=notifyboard;board=' . $topicData[$key]['board'] . '.0',
-			);
-
-			if (!$send_body)
-				unset($replacements['MESSAGE']);
-
-			// Figure out which email to send off
-			$emailtype = '';
-
-			// Send only if once is off or it's on and it hasn't been sent.
-			if (!empty($rowmember['notify_regularity']) && !$sentOnceAlready && empty($rowmember['sent']))
-				$emailtype = 'notify_boards_once';
-			elseif (empty($rowmember['notify_regularity']))
-				$emailtype = 'notify_boards';
-
-			if (!empty($emailtype))
-			{
-				$emailtype .= $send_body ? '_body' : '';
-				$emaildata = loadEmailTemplate($emailtype, $replacements, $langloaded);
-				sendmail($rowmember['email_address'], $emaildata['subject'], $emaildata['body'], null, null, false, 3);
-			}
-
-			$sentOnceAlready = 1;
-		}
-	}
-	$smcFunc['db_free_result']($members);
-
-	loadLanguage('index', $user_info['language']);
-
-	// Sent!
-	$smcFunc['db_query']('', '
-		UPDATE {db_prefix}log_notify
-		SET sent = {int:is_sent}
-		WHERE id_board IN ({array_int:board_list})
-			AND id_member != {int:current_member}',
-		array(
-			'current_member' => $user_info['id'],
-			'board_list' => $board_index,
-			'is_sent' => 1,
-		)
-	);
 }
 
 /**
@@ -1714,24 +1446,20 @@ function QuoteFast()
 
 	include_once($sourcedir . '/Subs-Post.php');
 
-	$moderate_boards = boardsAllowedTo('moderate_board');
-
 	// Where we going if we need to?
 	$context['post_box_name'] = isset($_GET['pb']) ? $_GET['pb'] : '';
 
 	$request = $smcFunc['db_query']('', '
 		SELECT IFNULL(mem.real_name, m.poster_name) AS poster_name, m.poster_time, m.body, m.id_topic, m.subject,
-			m.id_board, m.id_member, m.approved
+			m.id_member, m.approved
 		FROM {db_prefix}messages AS m
 			INNER JOIN {db_prefix}topics AS t ON (t.id_topic = m.id_topic)
-			INNER JOIN {db_prefix}boards AS b ON (b.id_board = m.id_board AND {query_see_board})
 			LEFT JOIN {db_prefix}members AS mem ON (mem.id_member = m.id_member)
-		WHERE m.id_msg = {int:id_msg}' . (isset($_REQUEST['modify']) || (!empty($moderate_boards) && $moderate_boards[0] == 0) ? '' : '
-			AND (t.locked = {int:not_locked}' . (empty($moderate_boards) ? '' : ' OR b.id_board IN ({array_int:moderation_board_list})') . ')') . '
+		WHERE m.id_msg = {int:id_msg}' . (isset($_REQUEST['modify']) ? '' : '
+			AND (t.locked = {int:not_locked})') . '
 		LIMIT 1',
 		array(
 			'current_member' => $user_info['id'],
-			'moderation_board_list' => $moderate_boards,
 			'id_msg' => (int) $_REQUEST['quote'],
 			'not_locked' => 0,
 		)
@@ -1742,7 +1470,7 @@ function QuoteFast()
 
 	$context['sub_template'] = 'quotefast';
 	if (!empty($row))
-		$can_view_post = $row['approved'] || ($row['id_member'] != 0 && $row['id_member'] == $user_info['id']) || allowedTo('approve_posts', $row['id_board']);
+		$can_view_post = $row['approved'] || ($row['id_member'] != 0 && $row['id_member'] == $user_info['id']) || allowedTo('approve_posts');
 
 	if (!empty($can_view_post))
 	{
@@ -1807,7 +1535,7 @@ function QuoteFast()
  */
 function JavaScriptModify()
 {
-	global $sourcedir, $modSettings, $board, $topic, $txt;
+	global $sourcedir, $modSettings, $topic, $txt;
 	global $user_info, $context, $smcFunc, $language;
 
 	// We have to have a topic!
@@ -1821,7 +1549,7 @@ function JavaScriptModify()
 	$request = $smcFunc['db_query']('', '
 		SELECT
 			t.locked, t.num_replies, t.id_member_started, t.id_first_msg,
-			m.id_msg, m.id_member, m.poster_time, m.subject, m.smileys_enabled, m.body, m.icon,
+			m.id_msg, m.id_member, m.poster_time, m.subject, m.smileys_enabled, m.body,
 			m.modified_time, m.modified_name, m.approved
 		FROM {db_prefix}messages AS m
 			INNER JOIN {db_prefix}topics AS t ON (t.id_topic = {int:current_topic})
@@ -1843,7 +1571,7 @@ function JavaScriptModify()
 	$smcFunc['db_free_result']($request);
 
 	// Change either body or subject requires permissions to modify messages.
-	if (isset($_POST['message']) || isset($_POST['subject']) || isset($_REQUEST['icon']))
+	if (isset($_POST['message']) || isset($_POST['subject']))
 	{
 		if (!empty($row['locked']))
 			isAllowedTo('moderate_board');
@@ -1934,19 +1662,17 @@ function JavaScriptModify()
 			'id' => $row['id_msg'],
 			'subject' => isset($_POST['subject']) ? $_POST['subject'] : null,
 			'body' => isset($_POST['message']) ? $_POST['message'] : null,
-			'icon' => isset($_REQUEST['icon']) ? preg_replace('~[\./\\\\*\':"<>]~', '', $_REQUEST['icon']) : null,
 		);
 		$topicOptions = array(
 			'id' => $topic,
-			'board' => $board,
 			'lock_mode' => isset($_POST['lock']) ? (int) $_POST['lock'] : null,
 			'sticky_mode' => isset($_POST['sticky']) && !empty($modSettings['enableStickyTopics']) ? (int) $_POST['sticky'] : null,
 			'mark_as_read' => true,
 		);
 		$posterOptions = array();
 
-		// Only consider marking as editing if they have edited the subject, message or icon.
-		if ((isset($_POST['subject']) && $_POST['subject'] != $row['subject']) || (isset($_POST['message']) && $_POST['message'] != $row['body']) || (isset($_REQUEST['icon']) && $_REQUEST['icon'] != $row['icon']))
+		// Only consider marking as editing if they have edited the subject, message.
+		if ((isset($_POST['subject']) && $_POST['subject'] != $row['subject']) || (isset($_POST['message']) && $_POST['message'] != $row['body']))
 		{
 			// And even then only if the time has passed...
 			if (time() - $row['poster_time'] > $modSettings['edit_wait_time'] || $user_info['id'] != $row['id_member'])
@@ -1999,7 +1725,7 @@ function JavaScriptModify()
 		}
 
 		if (!empty($moderationAction))
-			logAction('modify', array('topic' => $topic, 'message' => $row['id_msg'], 'member' => $row['id_member'], 'board' => $board));
+			logAction('modify', array('topic' => $topic, 'message' => $row['id_msg'], 'member' => $row['id_member']));
 	}
 
 	if (isset($_REQUEST['xml']))

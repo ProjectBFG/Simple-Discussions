@@ -103,14 +103,8 @@ function MembergroupIndex()
 					'function' => create_function('$rowData', '
 						global $scripturl;
 
-						// Since the moderator group has no explicit members, no link is needed.
-						if ($rowData[\'id_group\'] == 3)
-							$group_name = $rowData[\'group_name\'];
-						else
-						{
-							$color_style = empty($rowData[\'online_color\']) ? \'\' : sprintf(\' style="color: %1$s;"\', $rowData[\'online_color\']);
-							$group_name = sprintf(\'<a href="%1$s?action=admin;area=membergroups;sa=members;group=%2$d"%3$s>%4$s</a>\', $scripturl, $rowData[\'id_group\'], $color_style, $rowData[\'group_name\']);
-						}
+						$color_style = empty($rowData[\'online_color\']) ? \'\' : sprintf(\' style="color: %1$s;"\', $rowData[\'online_color\']);
+						$group_name = sprintf(\'<a href="%1$s?action=admin;area=membergroups;sa=members;group=%2$d"%3$s>%4$s</a>\', $scripturl, $rowData[\'id_group\'], $color_style, $rowData[\'group_name\']);
 
 						return $group_name;
 					'),
@@ -142,7 +136,7 @@ function MembergroupIndex()
 						global $txt;
 
 						// No explicit members for the moderator group.
-						return $rowData[\'id_group\'] == 3 ? $txt[\'membergroups_guests_na\'] : comma_format($rowData[\'num_members\']);
+						return comma_format($rowData[\'num_members\']);
 					'),
 					'class' => 'centercol',
 				),
@@ -397,27 +391,6 @@ function AddMembergroup()
 					array('id_group', 'permission')
 				);
 
-			$request = $smcFunc['db_query']('', '
-				SELECT id_profile, permission, add_deny
-				FROM {db_prefix}board_permissions
-				WHERE id_group = {int:copy_from}',
-				array(
-					'copy_from' => $copy_id,
-				)
-			);
-			$inserts = array();
-			while ($row = $smcFunc['db_fetch_assoc']($request))
-				$inserts[] = array($id_group, $row['id_profile'], $row['permission'], $row['add_deny']);
-			$smcFunc['db_free_result']($request);
-
-			if (!empty($inserts))
-				$smcFunc['db_insert']('insert',
-					'{db_prefix}board_permissions',
-					array('id_group' => 'int', 'id_profile' => 'int', 'permission' => 'string', 'add_deny' => 'int'),
-					$inserts,
-					array('id_group', 'id_profile', 'permission')
-				);
-
 			// Also get some membergroup information if we're copying and not copying from guests...
 			if ($copy_id > 0 && $_POST['perm_type'] == 'copy')
 			{
@@ -464,32 +437,6 @@ function AddMembergroup()
 			}
 		}
 
-		// Make sure all boards selected are stored in a proper array.
-		$accesses = empty($_POST['boardaccess']) || !is_array($_POST['boardaccess']) ? array() : $_POST['boardaccess'];
-		$changed_boards['allow'] = array();
-		$changed_boards['deny'] = array();
-		$changed_boards['ignore'] = array();
-		foreach ($accesses as $group_id => $action)
-			$changed_boards[$action][] = (int) $group_id;
-
-		foreach (array('allow', 'deny') as $board_action)
-		{
-			// Only do this if they have special access requirements.
-			if (!empty($changed_boards[$board_action]))
-				$smcFunc['db_query']('', '
-					UPDATE {db_prefix}boards
-					SET {raw:column} = CASE WHEN {raw:column} = {string:blank_string} THEN {string:group_id_string} ELSE CONCAT({raw:column}, {string:comma_group}) END
-					WHERE id_board IN ({array_int:board_list})',
-					array(
-						'board_list' => $changed_boards[$board_action],
-						'blank_string' => '',
-						'group_id_string' => (string) $id_group,
-						'comma_group' => ',' . $id_group,
-						'column' => $board_action == 'allow' ? 'member_groups' : 'deny_member_groups',
-					)
-				);
-		}
-
 		// If this is joinable then set it to show group membership in people's profiles.
 		if (empty($modSettings['show_group_membership']) && $_POST['group_type'] > 1)
 			updateSettings(array('show_group_membership' => 1));
@@ -513,18 +460,14 @@ function AddMembergroup()
 	$context['undefined_group'] = !isset($_REQUEST['postgroup']) && !isset($_REQUEST['generalgroup']);
 	$context['allow_protected'] = allowedTo('admin_forum');
 
-	if (!empty($modSettings['deny_boards_access']))
-		loadLanguage('ManagePermissions');
-
 	$result = $smcFunc['db_query']('', '
 		SELECT id_group, group_name
 		FROM {db_prefix}membergroups
-		WHERE (id_group > {int:moderator_group} OR id_group = {int:global_mod_group})' . (empty($modSettings['permission_enable_postgroups']) ? '
+		WHERE id_group = {int:global_mod_group}' . (empty($modSettings['permission_enable_postgroups']) ? '
 			AND min_posts = {int:min_posts}' : '') . (allowedTo('admin_forum') ? '' : '
 			AND group_type != {int:is_protected}') . '
 		ORDER BY min_posts, id_group != {int:global_mod_group}, group_name',
 		array(
-			'moderator_group' => 3,
 			'global_mod_group' => 2,
 			'min_posts' => -1,
 			'is_protected' => 1,
@@ -537,53 +480,6 @@ function AddMembergroup()
 			'name' => $row['group_name']
 		);
 	$smcFunc['db_free_result']($result);
-
-	$request = $smcFunc['db_query']('', '
-		SELECT b.id_cat, c.name AS cat_name, b.id_board, b.name, b.child_level
-		FROM {db_prefix}boards AS b
-			LEFT JOIN {db_prefix}categories AS c ON (c.id_cat = b.id_cat)
-		ORDER BY board_order',
-		array(
-		)
-	);
-	$context['num_boards'] = $smcFunc['db_num_rows']($request);
-
-	$context['categories'] = array();
-	while ($row = $smcFunc['db_fetch_assoc']($request))
-	{
-		// This category hasn't been set up yet..
-		if (!isset($context['categories'][$row['id_cat']]))
-			$context['categories'][$row['id_cat']] = array(
-				'id' => $row['id_cat'],
-				'name' => $row['cat_name'],
-				'boards' => array()
-			);
-
-		// Set this board up, and let the template know when it's a child.  (indent them..)
-		$context['categories'][$row['id_cat']]['boards'][$row['id_board']] = array(
-			'id' => $row['id_board'],
-			'name' => $row['name'],
-			'child_level' => $row['child_level'],
-			'allow' => false,
-			'deny' => false
-		);
-
-	}
-	$smcFunc['db_free_result']($request);
-
-	// Now, let's sort the list of categories into the boards for templates that like that.
-	$temp_boards = array();
-	foreach ($context['categories'] as $category)
-	{
-		$temp_boards[] = array(
-			'name' => $category['name'],
-			'child_ids' => array_keys($category['boards'])
-		);
-		$temp_boards = array_merge($temp_boards, array_values($category['boards']));
-
-		// Include a list of boards per category for easy toggling.
-		$context['categories'][$category['id']]['child_ids'] = array_keys($category['boards']);
-	}
 
 	createToken('admin-mmg');
 }
@@ -624,10 +520,6 @@ function EditMembergroup()
 	global $context, $txt, $sourcedir, $modSettings, $smcFunc;
 
 	$_REQUEST['group'] = isset($_REQUEST['group']) && $_REQUEST['group'] > 0 ? (int) $_REQUEST['group'] : 0;
-
-	if (!empty($modSettings['deny_boards_access']))
-		loadLanguage('ManagePermissions');
-
 
 	// Make sure this group is editable.
 	if (!empty($_REQUEST['group']))
@@ -696,8 +588,6 @@ function EditMembergroup()
 		$_POST['group_hidden'] = empty($_POST['group_hidden']) || $_POST['min_posts'] != -1 || $_REQUEST['group'] == 3 ? 0 : (int) $_POST['group_hidden'];
 		$_POST['group_inherit'] = $_REQUEST['group'] > 1 && $_REQUEST['group'] != 3 && (empty($inherit_type) || $inherit_type != 1) ? (int) $_POST['group_inherit'] : -2;
 
-		//@todo Don't set online_color for the Moderators group?
-
 		// Do the update of the membergroup settings.
 		$smcFunc['db_query']('', '
 			UPDATE {db_prefix}membergroups
@@ -721,62 +611,6 @@ function EditMembergroup()
 		);
 
 		call_integration_hook('integrate_save_membergroup', array((int) $_REQUEST['group']));
-
-		// Time to update the boards this membergroup has access to.
-		if ($_REQUEST['group'] == 2 || $_REQUEST['group'] > 3)
-		{
-			$accesses = empty($_POST['boardaccess']) || !is_array($_POST['boardaccess']) ? array() : $_POST['boardaccess'];
-			$changed_boards['allow'] = array();
-			$changed_boards['deny'] = array();
-			$changed_boards['ignore'] = array();
-			foreach ($accesses as $group_id => $action)
-				$changed_boards[$action][] = (int) $group_id;
-
-			foreach (array('allow', 'deny') as $board_action)
-			{
-				// Find all board this group is in, but shouldn't be in.
-				$request = $smcFunc['db_query']('', '
-					SELECT id_board, {raw:column}
-					FROM {db_prefix}boards
-					WHERE FIND_IN_SET({string:current_group}, {raw:column}) != 0' . (empty($changed_boards[$board_action]) ? '' : '
-						AND id_board NOT IN ({array_int:board_access_list})'),
-					array(
-						'current_group' => (int) $_REQUEST['group'],
-						'board_access_list' => $changed_boards[$board_action],
-						'column' => $board_action == 'allow' ? 'member_groups' : 'deny_member_groups',
-					)
-				);
-				while ($row = $smcFunc['db_fetch_assoc']($request))
-					$smcFunc['db_query']('', '
-						UPDATE {db_prefix}boards
-						SET {raw:column} = {string:member_group_access}
-						WHERE id_board = {int:current_board}',
-						array(
-							'current_board' => $row['id_board'],
-							'member_group_access' => implode(',', array_diff(explode(',', $row['member_groups']), array($_REQUEST['group']))),
-							'column' => $board_action == 'allow' ? 'member_groups' : 'deny_member_groups',
-						)
-					);
-				$smcFunc['db_free_result']($request);
-
-				// Add the membergroup to all boards that hadn't been set yet.
-				if (!empty($changed_boards[$board_action]))
-					$smcFunc['db_query']('', '
-						UPDATE {db_prefix}boards
-						SET {raw:column} = CASE WHEN {raw:column} = {string:blank_string} THEN {string:group_id_string} ELSE CONCAT({raw:column}, {string:comma_group}) END
-						WHERE id_board IN ({array_int:board_list})
-							AND FIND_IN_SET({int:current_group}, {raw:column}) = 0',
-						array(
-							'board_list' => $changed_boards[$board_action],
-							'blank_string' => '',
-							'current_group' => (int) $_REQUEST['group'],
-							'group_id_string' => (string) (int) $_REQUEST['group'],
-							'comma_group' => ',' . $_REQUEST['group'],
-							'column' => $board_action == 'allow' ? 'member_groups' : 'deny_member_groups',
-						)
-					);
-			}
-		}
 
 		// Remove everyone from this group!
 		if ($_POST['min_posts'] != -1)
@@ -1016,61 +850,6 @@ function EditMembergroup()
 
 	if (!empty($context['group']['moderators']))
 		list ($context['group']['last_moderator_id']) = array_slice(array_keys($context['group']['moderators']), -1);
-
-	// Get a list of boards this membergroup is allowed to see.
-	$context['boards'] = array();
-	if ($_REQUEST['group'] == 2 || $_REQUEST['group'] > 3)
-	{
-		$request = $smcFunc['db_query']('', '
-			SELECT b.id_cat, c.name as cat_name, b.id_board, b.name, b.child_level,
-			FIND_IN_SET({string:current_group}, b.member_groups) != 0 AS can_access, FIND_IN_SET({string:current_group}, b.deny_member_groups) != 0 AS cannot_access
-			FROM {db_prefix}boards AS b
-				LEFT JOIN {db_prefix}categories AS c ON (c.id_cat = b.id_cat)
-			ORDER BY board_order',
-			array(
-				'current_group' => (int) $_REQUEST['group'],
-			)
-		);
-		$context['categories'] = array();
-		while ($row = $smcFunc['db_fetch_assoc']($request))
-		{
-			// This category hasn't been set up yet..
-			if (!isset($context['categories'][$row['id_cat']]))
-				$context['categories'][$row['id_cat']] = array(
-					'id' => $row['id_cat'],
-					'name' => $row['cat_name'],
-					'boards' => array()
-				);
-
-			// Set this board up, and let the template know when it's a child.  (indent them..)
-			$context['categories'][$row['id_cat']]['boards'][$row['id_board']] = array(
-				'id' => $row['id_board'],
-				'name' => $row['name'],
-				'child_level' => $row['child_level'],
-				'allow' => !(empty($row['can_access']) || $row['can_access'] == 'f'),
-				'deny' => !(empty($row['cannot_access']) || $row['cannot_access'] == 'f'),
-			);
-		}
-		$smcFunc['db_free_result']($request);
-
-		// Now, let's sort the list of categories into the boards for templates that like that.
-		$temp_boards = array();
-		foreach ($context['categories'] as $category)
-		{
-			$temp_boards[] = array(
-				'name' => $category['name'],
-				'child_ids' => array_keys($category['boards'])
-			);
-			$temp_boards = array_merge($temp_boards, array_values($category['boards']));
-
-			// Include a list of boards per category for easy toggling.
-			$context['categories'][$category['id']]['child_ids'] = array_keys($category['boards']);
-		}
-
-		$max_boards = ceil(count($temp_boards) / 2);
-		if ($max_boards == 1)
-			$max_boards = 2;
-	}
 
 	// Finally, get all the groups this could be inherited off.
 	$request = $smcFunc['db_query']('', '

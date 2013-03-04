@@ -133,14 +133,12 @@ function AdminRegister()
 		$request = $smcFunc['db_query']('', '
 			SELECT group_name, id_group
 			FROM {db_prefix}membergroups
-			WHERE id_group != {int:moderator_group}
-				AND min_posts = {int:min_posts}' . (allowedTo('admin_forum') ? '' : '
+			WHERE min_posts = {int:min_posts}' . (allowedTo('admin_forum') ? '' : '
 				AND id_group != {int:admin_group}
 				AND group_type != {int:is_protected}') . '
 				AND hidden != {int:hidden_group}
 			ORDER BY min_posts, CASE WHEN id_group < {int:newbie_group} THEN id_group ELSE 4 END, group_name',
 			array(
-				'moderator_group' => 3,
 				'min_posts' => -1,
 				'admin_group' => 1,
 				'is_protected' => 1,

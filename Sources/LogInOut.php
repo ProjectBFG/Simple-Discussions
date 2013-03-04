@@ -43,7 +43,7 @@ function Login()
 	$context['never_expire'] = false;
 
 	// Set the login URL - will be used when the login process is done.
-	if (isset($_SESSION['old_url']) && preg_match('~(board|topic)[=,]~', $_SESSION['old_url']) != 0)
+	if (isset($_SESSION['old_url']) && preg_match('~(topic)[=,]~', $_SESSION['old_url']) != 0)
 		$_SESSION['login_url'] = $_SESSION['old_url'];
 	else
 		unset($_SESSION['login_url']);
@@ -129,7 +129,7 @@ function Login2()
 	spamProtection('login');
 
 	// Set the login_url if it's not already set.
-	if ((empty($_SESSION['login_url']) && isset($_SESSION['old_url']) && preg_match('~(board|topic)[=,]~', $_SESSION['old_url']) != 0) || (isset($_GET['quicklogin']) && isset($_SESSION['old_url']) && strpos($_SESSION['old_url'], 'login') === false))
+	if ((empty($_SESSION['login_url']) && isset($_SESSION['old_url']) && preg_match('~(topic)[=,]~', $_SESSION['old_url']) != 0) || (isset($_GET['quicklogin']) && isset($_SESSION['old_url']) && strpos($_SESSION['old_url'], 'login') === false))
 		$_SESSION['login_url'] = $_SESSION['old_url'];
 
 	// Been guessing a lot, haven't we?

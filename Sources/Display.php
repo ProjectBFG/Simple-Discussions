@@ -18,7 +18,7 @@ if (!defined('SMF'))
 	die('Hacking attempt...');
 
 /**
- * The central part of the board - topic display.
+ * The central part of the topic display.
  * This function loads the posts in a topic up so they can be displayed.
  * It uses the main sub template of the Display template.
  * It requires a topic, and can go to the previous or next topic from it.
@@ -29,7 +29,7 @@ if (!defined('SMF'))
 function Display()
 {
 	global $scripturl, $txt, $modSettings, $context, $settings;
-	global $options, $sourcedir, $user_info, $board_info, $topic, $board;
+	global $options, $sourcedir, $user_info, $topic;
 	global $messages_request, $topicinfo, $language, $smcFunc;
 
 	// What are you gonna display if these are empty?!
@@ -54,75 +54,14 @@ function Display()
 	if (count($_GET) > 2)
 		foreach ($_GET as $k => $v)
 		{
-			if (!in_array($k, array('topic', 'board', 'start', session_name())))
+			if (!in_array($k, array('topic', 'start', session_name())))
 				$context['robot_no_index'] = true;
 		}
 
 	if (!empty($_REQUEST['start']) && (!is_numeric($_REQUEST['start']) || $_REQUEST['start'] % $context['messages_per_page'] != 0))
 		$context['robot_no_index'] = true;
-
-	// Find the previous or next topic.  Make a fuss if there are no more.
-	if (isset($_REQUEST['prev_next']) && ($_REQUEST['prev_next'] == 'prev' || $_REQUEST['prev_next'] == 'next'))
-	{
-		// No use in calculating the next topic if there's only one.
-		if ($board_info['num_topics'] > 1)
-		{
-			// Just prepare some variables that are used in the query.
-			$gt_lt = $_REQUEST['prev_next'] == 'prev' ? '>' : '<';
-			$order = $_REQUEST['prev_next'] == 'prev' ? '' : ' DESC';
-
-			$request = $smcFunc['db_query']('', '
-				SELECT t2.id_topic
-				FROM {db_prefix}topics AS t
-					INNER JOIN {db_prefix}topics AS t2 ON (' . (empty($modSettings['enableStickyTopics']) ? '
-					t2.id_last_msg ' . $gt_lt . ' t.id_last_msg' : '
-					(t2.id_last_msg ' . $gt_lt . ' t.id_last_msg AND t2.is_sticky ' . $gt_lt . '= t.is_sticky) OR t2.is_sticky ' . $gt_lt . ' t.is_sticky') . ')
-				WHERE t.id_topic = {int:current_topic}
-					AND t2.id_board = {int:current_board}' . (!$modSettings['postmod_active'] || allowedTo('approve_posts') ? '' : '
-					AND (t2.approved = {int:is_approved} OR (t2.id_member_started != {int:id_member_started} AND t2.id_member_started = {int:current_member}))') . '
-				ORDER BY' . (empty($modSettings['enableStickyTopics']) ? '' : ' t2.is_sticky' . $order . ',') . ' t2.id_last_msg' . $order . '
-				LIMIT 1',
-				array(
-					'current_board' => $board,
-					'current_member' => $user_info['id'],
-					'current_topic' => $topic,
-					'is_approved' => 1,
-					'id_member_started' => 0,
-				)
-			);
-
-			// No more left.
-			if ($smcFunc['db_num_rows']($request) == 0)
-			{
-				$smcFunc['db_free_result']($request);
-
-				// Roll over - if we're going prev, get the last - otherwise the first.
-				$request = $smcFunc['db_query']('', '
-					SELECT id_topic
-					FROM {db_prefix}topics
-					WHERE id_board = {int:current_board}' . (!$modSettings['postmod_active'] || allowedTo('approve_posts') ? '' : '
-						AND (approved = {int:is_approved} OR (id_member_started != {int:id_member_started} AND id_member_started = {int:current_member}))') . '
-					ORDER BY' . (empty($modSettings['enableStickyTopics']) ? '' : ' is_sticky' . $order . ',') . ' id_last_msg' . $order . '
-					LIMIT 1',
-					array(
-						'current_board' => $board,
-						'current_member' => $user_info['id'],
-						'is_approved' => 1,
-						'id_member_started' => 0,
-					)
-				);
-			}
-
-			// Now you can be sure $topic is the id_topic to view.
-			list ($topic) = $smcFunc['db_fetch_row']($request);
-			$smcFunc['db_free_result']($request);
-
-			$context['current_topic'] = $topic;
-		}
-
-		// Go to the newest message on this topic.
-		$_REQUEST['start'] = 'new';
-	}
+        
+        $context['current_topic'] = $topic;
 
 	// Add 1 to the number of views of this topic (except for robots).
 	if (!$user_info['possibly_robot'] && (empty($_SESSION['last_read_topic']) || $_SESSION['last_read_topic'] != $topic))
@@ -142,7 +81,6 @@ function Display()
 	$topic_parameters = array(
 		'current_member' => $user_info['id'],
 		'current_topic' => $topic,
-		'current_board' => $board,
 	);
 	$topic_selects = array();
 	$topic_tables = array();
@@ -156,13 +94,12 @@ function Display()
 			t.num_replies, t.num_views, t.locked, ms.subject, t.is_sticky,
 			t.id_member_started, t.id_first_msg, t.id_last_msg, t.approved, t.unapproved_posts, t.id_redirect_topic,
 			' . ($user_info['is_guest'] ? 't.id_last_msg + 1' : 'IFNULL(lt.id_msg, IFNULL(lmr.id_msg, -1)) + 1') . ' AS new_from
-			' . (!empty($modSettings['recycle_board']) && $modSettings['recycle_board'] == $board ? ', id_previous_board, id_previous_topic' : '') . '
 			' . (!empty($topic_selects) ? implode(',', $topic_selects) : '') . '
 			' . (!$user_info['is_guest'] ? ', IFNULL(lt.disregarded, 0) as disregarded' : '') . '
 		FROM {db_prefix}topics AS t
 			INNER JOIN {db_prefix}messages AS ms ON (ms.id_msg = t.id_first_msg)' . ($user_info['is_guest'] ? '' : '
 			LEFT JOIN {db_prefix}log_topics AS lt ON (lt.id_topic = {int:current_topic} AND lt.id_member = {int:current_member})
-			LEFT JOIN {db_prefix}log_mark_read AS lmr ON (lmr.id_board = {int:current_board} AND lmr.id_member = {int:current_member})') . '
+			LEFT JOIN {db_prefix}log_mark_read AS lmr ON (lmr.id_member = {int:current_member})') . '
 			' . (!empty($topic_tables) ? implode("\n\t", $topic_tables) : '') . '
 		WHERE t.id_topic = {int:current_topic}
 		LIMIT 1',
@@ -246,11 +183,10 @@ function Display()
 					SELECT IFNULL(lt.id_msg, IFNULL(lmr.id_msg, -1)) + 1 AS new_from
 					FROM {db_prefix}topics AS t
 						LEFT JOIN {db_prefix}log_topics AS lt ON (lt.id_topic = {int:current_topic} AND lt.id_member = {int:current_member})
-						LEFT JOIN {db_prefix}log_mark_read AS lmr ON (lmr.id_board = {int:current_board} AND lmr.id_member = {int:current_member})
+						LEFT JOIN {db_prefix}log_mark_read AS lmr ON (lmr.id_member = {int:current_member})
 					WHERE t.id_topic = {int:current_topic}
 					LIMIT 1',
 					array(
-						'current_board' => $board,
 						'current_member' => $user_info['id'],
 						'current_topic' => $topic,
 					)
@@ -326,9 +262,6 @@ function Display()
 			$_REQUEST['start'] = empty($options['view_newest_first']) ? $context['start_from'] : $context['total_visible_posts'] - $context['start_from'] - 1;
 		}
 	}
-
-	// Create a previous next string if the selected theme has it as a selected option.
-	$context['previous_next'] = $modSettings['enablePreviousNext'] ? '<a href="' . $scripturl . '?topic=' . $topic . '.0;prev_next=prev#new">' . $txt['previous_next_back'] . '</a> - <a href="' . $scripturl . '?topic=' . $topic . '.0;prev_next=next#new">' . $txt['previous_next_forward'] . '</a>' : '';
 
 	// Check if spellchecking is both enabled and actually working. (for quick reply.)
 	$context['show_spellchecking'] = !empty($modSettings['enableSpellChecking']) && function_exists('pspell_new');
@@ -450,7 +383,7 @@ function Display()
 		'prev' => $_REQUEST['start'] >= $context['messages_per_page'] ? $scripturl . '?topic=' . $topic . '.' . ($_REQUEST['start'] - $context['messages_per_page']) : '',
 		'next' => $_REQUEST['start'] + $context['messages_per_page'] < $context['total_visible_posts'] ? $scripturl . '?topic=' . $topic. '.' . ($_REQUEST['start'] + $context['messages_per_page']) : '',
 		'last' => $_REQUEST['start'] + $context['messages_per_page'] < $context['total_visible_posts'] ? $scripturl . '?topic=' . $topic. '.' . (floor($context['total_visible_posts'] / $context['messages_per_page']) * $context['messages_per_page']) : '',
-		'up' => $scripturl . '?board=' . $board . '.0'
+		'up' => $scripturl
 	);
 
 	// If they are viewing all the posts, show all the posts, otherwise limit the number.
@@ -468,16 +401,6 @@ function Display()
 		// They aren't using it, but the *option* is there, at least.
 		else
 			$context['page_index'] .= '&nbsp;<a href="' . $scripturl . '?topic=' . $topic . '.0;all">' . $txt['all'] . '</a> ';
-	}
-
-	// Build a list of this board's moderators.
-	$context['moderators'] = &$board_info['moderators'];
-	$context['link_moderators'] = array();
-	if (!empty($board_info['moderators']))
-	{
-		// Add a link for each moderator...
-		foreach ($board_info['moderators'] as $mod)
-			$context['link_moderators'][] = '<a href="' . $scripturl . '?action=profile;u=' . $mod['id'] . '" title="' . $txt['board_moderator'] . '">' . $mod['name'] . '</a>';
 	}
 
 	// Information about the current topic...
@@ -577,15 +500,14 @@ function Display()
 			);
 		}
 
-		// Check for notifications on this topic OR board.
+		// Check for notifications on this topic.
 		$request = $smcFunc['db_query']('', '
 			SELECT sent, id_topic
 			FROM {db_prefix}log_notify
-			WHERE (id_topic = {int:current_topic} OR id_board = {int:current_board})
+			WHERE id_topic = {int:current_topic}
 				AND id_member = {int:current_member}
 			LIMIT 2',
 			array(
-				'current_board' => $board,
 				'current_member' => $user_info['id'],
 				'current_topic' => $topic,
 			)
@@ -603,10 +525,9 @@ function Display()
 				$smcFunc['db_query']('', '
 					UPDATE {db_prefix}log_notify
 					SET sent = {int:is_not_sent}
-					WHERE (id_topic = {int:current_topic} OR id_board = {int:current_board})
+					WHERE id_topic = {int:current_topic}
 						AND id_member = {int:current_member}',
 					array(
-						'current_board' => $board,
 						'current_member' => $user_info['id'],
 						'current_topic' => $topic,
 						'is_not_sent' => 0,
@@ -614,52 +535,6 @@ function Display()
 				);
 				$do_once = false;
 			}
-		}
-
-		// Have we recently cached the number of new topics in this board, and it's still a lot?
-		if (isset($_REQUEST['topicseen']) && isset($_SESSION['topicseen_cache'][$board]) && $_SESSION['topicseen_cache'][$board] > 5)
-			$_SESSION['topicseen_cache'][$board]--;
-		// Mark board as seen if this is the only new topic.
-		elseif (isset($_REQUEST['topicseen']))
-		{
-			// Use the mark read tables... and the last visit to figure out if this should be read or not.
-			$request = $smcFunc['db_query']('', '
-				SELECT COUNT(*)
-				FROM {db_prefix}topics AS t
-					LEFT JOIN {db_prefix}log_boards AS lb ON (lb.id_board = {int:current_board} AND lb.id_member = {int:current_member})
-					LEFT JOIN {db_prefix}log_topics AS lt ON (lt.id_topic = t.id_topic AND lt.id_member = {int:current_member})
-				WHERE t.id_board = {int:current_board}
-					AND t.id_last_msg > IFNULL(lb.id_msg, 0)
-					AND t.id_last_msg > IFNULL(lt.id_msg, 0)' . (empty($_SESSION['id_msg_last_visit']) ? '' : '
-					AND t.id_last_msg > {int:id_msg_last_visit}'),
-				array(
-					'current_board' => $board,
-					'current_member' => $user_info['id'],
-					'id_msg_last_visit' => (int) $_SESSION['id_msg_last_visit'],
-				)
-			);
-			list ($numNewTopics) = $smcFunc['db_fetch_row']($request);
-			$smcFunc['db_free_result']($request);
-
-			// If there're no real new topics in this board, mark the board as seen.
-			if (empty($numNewTopics))
-				$_REQUEST['boardseen'] = true;
-			else
-				$_SESSION['topicseen_cache'][$board] = $numNewTopics;
-		}
-		// Probably one less topic - maybe not, but even if we decrease this too fast it will only make us look more often.
-		elseif (isset($_SESSION['topicseen_cache'][$board]))
-			$_SESSION['topicseen_cache'][$board]--;
-
-		// Mark board as seen if we came using last post link from BoardIndex. (or other places...)
-		if (isset($_REQUEST['boardseen']))
-		{
-			$smcFunc['db_insert']('replace',
-				'{db_prefix}log_boards',
-				array('id_msg' => 'int', 'id_member' => 'int', 'id_board' => 'int'),
-				array($modSettings['maxMsgID'], $user_info['id'], $board),
-				array('id_member', 'id_board')
-			);
 		}
 	}
 
@@ -679,7 +554,7 @@ function Display()
 			loadMemberData($posters);
 		$messages_request = $smcFunc['db_query']('', '
 			SELECT
-				id_msg, icon, subject, poster_time, poster_ip, id_member, modified_time, modified_name, body,
+				id_msg, subject, poster_time, poster_ip, id_member, modified_time, modified_name, body,
 				smileys_enabled, poster_name, poster_email, approved,
 				id_msg_modified < {int:new_from} AS is_read
 				' . (!empty($msg_selects) ? implode(',', $msg_selects) : '') . '
@@ -707,12 +582,6 @@ function Display()
 		$context['first_message'] = 0;
 		$context['first_new_message'] = false;
 	}
-
-	$context['jump_to'] = array(
-		'label' => addslashes(un_htmlspecialchars($txt['jump_to'])),
-		'board_name' => htmlspecialchars(strtr(strip_tags($board_info['name']), array('&amp;' => '&'))),
-		'child_level' => $board_info['child_level'],
-	);
 
 	// Set the callback.  (do you REALIZE how much memory all the messages would take?!?)
 	// This will be called from the template.
@@ -768,10 +637,6 @@ function Display()
 	// Start this off for quick moderation - it will be or'd for each post.
 	$context['can_remove_post'] = allowedTo('delete_any') || (allowedTo('delete_replies') && $context['user']['started']);
 
-	// Can restore topic?  That's if the topic is in the recycle board and has a previous restore state.
-	$context['can_restore_topic'] &= !empty($modSettings['recycle_enable']) && $modSettings['recycle_board'] == $board && !empty($topicinfo['id_previous_board']);
-	$context['can_restore_msg'] &= !empty($modSettings['recycle_enable']) && $modSettings['recycle_board'] == $board && !empty($topicinfo['id_previous_topic']);
-
 	// Check if the draft functions are enabled and that they have permission to use them (for quick reply.)
 	$context['drafts_save'] = !empty($modSettings['drafts_enabled']) && !empty($modSettings['drafts_post_enabled']) && allowedTo('post_draft') && $context['can_reply'];
 	$context['drafts_autosave'] = !empty($context['drafts_save']) && !empty($modSettings['drafts_autosave_enabled']) && allowedTo('post_autosave_draft');
@@ -786,7 +651,7 @@ function Display()
 		$context['email'] = isset($_SESSION['guest_email']) ? $_SESSION['guest_email'] : '';
 		if (!empty($options['use_editor_quick_reply']) && $context['can_reply'])
 		{
-			// Needed for the editor and message icons.
+			// Needed for the editor.
 			require_once($sourcedir . '/Subs-Editor.php');
 
 			// Now create the editor.
@@ -806,12 +671,6 @@ function Display()
 
 			// Store the ID.
 			$context['post_box_name'] = $editorOptions['id'];
-
-			// Message icons - customized icons are off?
-			$context['icons'] = getMessageIcons($board);
-
-			if (!empty($context['icons']))
-				$context['icons'][count($context['icons']) - 1]['is_last'] = true;
 		}
 	}
 
@@ -829,7 +688,7 @@ function Display()
 		'delete' => array('test' => 'can_delete', 'text' => 'remove_topic', 'image' => 'admin_rem.png', 'lang' => true, 'custom' => 'onclick="return confirm(\'' . $txt['are_sure_remove_topic'] . '\');"', 'url' => $scripturl . '?action=removetopic2;topic=' . $context['current_topic'] . '.0;' . $context['session_var'] . '=' . $context['session_id']),
 		'lock' => array('test' => 'can_lock', 'text' => empty($context['is_locked']) ? 'set_lock' : 'set_unlock', 'image' => 'admin_lock.png', 'lang' => true, 'url' => $scripturl . '?action=lock;topic=' . $context['current_topic'] . '.' . $context['start'] . ';' . $context['session_var'] . '=' . $context['session_id']),
 		'sticky' => array('test' => 'can_sticky', 'text' => empty($context['is_sticky']) ? 'set_sticky' : 'set_nonsticky', 'image' => 'admin_sticky.png', 'lang' => true, 'url' => $scripturl . '?action=sticky;topic=' . $context['current_topic'] . '.' . $context['start'] . ';' . $context['session_var'] . '=' . $context['session_id']),
-		'merge' => array('test' => 'can_merge', 'text' => 'merge', 'image' => 'merge.png', 'lang' => true, 'url' => $scripturl . '?action=mergetopics;board=' . $context['current_board'] . '.0;from=' . $context['current_topic']),
+		'merge' => array('test' => 'can_merge', 'text' => 'merge', 'image' => 'merge.png', 'lang' => true, 'url' => $scripturl . '?action=mergetopics;from=' . $context['current_topic']),
 	);
 
 	// Restore topic. eh?  No monkey business.
@@ -878,25 +737,6 @@ function prepareDisplayContext($reset = false)
 		return false;
 	}
 
-	// $context['icon_sources'] says where each icon should come from - here we set up the ones which will always exist!
-	if (empty($context['icon_sources']))
-	{
-		$stable_icons = array('xx', 'thumbup', 'thumbdown', 'exclamation', 'question', 'lamp', 'smiley', 'angry', 'cheesy', 'grin', 'sad', 'wink', 'moved', 'recycled', 'clip');
-		$context['icon_sources'] = array();
-		foreach ($stable_icons as $icon)
-			$context['icon_sources'][$icon] = 'images_url';
-	}
-
-	// Message Icon Management... check the images exist.
-	if (empty($modSettings['messageIconChecks_disable']))
-	{
-		// If the current icon isn't known, then we need to do something...
-		if (!isset($context['icon_sources'][$message['icon']]))
-			$context['icon_sources'][$message['icon']] = file_exists($settings['theme_dir'] . '/images/post/' . $message['icon'] . '.png') ? 'images_url' : 'default_images_url';
-	}
-	elseif (!isset($context['icon_sources'][$message['icon']]))
-		$context['icon_sources'][$message['icon']] = 'images_url';
-
 	// If you're a lazy bum, you probably didn't give a subject...
 	$message['subject'] = $message['subject'] != '' ? $message['subject'] : $txt['no_subject'];
 
@@ -939,8 +779,6 @@ function prepareDisplayContext($reset = false)
 		'href' => $scripturl . '?topic=' . $topic . '.msg' . $message['id_msg'] . '#msg' . $message['id_msg'],
 		'link' => '<a href="' . $scripturl . '?topic=' . $topic . '.msg' . $message['id_msg'] . '#msg' . $message['id_msg'] . '" rel="nofollow">' . $message['subject'] . '</a>',
 		'member' => &$memberContext[$message['id_member']],
-		'icon' => $message['icon'],
-		'icon_url' => $settings[$context['icon_sources'][$message['icon']]] . '/post/' . $message['icon'] . '.png',
 		'subject' => $message['subject'],
 		'time' => timeformat($message['poster_time']),
 		'timestamp' => forum_time(true, $message['poster_time']),
@@ -982,7 +820,7 @@ function prepareDisplayContext($reset = false)
  */
 function QuickInTopicModeration()
 {
-	global $sourcedir, $topic, $board, $user_info, $smcFunc, $modSettings, $context;
+	global $sourcedir, $topic, $user_info, $smcFunc, $modSettings, $context, $scripturl;
 
 	// Check the session = get or post.
 	checkSession('request');
@@ -1094,10 +932,10 @@ function QuickInTopicModeration()
 
 		// Log this moderation action ;).
 		if (allowedTo('delete_any') && (!allowedTo('delete_own') || $info[1] != $user_info['id']))
-			logAction('delete', array('topic' => $topic, 'subject' => $info[0], 'member' => $info[1], 'board' => $board));
+			logAction('delete', array('topic' => $topic, 'subject' => $info[0], 'member' => $info[1]));
 	}
 
-	redirectexit(!empty($topicGone) ? 'board=' . $board : 'topic=' . $topic . '.' . $_REQUEST['start']);
+	redirectexit(!empty($topicGone) ? $scripturl : 'topic=' . $topic . '.' . $_REQUEST['start']);
 }
 
 ?>

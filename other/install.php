@@ -1156,7 +1156,7 @@ function DatabasePopulation()
 	}
 
 	// Check for the ALTER privilege.
-	if (!empty($databases[$db_type]['alter_support']) && $smcFunc['db_query']('', "ALTER TABLE {$db_prefix}boards ORDER BY id_board", array('security_override' => true, 'db_error_skip' => true)) === false)
+	if (!empty($databases[$db_type]['alter_support']) && $smcFunc['db_query']('', "ALTER TABLE {$db_prefix}topics ORDER BY id_topic", array('security_override' => true, 'db_error_skip' => true)) === false)
 	{
 		$incontext['error'] = $txt['error_db_alter_priv'];
 		return false;
@@ -1305,7 +1305,7 @@ function AdminAccount()
 					'member_ip' => 'string', 'member_ip2' => 'string', 'buddy_list' => 'string', 'pm_ignore_list' => 'string',
 					'message_labels' => 'string', 'website_title' => 'string', 'website_url' => 'string', 'location' => 'string',
 					'signature' => 'string', 'usertitle' => 'string', 'secret_question' => 'string',
-					'additional_groups' => 'string', 'ignore_boards' => 'string', 'openid_uri' => 'string',
+					'additional_groups' => 'string',
 				),
 				array(
 					stripslashes($_POST['username']), stripslashes($_POST['username']), sha1(strtolower(stripslashes($_POST['username'])) . stripslashes($_POST['password1'])), stripslashes($_POST['email']),
@@ -1314,7 +1314,7 @@ function AdminAccount()
 					$ip, $ip, '', '',
 					'', '', '', '',
 					'', '', '',
-					'', '', '',
+					'',
 				),
 				array('id_member')
 			);
@@ -1457,7 +1457,7 @@ function DeleteInstall()
 	// Now is the perfect time to fetch the SM files.
 	require_once($sourcedir . '/ScheduledTasks.php');
 	// Sanity check that they loaded earlier!
-	if (isset($modSettings['recycle_board']))
+	if (isset($modSettings['enableEmbeddedFlash']))
 	{
 		$forum_version = $current_smf_version;  // The variable is usually defined in index.php so lets just use our variable to do it for us.
 		scheduled_fetchSMfiles(); // Now go get those files!

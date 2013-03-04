@@ -409,7 +409,7 @@ function ModBlockReportedPosts()
 	{
 		// By George, that means we in a position to get the reports, jolly good.
 		$request = $smcFunc['db_query']('', '
-			SELECT lr.id_report, lr.id_msg, lr.id_topic, lr.id_board, lr.id_member, lr.subject,
+			SELECT lr.id_report, lr.id_msg, lr.id_topic, lr.id_member, lr.subject,
 				lr.num_reports, IFNULL(mem.real_name, lr.membername) AS author_name,
 				IFNULL(mem.id_member, 0) AS id_author
 			FROM {db_prefix}log_reported AS lr
@@ -605,7 +605,7 @@ function ReportedPosts()
 
 	// By George, that means we in a position to get the reports, golly good.
 	$request = $smcFunc['db_query']('', '
-		SELECT lr.id_report, lr.id_msg, lr.id_topic, lr.id_board, lr.id_member, lr.subject, lr.body,
+		SELECT lr.id_report, lr.id_msg, lr.id_topic, lr.id_member, lr.subject, lr.body,
 			lr.time_started, lr.time_updated, lr.num_reports, lr.closed, lr.ignore_all,
 			IFNULL(mem.real_name, lr.membername) AS author_name, IFNULL(mem.id_member, 0) AS id_author
 		FROM {db_prefix}log_reported AS lr
@@ -753,7 +753,7 @@ function ModReport()
 
 	// Get the report details, need this so we can limit access to a particular board
 	$request = $smcFunc['db_query']('', '
-		SELECT lr.id_report, lr.id_msg, lr.id_topic, lr.id_board, lr.id_member, lr.subject, lr.body,
+		SELECT lr.id_report, lr.id_msg, lr.id_topic, lr.id_member, lr.subject, lr.body,
 			lr.time_started, lr.time_updated, lr.num_reports, lr.closed, lr.ignore_all,
 			IFNULL(mem.real_name, lr.membername) AS author_name, IFNULL(mem.id_member, 0) AS id_author
 		FROM {db_prefix}log_reported AS lr
@@ -805,7 +805,6 @@ function ModReport()
 	$context['report'] = array(
 		'id' => $row['id_report'],
 		'topic_id' => $row['id_topic'],
-		'board_id' => $row['id_board'],
 		'message_id' => $row['id_msg'],
 		'message_href' => $scripturl . '?msg=' . $row['id_msg'],
 		'message_link' => '<a href="' . $scripturl . '?msg=' . $row['id_msg'] . '">' . $row['subject'] . '</a>',
@@ -1071,27 +1070,6 @@ function ViewWatchedUsers()
 		}
 	}
 
-	// Start preparing the list by grabbing relevant permissions.
-	if (!$context['view_posts'])
-	{
-		$approve_query = '';
-		$delete_boards = array();
-	}
-	else
-	{
-		// Still obey permissions!
-		$approve_boards = boardsAllowedTo('approve_posts');
-		$delete_boards = boardsAllowedTo('delete_any');
-
-		if ($approve_boards == array(0))
-			$approve_query = '';
-		elseif (!empty($approve_boards))
-			$approve_query = ' AND m.id_board IN (' . implode(',', $approve_boards) . ')';
-		// Nada, zip, etc...
-		else
-			$approve_query = ' AND 0';
-	}
-
 	require_once($sourcedir . '/Subs-List.php');
 
 	// This is all the information required for a watched user listing.
@@ -1106,14 +1084,11 @@ function ViewWatchedUsers()
 		'get_items' => array(
 			'function' => $context['view_posts'] ? 'list_getWatchedUserPosts' : 'list_getWatchedUsers',
 			'params' => array(
-				$approve_query,
-				$delete_boards,
 			),
 		),
 		'get_count' => array(
 			'function' => $context['view_posts'] ? 'list_getWatchedUserPostsCount' : 'list_getWatchedUserCount',
 			'params' => array(
-				$approve_query,
 			),
 		),
 		// This assumes we are viewing by user.
@@ -1306,8 +1281,7 @@ function list_getWatchedUsers($start, $items_per_page, $sort, $approve_query, $d
 		// First get the latest messages from these users.
 		$request = $smcFunc['db_query']('', '
 			SELECT m.id_member, MAX(m.id_msg) AS last_post_id
-			FROM {db_prefix}messages AS m' . ($user_info['query_see_board'] == '1=1' ? '' : '
-				INNER JOIN {db_prefix}boards AS b ON (b.id_board = m.id_board AND {query_see_board})') . '
+			FROM {db_prefix}messages AS m
 			WHERE m.id_member IN ({array_int:member_list})' . (!$modSettings['postmod_active'] || allowedTo('approve_posts') ? '' : '
 				AND m.approved = {int:is_approved}') . '
 			GROUP BY m.id_member',
@@ -1342,8 +1316,7 @@ function list_getWatchedUsers($start, $items_per_page, $sort, $approve_query, $d
 
 		$request = $smcFunc['db_query']('', '
 			SELECT MAX(m.poster_time) AS last_post, MAX(m.id_msg) AS last_post_id, m.id_member
-			FROM {db_prefix}messages AS m' . ($user_info['query_see_board'] == '1=1' ? '' : '
-				INNER JOIN {db_prefix}boards AS b ON (b.id_board = m.id_board AND {query_see_board})') . '
+			FROM {db_prefix}messages AS m
 			WHERE m.id_member IN ({array_int:member_list})' . (!$modSettings['postmod_active'] || allowedTo('approve_posts') ? '' : '
 				AND m.approved = {int:is_approved}') . '
 			GROUP BY m.id_member',
@@ -1365,10 +1338,8 @@ function list_getWatchedUsers($start, $items_per_page, $sort, $approve_query, $d
 
 /**
  * Callback for createList().
- *
- * @param $approve_query
  */
-function list_getWatchedUserPostsCount($approve_query)
+function list_getWatchedUserPostsCount()
 {
 	global $smcFunc, $modSettings, $user_info;
 
@@ -1376,10 +1347,7 @@ function list_getWatchedUserPostsCount($approve_query)
 		SELECT COUNT(*)
 			FROM {db_prefix}messages AS m
 				INNER JOIN {db_prefix}members AS mem ON (mem.id_member = m.id_member)
-				INNER JOIN {db_prefix}boards AS b ON (b.id_board = m.id_board)
-			WHERE mem.warning >= {int:warning_watch}
-				AND {query_see_board}
-				' . $approve_query,
+			WHERE mem.warning >= {int:warning_watch}',
 		array(
 			'warning_watch' => $modSettings['warning_watch'],
 		)
@@ -1396,22 +1364,17 @@ function list_getWatchedUserPostsCount($approve_query)
  * @param $start
  * @param $items_per_page
  * @param $sort
- * @param $approve_query
- * @param $delete_boards
  */
-function list_getWatchedUserPosts($start, $items_per_page, $sort, $approve_query, $delete_boards)
+function list_getWatchedUserPosts($start, $items_per_page, $sort)
 {
 	global $smcFunc, $txt, $scripturl, $modSettings, $user_info;
 
 	$request = $smcFunc['db_query']('', '
-		SELECT m.id_msg, m.id_topic, m.id_board, m.id_member, m.subject, m.body, m.poster_time,
+		SELECT m.id_msg, m.id_topic, m.id_member, m.subject, m.body, m.poster_time,
 			m.approved, mem.real_name, m.smileys_enabled
 		FROM {db_prefix}messages AS m
 			INNER JOIN {db_prefix}members AS mem ON (mem.id_member = m.id_member)
-			INNER JOIN {db_prefix}boards AS b ON (b.id_board = m.id_board)
 		WHERE mem.warning >= {int:warning_watch}
-			AND {query_see_board}
-			' . $approve_query . '
 		ORDER BY m.id_msg DESC
 		LIMIT ' . $start . ', ' . $items_per_page,
 		array(
@@ -1432,7 +1395,7 @@ function list_getWatchedUserPosts($start, $items_per_page, $sort, $approve_query
 			'body' => parse_bbc($row['body'], $row['smileys_enabled'], $row['id_msg']),
 			'poster_time' => timeformat($row['poster_time']),
 			'approved' => $row['approved'],
-			'can_delete' => $delete_boards == array(0) || in_array($row['id_board'], $delete_boards),
+			'can_delete' => allowedTo('delete_any'),
 		);
 	}
 	$smcFunc['db_free_result']($request);

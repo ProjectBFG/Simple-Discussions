@@ -156,61 +156,10 @@ function template_main()
 			echo '
 		<fieldset class="flow_hidden">
 			<div class="roundframe">
-					<h3 class="catbg">
-						<span class="floatright">
-							<a href="javascript:void(0);" onclick="expandCollapseBoards(); return false;"><img src="', $settings['images_url'], '/expand.png" id="expandBoardsIcon" alt=""  class="icon"/></a>
-						</span>
-						<span>
-							<a href="javascript:void(0);" onclick="expandCollapseBoards(); return false;"><strong>', $txt['choose_board'], '</strong></a>
-						</span>
-					</h3>
-				<div class="flow_auto" id="searchBoardsExpand"', $context['boards_check_all'] ? ' style="display: none;"' : '', '>
-					<ul class="ignoreboards floatleft">';
-
-	$i = 0;
-	$limit = ceil($context['num_boards'] / 2);
-	foreach ($context['categories'] as $category)
-	{
-		echo '
-						<li class="category">
-							<a href="javascript:void(0);" onclick="selectBoards([', implode(', ', $category['child_ids']), '], \'searchform\'); return false;">', $category['name'], '</a>
-							<ul>';
-
-		foreach ($category['boards'] as $board)
-		{
-			if ($i == $limit)
-				echo '
-							</ul>
-						</li>
-					</ul>
-					<ul class="ignoreboards floatright">
-						<li class="category">
-							<ul>';
-
-			echo '
-								<li class="board" style="margin-', $context['right_to_left'] ? 'right' : 'left', ': ', $board['child_level'], 'em;">
-									<label for="brd', $board['id'], '">
-										<input type="checkbox" id="brd', $board['id'], '" name="brd[', $board['id'], ']" value="', $board['id'], '"', $board['selected'] ? ' checked="checked"' : '', ' class="input_check" /> ', $board['name'], '
-									</label>
-								</li>';
-
-			$i ++;
-		}
-
-		echo '
-							</ul>
-						</li>';
-	}
-
-	echo '
-					</ul>
-				</div>
 				<br class="clear" />';
 
 			echo '
 				<div class="padding flow_auto">
-					<input type="checkbox" name="all" id="check_all" value=""', $context['boards_check_all'] ? ' checked="checked"' : '', ' onclick="invertAll(this, this.form, \'brd\');" class="input_check floatleft" />
-					<label for="check_all" class="floatleft"><em>', $txt['check_all'], '</em></label>
 					<input type="submit" name="b_search" value="', $txt['search'], '" class="button_submit" />
 				</div>
 			</div>
@@ -275,13 +224,7 @@ function template_results()
 					<input type="hidden" name="minage" value="', !empty($context['search_params']['minage']) ? $context['search_params']['minage'] : '0', '" />
 					<input type="hidden" name="maxage" value="', !empty($context['search_params']['maxage']) ? $context['search_params']['maxage'] : '9999', '" />
 					<input type="hidden" name="sort" value="', !empty($context['search_params']['sort']) ? $context['search_params']['sort'] : 'relevance', '" />
-				</div>';
-		if (!empty($context['search_params']['brd']))
-			foreach ($context['search_params']['brd'] as $board_id)
-				echo '
-				<input type="hidden" name="brd[', $board_id, ']" value="', $board_id, '" />';
-
-		echo '
+				</div>
 			</form>
 		</div>
 	</div><br />';
@@ -334,7 +277,7 @@ function template_results()
 				echo '
 					<div class="topic_details floatleft" style="width: 94%">
 						<div class="counter">', $message['counter'], '</div>
-						<h5>', $topic['board']['link'], ' / <a href="', $scripturl, '?topic=', $topic['id'], '.msg', $message['id'], '#msg', $message['id'], '">', $message['subject_highlighted'], '</a></h5>
+						<h5><a href="', $scripturl, '?topic=', $topic['id'], '.msg', $message['id'], '#msg', $message['id'], '">', $message['subject_highlighted'], '</a></h5>
 						<span class="smalltext">&#171;&nbsp;',$txt['by'],'&nbsp;<strong>', $message['member']['link'], '</strong>&nbsp;',$txt['on'],'&nbsp;<em>', $message['time'], '</em>&nbsp;&#187;</span>
 					</div>';
 
@@ -451,7 +394,7 @@ function template_results()
 					<div class="content">
 						<div class="counter">', $message['counter'], '</div>
 						<div class="topic_details">
-							<h5>', $topic['board']['link'], ' / <a href="', $scripturl, '?topic=', $topic['id'], '.', $message['start'], ';topicseen#msg', $message['id'], '">', $message['subject_highlighted'], '</a></h5>
+							<h5><a href="', $scripturl, '?topic=', $topic['id'], '.', $message['start'], ';topicseen#msg', $message['id'], '">', $message['subject_highlighted'], '</a></h5>
 							<span class="smalltext">&#171;&nbsp;', $txt['message'], ' ', $txt['by'], ' <strong>', $message['member']['link'], ' </strong>', $txt['on'], '&nbsp;<em>', $message['time'], '</em>&nbsp;&#187;</span>
 						</div>
 						<div class="list_posts">', $message['body_highlighted'], '</div>';

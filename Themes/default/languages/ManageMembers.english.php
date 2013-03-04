@@ -16,9 +16,6 @@ $txt['membergroups_post'] = 'Post count based groups';
 $txt['membergroups_guests_na'] = 'n/a';
 
 $txt['membergroups_group_name'] = 'Membergroup name';
-$txt['membergroups_new_board'] = 'Visible Boards';
-$txt['membergroups_new_board_desc'] = 'Boards the membergroup can see';
-$txt['membergroups_new_board_post_groups'] = '<em>Note: normally, post groups don\'t need access because the group the member is in will give them access.</em>';
 $txt['membergroups_new_as_inherit'] = 'inherit from';
 $txt['membergroups_new_as_type'] = 'by type';
 $txt['membergroups_new_as_copy'] = 'based off of';
@@ -75,7 +72,6 @@ $txt['membergroups_settings'] = 'Membergroup Settings';
 $txt['groups_manage_membergroups'] = 'Groups allowed to change membergroups';
 $txt['membergroups_select_permission_type'] = 'Select permission profile';
 $txt['membergroups_images_url'] = '{theme URL}/images/';
-$txt['membergroups_select_visible_boards'] = 'Show boards';
 $txt['membergroups_members_top'] = 'Members';
 $txt['membergroups_name'] = 'Name';
 $txt['membergroups_icons'] = 'Icons';

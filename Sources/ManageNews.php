@@ -403,17 +403,6 @@ function SelectMailingMembers()
 		$smcFunc['db_free_result']($query);
 	}
 
-	// Any moderators?
-	$request = $smcFunc['db_query']('', '
-		SELECT COUNT(DISTINCT id_member) AS num_distinct_mods
-		FROM {db_prefix}moderators
-		LIMIT 1',
-		array(
-		)
-	);
-	list ($context['groups'][3]['member_count']) = $smcFunc['db_fetch_row']($request);
-	$smcFunc['db_free_result']($request);
-
 	$context['can_send_pm'] = allowedTo('pm_send');
 }
 
@@ -630,28 +619,6 @@ function ComposeMailing()
 		);
 		while ($row = $smcFunc['db_fetch_assoc']($request))
 			$context['recipients']['exclude_members'][] = $row['id_member'];
-		$smcFunc['db_free_result']($request);
-	}
-
-	// Did they select moderators - if so add them as specific members...
-	if ((!empty($context['recipients']['groups']) && in_array(3, $context['recipients']['groups'])) || (!empty($context['recipients']['exclude_groups']) && in_array(3, $context['recipients']['exclude_groups'])))
-	{
-		$request = $smcFunc['db_query']('', '
-			SELECT DISTINCT mem.id_member AS identifier
-			FROM {db_prefix}members AS mem
-				INNER JOIN {db_prefix}moderators AS mods ON (mods.id_member = mem.id_member)
-			WHERE mem.is_activated = {int:is_activated}',
-			array(
-				'is_activated' => 1,
-			)
-		);
-		while ($row = $smcFunc['db_fetch_assoc']($request))
-		{
-			if (in_array(3, $context['recipients']))
-				$context['recipients']['exclude_members'][] = $row['identifier'];
-			else
-				$context['recipients']['members'][] = $row['identifier'];
-		}
 		$smcFunc['db_free_result']($request);
 	}
 

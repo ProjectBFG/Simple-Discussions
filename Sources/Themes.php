@@ -907,16 +907,6 @@ function RemoveTheme()
 		)
 	);
 
-	$smcFunc['db_query']('', '
-		UPDATE {db_prefix}boards
-		SET id_theme = {int:default_theme}
-		WHERE id_theme = {int:current_theme}',
-		array(
-			'default_theme' => 0,
-			'current_theme' => $_GET['th'],
-		)
-	);
-
 	$known = strtr(implode(',', $known), array(',,' => ','));
 
 	// Fix it if the theme was the overall default theme.

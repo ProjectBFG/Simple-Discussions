@@ -203,7 +203,6 @@ function reloadSettings()
  * Load all the important user information.
  * What it does:
  * 	- sets up the $user_info array
- * 	- assigns $user_info['query_wanna_see_board'] for what boards the user can see.
  * 	- first checks for cookie or integration validation.
  * 	- uses the current session if no integration function or cookie is found.
  * 	- checks password length, if member is activated and the login span isn't over.
@@ -417,15 +416,11 @@ function loadUserSettings()
 		'unread_messages' => empty($user_settings['unread_messages']) ? 0 : $user_settings['unread_messages'],
 		'total_time_logged_in' => empty($user_settings['total_time_logged_in']) ? 0 : $user_settings['total_time_logged_in'],
 		'buddies' => !empty($modSettings['enable_buddylist']) && !empty($user_settings['buddy_list']) ? explode(',', $user_settings['buddy_list']) : array(),
-		'ignoreboards' => !empty($user_settings['ignore_boards']) && !empty($modSettings['allow_ignore_boards']) ? explode(',', $user_settings['ignore_boards']) : array(),
 		'ignoreusers' => !empty($user_settings['pm_ignore_list']) ? explode(',', $user_settings['pm_ignore_list']) : array(),
 		'warning' => isset($user_settings['warning']) ? $user_settings['warning'] : 0,
 		'permissions' => array(),
 	);
 	$user_info['groups'] = array_unique($user_info['groups']);
-	// Make sure that the last item in the ignore boards array is valid.  If the list was too long it could have an ending comma that could cause problems.
-	if (!empty($user_info['ignoreboards']) && empty($user_info['ignoreboards'][$tmp = count($user_info['ignoreboards']) - 1]))
-		unset($user_info['ignoreboards'][$tmp]);
 
 	// Do we have any languages to validate this?
 	if (!empty($modSettings['userLanguage']) && (!empty($_GET['language']) || !empty($_SESSION['language'])))
@@ -440,47 +435,22 @@ function loadUserSettings()
 	elseif (!empty($modSettings['userLanguage']) && !empty($_SESSION['language']) && isset($languages[strtr($_SESSION['language'], './\\:', '____')]))
 		$user_info['language'] = strtr($_SESSION['language'], './\\:', '____');
 
-	// Just build this here, it makes it easier to change/use - administrators can see all boards.
-	if ($user_info['is_admin'])
-		$user_info['query_see_board'] = '1=1';
-	// Otherwise just the groups in $user_info['groups'].
-	else
-		$user_info['query_see_board'] = '((FIND_IN_SET(' . implode(', b.member_groups) != 0 OR FIND_IN_SET(', $user_info['groups']) . ', b.member_groups) != 0)' . (!empty($modSettings['deny_boards_access']) ? ' AND (FIND_IN_SET(' . implode(', b.deny_member_groups) = 0 AND FIND_IN_SET(', $user_info['groups']) . ', b.deny_member_groups) = 0)' : '') . (isset($user_info['mod_cache']) ? ' OR ' . $user_info['mod_cache']['mq'] : '') . ')';
-	// Build the list of boards they WANT to see.
-	// This will take the place of query_see_boards in certain spots, so it better include the boards they can see also
-
-	// If they aren't ignoring any boards then they want to see all the boards they can see
-	if (empty($user_info['ignoreboards']))
-		$user_info['query_wanna_see_board'] = $user_info['query_see_board'];
-	// Ok I guess they don't want to see all the boards
-	else
-		$user_info['query_wanna_see_board'] = '(' . $user_info['query_see_board'] . ' AND b.id_board NOT IN (' . implode(',', $user_info['ignoreboards']) . '))';
-
 	call_integration_hook('integrate_user_info');
 }
 
+
 /**
- * Check for moderators and see if they have access to the board.
  * What it does:
- * - sets up the $board_info array for current board information.
- * - if cache is enabled, the $board_info array is stored in cache.
  * - redirects to appropriate post if only message id is requested.
- * - is only used when inside a topic or board.
- * - determines the local moderators for the board.
- * - adds group id 3 if the user is a local moderator for the board they are in.
- * - prevents access if user is not in proper group nor a local moderator of the board.
+ * - is only used when inside a topic.
  */
 function loadBoard()
 {
 	global $txt, $scripturl, $context, $modSettings;
-	global $board_info, $board, $topic, $user_info, $smcFunc;
-
-	// Assume they are not a moderator.
-	$user_info['is_mod'] = false;
-	$context['user']['is_mod'] = &$user_info['is_mod'];
+	global $topic, $user_info, $smcFunc;
 
 	// Have they by chance specified a message id but nothing else?
-	if (empty($_REQUEST['action']) && empty($topic) && empty($board) && !empty($_REQUEST['msg']))
+	if (empty($_REQUEST['action']) && empty($topic) && !empty($_REQUEST['msg']))
 	{
 		// Make sure the message id is really an int.
 		$_REQUEST['msg'] = (int) $_REQUEST['msg'];
@@ -519,193 +489,10 @@ function loadBoard()
 		}
 	}
 
-	// Load this board only if it is specified.
-	if (empty($board) && empty($topic))
-	{
-		$board_info = array('moderators' => array());
-		return;
-	}
-
-	if (!empty($modSettings['cache_enable']) && (empty($topic) || $modSettings['cache_enable'] >= 3))
-	{
-		// @todo SLOW?
-		if (!empty($topic))
-			$temp = cache_get_data('topic_board-' . $topic, 120);
-		else
-			$temp = cache_get_data('board-' . $board, 120);
-
-		if (!empty($temp))
-		{
-			$board_info = $temp;
-			$board = $board_info['id'];
-		}
-	}
-
-	if (empty($temp))
-	{
-		$request = $smcFunc['db_query']('', '
-			SELECT
-				c.id_cat, b.name AS bname, b.description, b.num_topics, b.member_groups, b.deny_member_groups,
-				b.id_parent, c.name AS cname, IFNULL(mem.id_member, 0) AS id_moderator,
-				mem.real_name' . (!empty($topic) ? ', b.id_board' : '') . ', b.child_level,
-				b.id_theme, b.override_theme, b.count_posts, b.id_profile, b.redirect,
-				b.unapproved_topics, b.unapproved_posts' . (!empty($topic) ? ', t.approved, t.id_member_started' : '') . '
-			FROM {db_prefix}boards AS b' . (!empty($topic) ? '
-				INNER JOIN {db_prefix}topics AS t ON (t.id_topic = {int:current_topic})' : '') . '
-				LEFT JOIN {db_prefix}categories AS c ON (c.id_cat = b.id_cat)
-				LEFT JOIN {db_prefix}moderators AS mods ON (mods.id_board = {raw:board_link})
-				LEFT JOIN {db_prefix}members AS mem ON (mem.id_member = mods.id_member)
-			WHERE b.id_board = {raw:board_link}',
-			array(
-				'current_topic' => $topic,
-				'board_link' => empty($topic) ? $smcFunc['db_quote']('{int:current_board}', array('current_board' => $board)) : 't.id_board',
-			)
-		);
-		// If there aren't any, skip.
-		if ($smcFunc['db_num_rows']($request) > 0)
-		{
-			$row = $smcFunc['db_fetch_assoc']($request);
-
-			// Set the current board.
-			if (!empty($row['id_board']))
-				$board = $row['id_board'];
-
-			// Basic operating information. (globals... :/)
-			$board_info = array(
-				'id' => $board,
-				'moderators' => array(),
-				'cat' => array(
-					'id' => $row['id_cat'],
-					'name' => $row['cname']
-				),
-				'name' => $row['bname'],
-				'description' => $row['description'],
-				'num_topics' => $row['num_topics'],
-				'unapproved_topics' => $row['unapproved_topics'],
-				'unapproved_posts' => $row['unapproved_posts'],
-				'unapproved_user_topics' => 0,
-				'parent_boards' => getBoardParents($row['id_parent']),
-				'parent' => $row['id_parent'],
-				'child_level' => $row['child_level'],
-				'theme' => $row['id_theme'],
-				'override_theme' => !empty($row['override_theme']),
-				'profile' => $row['id_profile'],
-				'redirect' => $row['redirect'],
-				'posts_count' => empty($row['count_posts']),
-				'cur_topic_approved' => empty($topic) || $row['approved'],
-				'cur_topic_starter' => empty($topic) ? 0 : $row['id_member_started'],
-			);
-
-			// Load the membergroups allowed, and check permissions.
-			$board_info['groups'] = $row['member_groups'] == '' ? array() : explode(',', $row['member_groups']);
-			$board_info['deny_groups'] = $row['deny_member_groups'] == '' ? array() : explode(',', $row['deny_member_groups']);
-
-			do
-			{
-				if (!empty($row['id_moderator']))
-					$board_info['moderators'][$row['id_moderator']] = array(
-						'id' => $row['id_moderator'],
-						'name' => $row['real_name'],
-						'href' => $scripturl . '?action=profile;u=' . $row['id_moderator'],
-						'link' => '<a href="' . $scripturl . '?action=profile;u=' . $row['id_moderator'] . '">' . $row['real_name'] . '</a>'
-					);
-			}
-			while ($row = $smcFunc['db_fetch_assoc']($request));
-
-			// If the board only contains unapproved posts and the user isn't an approver then they can't see any topics.
-			// If that is the case do an additional check to see if they have any topics waiting to be approved.
-			if ($board_info['num_topics'] == 0 && $modSettings['postmod_active'] && !allowedTo('approve_posts'))
-			{
-				// Free the previous result
-				$smcFunc['db_free_result']($request);
-
-				// @todo why is this using id_topic?
-				// @todo Can this get cached?
-				$request = $smcFunc['db_query']('', '
-					SELECT COUNT(id_topic)
-					FROM {db_prefix}topics
-					WHERE id_member_started={int:id_member}
-						AND approved = {int:unapproved}
-						AND id_board = {int:board}',
-					array(
-						'id_member' => $user_info['id'],
-						'unapproved' => 0,
-						'board' => $board,
-					)
-				);
-
-				list ($board_info['unapproved_user_topics']) = $smcFunc['db_fetch_row']($request);
-			}
-
-			if (!empty($modSettings['cache_enable']) && (empty($topic) || $modSettings['cache_enable'] >= 3))
-			{
-				// @todo SLOW?
-				if (!empty($topic))
-					cache_put_data('topic_board-' . $topic, $board_info, 120);
-				cache_put_data('board-' . $board, $board_info, 120);
-			}
-		}
-		else
-		{
-			// Otherwise the topic is invalid, there are no moderators, etc.
-			$board_info = array(
-				'moderators' => array(),
-				'error' => 'exist'
-			);
-			$topic = null;
-			$board = 0;
-		}
-		$smcFunc['db_free_result']($request);
-	}
-
-	if (!empty($topic))
-		$_GET['board'] = (int) $board;
-
-	if (!empty($board))
-	{
-		// Now check if the user is a moderator.
-		$user_info['is_mod'] = isset($board_info['moderators'][$user_info['id']]);
-
-		if (count(array_intersect($user_info['groups'], $board_info['groups'])) == 0 && !$user_info['is_admin'])
-			$board_info['error'] = 'access';
-		if (!empty($modSettings['deny_boards_access']) && count(array_intersect($user_info['groups'], $board_info['deny_groups'])) != 0 && !$user_info['is_admin'])
-			$board_info['error'] = 'access';
-	}
-
 	// Set the template contextual information.
-	$context['user']['is_mod'] = &$user_info['is_mod'];
 	$context['current_topic'] = $topic;
-	$context['current_board'] = $board;
-
-	// Hacker... you can't see this topic, I'll tell you that. (but moderators can!)
-	if (!empty($board_info['error']) && (!empty($modSettings['deny_boards_access']) || $board_info['error'] != 'access' || !$user_info['is_mod']))
-	{
-		// The permissions and theme need loading, just to make sure everything goes smoothly.
-		loadPermissions();
-		loadTheme();
-
-		$_GET['board'] = '';
-		$_GET['topic'] = '';
-
-		// If it's a prefetching agent.
-		if (isset($_SERVER['HTTP_X_MOZ']) && $_SERVER['HTTP_X_MOZ'] == 'prefetch')
-		{
-			ob_end_clean();
-			header('HTTP/1.1 403 Forbidden');
-			die;
-		}
-		elseif ($user_info['is_guest'])
-		{
-			loadLanguage('Errors');
-			is_not_guest($txt['topic_gone']);
-		}
-		else
-			fatal_lang_error('topic_gone', false);
-	}
-
-	if ($user_info['is_mod'])
-		$user_info['groups'][] = 3;
 }
+
 
 /**
  * Load this user's permissions.
@@ -713,7 +500,7 @@ function loadBoard()
  */
 function loadPermissions()
 {
-	global $user_info, $board, $board_info, $modSettings, $smcFunc, $sourcedir;
+	global $user_info, $modSettings, $smcFunc, $sourcedir;
 
 	if ($user_info['is_admin'])
 	{
@@ -730,14 +517,7 @@ function loadPermissions()
 		if ($user_info['possibly_robot'])
 			$cache_groups .= '-spider';
 
-		if ($modSettings['cache_enable'] >= 2 && !empty($board) && ($temp = cache_get_data('permissions:' . $cache_groups . ':' . $board, 240)) != null && time() - 240 > $modSettings['settings_updated'])
-		{
-			list ($user_info['permissions']) = $temp;
-			banPermissions();
-
-			return;
-		}
-		elseif (($temp = cache_get_data('permissions:' . $cache_groups, 240)) != null && time() - 240 > $modSettings['settings_updated'])
+		if (($temp = cache_get_data('permissions:' . $cache_groups, 240)) != null && time() - 240 > $modSettings['settings_updated'])
 			list ($user_info['permissions'], $removals) = $temp;
 	}
 
@@ -771,41 +551,9 @@ function loadPermissions()
 			cache_put_data('permissions:' . $cache_groups, array($user_info['permissions'], $removals), 240);
 	}
 
-	// Get the board permissions.
-	if (!empty($board))
-	{
-		// Make sure the board (if any) has been loaded by loadBoard().
-		if (!isset($board_info['profile']))
-			fatal_lang_error('no_board');
-
-		$request = $smcFunc['db_query']('', '
-			SELECT permission, add_deny
-			FROM {db_prefix}board_permissions
-			WHERE (id_group IN ({array_int:member_groups})
-				' . $spider_restrict . ')
-				AND id_profile = {int:id_profile}',
-			array(
-				'member_groups' => $user_info['groups'],
-				'id_profile' => $board_info['profile'],
-				'spider_group' => !empty($modSettings['spider_group']) ? $modSettings['spider_group'] : 0,
-			)
-		);
-		while ($row = $smcFunc['db_fetch_assoc']($request))
-		{
-			if (empty($row['add_deny']))
-				$removals[] = $row['permission'];
-			else
-				$user_info['permissions'][] = $row['permission'];
-		}
-		$smcFunc['db_free_result']($request);
-	}
-
 	// Remove all the permissions they shouldn't have ;).
 	if (!empty($modSettings['permission_enable_deny']))
 		$user_info['permissions'] = array_diff($user_info['permissions'], $removals);
-
-	if (isset($cache_groups) && !empty($board) && $modSettings['cache_enable'] >= 2)
-		cache_put_data('permissions:' . $cache_groups . ':' . $board, array($user_info['permissions'], null), 240);
 
 	// Banned?  Watch, don't touch..
 	banPermissions();
@@ -833,7 +581,7 @@ function loadPermissions()
  */
 function loadMemberData($users, $is_name = false, $set = 'normal')
 {
-	global $user_profile, $modSettings, $board_info, $smcFunc, $context;
+	global $user_profile, $modSettings, $smcFunc, $context;
 
 	// Can't just look for no users :P.
 	if (empty($users))
@@ -887,7 +635,7 @@ function loadMemberData($users, $is_name = false, $set = 'normal')
 			$select_columns .= ', mem.id_theme, mem.pm_ignore_list, mem.pm_email_notify, mem.pm_receive_from,
 			mem.time_format, mem.secret_question,  mem.additional_groups, mem.smiley_set,
 			mem.total_time_logged_in, mem.notify_announcements, mem.notify_regularity, mem.notify_send_body,
-			mem.notify_types, lo.url, mem.ignore_boards, mem.password_salt, mem.pm_prefs';
+			mem.notify_types, lo.url, mem.password_salt, mem.pm_prefs';
 			break;
 		case 'minimal':
 			$select_columns = '
@@ -946,40 +694,6 @@ function loadMemberData($users, $is_name = false, $set = 'normal')
 			cache_put_data('member_data-' . $set . '-' . $new_loaded_ids[$i], $user_profile[$new_loaded_ids[$i]], 240);
 	}
 
-	// Are we loading any moderators?  If so, fix their group data...
-	if (!empty($loaded_ids) && !empty($board_info['moderators']) && $set === 'normal' && count($temp_mods = array_intersect($loaded_ids, array_keys($board_info['moderators']))) !== 0)
-	{
-		if (($row = cache_get_data('moderator_group_info', 480)) == null)
-		{
-			$request = $smcFunc['db_query']('', '
-				SELECT group_name AS member_group, online_color AS member_group_color, icons
-				FROM {db_prefix}membergroups
-				WHERE id_group = {int:moderator_group}
-				LIMIT 1',
-				array(
-					'moderator_group' => 3,
-				)
-			);
-			$row = $smcFunc['db_fetch_assoc']($request);
-			$smcFunc['db_free_result']($request);
-
-			cache_put_data('moderator_group_info', $row, 480);
-		}
-
-		foreach ($temp_mods as $id)
-		{
-			// By popular demand, don't show admins or global moderators as moderators.
-			if ($user_profile[$id]['id_group'] != 1 && $user_profile[$id]['id_group'] != 2)
-				$user_profile[$id]['member_group'] = $row['member_group'];
-
-			// If the Moderator group has no color or icons, but their group does... don't overwrite.
-			if (!empty($row['icons']))
-				$user_profile[$id]['icons'] = $row['icons'];
-			if (!empty($row['member_group_color']))
-				$user_profile[$id]['member_group_color'] = $row['member_group_color'];
-		}
-	}
-
 	return empty($loaded_ids) ? false : $loaded_ids;
 }
 
@@ -993,7 +707,7 @@ function loadMemberData($users, $is_name = false, $set = 'normal')
 function loadMemberContext($user, $display_custom_fields = false)
 {
 	global $memberContext, $user_profile, $txt, $scripturl, $user_info;
-	global $context, $modSettings, $board_info, $settings;
+	global $context, $modSettings, $settings;
 	global $smcFunc;
 	static $dataLoaded = array();
 
@@ -1199,7 +913,7 @@ function isBrowser($browser)
  */
 function loadTheme($id_theme = 0, $initialize = true)
 {
-	global $user_info, $user_settings, $board_info, $sc, $boarddir;
+	global $user_info, $user_settings, $sc, $boarddir;
 	global $txt, $boardurl, $scripturl, $mbname, $modSettings, $language;
 	global $context, $settings, $options, $sourcedir, $ssi_theme, $smcFunc;
 
@@ -1215,22 +929,15 @@ function loadTheme($id_theme = 0, $initialize = true)
 	// The theme was specified by REQUEST... previously.
 	elseif (!empty($_SESSION['id_theme']) && (!empty($modSettings['theme_allow']) || allowedTo('admin_forum')))
 		$id_theme = (int) $_SESSION['id_theme'];
-	// The theme is just the user's choice. (might use ?board=1;theme=0 to force board theme.)
+	// The theme is just the user's choice.
 	elseif (!empty($user_info['theme']) && !isset($_REQUEST['theme']) && (!empty($modSettings['theme_allow']) || allowedTo('admin_forum')))
 		$id_theme = $user_info['theme'];
-	// The theme was specified by the board.
-	elseif (!empty($board_info['theme']))
-		$id_theme = $board_info['theme'];
 	// The theme is the forum's default.
 	else
 		$id_theme = $modSettings['theme_guests'];
 
 	// Verify the id_theme... no foul play.
-	// Always allow the board specific theme, if they are overriding.
-	if (!empty($board_info['theme']) && $board_info['override_theme'])
-		$id_theme = $board_info['theme'];
-	// If they have specified a particular theme to use with SSI allow it to be used.
-	elseif (!empty($ssi_theme) && $id_theme == $ssi_theme)
+	if (!empty($ssi_theme) && $id_theme == $ssi_theme)
 		$id_theme = (int) $id_theme;
 	elseif (!empty($modSettings['knownThemes']) && !allowedTo('admin_forum'))
 	{
@@ -1387,16 +1094,6 @@ function loadTheme($id_theme = 0, $initialize = true)
 
 			// And just a few mod settings :).
 			$modSettings['smileys_url'] = strtr($modSettings['smileys_url'], array($oldurl => $boardurl));
-
-			// Clean up after loadBoard().
-			if (isset($board_info['moderators']))
-			{
-				foreach ($board_info['moderators'] as $k => $dummy)
-				{
-					$board_info['moderators'][$k]['href'] = strtr($dummy['href'], array($oldurl => $boardurl));
-					$board_info['moderators'][$k]['link'] = strtr($dummy['link'], array('"' . $oldurl => '"' . $boardurl));
-				}
-			}
 		}
 	}
 	// Set up the contextual user array.
@@ -1406,7 +1103,7 @@ function loadTheme($id_theme = 0, $initialize = true)
 		'is_guest' => &$user_info['is_guest'],
 		'is_admin' => &$user_info['is_admin'],
 		'is_mod' => &$user_info['is_mod'],
-		// A user can mod if they have permission to see the mod center, or they are a board/group/approval moderator.
+		// A user can mod if they have permission to see the mod center, or they are a group/approval moderator.
 		'can_mod' => allowedTo('access_mod_center') || (!$user_info['is_guest'] && ($user_info['mod_cache']['gq'] != '0=1' || $user_info['mod_cache']['bq'] != '0=1' || ($modSettings['postmod_active'] && !empty($user_info['mod_cache']['ap'])))),
 		'username' => $user_info['username'],
 		'language' => $user_info['language'],
@@ -2022,75 +1719,6 @@ function loadLanguage($template_name, $lang = '', $fatal = true, $force_reload =
 
 	// Return the language actually loaded.
 	return $lang;
-}
-
-/**
- * Get all parent boards (requires first parent as parameter)
- * It finds all the parents of id_parent, and that board itself.
- * Additionally, it detects the moderators of said boards.
- *
- * @param int $id_parent
- * @return an array of information about the boards found.
- */
-function getBoardParents($id_parent)
-{
-	global $scripturl, $smcFunc;
-
-	// First check if we have this cached already.
-	if (($boards = cache_get_data('board_parents-' . $id_parent, 480)) === null)
-	{
-		$boards = array();
-		$original_parent = $id_parent;
-
-		// Loop while the parent is non-zero.
-		while ($id_parent != 0)
-		{
-			$result = $smcFunc['db_query']('', '
-				SELECT
-					b.id_parent, b.name, {int:board_parent} AS id_board, IFNULL(mem.id_member, 0) AS id_moderator,
-					mem.real_name, b.child_level
-				FROM {db_prefix}boards AS b
-					LEFT JOIN {db_prefix}moderators AS mods ON (mods.id_board = b.id_board)
-					LEFT JOIN {db_prefix}members AS mem ON (mem.id_member = mods.id_member)
-				WHERE b.id_board = {int:board_parent}',
-				array(
-					'board_parent' => $id_parent,
-				)
-			);
-			// In the EXTREMELY unlikely event this happens, give an error message.
-			if ($smcFunc['db_num_rows']($result) == 0)
-				fatal_lang_error('parent_not_found', 'critical');
-			while ($row = $smcFunc['db_fetch_assoc']($result))
-			{
-				if (!isset($boards[$row['id_board']]))
-				{
-					$id_parent = $row['id_parent'];
-					$boards[$row['id_board']] = array(
-						'url' => $scripturl . '?board=' . $row['id_board'] . '.0',
-						'name' => $row['name'],
-						'level' => $row['child_level'],
-						'moderators' => array()
-					);
-				}
-				// If a moderator exists for this board, add that moderator for all children too.
-				if (!empty($row['id_moderator']))
-					foreach ($boards as $id => $dummy)
-					{
-						$boards[$id]['moderators'][$row['id_moderator']] = array(
-							'id' => $row['id_moderator'],
-							'name' => $row['real_name'],
-							'href' => $scripturl . '?action=profile;u=' . $row['id_moderator'],
-							'link' => '<a href="' . $scripturl . '?action=profile;u=' . $row['id_moderator'] . '">' . $row['real_name'] . '</a>'
-						);
-					}
-			}
-			$smcFunc['db_free_result']($result);
-		}
-
-		cache_put_data('board_parents-' . $original_parent, $boards, 480);
-	}
-
-	return $boards;
 }
 
 /**

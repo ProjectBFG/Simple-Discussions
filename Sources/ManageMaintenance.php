@@ -255,34 +255,6 @@ function MaintainTopics()
 {
 	global $context, $smcFunc, $txt;
 
-	// Let's load up the boards in case they are useful.
-	$result = $smcFunc['db_query']('order_by_board_order', '
-		SELECT b.id_board, b.name, b.child_level, c.name AS cat_name, c.id_cat
-		FROM {db_prefix}boards AS b
-			LEFT JOIN {db_prefix}categories AS c ON (c.id_cat = b.id_cat)
-		WHERE {query_see_board}
-			AND redirect = {string:blank_redirect}',
-		array(
-			'blank_redirect' => '',
-		)
-	);
-	$context['categories'] = array();
-	while ($row = $smcFunc['db_fetch_assoc']($result))
-	{
-		if (!isset($context['categories'][$row['id_cat']]))
-			$context['categories'][$row['id_cat']] = array(
-				'name' => $row['cat_name'],
-				'boards' => array()
-			);
-
-		$context['categories'][$row['id_cat']]['boards'][] = array(
-			'id' => $row['id_board'],
-			'name' => $row['name'],
-			'child_level' => $row['child_level']
-		);
-	}
-	$smcFunc['db_free_result']($result);
-
 	if (isset($_GET['done']) && $_GET['done'] == 'purgeold')
 		$context['maintenance_finished'] = $txt['maintain_old'];
 	elseif (isset($_GET['done']) && $_GET['done'] == 'massmove')
@@ -947,13 +919,10 @@ function ConvertEntities()
 	$tables = array(
 		'ban_groups',
 		'ban_items',
-		'boards',
-		'categories',
 		'log_errors',
 		'log_search_subjects',
 		'membergroups',
 		'members',
-		'message_icons',
 		'messages',
 		'package_servers',
 		'personal_messages',
@@ -1167,10 +1136,7 @@ function OptimizeTables()
  *
  * Totals recounted:
  * - fixes for topics with wrong num_replies.
- * - updates for num_posts and num_topics of all boards.
  * - recounts instant_messages but not unread_messages.
- * - repairs messages pointing to boards with topics pointing to other boards.
- * - updates the last message posted in boards and children.
  * - updates member count, latest member, topic count, and message count.
  *
  * The function redirects back to ?action=admin;area=maintain when complete.
@@ -1212,7 +1178,7 @@ function AdminBoardRecount()
 	if (empty($_REQUEST['start']))
 		$_REQUEST['start'] = 0;
 
-	$total_steps = 8;
+	$total_steps = 2;
 
 	// Get each topic with a wrong reply count and fix it - let's just do some at a time, though.
 	if (empty($_REQUEST['step']))
@@ -1294,234 +1260,8 @@ function AdminBoardRecount()
 		$_REQUEST['start'] = 0;
 	}
 
-	// Update the post count of each board.
-	if ($_REQUEST['step'] <= 1)
-	{
-		if (empty($_REQUEST['start']))
-			$smcFunc['db_query']('', '
-				UPDATE {db_prefix}boards
-				SET num_posts = {int:num_posts}
-				WHERE redirect = {string:redirect}',
-				array(
-					'num_posts' => 0,
-					'redirect' => '',
-				)
-			);
-
-		while ($_REQUEST['start'] < $max_topics)
-		{
-			$request = $smcFunc['db_query']('', '
-				SELECT /*!40001 SQL_NO_CACHE */ m.id_board, COUNT(*) AS real_num_posts
-				FROM {db_prefix}messages AS m
-				WHERE m.id_topic > {int:id_topic_min}
-					AND m.id_topic <= {int:id_topic_max}
-					AND m.approved = {int:is_approved}
-				GROUP BY m.id_board',
-				array(
-					'id_topic_min' => $_REQUEST['start'],
-					'id_topic_max' => $_REQUEST['start'] + $increment,
-					'is_approved' => 1,
-				)
-			);
-			while ($row = $smcFunc['db_fetch_assoc']($request))
-				$smcFunc['db_query']('', '
-					UPDATE {db_prefix}boards
-					SET num_posts = num_posts + {int:real_num_posts}
-					WHERE id_board = {int:id_board}',
-					array(
-						'id_board' => $row['id_board'],
-						'real_num_posts' => $row['real_num_posts'],
-					)
-				);
-			$smcFunc['db_free_result']($request);
-
-			$_REQUEST['start'] += $increment;
-
-			if (array_sum(explode(' ', microtime())) - array_sum(explode(' ', $time_start)) > 3)
-			{
-				createToken('admin-boardrecount');
-				$context['continue_post_data'] = '<input type="hidden" name="' . $context['admin-boardrecount_token_var'] . '" value="' . $context['admin-boardrecount_token'] . '" />';
-
-				$context['continue_get_data'] = '?action=admin;area=maintain;sa=routine;activity=recount;step=1;start=' . $_REQUEST['start'] . ';' . $context['session_var'] . '=' . $context['session_id'];
-				$context['continue_percent'] = round((200 + 100 * $_REQUEST['start'] / $max_topics) / $total_steps);
-
-				return;
-			}
-		}
-
-		$_REQUEST['start'] = 0;
-	}
-
-	// Update the topic count of each board.
-	if ($_REQUEST['step'] <= 2)
-	{
-		if (empty($_REQUEST['start']))
-			$smcFunc['db_query']('', '
-				UPDATE {db_prefix}boards
-				SET num_topics = {int:num_topics}',
-				array(
-					'num_topics' => 0,
-				)
-			);
-
-		while ($_REQUEST['start'] < $max_topics)
-		{
-			$request = $smcFunc['db_query']('', '
-				SELECT /*!40001 SQL_NO_CACHE */ t.id_board, COUNT(*) AS real_num_topics
-				FROM {db_prefix}topics AS t
-				WHERE t.approved = {int:is_approved}
-					AND t.id_topic > {int:id_topic_min}
-					AND t.id_topic <= {int:id_topic_max}
-				GROUP BY t.id_board',
-				array(
-					'is_approved' => 1,
-					'id_topic_min' => $_REQUEST['start'],
-					'id_topic_max' => $_REQUEST['start'] + $increment,
-				)
-			);
-			while ($row = $smcFunc['db_fetch_assoc']($request))
-				$smcFunc['db_query']('', '
-					UPDATE {db_prefix}boards
-					SET num_topics = num_topics + {int:real_num_topics}
-					WHERE id_board = {int:id_board}',
-					array(
-						'id_board' => $row['id_board'],
-						'real_num_topics' => $row['real_num_topics'],
-					)
-				);
-			$smcFunc['db_free_result']($request);
-
-			$_REQUEST['start'] += $increment;
-
-			if (array_sum(explode(' ', microtime())) - array_sum(explode(' ', $time_start)) > 3)
-			{
-				createToken('admin-boardrecount');
-				$context['continue_post_data'] = '<input type="hidden" name="' . $context['admin-boardrecount_token_var'] . '" value="' . $context['admin-boardrecount_token'] . '" />';
-
-				$context['continue_get_data'] = '?action=admin;area=maintain;sa=routine;activity=recount;step=2;start=' . $_REQUEST['start'] . ';' . $context['session_var'] . '=' . $context['session_id'];
-				$context['continue_percent'] = round((300 + 100 * $_REQUEST['start'] / $max_topics) / $total_steps);
-
-				return;
-			}
-		}
-
-		$_REQUEST['start'] = 0;
-	}
-
-	// Update the unapproved post count of each board.
-	if ($_REQUEST['step'] <= 3)
-	{
-		if (empty($_REQUEST['start']))
-			$smcFunc['db_query']('', '
-				UPDATE {db_prefix}boards
-				SET unapproved_posts = {int:unapproved_posts}',
-				array(
-					'unapproved_posts' => 0,
-				)
-			);
-
-		while ($_REQUEST['start'] < $max_topics)
-		{
-			$request = $smcFunc['db_query']('', '
-				SELECT /*!40001 SQL_NO_CACHE */ m.id_board, COUNT(*) AS real_unapproved_posts
-				FROM {db_prefix}messages AS m
-				WHERE m.id_topic > {int:id_topic_min}
-					AND m.id_topic <= {int:id_topic_max}
-					AND m.approved = {int:is_approved}
-				GROUP BY m.id_board',
-				array(
-					'id_topic_min' => $_REQUEST['start'],
-					'id_topic_max' => $_REQUEST['start'] + $increment,
-					'is_approved' => 0,
-				)
-			);
-			while ($row = $smcFunc['db_fetch_assoc']($request))
-				$smcFunc['db_query']('', '
-					UPDATE {db_prefix}boards
-					SET unapproved_posts = unapproved_posts + {int:unapproved_posts}
-					WHERE id_board = {int:id_board}',
-					array(
-						'id_board' => $row['id_board'],
-						'unapproved_posts' => $row['real_unapproved_posts'],
-					)
-				);
-			$smcFunc['db_free_result']($request);
-
-			$_REQUEST['start'] += $increment;
-
-			if (array_sum(explode(' ', microtime())) - array_sum(explode(' ', $time_start)) > 3)
-			{
-				createToken('admin-boardrecount');
-				$context['continue_post_data'] = '<input type="hidden" name="' . $context['admin-boardrecount_token_var'] . '" value="' . $context['admin-boardrecount_token'] . '" />';
-
-				$context['continue_get_data'] = '?action=admin;area=maintain;sa=routine;activity=recount;step=3;start=' . $_REQUEST['start'] . ';' . $context['session_var'] . '=' . $context['session_id'];
-				$context['continue_percent'] = round((400 + 100 * $_REQUEST['start'] / $max_topics) / $total_steps);
-
-				return;
-			}
-		}
-
-		$_REQUEST['start'] = 0;
-	}
-
-	// Update the unapproved topic count of each board.
-	if ($_REQUEST['step'] <= 4)
-	{
-		if (empty($_REQUEST['start']))
-			$smcFunc['db_query']('', '
-				UPDATE {db_prefix}boards
-				SET unapproved_topics = {int:unapproved_topics}',
-				array(
-					'unapproved_topics' => 0,
-				)
-			);
-
-		while ($_REQUEST['start'] < $max_topics)
-		{
-			$request = $smcFunc['db_query']('', '
-				SELECT /*!40001 SQL_NO_CACHE */ t.id_board, COUNT(*) AS real_unapproved_topics
-				FROM {db_prefix}topics AS t
-				WHERE t.approved = {int:is_approved}
-					AND t.id_topic > {int:id_topic_min}
-					AND t.id_topic <= {int:id_topic_max}
-				GROUP BY t.id_board',
-				array(
-					'is_approved' => 0,
-					'id_topic_min' => $_REQUEST['start'],
-					'id_topic_max' => $_REQUEST['start'] + $increment,
-				)
-			);
-			while ($row = $smcFunc['db_fetch_assoc']($request))
-				$smcFunc['db_query']('', '
-					UPDATE {db_prefix}boards
-					SET unapproved_topics = unapproved_topics + {int:real_unapproved_topics}
-					WHERE id_board = {int:id_board}',
-					array(
-						'id_board' => $row['id_board'],
-						'real_unapproved_topics' => $row['real_unapproved_topics'],
-					)
-				);
-			$smcFunc['db_free_result']($request);
-
-			$_REQUEST['start'] += $increment;
-
-			if (array_sum(explode(' ', microtime())) - array_sum(explode(' ', $time_start)) > 3)
-			{
-				createToken('admin-boardrecount');
-				$context['continue_post_data'] = '<input type="hidden" name="' . $context['admin-boardrecount_token_var'] . '" value="' . $context['admin-boardrecount_token'] . '" />';
-
-				$context['continue_get_data'] = '?action=admin;area=maintain;sa=routine;activity=recount;step=4;start=' . $_REQUEST['start'] . ';' . $context['session_var'] . '=' . $context['session_id'];
-				$context['continue_percent'] = round((500 + 100 * $_REQUEST['start'] / $max_topics) / $total_steps);
-
-				return;
-			}
-		}
-
-		$_REQUEST['start'] = 0;
-	}
-
 	// Get all members with wrong number of personal messages.
-	if ($_REQUEST['step'] <= 5)
+	if ($_REQUEST['step'] <= 1)
 	{
 		$request = $smcFunc['db_query']('', '
 			SELECT /*!40001 SQL_NO_CACHE */ mem.id_member, COUNT(pmr.id_pm) AS real_num,
@@ -1559,122 +1299,12 @@ function AdminBoardRecount()
 			createToken('admin-boardrecount');
 			$context['continue_post_data'] = '<input type="hidden" name="' . $context['admin-boardrecount_token_var'] . '" value="' . $context['admin-boardrecount_token'] . '" />';
 
-			$context['continue_get_data'] = '?action=admin;area=maintain;sa=routine;activity=recount;step=6;start=0;' . $context['session_var'] . '=' . $context['session_id'];
+			$context['continue_get_data'] = '?action=admin;area=maintain;sa=routine;activity=recount;step=1;start=0;' . $context['session_var'] . '=' . $context['session_id'];
 			$context['continue_percent'] = round(700 / $total_steps);
 
 			return;
 		}
 	}
-
-	// Any messages pointing to the wrong board?
-	if ($_REQUEST['step'] <= 6)
-	{
-		while ($_REQUEST['start'] < $modSettings['maxMsgID'])
-		{
-			$request = $smcFunc['db_query']('', '
-				SELECT /*!40001 SQL_NO_CACHE */ t.id_board, m.id_msg
-				FROM {db_prefix}messages AS m
-					INNER JOIN {db_prefix}topics AS t ON (t.id_topic = m.id_topic AND t.id_board != m.id_board)
-				WHERE m.id_msg > {int:id_msg_min}
-					AND m.id_msg <= {int:id_msg_max}',
-				array(
-					'id_msg_min' => $_REQUEST['start'],
-					'id_msg_max' => $_REQUEST['start'] + $increment,
-				)
-			);
-			$boards = array();
-			while ($row = $smcFunc['db_fetch_assoc']($request))
-				$boards[$row['id_board']][] = $row['id_msg'];
-			$smcFunc['db_free_result']($request);
-
-			foreach ($boards as $board_id => $messages)
-				$smcFunc['db_query']('', '
-					UPDATE {db_prefix}messages
-					SET id_board = {int:id_board}
-					WHERE id_msg IN ({array_int:id_msg_array})',
-					array(
-						'id_msg_array' => $messages,
-						'id_board' => $board_id,
-					)
-				);
-
-			$_REQUEST['start'] += $increment;
-
-			if (array_sum(explode(' ', microtime())) - array_sum(explode(' ', $time_start)) > 3)
-			{
-				createToken('admin-boardrecount');
-				$context['continue_post_data'] = '<input type="hidden" name="' . $context['admin-boardrecount_token_var'] . '" value="' . $context['admin-boardrecount_token'] . '" />';
-
-				$context['continue_get_data'] = '?action=admin;area=maintain;sa=routine;activity=recount;step=6;start=' . $_REQUEST['start'] . ';' . $context['session_var'] . '=' . $context['session_id'];
-				$context['continue_percent'] = round((700 + 100 * $_REQUEST['start'] / $modSettings['maxMsgID']) / $total_steps);
-
-				return;
-			}
-		}
-
-		$_REQUEST['start'] = 0;
-	}
-
-	// Update the latest message of each board.
-	$request = $smcFunc['db_query']('', '
-		SELECT m.id_board, MAX(m.id_msg) AS local_last_msg
-		FROM {db_prefix}messages AS m
-		WHERE m.approved = {int:is_approved}
-		GROUP BY m.id_board',
-		array(
-			'is_approved' => 1,
-		)
-	);
-	$realBoardCounts = array();
-	while ($row = $smcFunc['db_fetch_assoc']($request))
-		$realBoardCounts[$row['id_board']] = $row['local_last_msg'];
-	$smcFunc['db_free_result']($request);
-
-	$request = $smcFunc['db_query']('', '
-		SELECT /*!40001 SQL_NO_CACHE */ id_board, id_parent, id_last_msg, child_level, id_msg_updated
-		FROM {db_prefix}boards',
-		array(
-		)
-	);
-	$resort_me = array();
-	while ($row = $smcFunc['db_fetch_assoc']($request))
-	{
-		$row['local_last_msg'] = isset($realBoardCounts[$row['id_board']]) ? $realBoardCounts[$row['id_board']] : 0;
-		$resort_me[$row['child_level']][] = $row;
-	}
-	$smcFunc['db_free_result']($request);
-
-	krsort($resort_me);
-
-	$lastModifiedMsg = array();
-	foreach ($resort_me as $rows)
-		foreach ($rows as $row)
-		{
-			// The latest message is the latest of the current board and its children.
-			if (isset($lastModifiedMsg[$row['id_board']]))
-				$curLastModifiedMsg = max($row['local_last_msg'], $lastModifiedMsg[$row['id_board']]);
-			else
-				$curLastModifiedMsg = $row['local_last_msg'];
-
-			// If what is and what should be the latest message differ, an update is necessary.
-			if ($row['local_last_msg'] != $row['id_last_msg'] || $curLastModifiedMsg != $row['id_msg_updated'])
-				$smcFunc['db_query']('', '
-					UPDATE {db_prefix}boards
-					SET id_last_msg = {int:id_last_msg}, id_msg_updated = {int:id_msg_updated}
-					WHERE id_board = {int:id_board}',
-					array(
-						'id_last_msg' => $row['local_last_msg'],
-						'id_msg_updated' => $curLastModifiedMsg,
-						'id_board' => $row['id_board'],
-					)
-				);
-
-			// Parent boards inherit the latest modified message of their children.
-			if (isset($lastModifiedMsg[$row['id_parent']]))
-				$lastModifiedMsg[$row['id_parent']] = max($row['local_last_msg'], $lastModifiedMsg[$row['id_parent']]);
-			else
-				$lastModifiedMsg[$row['id_parent']] = $row['local_last_msg'];
-		}
 
 	// Update all the basic statistics.
 	updateStats('member');
@@ -1837,18 +1467,15 @@ function MaintainPurgeInactiveMembers()
 
 		// Select all the members we're about to murder/remove...
 		$request = $smcFunc['db_query']('', '
-			SELECT mem.id_member, IFNULL(m.id_member, 0) AS is_mod
+			SELECT mem.id_member
 			FROM {db_prefix}members AS mem
-				LEFT JOIN {db_prefix}moderators AS m ON (m.id_member = mem.id_member)
 			WHERE ' . $where,
 			$where_vars
 		);
 		$members = array();
 		while ($row = $smcFunc['db_fetch_assoc']($request))
-		{
-			if (!$row['is_mod'] || !in_array(3, $groups))
-				$members[] = $row['id_member'];
-		}
+			$members[] = $row['id_member'];
+
 		$smcFunc['db_free_result']($request);
 
 		require_once($sourcedir . '/Subs-Members.php');
@@ -1912,7 +1539,6 @@ function MaintainRemoveOldDrafts()
  *
  * - recounts all posts for members found in the message table
  * - updates the members post count record in the members talbe
- * - honors the boards post count flag
  * - does not count posts in the recyle bin
  * - zeros post counts for all members with no posts in the message table
  * - runs as a delayed loop to avoid server overload
@@ -1949,10 +1575,8 @@ function MaintainRecountPosts()
 
 		$request = $smcFunc['db_query']('', '
 			SELECT COUNT(DISTINCT m.id_member)
-			FROM ({db_prefix}messages AS m, {db_prefix}boards AS b)
-			WHERE m.id_member != 0
-				AND b.count_posts = 0
-				AND m.id_board = b.id_board',
+			FROM {db_prefix}messages AS m
+			WHERE m.id_member != 0',
 			array(
 			)
 		);
@@ -1964,20 +1588,16 @@ function MaintainRecountPosts()
 	else
 		validateToken('admin-recountposts');
 
-	// Lets get a group of members and determine their post count (from the boards that have post count enabled of course).
+	// Lets get a group of members and determine their post count.
 	$request = $smcFunc['db_query']('', '
 		SELECT /*!40001 SQL_NO_CACHE */ m.id_member, COUNT(m.id_member) AS posts
-		FROM ({db_prefix}messages AS m, {db_prefix}boards AS b)
+		FROM {db_prefix}messages AS m
 		WHERE m.id_member != {int:zero}
-			AND b.count_posts = {int:zero}
-			AND m.id_board = b.id_board ' . (!empty($modSettings['recycle_enable']) ? '
-			AND b.id_board != {int:recycle}' : '') . '
 		GROUP BY m.id_member
 		LIMIT {int:start}, {int:number}',
 		array(
 			'start' => $_REQUEST['start'],
 			'number' => $increment,
-			'recycle' => $modSettings['recycle_board'],
 			'zero' => 0,
 		)
 	);
@@ -2021,11 +1641,8 @@ function MaintainRecountPosts()
 			PRIMARY KEY (id_member)
 		)
 		SELECT m.id_member
-		FROM ({db_prefix}messages AS m,{db_prefix}boards AS b)
+		FROM {db_prefix}messages AS m
 		WHERE m.id_member != {int:zero}
-			AND b.count_posts = {int:zero}
-			AND m.id_board = b.id_board ' . (!empty($modSettings['recycle_enable']) ? '
-			AND b.id_board != {int:recycle}' : '') . '
 		GROUP BY m.id_member',
 		array(
 			'zero' => 0,

@@ -44,7 +44,7 @@ function AdminMain()
 	$admin_areas = array(
 		'forum' => array(
 			'title' => $txt['admin_main'],
-			'permission' => array('admin_forum', 'manage_permissions', 'moderate_forum', 'manage_membergroups', 'manage_bans', 'send_mail', 'edit_news', 'manage_boards', 'manage_smileys'),
+			'permission' => array('admin_forum', 'manage_permissions', 'moderate_forum', 'manage_membergroups', 'manage_bans', 'send_mail', 'edit_news', 'manage_smileys'),
 			'areas' => array(
 				'index' => array(
 					'label' => $txt['admin_center'],
@@ -191,20 +191,8 @@ function AdminMain()
 		),
 		'layout' => array(
 			'title' => $txt['layout_controls'],
-			'permission' => array('manage_boards', 'admin_forum', 'manage_smileys', 'moderate_forum'),
+			'permission' => array('admin_forum', 'manage_smileys', 'moderate_forum'),
 			'areas' => array(
-				'manageboards' => array(
-					'label' => $txt['admin_boards'],
-					'file' => 'ManageBoards.php',
-					'function' => 'ManageBoards',
-					'icon' => 'boards.png',
-					'permission' => array('manage_boards'),
-					'subsections' => array(
-						'main' => array($txt['boardsEdit']),
-						'newcat' => array($txt['mboards_new_cat']),
-						'settings' => array($txt['settings'], 'admin_forum'),
-					),
-				),
 				'postsettings' => array(
 					'label' => $txt['manageposts'],
 					'file' => 'ManagePosts.php',
@@ -249,7 +237,6 @@ function AdminMain()
 						'addsmiley' => array($txt['smileys_add'], 'enabled' => !empty($modSettings['smiley_enable'])),
 						'editsmileys' => array($txt['smileys_edit'], 'enabled' => !empty($modSettings['smiley_enable'])),
 						'setorder' => array($txt['smileys_set_order'], 'enabled' => !empty($modSettings['smiley_enable'])),
-						'editicons' => array($txt['icons_edit_message_icons'], 'enabled' => !empty($modSettings['messageIcons_enable'])),
 						'settings' => array($txt['settings']),
 					),
 				),
@@ -290,9 +277,8 @@ function AdminMain()
 					'permission' => array('manage_permissions'),
 					'subsections' => array(
 						'index' => array($txt['permissions_groups'], 'manage_permissions'),
-						'board' => array($txt['permissions_boards'], 'manage_permissions'),
-						'profiles' => array($txt['permissions_profiles'], 'manage_permissions'),
-						'postmod' => array($txt['permissions_post_moderation'], 'manage_permissions', 'enabled' => $modSettings['postmod_active']),
+						/* @todoy: yeni bir emre kadar kaldýrýldý
+						'postmod' => array($txt['permissions_post_moderation'], 'manage_permissions', 'enabled' => $modSettings['postmod_active']), */
 						'settings' => array($txt['settings'], 'admin_forum'),
 					),
 				),
@@ -476,7 +462,7 @@ function AdminMain()
  * It uses the Admin template along with the admin sub template.
  * It requires the moderate_forum, manage_membergroups, manage_bans,
  *  admin_forum, manage_permissions, manage_smileys,
- *  manage_boards, edit_news, or send_mail permission.
+ *  edit_news, or send_mail permission.
  *  It uses the index administrative area.
  *  It can be found by going to ?action=admin.
 */
@@ -485,7 +471,7 @@ function AdminHome()
 	global $sourcedir, $forum_version, $txt, $scripturl, $context, $user_info, $boardurl, $modSettings, $smcFunc;
 
 	// You have to be able to do at least one of the below to see this page.
-	isAllowedTo(array('admin_forum', 'manage_permissions', 'moderate_forum', 'manage_membergroups', 'manage_bans', 'send_mail', 'edit_news', 'manage_boards', 'manage_smileys'));
+	isAllowedTo(array('admin_forum', 'manage_permissions', 'moderate_forum', 'manage_membergroups', 'manage_bans', 'send_mail', 'edit_news', 'manage_smileys'));
 
 	// Find all of this forum's administrators...
 	require_once($sourcedir . '/Subs-Membergroups.php');
@@ -687,13 +673,13 @@ function AdminSearchInternal()
 
 	// Load a lot of language files.
 	$language_files = array(
-		'ManageMail', 'ManageSettings', 'ManageBoards', 'ManagePaid', 'ManagePermissions', 'Search',
+		'ManageMail', 'ManageSettings', 'ManagePaid', 'ManagePermissions', 'Search',
 		'Login', 'ManageSmileys',
 	);
 
 	// All the files we need to include.
 	$include_files = array(
-		'ManageSettings', 'ManageBoards', 'ManageNews', 'ManageMail', 'ManagePaid', 'ManagePermissions',
+		'ManageSettings', 'ManageNews', 'ManageMail', 'ManagePaid', 'ManagePermissions',
 		'ManagePosts', 'ManageRegistration', 'ManageSearch', 'ManageSearchEngines', 'ManageServer', 'ManageSmileys', 'ManageLanguages',
 	);
 
@@ -708,7 +694,6 @@ function AdminSearchInternal()
 		array('ModifyModerationSettings', 'area=securitysettings;sa=moderation'),
 		array('ModifyGeneralModSettings', 'area=modsettings;sa=general'),
 		// Mod authors if you want to be "real freaking good" then add any setting pages for your mod BELOW this line!
-		array('EditBoardSettings', 'area=manageboards;sa=settings'),
 		array('ModifyMailSettings', 'area=mailqueue;sa=settings'),
 		array('ModifyNewsSettings', 'area=news;sa=settings'),
 		array('GeneralPermissionSettings', 'area=permissions;sa=settings'),

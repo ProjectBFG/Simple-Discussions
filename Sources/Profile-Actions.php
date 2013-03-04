@@ -378,9 +378,7 @@ function issueWarning($memID)
 		$request = $smcFunc['db_query']('', '
 			SELECT subject
 			FROM {db_prefix}messages AS m
-				INNER JOIN {db_prefix}boards AS b ON (b.id_board = m.id_board)
 			WHERE id_msg = {int:message}
-				AND {query_see_board}
 			LIMIT 1',
 			array(
 				'message' => (int) $_REQUEST['msg'],

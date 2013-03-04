@@ -108,31 +108,8 @@ function DisplayStats()
 	list ($context['users_online']) = $smcFunc['db_fetch_row']($result);
 	$smcFunc['db_free_result']($result);
 
-	// Statistics such as number of boards, categories, etc.
-	$result = $smcFunc['db_query']('', '
-		SELECT COUNT(*)
-		FROM {db_prefix}boards AS b
-		WHERE b.redirect = {string:blank_redirect}',
-		array(
-			'blank_redirect' => '',
-		)
-	);
-	list ($context['num_boards']) = $smcFunc['db_fetch_row']($result);
-	$smcFunc['db_free_result']($result);
-
-	$result = $smcFunc['db_query']('', '
-		SELECT COUNT(*)
-		FROM {db_prefix}categories AS c',
-		array(
-		)
-	);
-	list ($context['num_categories']) = $smcFunc['db_fetch_row']($result);
-	$smcFunc['db_free_result']($result);
-
 	// Format the numbers nicely.
 	$context['users_online'] = comma_format($context['users_online']);
-	$context['num_boards'] = comma_format($context['num_boards']);
-	$context['num_categories'] = comma_format($context['num_categories']);
 
 	$context['num_members'] = comma_format($modSettings['totalMembers']);
 	$context['num_posts'] = comma_format($modSettings['totalMessages']);
@@ -234,43 +211,6 @@ function DisplayStats()
 		$context['top_posters'][$i]['num_posts'] = comma_format($context['top_posters'][$i]['num_posts']);
 	}
 
-	// Board top 10.
-	$boards_result = $smcFunc['db_query']('', '
-		SELECT id_board, name, num_posts
-		FROM {db_prefix}boards AS b
-		WHERE {query_see_board}' . (!empty($modSettings['recycle_enable']) && $modSettings['recycle_board'] > 0 ? '
-			AND b.id_board != {int:recycle_board}' : '') . '
-			AND b.redirect = {string:blank_redirect}
-		ORDER BY num_posts DESC
-		LIMIT 10',
-		array(
-			'recycle_board' => $modSettings['recycle_board'],
-			'blank_redirect' => '',
-		)
-	);
-	$context['top_boards'] = array();
-	$max_num_posts = 1;
-	while ($row_board = $smcFunc['db_fetch_assoc']($boards_result))
-	{
-		$context['top_boards'][] = array(
-			'id' => $row_board['id_board'],
-			'name' => $row_board['name'],
-			'num_posts' => $row_board['num_posts'],
-			'href' => $scripturl . '?board=' . $row_board['id_board'] . '.0',
-			'link' => '<a href="' . $scripturl . '?board=' . $row_board['id_board'] . '.0">' . $row_board['name'] . '</a>'
-		);
-
-		if ($max_num_posts < $row_board['num_posts'])
-			$max_num_posts = $row_board['num_posts'];
-	}
-	$smcFunc['db_free_result']($boards_result);
-
-	foreach ($context['top_boards'] as $i => $board)
-	{
-		$context['top_boards'][$i]['post_percent'] = round(($board['num_posts'] * 100) / $max_num_posts);
-		$context['top_boards'][$i]['num_posts'] = comma_format($context['top_boards'][$i]['num_posts']);
-	}
-
 	// Are you on a larger forum?  If so, let's try to limit the number of topics we search through.
 	if ($modSettings['totalMessages'] > 100000)
 	{
@@ -296,19 +236,15 @@ function DisplayStats()
 
 	// Topic replies top 10.
 	$topic_reply_result = $smcFunc['db_query']('', '
-		SELECT m.subject, t.num_replies, t.id_board, t.id_topic, b.name
+		SELECT m.subject, t.num_replies, t.id_topic
 		FROM {db_prefix}topics AS t
-			INNER JOIN {db_prefix}messages AS m ON (m.id_msg = t.id_first_msg)
-			INNER JOIN {db_prefix}boards AS b ON (b.id_board = t.id_board' . (!empty($modSettings['recycle_enable']) && $modSettings['recycle_board'] > 0 ? '
-			AND b.id_board != {int:recycle_board}' : '') . ')
-		WHERE {query_see_board}' . (!empty($topic_ids) ? '
-			AND t.id_topic IN ({array_int:topic_list})' : ($modSettings['postmod_active'] ? '
-			AND t.approved = {int:is_approved}' : '')) . '
+			INNER JOIN {db_prefix}messages AS m ON (m.id_msg = t.id_first_msg)' . (!empty($topic_ids) ? '
+		WHERE t.id_topic IN ({array_int:topic_list})' : ($modSettings['postmod_active'] ? '
+		WHERE t.approved = {int:is_approved}' : '')) . '
 		ORDER BY t.num_replies DESC
 		LIMIT 10',
 		array(
 			'topic_list' => $topic_ids,
-			'recycle_board' => $modSettings['recycle_board'],
 			'is_approved' => 1,
 		)
 	);
@@ -320,12 +256,6 @@ function DisplayStats()
 
 		$context['top_topics_replies'][] = array(
 			'id' => $row_topic_reply['id_topic'],
-			'board' => array(
-				'id' => $row_topic_reply['id_board'],
-				'name' => $row_topic_reply['name'],
-				'href' => $scripturl . '?board=' . $row_topic_reply['id_board'] . '.0',
-				'link' => '<a href="' . $scripturl . '?board=' . $row_topic_reply['id_board'] . '.0">' . $row_topic_reply['name'] . '</a>'
-			),
 			'subject' => $row_topic_reply['subject'],
 			'num_replies' => $row_topic_reply['num_replies'],
 			'href' => $scripturl . '?topic=' . $row_topic_reply['id_topic'] . '.0',
@@ -366,19 +296,15 @@ function DisplayStats()
 
 	// Topic views top 10.
 	$topic_view_result = $smcFunc['db_query']('', '
-		SELECT m.subject, t.num_views, t.id_board, t.id_topic, b.name
+		SELECT m.subject, t.num_views, t.id_topic
 		FROM {db_prefix}topics AS t
-			INNER JOIN {db_prefix}messages AS m ON (m.id_msg = t.id_first_msg)
-			INNER JOIN {db_prefix}boards AS b ON (b.id_board = t.id_board' . (!empty($modSettings['recycle_enable']) && $modSettings['recycle_board'] > 0 ? '
-			AND b.id_board != {int:recycle_board}' : '') . ')
-		WHERE {query_see_board}' . (!empty($topic_ids) ? '
-			AND t.id_topic IN ({array_int:topic_list})' : ($modSettings['postmod_active'] ? '
-			AND t.approved = {int:is_approved}' : '')) . '
+			INNER JOIN {db_prefix}messages AS m ON (m.id_msg = t.id_first_msg)' . (!empty($topic_ids) ? '
+		WHERE t.id_topic IN ({array_int:topic_list})' : ($modSettings['postmod_active'] ? '
+                WHERE t.approved = {int:is_approved}' : '')) . '
 		ORDER BY t.num_views DESC
 		LIMIT 10',
 		array(
 			'topic_list' => $topic_ids,
-			'recycle_board' => $modSettings['recycle_board'],
 			'is_approved' => 1,
 		)
 	);
@@ -390,12 +316,6 @@ function DisplayStats()
 
 		$context['top_topics_views'][] = array(
 			'id' => $row_topic_views['id_topic'],
-			'board' => array(
-				'id' => $row_topic_views['id_board'],
-				'name' => $row_topic_views['name'],
-				'href' => $scripturl . '?board=' . $row_topic_views['id_board'] . '.0',
-				'link' => '<a href="' . $scripturl . '?board=' . $row_topic_views['id_board'] . '.0">' . $row_topic_views['name'] . '</a>'
-			),
 			'subject' => $row_topic_views['subject'],
 			'num_views' => $row_topic_views['num_views'],
 			'href' => $scripturl . '?topic=' . $row_topic_views['id_topic'] . '.0',
@@ -418,13 +338,11 @@ function DisplayStats()
 	{
 		$request = $smcFunc['db_query']('', '
 			SELECT id_member_started, COUNT(*) AS hits
-			FROM {db_prefix}topics' . (!empty($modSettings['recycle_enable']) && $modSettings['recycle_board'] > 0 ? '
-			WHERE id_board != {int:recycle_board}' : '') . '
+			FROM {db_prefix}topics
 			GROUP BY id_member_started
 			ORDER BY hits DESC
 			LIMIT 20',
 			array(
-				'recycle_board' => $modSettings['recycle_board'],
 			)
 		);
 		$members = array();

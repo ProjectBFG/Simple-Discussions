@@ -54,39 +54,6 @@ function UnapprovedPosts()
 	$context['current_view'] = isset($_GET['sa']) && $_GET['sa'] == 'topics' ? 'topics' : 'replies';
 	$context['page_title'] = $txt['mc_unapproved_posts'];
 
-	// Work out what boards we can work in!
-	$approve_boards = boardsAllowedTo('approve_posts');
-
-	// If we filtered by board remove ones outside of this board.
-	// @todo Put a message saying we're filtered?
-	if (isset($_REQUEST['brd']))
-	{
-		$filter_board = array((int) $_REQUEST['brd']);
-		$approve_boards = $approve_boards == array(0) ? $filter_board : array_intersect($approve_boards, $filter_board);
-	}
-
-	if ($approve_boards == array(0))
-		$approve_query = '';
-	elseif (!empty($approve_boards))
-		$approve_query = ' AND m.id_board IN (' . implode(',', $approve_boards) . ')';
-	// Nada, zip, etc...
-	else
-		$approve_query = ' AND 0';
-
-	// We also need to know where we can delete topics and/or replies to.
-	if ($context['current_view'] == 'topics')
-	{
-		$delete_own_boards = boardsAllowedTo('remove_own');
-		$delete_any_boards = boardsAllowedTo('remove_any');
-		$delete_own_replies = array();
-	}
-	else
-	{
-		$delete_own_boards = boardsAllowedTo('delete_own');
-		$delete_any_boards = boardsAllowedTo('delete_any');
-		$delete_own_replies = boardsAllowedTo('delete_own_replies');
-	}
-
 	$toAction = array();
 	// Check if we have something to do?
 	if (isset($_GET['approve']))
@@ -110,18 +77,13 @@ function UnapprovedPosts()
 	{
 		checkSession('request');
 
-		// Handy shortcut.
-		$any_array = $curAction == 'approve' ? $approve_boards : $delete_any_boards;
-
-		// Now for each message work out whether it's actually a topic, and what board it's on.
+		// Now for each message work out whether it's actually a topic.
 		$request = $smcFunc['db_query']('', '
-			SELECT m.id_msg, m.id_member, m.id_board, m.subject, t.id_topic, t.id_first_msg, t.id_member_started
+			SELECT m.id_msg, m.id_member, m.subject, t.id_topic, t.id_first_msg, t.id_member_started
 			FROM {db_prefix}messages AS m
 				INNER JOIN {db_prefix}topics AS t ON (t.id_topic = m.id_topic)
-			LEFT JOIN {db_prefix}boards AS b ON (t.id_board = b.id_board)
 			WHERE m.id_msg IN ({array_int:message_list})
-				AND m.approved = {int:not_approved}
-				AND {query_see_board}',
+				AND m.approved = {int:not_approved}',
 			array(
 				'message_list' => $toAction,
 				'not_approved' => 0,
@@ -137,7 +99,7 @@ function UnapprovedPosts()
 
 			$can_add = false;
 			// If we're approving this is simple.
-			if ($curAction == 'approve' && ($any_array == array(0) || in_array($row['id_board'], $any_array)))
+			if ($curAction == 'approve')
 			{
 				$can_add = true;
 			}
@@ -145,13 +107,13 @@ function UnapprovedPosts()
 			elseif ($curAction == 'delete')
 			{
 				// Own post is easy!
-				if ($row['id_member'] == $user_info['id'] && ($delete_own_boards == array(0) || in_array($row['id_board'], $delete_own_boards)))
+				if ($row['id_member'] == $user_info['id'])
 					$can_add = true;
 				// Is it a reply to their own topic?
-				elseif ($row['id_member'] == $row['id_member_started'] && $row['id_msg'] != $row['id_first_msg'] && ($delete_own_replies == array(0) || in_array($row['id_board'], $delete_own_replies)))
+				elseif ($row['id_member'] == $row['id_member_started'] && $row['id_msg'] != $row['id_first_msg'])
 					$can_add = true;
 				// Someone elses?
-				elseif ($row['id_member'] != $user_info['id'] && ($delete_any_boards == array(0) || in_array($row['id_board'], $delete_any_boards)))
+				elseif ($row['id_member'] != $user_info['id'])
 					$can_add = true;
 			}
 
@@ -164,7 +126,6 @@ function UnapprovedPosts()
 			$details[$anItem]["subject"] = $row['subject'];
 			$details[$anItem]["topic"] = $row['id_topic'];
 			$details[$anItem]["member"] = ($context['current_view'] == 'topics') ? $row['id_member_started'] : $row['id_member'];
-			$details[$anItem]["board"] = $row['id_board'];
 		}
 		$smcFunc['db_free_result']($request);
 
@@ -187,9 +148,7 @@ function UnapprovedPosts()
 		SELECT COUNT(*)
 		FROM {db_prefix}messages AS m
 			INNER JOIN {db_prefix}topics AS t ON (t.id_topic = m.id_topic AND t.id_first_msg != m.id_msg)
-			INNER JOIN {db_prefix}boards AS b ON (b.id_board = t.id_board)
 		WHERE m.approved = {int:not_approved}
-			AND {query_see_board}
 			' . $approve_query,
 		array(
 			'not_approved' => 0,
@@ -202,9 +161,7 @@ function UnapprovedPosts()
 	$request = $smcFunc['db_query']('', '
 		SELECT COUNT(m.id_topic)
 		FROM {db_prefix}topics AS m
-			INNER JOIN {db_prefix}boards AS b ON (b.id_board = m.id_board)
 		WHERE m.approved = {int:not_approved}
-			AND {query_see_board}
 			' . $approve_query,
 		array(
 			'not_approved' => 0,
@@ -226,26 +183,16 @@ function UnapprovedPosts()
 	$context['menu_data_' . $context['moderation_menu_id']]['sections']['posts']['areas']['postmod']['subsections']['posts']['label'] .= ' (' . $context['total_unapproved_posts'] . ')';
 	$context['menu_data_' . $context['moderation_menu_id']]['sections']['posts']['areas']['postmod']['subsections']['topics']['label'] .= ' (' . $context['total_unapproved_topics'] . ')';
 
-	// If we are filtering some boards out then make sure to send that along with the links.
-	if (isset($_REQUEST['brd']))
-	{
-		$context['menu_data_' . $context['moderation_menu_id']]['sections']['posts']['areas']['postmod']['subsections']['posts']['add_params'] = ';brd=' . (int) $_REQUEST['brd'];
-		$context['menu_data_' . $context['moderation_menu_id']]['sections']['posts']['areas']['postmod']['subsections']['topics']['add_params'] = ';brd=' . (int) $_REQUEST['brd'];
-	}
-
 	// Get all unapproved posts.
 	$request = $smcFunc['db_query']('', '
-		SELECT m.id_msg, m.id_topic, m.id_board, m.subject, m.body, m.id_member,
+		SELECT m.id_msg, m.id_topic, m.subject, m.body, m.id_member,
 			IFNULL(mem.real_name, m.poster_name) AS poster_name, m.poster_time, m.smileys_enabled,
-			t.id_member_started, t.id_first_msg, b.name AS board_name, c.id_cat, c.name AS cat_name
+			t.id_member_started, t.id_first_msg
 		FROM {db_prefix}messages AS m
 			INNER JOIN {db_prefix}topics AS t ON (t.id_topic = m.id_topic)
-			INNER JOIN {db_prefix}boards AS b ON (b.id_board = m.id_board)
 			LEFT JOIN {db_prefix}members AS mem ON (mem.id_member = m.id_member)
-			LEFT JOIN {db_prefix}categories AS c ON (c.id_cat = b.id_cat)
 		WHERE m.approved = {int:not_approved}
 			AND t.id_first_msg ' . ($context['current_view'] == 'topics' ? '=' : '!=') . ' m.id_msg
-			AND {query_see_board}
 			' . $approve_query . '
 		LIMIT ' . $context['start'] . ', 10',
 		array(
@@ -256,13 +203,13 @@ function UnapprovedPosts()
 	for ($i = 1; $row = $smcFunc['db_fetch_assoc']($request); $i++)
 	{
 		// Can delete is complicated, let's solve it first... is it their own post?
-		if ($row['id_member'] == $user_info['id'] && ($delete_own_boards == array(0) || in_array($row['id_board'], $delete_own_boards)))
+		if ($row['id_member'] == $user_info['id'])
 			$can_delete = true;
 		// Is it a reply to their own topic?
-		elseif ($row['id_member'] == $row['id_member_started'] && $row['id_msg'] != $row['id_first_msg'] && ($delete_own_replies == array(0) || in_array($row['id_board'], $delete_own_replies)))
+		elseif ($row['id_member'] == $row['id_member_started'] && $row['id_msg'] != $row['id_first_msg'])
 			$can_delete = true;
 		// Someone elses?
-		elseif ($row['id_member'] != $user_info['id'] && ($delete_any_boards == array(0) || in_array($row['id_board'], $delete_any_boards)))
+		elseif ($row['id_member'] != $user_info['id'])
 			$can_delete = true;
 		else
 			$can_delete = false;
@@ -285,16 +232,6 @@ function UnapprovedPosts()
 			'topic' => array(
 				'id' => $row['id_topic'],
 			),
-			'board' => array(
-				'id' => $row['id_board'],
-				'name' => $row['board_name'],
-				'link' => '<a href="' . $scripturl . '?board=' . $row['id_board'] . '.0">' . $row['board_name'] . '</a>',
-			),
-			'category' => array(
-				'id' => $row['id_cat'],
-				'name' => $row['cat_name'],
-				'link' => '<a href="' . $scripturl . '#c' . $row['id_cat'] . '">' . $row['cat_name'] . '</a>',
-			),
 			'can_delete' => $can_delete,
 		);
 	}
@@ -308,7 +245,7 @@ function UnapprovedPosts()
  */
 function ApproveMessage()
 {
-	global $user_info, $topic, $board, $sourcedir, $smcFunc;
+	global $user_info, $topic, $sourcedir, $smcFunc;
 
 	checkSession('get');
 
@@ -339,14 +276,14 @@ function ApproveMessage()
 		approveTopics($topic, !$approved);
 
 		if ($starter != $user_info['id'])
-			logAction(($approved ? 'un' : '') . 'approve_topic', array('topic' => $topic, 'subject' => $subject, 'member' => $starter, 'board' => $board));
+			logAction(($approved ? 'un' : '') . 'approve_topic', array('topic' => $topic, 'subject' => $subject, 'member' => $starter));
 	}
 	else
 	{
 		approvePosts($_REQUEST['msg'], !$approved);
 
 		if ($poster != $user_info['id'])
-			logAction(($approved ? 'un' : '') . 'approve', array('topic' => $topic, 'subject' => $subject, 'member' => $poster, 'board' => $board));
+			logAction(($approved ? 'un' : '') . 'approve', array('topic' => $topic, 'subject' => $subject, 'member' => $poster));
 	}
 
 	redirectexit('topic=' . $topic . '.msg' . $_REQUEST['msg']. '#msg' . $_REQUEST['msg']);
@@ -370,7 +307,7 @@ function approveMessages($messages, $messageDetails, $current_view = 'replies')
 		// and tell the world about it
 		foreach ($messages as $topic)
 		{
-			logAction('approve_topic', array('topic' => $topic, 'subject' => $messageDetails[$topic]['subject'], 'member' => $messageDetails[$topic]['member'], 'board' => $messageDetails[$topic]['board']));
+			logAction('approve_topic', array('topic' => $topic, 'subject' => $messageDetails[$topic]['subject'], 'member' => $messageDetails[$topic]['member']));
 		}
 	}
 	else
@@ -379,7 +316,7 @@ function approveMessages($messages, $messageDetails, $current_view = 'replies')
 		// and tell the world about it again
 		foreach ($messages as $post)
 		{
-			logAction('approve', array('topic' => $messageDetails[$post]['topic'], 'subject' => $messageDetails[$post]['subject'], 'member' => $messageDetails[$post]['member'], 'board' => $messageDetails[$post]['board']));
+			logAction('approve', array('topic' => $messageDetails[$post]['topic'], 'subject' => $messageDetails[$post]['subject'], 'member' => $messageDetails[$post]['member']));
 		}
 	}
 }
@@ -432,16 +369,14 @@ function removeMessages($messages, $messageDetails, $current_view = 'replies')
 		// and tell the world about it
 		foreach ($messages as $topic)
 			// Note, only log topic ID in native form if it's not gone forever.
-			logAction('remove', array(
-				(empty($modSettings['recycle_enable']) || $modSettings['recycle_board'] != $messageDetails[$topic]['board'] ? 'topic' : 'old_topic_id') => $topic, 'subject' => $messageDetails[$topic]['subject'], 'member' => $messageDetails[$topic]['member'], 'board' => $messageDetails[$topic]['board']));
+			logAction('remove', array('topic' => $topic, 'subject' => $messageDetails[$topic]['subject'], 'member' => $messageDetails[$topic]['member']));
 	}
 	else
 	{
 		foreach ($messages as $post)
 		{
 			removeMessage($post);
-			logAction('delete', array(
-				(empty($modSettings['recycle_enable']) || $modSettings['recycle_board'] != $messageDetails[$post]['board'] ? 'topic' : 'old_topic_id') => $messageDetails[$post]['topic'], 'subject' => $messageDetails[$post]['subject'], 'member' => $messageDetails[$post]['member'], 'board' => $messageDetails[$post]['board']));
+			logAction('delete', array('topic' => $messageDetails[$post]['topic'], 'subject' => $messageDetails[$post]['subject'], 'member' => $messageDetails[$post]['member']));
 		}
 	}
 }

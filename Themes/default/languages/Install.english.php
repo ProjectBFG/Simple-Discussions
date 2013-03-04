@@ -33,9 +33,6 @@ $txt['user_refresh_install_desc'] = 'While installing, the installer found that 
 
 $txt['default_topic_subject'] = 'Welcome to SMF!';
 $txt['default_topic_message'] = 'Welcome to Simple Machines Forum!<br /><br />We hope you enjoy using your forum.&nbsp; If you have any problems, please feel free to [url=http://www.simplemachines.org/community/index.php]ask us for assistance[/url].<br /><br />Thanks!<br />Simple Machines';
-$txt['default_board_name'] = 'General Discussion';
-$txt['default_board_description'] = 'Feel free to talk about anything and everything in this board.';
-$txt['default_category_name'] = 'General Category';
 $txt['default_time_format'] = '%B %d, %Y, %I:%M:%S %p';
 $txt['default_news'] = 'SMF - Just Installed!';
 $txt['default_reserved_names'] = 'Admin\nWebmaster\nGuest\nroot';

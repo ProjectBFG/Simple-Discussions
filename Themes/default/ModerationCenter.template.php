@@ -288,7 +288,7 @@ function template_unapproved_posts()
 				<div class="content">
 					<div class="counter">', $item['counter'], '</div>
 					<div class="topic_details">
-						<h5><strong>', $item['category']['link'], ' / ', $item['board']['link'], ' / ', $item['link'], '</strong></h5>
+						<h5><strong>', $item['link'], '</strong></h5>
 						<span class="smalltext"><strong>', $txt['mc_unapproved_by'], ' ', $item['poster']['link'], ' ', $txt['on'], ':</strong> ', $item['time'], '</span>
 					</div>
 					<div class="list_posts">

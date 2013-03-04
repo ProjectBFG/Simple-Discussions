@@ -30,7 +30,7 @@ loadLanguage('Drafts');
  */
 function SaveDraft(&$post_errors)
 {
-	global $txt, $context, $user_info, $smcFunc, $modSettings, $board;
+	global $txt, $context, $user_info, $smcFunc, $modSettings;
 
 	// can you be, should you be ... here?
 	if (empty($modSettings['drafts_enabled']) || empty($modSettings['drafts_post_enabled']) || !allowedTo('post_draft') || !isset($_POST['save_draft']) || !isset($_POST['id_draft']))
@@ -54,7 +54,6 @@ function SaveDraft(&$post_errors)
 
 	// prepare any data from the form
 	$topic_id = empty($_REQUEST['topic']) ? 0 : (int) $_REQUEST['topic'];
-	$draft['icon'] = empty($_POST['icon']) ? 'xx' : preg_replace('~[\./\\\\*:"\'<>]~', '', $_POST['icon']);
 	$draft['smileys_enabled'] = isset($_POST['ns']) ? (int) $_POST['ns'] : 0;
 	$draft['locked'] = isset($_POST['lock']) ? (int) $_POST['lock'] : 0;
 	$draft['sticky'] = isset($_POST['sticky']) && !empty($modSettings['enableStickyTopics']) ? (int) $_POST['sticky'] : 0;
@@ -73,23 +72,19 @@ function SaveDraft(&$post_errors)
 			UPDATE {db_prefix}user_drafts
 			SET
 				id_topic = {int:id_topic},
-				id_board = {int:id_board},
 				poster_time = {int:poster_time},
 				subject = {string:subject},
 				smileys_enabled = {int:smileys_enabled},
 				body = {string:body},
-				icon = {string:icon},
 				locked = {int:locked},
 				is_sticky = {int:is_sticky}
 			WHERE id_draft = {int:id_draft}',
 			array (
 				'id_topic' => $topic_id,
-				'id_board' => $board,
 				'poster_time' => time(),
 				'subject' => $draft['subject'],
 				'smileys_enabled' => (int) $draft['smileys_enabled'],
 				'body' => $draft['body'],
-				'icon' => $draft['icon'],
 				'locked' => $draft['locked'],
 				'is_sticky' => $draft['sticky'],
 				'id_draft' => $id_draft,
@@ -110,27 +105,23 @@ function SaveDraft(&$post_errors)
 			'{db_prefix}user_drafts',
 			array(
 				'id_topic' => 'int',
-				'id_board' => 'int',
 				'type' => 'int',
 				'poster_time' => 'int',
 				'id_member' => 'int',
 				'subject' => 'string-255',
 				'smileys_enabled' => 'int',
 				'body' => (!empty($modSettings['max_messageLength']) && $modSettings['max_messageLength'] > 65534 ? 'string-' . $modSettings['max_messageLength'] : 'string-65534'),
-				'icon' => 'string-16',
 				'locked' => 'int',
 				'is_sticky' => 'int'
 			),
 			array(
 				$topic_id,
-				$board,
 				0,
 				time(),
 				$user_info['id'],
 				$draft['subject'],
 				$draft['smileys_enabled'],
 				$draft['body'],
-				$draft['icon'],
 				$draft['locked'],
 				$draft['sticky']
 			),
@@ -364,10 +355,8 @@ function ReadDraft($id_draft, $type = 0, $check = true, $load = false)
 			$context['sticky'] = !empty($draft_info['is_sticky']) ? $draft_info['is_sticky'] : '';
 			$context['locked'] = !empty($draft_info['locked']) ? $draft_info['locked'] : '';
 			$context['use_smileys'] = !empty($draft_info['smileys_enabled']) ? true : false;
-			$context['icon'] = !empty($draft_info['icon']) ? $draft_info['icon'] : 'xx';
 			$context['message'] = !empty($draft_info['body']) ? str_replace('<br />', "\n", un_htmlspecialchars(stripslashes($draft_info['body']))) : '';
 			$context['subject'] = !empty($draft_info['subject']) ? stripslashes($draft_info['subject']) : '';
-			$context['board'] = !empty($draft_info['board_id']) ? $draft_info['id_board'] : '';
 			$context['id_draft'] = !empty($draft_info['id_draft']) ? $draft_info['id_draft'] : 0;
 		}
 		elseif ($type === 1)
@@ -476,7 +465,7 @@ function ShowDrafts($member_id, $topic = false, $draft_type = 0)
 			$context['drafts'][] = array(
 				'subject' => censorText(shorten_subject(stripslashes($row['subject']), 24)),
 				'poster_time' => timeformat($row['poster_time']),
-				'link' => '<a href="' . $scripturl . '?action=post;board=' . $row['id_board'] . ';' . (!empty($row['id_topic']) ? 'topic='. $row['id_topic'] .'.0;' : '') . 'id_draft=' . $row['id_draft'] . '">' . $row['subject'] . '</a>',
+				'link' => '<a href="' . $scripturl . '?action=post;' . (!empty($row['id_topic']) ? 'topic='. $row['id_topic'] .'.0;' : '') . 'id_draft=' . $row['id_draft'] . '">' . $row['subject'] . '</a>',
 			);
 		// PM drafts
 		elseif ($draft_type === 1)
@@ -551,12 +540,10 @@ function showProfileDrafts($memID, $draft_type = 0)
 	if (empty($_REQUEST['viewscount']) || !is_numeric($_REQUEST['viewscount']))
 		$_REQUEST['viewscount'] = 10;
 
-	// Get the count of applicable drafts on the boards they can (still) see ...
-	// @todo .. should we just let them see their drafts even if they have lost board access ?
+	// Get the count of applicable drafts
 	$request = $smcFunc['db_query']('', '
 		SELECT COUNT(id_draft)
 		FROM {db_prefix}user_drafts AS ud
-			INNER JOIN {db_prefix}boards AS b ON (b.id_board = ud.id_board AND {query_see_board})
 		WHERE id_member = {int:id_member}
 			AND type={int:draft_type}' . (!empty($modSettings['drafts_keep_days']) ? '
 			AND poster_time > {int:time}' : ''),
@@ -584,15 +571,11 @@ function showProfileDrafts($memID, $draft_type = 0)
 		$start = $msgCount < $context['start'] + $modSettings['defaultMaxMessages'] + 1 || $msgCount < $context['start'] + $modSettings['defaultMaxMessages'] ? 0 : $msgCount - $context['start'] - $modSettings['defaultMaxMessages'];
 	}
 
-	// Find this user's drafts for the boards they can access
-	// @todo ... do we want to do this?  If they were able to create a draft, do we remove thier access to said draft if they loose
-	//           access to the board or if the topic moves to a board they can not see?
+	// Find this user's drafts
 	$request = $smcFunc['db_query']('', '
 		SELECT
-			b.id_board, b.name AS bname,
-			ud.id_member, ud.id_draft, ud.body, ud.smileys_enabled, ud.subject, ud.poster_time, ud.icon, ud.id_topic, ud.locked, ud.is_sticky
+			ud.id_member, ud.id_draft, ud.body, ud.smileys_enabled, ud.subject, ud.poster_time, ud.id_topic, ud.locked, ud.is_sticky
 		FROM {db_prefix}user_drafts AS ud
-			INNER JOIN {db_prefix}boards AS b ON (b.id_board = ud.id_board AND {query_see_board})
 		WHERE ud.id_member = {int:current_member}
 			AND type = {int:draft_type}' . (!empty($modSettings['drafts_keep_days']) ? '
 			AND poster_time > {int:time}' : '') . '
@@ -629,10 +612,6 @@ function showProfileDrafts($memID, $draft_type = 0)
 			'body' => $row['body'],
 			'counter' => $counter,
 			'alternate' => $counter % 2,
-			'board' => array(
-				'name' => $row['bname'],
-				'id' => $row['id_board']
-			),
 			'topic' => array(
 				'id' => $row['id_topic'],
 				'link' => empty($row['id']) ? $row['subject'] : '<a href="' . $scripturl . '?topic=' . $row['id_topic'] . '.0">' . $row['subject'] . '</a>',
@@ -640,7 +619,6 @@ function showProfileDrafts($memID, $draft_type = 0)
 			'subject' => $row['subject'],
 			'time' => timeformat($row['poster_time']),
 			'timestamp' => forum_time(true, $row['poster_time']),
-			'icon' => $row['icon'],
 			'id_draft' => $row['id_draft'],
 			'locked' => $row['locked'],
 			'sticky' => $row['is_sticky'],

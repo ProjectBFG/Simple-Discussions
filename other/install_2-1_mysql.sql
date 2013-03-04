@@ -37,7 +37,7 @@ VALUES
 #
 
 CREATE TABLE {$db_prefix}approval_queue (
-  id_msg int(10) unsigned NOT NULL default '0',
+  id_msg int(10) unsigned NOT NULL default '0'
 ) ENGINE=MyISAM;
 
 #
@@ -94,7 +94,7 @@ CREATE TABLE {$db_prefix}ban_items (
 #
 
 CREATE TABLE {$db_prefix}blog_categories (
-  id_cat mediumint(8) NOT NULL auto_increment,
+  id_cat mediumint(8) unsigned NOT NULL auto_increment,
   name varchar(255) NOT NULL default '',
   order tinyint(4) NOT NULL  default '0',
   num_blogs mediumint(8) NOT NULL  default '0',
@@ -146,338 +146,6 @@ CREATE TABLE {$db_prefix}blog_posts (
 ) ENGINE=MyISAM;
 
 #
-# Table structure for table `board_permissions`
-#
-
-CREATE TABLE {$db_prefix}board_permissions (
-  id_group smallint(5) NOT NULL default '0',
-  id_profile smallint(5) unsigned NOT NULL default '0',
-  permission varchar(30) NOT NULL default '',
-  add_deny tinyint(4) NOT NULL default '1',
-  PRIMARY KEY (id_group, id_profile, permission)
-) ENGINE=MyISAM;
-
-#
-# Dumping data for table `board_permissions`
-#
-
-INSERT INTO {$db_prefix}board_permissions
-	(id_group, id_profile, permission)
-VALUES 
-	(0, 1, 'remove_own'),
-	(0, 1, 'lock_own'),
-	(0, 1, 'mark_any_notify'),
-	(0, 1, 'mark_notify'),
-	(0, 1, 'modify_own'),
-	(0, 1, 'post_new'),
-	(0, 1, 'post_draft'),
-	(0, 1, 'post_autosave_draft'),
-	(0, 1, 'post_reply_any'),
-	(0, 1, 'post_reply_own'),
-	(0, 1, 'post_unapproved_topics'),
-	(0, 1, 'post_unapproved_replies_any'),
-	(0, 1, 'post_unapproved_replies_own'),
-	(0, 1, 'delete_own'),
-	(0, 1, 'report_any'),
-	(0, 1, 'send_topic'),
-	(2, 1, 'moderate_board'),
-	(2, 1, 'post_new'),
-	(2, 1, 'post_draft'),
-	(2, 1, 'post_autosave_draft'),
-	(2, 1, 'post_reply_own'),
-	(2, 1, 'post_reply_any'),
-	(2, 1, 'post_unapproved_topics'),
-	(2, 1, 'post_unapproved_replies_any'),
-	(2, 1, 'post_unapproved_replies_own'),
-	(2, 1, 'report_any'),
-	(2, 1, 'lock_own'),
-	(2, 1, 'send_topic'),
-	(2, 1, 'mark_any_notify'),
-	(2, 1, 'mark_notify'),
-	(2, 1, 'delete_own'),
-	(2, 1, 'modify_own'),
-	(2, 1, 'make_sticky'),
-	(2, 1, 'lock_any'),
-	(2, 1, 'remove_any'),
-	(2, 1, 'move_any'),
-	(2, 1, 'merge_any'),
-	(2, 1, 'split_any'),
-	(2, 1, 'delete_any'),
-	(2, 1, 'modify_any'),
-	(2, 1, 'approve_posts'),
-	(3, 1, 'moderate_board'),
-	(3, 1, 'post_new'),
-	(3, 1, 'post_draft'),
-	(3, 1, 'post_autosave_draft'),
-	(3, 1, 'post_reply_own'),
-	(3, 1, 'post_reply_any'),
-	(3, 1, 'post_unapproved_topics'),
-	(3, 1, 'post_unapproved_replies_any'),
-	(3, 1, 'post_unapproved_replies_own'),
-	(3, 1, 'report_any'),
-	(3, 1, 'lock_own'),
-	(3, 1, 'send_topic'),
-	(3, 1, 'mark_any_notify'),
-	(3, 1, 'mark_notify'),
-	(3, 1, 'delete_own'),
-	(3, 1, 'modify_own'),
-	(3, 1, 'make_sticky'),
-	(3, 1, 'lock_any'),
-	(3, 1, 'remove_any'),
-	(3, 1, 'move_any'),
-	(3, 1, 'merge_any'),
-	(3, 1, 'split_any'),
-	(3, 1, 'delete_any'),
-	(3, 1, 'modify_any'),
-	(3, 1, 'approve_posts'),
-	(0, 2, 'remove_own'),
-	(0, 2, 'lock_own'),
-	(0, 2, 'mark_any_notify'),
-	(0, 2, 'mark_notify'),
-	(0, 2, 'modify_own'),
-	(0, 2, 'post_new'),
-	(0, 2, 'post_draft'),
-	(0, 2, 'post_autosave_draft'),
-	(0, 2, 'post_reply_any'),
-	(0, 2, 'post_reply_own'),
-	(0, 2, 'post_unapproved_topics'),
-	(0, 2, 'post_unapproved_replies_any'),
-	(0, 2, 'post_unapproved_replies_own'),
-	(0, 2, 'delete_own'),
-	(0, 2, 'report_any'),
-	(0, 2, 'send_topic'),
-	(2, 2, 'moderate_board'),
-	(2, 2, 'post_new'),
-	(2, 2, 'post_draft'),
-	(2, 2, 'post_autosave_draft'),
-	(2, 2, 'post_reply_own'),
-	(2, 2, 'post_reply_any'),
-	(2, 2, 'post_unapproved_topics'),
-	(2, 2, 'post_unapproved_replies_any'),
-	(2, 2, 'post_unapproved_replies_own'),
-	(2, 2, 'report_any'),
-	(2, 2, 'lock_own'),
-	(2, 2, 'send_topic'),
-	(2, 2, 'mark_any_notify'),
-	(2, 2, 'mark_notify'),
-	(2, 2, 'delete_own'),
-	(2, 2, 'modify_own'),
-	(2, 2, 'make_sticky'),
-	(2, 2, 'lock_any'),
-	(2, 2, 'remove_any'),
-	(2, 2, 'move_any'),
-	(2, 2, 'merge_any'),
-	(2, 2, 'split_any'),
-	(2, 2, 'delete_any'),
-	(2, 2, 'modify_any'),
-	(2, 2, 'approve_posts'),
-	(3, 2, 'moderate_board'),
-	(3, 2, 'post_new'),
-	(3, 2, 'post_draft'),
-	(3, 2, 'post_autosave_draft'),
-	(3, 2, 'post_reply_own'),
-	(3, 2, 'post_reply_any'),
-	(3, 2, 'post_unapproved_topics'),
-	(3, 2, 'post_unapproved_replies_any'),
-	(3, 2, 'post_unapproved_replies_own'),
-	(3, 2, 'report_any'),
-	(3, 2, 'lock_own'),
-	(3, 2, 'send_topic'),
-	(3, 2, 'mark_any_notify'),
-	(3, 2, 'mark_notify'),
-	(3, 2, 'delete_own'),
-	(3, 2, 'modify_own'),
-	(3, 2, 'make_sticky'),
-	(3, 2, 'lock_any'),
-	(3, 2, 'remove_any'),
-	(3, 2, 'move_any'),
-	(3, 2, 'merge_any'),
-	(3, 2, 'split_any'),
-	(3, 2, 'delete_any'),
-	(3, 2, 'modify_any'),
-	(3, 2, 'approve_posts'),
-	(0, 3, 'remove_own'),
-	(0, 3, 'lock_own'),
-	(0, 3, 'mark_any_notify'),
-	(0, 3, 'mark_notify'),
-	(0, 3, 'modify_own'),
-	(0, 3, 'post_reply_any'),
-	(0, 3, 'post_reply_own'),
-	(0, 3, 'post_unapproved_replies_any'),
-	(0, 3, 'post_unapproved_replies_own'),
-	(0, 3, 'delete_own'),
-	(0, 3, 'report_any'),
-	(0, 3, 'send_topic'),
-	(2, 3, 'moderate_board'),
-	(2, 3, 'post_new'),
-	(2, 3, 'post_draft'),
-	(2, 3, 'post_autosave_draft'),
-	(2, 3, 'post_reply_own'),
-	(2, 3, 'post_reply_any'),
-	(2, 3, 'post_unapproved_topics'),
-	(2, 3, 'post_unapproved_replies_any'),
-	(2, 3, 'post_unapproved_replies_own'),
-	(2, 3, 'report_any'),
-	(2, 3, 'lock_own'),
-	(2, 3, 'send_topic'),
-	(2, 3, 'mark_any_notify'),
-	(2, 3, 'mark_notify'),
-	(2, 3, 'delete_own'),
-	(2, 3, 'modify_own'),
-	(2, 3, 'make_sticky'),
-	(2, 3, 'lock_any'),
-	(2, 3, 'remove_any'),
-	(2, 3, 'move_any'),
-	(2, 3, 'merge_any'),
-	(2, 3, 'split_any'),
-	(2, 3, 'delete_any'),
-	(2, 3, 'modify_any'),
-	(2, 3, 'approve_posts'),
-	(3, 3, 'moderate_board'),
-	(3, 3, 'post_new'),
-	(3, 3, 'post_draft'),
-	(3, 3, 'post_autosave_draft'),
-	(3, 3, 'post_reply_own'),
-	(3, 3, 'post_reply_any'),
-	(3, 3, 'post_unapproved_topics'),
-	(3, 3, 'post_unapproved_replies_any'),
-	(3, 3, 'post_unapproved_replies_own'),
-	(3, 3, 'report_any'),
-	(3, 3, 'lock_own'),
-	(3, 3, 'send_topic'),
-	(3, 3, 'mark_any_notify'),
-	(3, 3, 'mark_notify'),
-	(3, 3, 'delete_own'),
-	(3, 3, 'modify_own'),
-	(3, 3, 'make_sticky'),
-	(3, 3, 'lock_any'),
-	(3, 3, 'remove_any'),
-	(3, 3, 'move_any'),
-	(3, 3, 'merge_any'),
-	(3, 3, 'split_any'),
-	(3, 3, 'delete_any'),
-	(3, 3, 'modify_any'),
-	(3, 3, 'approve_posts'),
-	(0, 4, 'mark_any_notify'),
-	(0, 4, 'mark_notify'),
-	(0, 4, 'report_any'),
-	(0, 4, 'send_topic'),
-	(2, 4, 'moderate_board'),
-	(2, 4, 'post_new'),
-	(2, 4, 'post_draft'),
-	(2, 4, 'post_autosave_draft'),
-	(2, 4, 'post_reply_own'),
-	(2, 4, 'post_reply_any'),
-	(2, 4, 'post_unapproved_topics'),
-	(2, 4, 'post_unapproved_replies_any'),
-	(2, 4, 'post_unapproved_replies_own'),
-	(2, 4, 'report_any'),
-	(2, 4, 'lock_own'),
-	(2, 4, 'send_topic'),
-	(2, 4, 'mark_any_notify'),
-	(2, 4, 'mark_notify'),
-	(2, 4, 'delete_own'),
-	(2, 4, 'modify_own'),
-	(2, 4, 'make_sticky'),
-	(2, 4, 'lock_any'),
-	(2, 4, 'remove_any'),
-	(2, 4, 'move_any'),
-	(2, 4, 'merge_any'),
-	(2, 4, 'split_any'),
-	(2, 4, 'delete_any'),
-	(2, 4, 'modify_any'),
-	(2, 4, 'approve_posts'),
-	(3, 4, 'moderate_board'),
-	(3, 4, 'post_new'),
-	(3, 4, 'post_draft'),
-	(3, 4, 'post_autosave_draft'),
-	(3, 4, 'post_reply_own'),
-	(3, 4, 'post_reply_any'),
-	(3, 4, 'post_unapproved_topics'),
-	(3, 4, 'post_unapproved_replies_any'),
-	(3, 4, 'post_unapproved_replies_own'),
-	(3, 4, 'report_any'),
-	(3, 4, 'lock_own'),
-	(3, 4, 'send_topic'),
-	(3, 4, 'mark_any_notify'),
-	(3, 4, 'mark_notify'),
-	(3, 4, 'delete_own'),
-	(3, 4, 'modify_own'),
-	(3, 4, 'make_sticky'),
-	(3, 4, 'lock_any'),
-	(3, 4, 'remove_any'),
-	(3, 4, 'move_any'),
-	(3, 4, 'merge_any'),
-	(3, 4, 'split_any'),
-	(3, 4, 'delete_any'),
-	(3, 4, 'modify_any'),
-	(3, 4, 'approve_posts');
-# --------------------------------------------------------
-
-
-
-#
-# Table structure for table `boards`
-#
-
-CREATE TABLE {$db_prefix}boards (
-  id_board smallint(5) unsigned NOT NULL auto_increment,
-  id_cat tinyint(4) unsigned NOT NULL default '0',
-  child_level tinyint(4) unsigned NOT NULL default '0',
-  id_parent smallint(5) unsigned NOT NULL default '0',
-  board_order smallint(5) NOT NULL default '0',
-  id_last_msg int(10) unsigned NOT NULL default '0',
-  id_msg_updated int(10) unsigned NOT NULL default '0',
-  member_groups varchar(255) NOT NULL default '-1,0',
-  id_profile smallint(5) unsigned NOT NULL default '1',
-  name varchar(255) NOT NULL default '',
-  description text NOT NULL,
-  num_topics mediumint(8) unsigned NOT NULL default '0',
-  num_posts mediumint(8) unsigned NOT NULL default '0',
-  count_posts tinyint(4) NOT NULL default '0',
-  id_theme tinyint(4) unsigned NOT NULL default '0',
-  override_theme tinyint(4) unsigned NOT NULL default '0',
-  unapproved_posts smallint(5) NOT NULL default '0',
-  unapproved_topics smallint(5) NOT NULL default '0',
-  redirect varchar(255) NOT NULL default '',
-  deny_member_groups varchar(255) NOT NULL default '',
-  PRIMARY KEY (id_board),
-  UNIQUE categories (id_cat, id_board),
-  KEY id_parent (id_parent),
-  KEY id_msg_updated (id_msg_updated),
-  KEY member_groups (member_groups(48))
-) ENGINE=MyISAM;
-
-#
-# Dumping data for table `boards`
-#
-
-INSERT INTO {$db_prefix}boards
-	(id_board, id_cat, board_order, id_last_msg, id_msg_updated, name, description, num_topics, num_posts, member_groups)
-VALUES (1, 1, 1, 1, 1, '{$default_board_name}', '{$default_board_description}', 1, 1, '-1,0,2');
-# --------------------------------------------------------
-
-
-#
-# Table structure for table `categories`
-#
-
-CREATE TABLE {$db_prefix}categories (
-  id_cat tinyint(4) unsigned NOT NULL auto_increment,
-  cat_order tinyint(4) NOT NULL default '0',
-  name varchar(255) NOT NULL default '',
-  PRIMARY KEY (id_cat)
-) ENGINE=MyISAM;
-
-#
-# Dumping data for table `categories`
-#
-
-INSERT INTO {$db_prefix}categories
-VALUES (1, 0, '{$default_category_name}', 1);
-# --------------------------------------------------------
-
-#
 # Table structure for table `custom_fields`
 #
 
@@ -525,7 +193,6 @@ CREATE TABLE {$db_prefix}log_actions (
   id_member mediumint(8) unsigned NOT NULL default '0',
   ip char(16) NOT NULL default '                ',
   action varchar(30) NOT NULL default '',
-  id_board smallint(5) unsigned NOT NULL default '0',
   id_topic mediumint(8) unsigned NOT NULL default '0',
   id_msg int(10) unsigned NOT NULL default '0',
   extra text NOT NULL,
@@ -533,7 +200,6 @@ CREATE TABLE {$db_prefix}log_actions (
   KEY id_log (id_log),
   KEY log_time (log_time),
   KEY id_member (id_member),
-  KEY id_board (id_board),
   KEY id_msg (id_msg)
 ) ENGINE=MyISAM;
 
@@ -564,17 +230,6 @@ CREATE TABLE {$db_prefix}log_banned (
   log_time int(10) unsigned NOT NULL default '0',
   PRIMARY KEY (id_ban_log),
   KEY log_time (log_time)
-) ENGINE=MyISAM;
-
-#
-# Table structure for table `log_boards`
-#
-
-CREATE TABLE {$db_prefix}log_boards (
-  id_member mediumint(8) unsigned NOT NULL default '0',
-  id_board smallint(5) unsigned NOT NULL default '0',
-  id_msg int(10) unsigned NOT NULL default '0',
-  PRIMARY KEY (id_member, id_board)
 ) ENGINE=MyISAM;
 
 #
@@ -662,9 +317,8 @@ CREATE TABLE {$db_prefix}log_group_requests (
 
 CREATE TABLE {$db_prefix}log_mark_read (
   id_member mediumint(8) unsigned NOT NULL default '0',
-  id_board smallint(5) unsigned NOT NULL default '0',
   id_msg int(10) unsigned NOT NULL default '0',
-  PRIMARY KEY (id_member, id_board)
+  PRIMARY KEY (id_member)
 ) ENGINE=MyISAM;
 
 #
@@ -685,9 +339,8 @@ CREATE TABLE {$db_prefix}log_member_notices (
 CREATE TABLE {$db_prefix}log_notify (
   id_member mediumint(8) unsigned NOT NULL default '0',
   id_topic mediumint(8) unsigned NOT NULL default '0',
-  id_board smallint(5) unsigned NOT NULL default '0',
   sent tinyint(1) unsigned NOT NULL default '0',
-  PRIMARY KEY (id_member, id_topic, id_board),
+  PRIMARY KEY (id_member, id_topic),
   KEY id_topic (id_topic, id_member)
 ) ENGINE=MyISAM;
 
@@ -740,7 +393,6 @@ CREATE TABLE {$db_prefix}log_reported (
   id_report mediumint(8) unsigned NOT NULL auto_increment,
   id_msg int(10) unsigned NOT NULL default '0',
   id_topic mediumint(8) unsigned NOT NULL default '0',
-  id_board smallint(5) unsigned NOT NULL default '0',
   id_member mediumint(8) unsigned NOT NULL default '0',
   membername varchar(255) NOT NULL default '',
   subject varchar(255) NOT NULL default '',
@@ -945,7 +597,6 @@ INSERT INTO {$db_prefix}membergroups
 	(id_group, group_name, description, online_color, min_posts, icons, group_type)
 VALUES (1, '{$default_administrator_group}', '', '#FF0000', -1, '5#iconadmin.png', 1),
 	(2, '{$default_global_moderator_group}', '', '#0000FF', -1, '5#icongmod.png', 0),
-	(3, '{$default_moderator_group}', '', '', -1, '5#iconmod.png', 0),
 	(4, '{$default_newbie_group}', '', '', 0, '1#icon.png', 0),
 	(5, '{$default_junior_group}', '', '', 50, '2#icon.png', 0),
 	(6, '{$default_full_group}', '', '', 100, '3#icon.png', 0),
@@ -975,7 +626,6 @@ CREATE TABLE {$db_prefix}members (
   mod_prefs varchar(20) NOT NULL default '',
   message_labels text NOT NULL,
   passwd varchar(64) NOT NULL default '',
-  openid_uri text NOT NULL,
   email_address varchar(255) NOT NULL default '',
   personal_text varchar(255) NOT NULL default '',
   gender tinyint(4) unsigned NOT NULL default '0',
@@ -1007,7 +657,6 @@ CREATE TABLE {$db_prefix}members (
   id_post_group smallint(5) unsigned NOT NULL default '0',
   total_time_logged_in int(10) unsigned NOT NULL default '0',
   password_salt varchar(255) NOT NULL default '',
-  ignore_boards text NOT NULL,
   warning tinyint(4) NOT NULL default '0',
   passwd_flood varchar(12) NOT NULL default '',
   pm_receive_from tinyint(4) unsigned NOT NULL default '1',
@@ -1042,48 +691,12 @@ CREATE TABLE {$db_prefix}member_logins (
 ) ENGINE=MyISAM;
 
 #
-# Table structure for table `message_icons`
-#
-
-CREATE TABLE {$db_prefix}message_icons (
-  id_icon smallint(5) unsigned NOT NULL auto_increment,
-  title varchar(80) NOT NULL default '',
-  filename varchar(80) NOT NULL default '',
-  id_board smallint(5) unsigned NOT NULL default '0',
-  icon_order smallint(5) unsigned NOT NULL default '0',
-  PRIMARY KEY (id_icon),
-  KEY id_board (id_board)
-) ENGINE=MyISAM;
-
-#
-# Dumping data for table `message_icons`
-#
-
-# // @todo i18n
-INSERT INTO {$db_prefix}message_icons
-	(filename, title, icon_order)
-VALUES ('xx', 'Standard', '0'),
-	('thumbup', 'Thumb Up', '1'),
-	('thumbdown', 'Thumb Down', '2'),
-	('exclamation', 'Exclamation point', '3'),
-	('question', 'Question mark', '4'),
-	('lamp', 'Lamp', '5'),
-	('smiley', 'Smiley', '6'),
-	('angry', 'Angry', '7'),
-	('cheesy', 'Cheesy', '8'),
-	('grin', 'Grin', '9'),
-	('sad', 'Sad', '10'),
-	('wink', 'Wink', '11'),
-# --------------------------------------------------------
-
-#
 # Table structure for table `messages`
 #
 
 CREATE TABLE {$db_prefix}messages (
   id_msg int(10) unsigned NOT NULL auto_increment,
   id_topic mediumint(8) unsigned NOT NULL default '0',
-  id_board smallint(5) unsigned NOT NULL default '0',
   poster_time int(10) unsigned NOT NULL default '0',
   id_member mediumint(8) unsigned NOT NULL default '0',
   id_msg_modified int(10) unsigned NOT NULL default '0',
@@ -1095,16 +708,13 @@ CREATE TABLE {$db_prefix}messages (
   modified_time int(10) unsigned NOT NULL default '0',
   modified_name varchar(255) NOT NULL default '',
   body text NOT NULL,
-  icon varchar(16) NOT NULL default 'xx',
   approved tinyint(3) NOT NULL default '1',
   PRIMARY KEY (id_msg),
   UNIQUE topic (id_topic, id_msg),
-  UNIQUE id_board (id_board, id_msg),
   UNIQUE id_member (id_member, id_msg),
   KEY approved (approved),
   KEY ip_index (poster_ip(15), id_topic),
   KEY participation (id_member, id_topic),
-  KEY show_posts (id_member, id_board),
   KEY id_topic (id_topic),
   KEY id_member_msg (id_member, approved, id_msg),
   KEY current_topic (id_topic, id_msg, id_member, approved),
@@ -1116,34 +726,9 @@ CREATE TABLE {$db_prefix}messages (
 #
 
 INSERT INTO {$db_prefix}messages
-	(id_msg, id_msg_modified, id_topic, id_board, poster_time, subject, poster_name, poster_email, poster_ip, modified_name, body, icon)
-VALUES (1, 1, 1, 1, UNIX_TIMESTAMP(), '{$default_topic_subject}', 'Simple Machines', 'info@simplemachines.org', '127.0.0.1', '', '{$default_topic_message}', 'xx');
+	(id_msg, id_msg_modified, id_topic, poster_time, subject, poster_name, poster_email, poster_ip, modified_name, body)
+VALUES (1, 1, 1, UNIX_TIMESTAMP(), '{$default_topic_subject}', 'Simple Machines', 'info@simplemachines.org', '127.0.0.1', '', '{$default_topic_message}');
 # --------------------------------------------------------
-
-#
-# Table structure for table `moderators`
-#
-
-CREATE TABLE {$db_prefix}moderators (
-  id_board smallint(5) unsigned NOT NULL default '0',
-  id_member mediumint(8) unsigned NOT NULL default '0',
-  PRIMARY KEY (id_board, id_member)
-) ENGINE=MyISAM;
-
-#
-# Table structure for table `openid_assoc`
-#
-
-CREATE TABLE {$db_prefix}openid_assoc (
-  server_url text NOT NULL,
-  handle varchar(255) NOT NULL default '',
-  secret text NOT NULL,
-  issued int(10) NOT NULL default '0',
-  expires int(10) NOT NULL default '0',
-  assoc_type varchar(64) NOT NULL,
-  PRIMARY KEY (server_url(125), handle(125)),
-  KEY expires (expires)
-) ENGINE=MyISAM;
 
 #
 # Table structure for table `package_servers`
@@ -1166,25 +751,6 @@ VALUES ('Simple Machines Third-party Mod Site', 'http://custom.simplemachines.or
 # --------------------------------------------------------
 
 #
-# Table structure for table `permission_profiles`
-#
-
-CREATE TABLE {$db_prefix}permission_profiles (
-  id_profile smallint(5) NOT NULL auto_increment,
-  profile_name varchar(255) NOT NULL default '',
-  PRIMARY KEY (id_profile)
-) ENGINE=MyISAM;
-
-#
-# Dumping data for table `permission_profiles`
-#
-
-INSERT INTO {$db_prefix}permission_profiles
-	(id_profile, profile_name)
-VALUES (1, 'default'), (2, 'reply_only'), (3, 'read_only');
-# --------------------------------------------------------
-
-#
 # Table structure for table `permissions`
 #
 
@@ -1204,6 +770,22 @@ INSERT INTO {$db_prefix}permissions
 VALUES (-1, 'search_posts'),
 	(-1, 'view_stats'),
 	(-1, 'profile_view_any'),
+	(0, 'remove_own'),
+	(0, 'lock_own'),
+	(0, 'mark_any_notify'),
+	(0, 'mark_notify'),
+	(0, 'modify_own'),
+	(0, 'post_new'),
+	(0, 'post_draft'),
+	(0, 'post_autosave_draft'),
+	(0, 'post_reply_any'),
+	(0, 'post_reply_own'),
+	(0, 'post_unapproved_topics'),
+	(0, 'post_unapproved_replies_any'),
+	(0, 'post_unapproved_replies_own'),
+	(0, 'delete_own'),
+	(0, 'report_any'),
+	(0, 'send_topic'),
 	(0, 'view_mlist'),
 	(0, 'search_posts'),
 	(0, 'profile_view_own'),
@@ -1218,6 +800,31 @@ VALUES (-1, 'search_posts'),
 	(0, 'profile_extra_own'),
 	(0, 'profile_remove_own'),
 	(0, 'send_email_to_members'),
+	(2, 'moderate_board'),
+	(2, 'post_new'),
+	(2, 'post_draft'),
+	(2, 'post_autosave_draft'),
+	(2, 'post_reply_own'),
+	(2, 'post_reply_any'),
+	(2, 'post_unapproved_topics'),
+	(2, 'post_unapproved_replies_any'),
+	(2, 'post_unapproved_replies_own'),
+	(2, 'report_any'),
+	(2, 'lock_own'),
+	(2, 'send_topic'),
+	(2, 'mark_any_notify'),
+	(2, 'mark_notify'),
+	(2, 'delete_own'),
+	(2, 'modify_own'),
+	(2, 'make_sticky'),
+	(2, 'lock_any'),
+	(2, 'remove_any'),
+	(2, 'move_any'),
+	(2, 'merge_any'),
+	(2, 'split_any'),
+	(2, 'delete_any'),
+	(2, 'modify_any'),
+	(2, 'approve_posts'),
 	(2, 'view_mlist'),
 	(2, 'search_posts'),
 	(2, 'profile_view_own'),
@@ -1420,8 +1027,6 @@ VALUES ('smfVersion', '{$smf_version}'),
 	('defaultMaxTopics', '20'),
 	('defaultMaxMembers', '30'),
 	('enableParticipation', '1'),
-	('recycle_enable', '0'),
-	('recycle_board', '0'),
 	('maxMsgID', '1'),
 	('enableAllMessages', '0'),
 	('fixLongWords', '0'),
@@ -1624,7 +1229,6 @@ VALUES (1, 'name', '{$default_theme_name}'),
 	(1, 'show_profile_buttons', '1'),
 	(1, 'show_mark_read', '1'),
 	(1, 'show_stats_index', '1'),
-	(1, 'show_board_desc', '1'),
 	(1, 'newsfader_time', '5000'),
 	(1, 'allow_no_censored', '0'),
 	(1, 'additional_options_collapsable', '1'),
@@ -1643,12 +1247,10 @@ INSERT INTO {$db_prefix}themes (id_member, id_theme, variable, value) VALUES (-1
 CREATE TABLE {$db_prefix}topics (
   id_topic mediumint(8) unsigned NOT NULL auto_increment,
   is_sticky tinyint(4) NOT NULL default '0',
-  id_board smallint(5) unsigned NOT NULL default '0',
   id_first_msg int(10) unsigned NOT NULL default '0',
   id_last_msg int(10) unsigned NOT NULL default '0',
   id_member_started mediumint(8) unsigned NOT NULL default '0',
   id_member_updated mediumint(8) unsigned NOT NULL default '0',
-  id_previous_board smallint(5) NOT NULL default '0',
   id_previous_topic mediumint(8) NOT NULL default '0',
   num_replies int(10) unsigned NOT NULL default '0',
   num_views int(10) unsigned NOT NULL default '0',
@@ -1658,14 +1260,8 @@ CREATE TABLE {$db_prefix}topics (
   unapproved_posts smallint(5) NOT NULL default '0',
   approved tinyint(3) NOT NULL default '1',
   PRIMARY KEY (id_topic),
-  UNIQUE last_message (id_last_msg, id_board),
-  UNIQUE first_message (id_first_msg, id_board),
   KEY is_sticky (is_sticky),
-  KEY approved (approved),
-  KEY id_board (id_board),
-  KEY member_started (id_member_started, id_board),
-  KEY last_message_sticky (id_board, is_sticky, id_last_msg),
-  KEY board_news (id_board, id_first_msg)
+  KEY approved (approved)
 ) ENGINE=MyISAM;
 
 #
@@ -1673,8 +1269,8 @@ CREATE TABLE {$db_prefix}topics (
 #
 
 INSERT INTO {$db_prefix}topics
-	(id_topic, id_board, id_first_msg, id_last_msg, id_member_started, id_member_updated)
-VALUES (1, 1, 1, 1, 0, 0);
+	(id_topic, id_first_msg, id_last_msg, id_member_started, id_member_updated)
+VALUES (1, 1, 1, 0, 0);
 # --------------------------------------------------------
 
 #
@@ -1684,7 +1280,6 @@ VALUES (1, 1, 1, 1, 0, 0);
 CREATE TABLE {$db_prefix}user_drafts (
   id_draft int(10) unsigned NOT NULL auto_increment,
   id_topic mediumint(8) unsigned NOT NULL default '0',
-  id_board smallint(5) unsigned NOT NULL default '0',
   id_reply int(10) unsigned NOT NULL default '0',
   type tinyint(4) NOT NULL default '0',
   poster_time int(10) unsigned NOT NULL default '0',
@@ -1692,7 +1287,6 @@ CREATE TABLE {$db_prefix}user_drafts (
   subject varchar(255) NOT NULL default '',
   smileys_enabled tinyint(4) NOT NULL default '1',
   body mediumtext NOT NULL,
-  icon varchar(16) NOT NULL default 'xx',
   locked tinyint(4) NOT NULL default '0',
   is_sticky tinyint(4) NOT NULL default '0',
   to_list varchar(255) NOT NULL default '',

@@ -224,18 +224,6 @@ function ModifyProfile($post_errors = array())
 						'any' => array('profile_extra_any'),
 					),
 				),
-				'ignoreboards' => array(
-					'label' => $txt['ignoreboards'],
-					'file' => 'Profile-Modify.php',
-					'function' => 'ignoreboards',
-					'enabled' => !empty($modSettings['allow_ignore_boards']),
-					'sc' => 'post',
-					'token' => 'profile-ib%u',
-					'permission' => array(
-						'own' => array('profile_extra_any', 'profile_extra_own'),
-						'any' => array('profile_extra_any'),
-					),
-				),
 				'lists' => array(
 					'label' => $txt['editBuddyIgnoreLists'],
 					'file' => 'Profile-Modify.php',

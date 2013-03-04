@@ -102,7 +102,6 @@ function is_not_guest($message = '')
 
 	// People always worry when they see people doing things they aren't actually doing...
 	$_GET['action'] = '';
-	$_GET['board'] = '';
 	$_GET['topic'] = '';
 	writeLog(true);
 
@@ -332,7 +331,6 @@ function is_not_banned($forceCheck = false)
 
 		// Don't scare anyone, now.
 		$_GET['action'] = '';
-		$_GET['board'] = '';
 		$_GET['topic'] = '';
 		writeLog(true);
 
@@ -376,7 +374,6 @@ function is_not_banned($forceCheck = false)
 
 		// SMF's Wipe 'n Clean(r) erases all traces.
 		$_GET['action'] = '';
-		$_GET['board'] = '';
 		$_GET['topic'] = '';
 		writeLog(true);
 
@@ -407,7 +404,7 @@ function banPermissions()
 	{
 		$denied_permissions = array(
 			'pm_send',
-			'manage_smileys', 'manage_boards', 'admin_forum', 'manage_permissions',
+			'manage_smileys', 'admin_forum', 'manage_permissions',
 			'moderate_forum', 'manage_membergroups', 'manage_bans', 'send_mail', 'edit_news',
 			'profile_identity_any', 'profile_extra_any', 'profile_title_any',
 			'post_new', 'post_reply_own', 'post_reply_any',
@@ -865,14 +862,12 @@ function checkSubmitOnce($action, $is_fatal = true)
 /**
  * Check the user's permissions.
  * checks whether the user is allowed to do permission. (ie. post_new.)
- * If boards is specified, checks those boards instead of the current one.
  * Always returns true if the user is an administrator.
  *
  * @param string $permission
- * @param array $boards = null
  * @return boolean if the user can do the permission
  */
-function allowedTo($permission, $boards = null)
+function allowedTo($permission)
 {
 	global $user_info, $modSettings, $smcFunc;
 
@@ -888,44 +883,15 @@ function allowedTo($permission, $boards = null)
 	if ($user_info['is_admin'])
 		return true;
 
-	// Are we checking the _current_ board, or some other boards?
-	if ($boards === null)
-	{
-		// Check if they can do it.
-		if (!is_array($permission) && in_array($permission, $user_info['permissions']))
-			return true;
-		// Search for any of a list of permissions.
-		elseif (is_array($permission) && count(array_intersect($permission, $user_info['permissions'])) != 0)
-			return true;
-		// You aren't allowed, by default.
-		else
-			return false;
-	}
-	elseif (!is_array($boards))
-		$boards = array($boards);
-
-	$request = $smcFunc['db_query']('', '
-		SELECT MIN(bp.add_deny) AS add_deny
-		FROM {db_prefix}boards AS b
-			INNER JOIN {db_prefix}board_permissions AS bp ON (bp.id_profile = b.id_profile)
-			LEFT JOIN {db_prefix}moderators AS mods ON (mods.id_board = b.id_board AND mods.id_member = {int:current_member})
-		WHERE b.id_board IN ({array_int:board_list})
-			AND bp.id_group IN ({array_int:group_list}, {int:moderator_group})
-			AND bp.permission {raw:permission_list}
-			AND (mods.id_member IS NOT NULL OR bp.id_group != {int:moderator_group})
-		GROUP BY b.id_board',
-		array(
-			'current_member' => $user_info['id'],
-			'board_list' => $boards,
-			'group_list' => $user_info['groups'],
-			'moderator_group' => 3,
-			'permission_list' => (is_array($permission) ? 'IN (\'' . implode('\', \'', $permission) . '\')' : ' = \'' . $permission . '\''),
-		)
-	);
-
-	// Make sure they can do it on all of the boards.
-	if ($smcFunc['db_num_rows']($request) != count($boards))
-		return false;
+        // Check if they can do it.
+        if (!is_array($permission) && in_array($permission, $user_info['permissions']))
+                return true;
+        // Search for any of a list of permissions.
+        elseif (is_array($permission) && count(array_intersect($permission, $user_info['permissions'])) != 0)
+                return true;
+        // You aren't allowed, by default.
+        else
+                return false;
 
 	$result = true;
 	while ($row = $smcFunc['db_fetch_assoc']($request))
@@ -939,21 +905,18 @@ function allowedTo($permission, $boards = null)
 /**
  * Fatal error if they cannot.
  * Uses allowedTo() to check if the user is allowed to do permission.
- * Checks the passed boards or current board for the permission.
  * If they are not, it loads the Errors language file and shows an error using $txt['cannot_' . $permission].
  * If they are a guest and cannot do it, this calls is_not_guest().
  *
  * @param string $permission
- * @param array $boards = null
  */
-function isAllowedTo($permission, $boards = null)
+function isAllowedTo($permission)
 {
 	global $user_info, $txt;
 
 	static $heavy_permissions = array(
 		'admin_forum',
 		'manage_smileys',
-		'manage_boards',
 		'edit_news',
 		'moderate_forum',
 		'manage_bans',
@@ -965,7 +928,7 @@ function isAllowedTo($permission, $boards = null)
 	$permission = is_array($permission) ? $permission : array($permission);
 
 	// Check the permission and return an error...
-	if (!allowedTo($permission, $boards))
+	if (!allowedTo($permission))
 	{
 		// Pick the last array entry as the permission shown as the error.
 		$error_permission = array_shift($permission);
@@ -979,7 +942,6 @@ function isAllowedTo($permission, $boards = null)
 
 		// Clear the action because they aren't really doing that!
 		$_GET['action'] = '';
-		$_GET['board'] = '';
 		$_GET['topic'] = '';
 		writeLog(true);
 
@@ -991,7 +953,7 @@ function isAllowedTo($permission, $boards = null)
 
 	// If you're doing something on behalf of some "heavy" permissions, validate your session.
 	// (take out the heavy permissions, and if you can't do anything but those, you need a validated session.)
-	if (!allowedTo(array_diff($permission, $heavy_permissions), $boards))
+	if (!allowedTo(array_diff($permission, $heavy_permissions)))
 		validateSession();
 }
 
@@ -1036,22 +998,15 @@ function boardsAllowedTo($permissions, $check_access = true, $simple = true)
 		}
 	}
 
-	// All groups the user is in except 'moderator'.
-	$groups = array_diff($user_info['groups'], array(3));
-
 	$request = $smcFunc['db_query']('', '
 		SELECT b.id_board, bp.add_deny' . ($simple ? '' : ', bp.permission') . '
 		FROM {db_prefix}board_permissions AS bp
 			INNER JOIN {db_prefix}boards AS b ON (b.id_profile = bp.id_profile)
-			LEFT JOIN {db_prefix}moderators AS mods ON (mods.id_board = b.id_board AND mods.id_member = {int:current_member})
-		WHERE bp.id_group IN ({array_int:group_list}, {int:moderator_group})
-			AND bp.permission IN ({array_string:permissions})
-			AND (mods.id_member IS NOT NULL OR bp.id_group != {int:moderator_group})' .
-			($check_access ? ' AND {query_see_board}' : ''),
+		WHERE bp.id_group IN ({array_int:group_list})
+			AND bp.permission IN ({array_string:permissions})',
 		array(
 			'current_member' => $user_info['id'],
-			'group_list' => $groups,
-			'moderator_group' => 3,
+			'group_list' => $user_info['groups'],
 			'permissions' => $permissions,
 		)
 	);

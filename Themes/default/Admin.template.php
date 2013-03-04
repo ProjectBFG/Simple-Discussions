@@ -1438,7 +1438,7 @@ function template_repair_boards()
 
 	echo '
 	<div id="admincenter">
-		<div id="section_header">
+		<div id="section_header" class="cat_bar">
 			<h3 class="catbg">',
 				$context['error_search'] ? $txt['errors_list'] : $txt['errors_fixing'] , '
 			</h3>

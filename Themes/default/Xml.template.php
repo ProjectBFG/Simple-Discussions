@@ -238,16 +238,6 @@ function template_results()
 			<result>
 				<id>', $topic['id'], '</id>
 				<relevance>', $topic['relevance'], '</relevance>
-				<board>
-					<id>', $topic['board']['id'], '</id>
-					<name>', cleanXml($topic['board']['name']), '</name>
-					<href>', $topic['board']['href'], '</href>
-				</board>
-				<category>
-					<id>', $topic['category']['id'], '</id>
-					<name>', cleanXml($topic['category']['name']), '</name>
-					<href>', $topic['category']['href'], '</href>
-				</category>
 				<messages>';
 			foreach ($topic['matches'] as $message)
 			{
@@ -276,37 +266,6 @@ function template_results()
 		</results>';
 	}
 
-	echo '
-</smf>';
-}
-
-function template_jump_to()
-{
-	global $context, $settings, $options;
-
-	echo '<', '?xml version="1.0" encoding="', $context['character_set'], '"?', '>
-<smf>';
-	foreach ($context['jump_to'] as $category)
-	{
-		echo '
-	<item type="category" id="', $category['id'], '"><![CDATA[', cleanXml($category['name']), ']]></item>';
-		foreach ($category['boards'] as $board)
-			echo '
-	<item type="board" id="', $board['id'], '" childlevel="', $board['child_level'], '"><![CDATA[', cleanXml($board['name']), ']]></item>';
-	}
-	echo '
-</smf>';
-}
-
-function template_message_icons()
-{
-	global $context, $settings, $options;
-
-	echo '<', '?xml version="1.0" encoding="', $context['character_set'], '"?', '>
-<smf>';
-	foreach ($context['icons'] as $icon)
-		echo '
-	<icon value="', $icon['value'], '" url="', $icon['url'], '"><![CDATA[', cleanXml($icon['name']), ']]></icon>';
 	echo '
 </smf>';
 }

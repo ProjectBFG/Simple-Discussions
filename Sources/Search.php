@@ -79,8 +79,6 @@ function PlushSearch1()
 			@list ($k, $v) = explode('|\'|', $data);
 			$context['search_params'][$k] = $v;
 		}
-		if (isset($context['search_params']['brd']))
-			$context['search_params']['brd'] = $context['search_params']['brd'] == '' ? array() : explode(',', $context['search_params']['brd']);
 	}
 
 	if (isset($_REQUEST['search']))
@@ -117,73 +115,6 @@ function PlushSearch1()
 		}
 	}
 
-	// Find all the boards this user is allowed to see.
-	$request = $smcFunc['db_query']('order_by_board_order', '
-		SELECT b.id_cat, c.name AS cat_name, b.id_board, b.name, b.child_level
-		FROM {db_prefix}boards AS b
-			LEFT JOIN {db_prefix}categories AS c ON (c.id_cat = b.id_cat)
-		WHERE {query_see_board}
-			AND redirect = {string:empty_string}',
-		array(
-			'empty_string' => '',
-		)
-	);
-	$context['num_boards'] = $smcFunc['db_num_rows']($request);
-	$context['boards_check_all'] = true;
-	$context['categories'] = array();
-	while ($row = $smcFunc['db_fetch_assoc']($request))
-	{
-		// This category hasn't been set up yet..
-		if (!isset($context['categories'][$row['id_cat']]))
-			$context['categories'][$row['id_cat']] = array(
-				'id' => $row['id_cat'],
-				'name' => $row['cat_name'],
-				'boards' => array()
-			);
-
-		// Set this board up, and let the template know when it's a child.  (indent them..)
-		$context['categories'][$row['id_cat']]['boards'][$row['id_board']] = array(
-			'id' => $row['id_board'],
-			'name' => $row['name'],
-			'child_level' => $row['child_level'],
-			'selected' => (empty($context['search_params']['brd']) && (empty($modSettings['recycle_enable']) || $row['id_board'] != $modSettings['recycle_board']) && !in_array($row['id_board'], $user_info['ignoreboards'])) || (!empty($context['search_params']['brd']) && in_array($row['id_board'], $context['search_params']['brd']))
-		);
-
-		// If a board wasn't checked that probably should have been ensure the board selection is selected, yo!
-		if (!$context['categories'][$row['id_cat']]['boards'][$row['id_board']]['selected'] && (empty($modSettings['recycle_enable']) || $row['id_board'] != $modSettings['recycle_board']))
-			$context['boards_check_all'] = false;
-	}
-	$smcFunc['db_free_result']($request);
-
-	// Now, let's sort the list of categories into the boards for templates that like that.
-	$temp_boards = array();
-	foreach ($context['categories'] as $category)
-	{
-		$temp_boards[] = array(
-			'name' => $category['name'],
-			'child_ids' => array_keys($category['boards'])
-		);
-		$temp_boards = array_merge($temp_boards, array_values($category['boards']));
-
-		// Include a list of boards per category for easy toggling.
-		$context['categories'][$category['id']]['child_ids'] = array_keys($category['boards']);
-	}
-
-	$max_boards = ceil(count($temp_boards) / 2);
-	if ($max_boards == 1)
-		$max_boards = 2;
-
-	// Now, alternate them so they can be shown left and right ;).
-	$context['board_columns'] = array();
-	for ($i = 0; $i < $max_boards; $i++)
-	{
-		$context['board_columns'][] = $temp_boards[$i];
-		if (isset($temp_boards[$i + $max_boards]))
-			$context['board_columns'][] = $temp_boards[$i + $max_boards];
-		else
-			$context['board_columns'][] = array();
-	}
-
 	if (!empty($_REQUEST['topic']))
 	{
 		$context['search_params']['topic'] = (int) $_REQUEST['topic'];
@@ -201,10 +132,8 @@ function PlushSearch1()
 		$request = $smcFunc['db_query']('', '
 			SELECT ms.subject
 			FROM {db_prefix}topics AS t
-				INNER JOIN {db_prefix}boards AS b ON (b.id_board = t.id_board)
 				INNER JOIN {db_prefix}messages AS ms ON (ms.id_msg = t.id_first_msg)
-			WHERE t.id_topic = {int:search_topic_id}
-				AND {query_see_board}' . ($modSettings['postmod_active'] ? '
+			WHERE t.id_topic = {int:search_topic_id}' . ($modSettings['postmod_active'] ? '
 				AND t.approved = {int:is_approved_true}' : '') . '
 			LIMIT 1',
 			array(
@@ -242,7 +171,7 @@ function PlushSearch1()
 function PlushSearch2()
 {
 	global $scripturl, $modSettings, $sourcedir, $txt, $db_connection;
-	global $user_info, $context, $options, $messages_request, $boards_can;
+	global $user_info, $context, $options, $messages_request;
 	global $excludedWords, $participants, $smcFunc;
 
 	// if comming from the quick search box, and we want to search on members, well we need to do that ;)
@@ -352,9 +281,6 @@ function PlushSearch2()
 			@list($k, $v) = explode('|\'|', $data);
 			$search_params[$k] = $v;
 		}
-
-		if (isset($search_params['brd']))
-			$search_params['brd'] = empty($search_params['brd']) ? array() : explode(',', $search_params['brd']);
 	}
 
 	// Store whether simple search was used (needed if the user wants to do another query).
@@ -474,105 +400,6 @@ function PlushSearch2()
 		}
 		$smcFunc['db_free_result']($request);
 	}
-
-	// If the boards were passed by URL (params=), temporarily put them back in $_REQUEST.
-	if (!empty($search_params['brd']) && is_array($search_params['brd']))
-		$_REQUEST['brd'] = $search_params['brd'];
-
-	// Ensure that brd is an array.
-	if ((!empty($_REQUEST['brd']) && !is_array($_REQUEST['brd'])) || (!empty($_REQUEST['search_selection']) && $_REQUEST['search_selection'] == 'board'))
-	{
-		if (!empty($_REQUEST['brd']))
-			$_REQUEST['brd'] = strpos($_REQUEST['brd'], ',') !== false ? explode(',', $_REQUEST['brd']) : array($_REQUEST['brd']);
-		else
-			$_REQUEST['brd'] = isset($_REQUEST['sd_brd']) ? array($_REQUEST['sd_brd']) : array();
-	}
-
-	// Make sure all boards are integers.
-	if (!empty($_REQUEST['brd']))
-		foreach ($_REQUEST['brd'] as $id => $brd)
-			$_REQUEST['brd'][$id] = (int) $brd;
-
-	// Special case for boards: searching just one topic?
-	if (!empty($search_params['topic']))
-	{
-		$request = $smcFunc['db_query']('', '
-			SELECT b.id_board
-			FROM {db_prefix}topics AS t
-				INNER JOIN {db_prefix}boards AS b ON (b.id_board = t.id_board)
-			WHERE t.id_topic = {int:search_topic_id}
-				AND {query_see_board}' . ($modSettings['postmod_active'] ? '
-				AND t.approved = {int:is_approved_true}' : '') . '
-			LIMIT 1',
-			array(
-				'search_topic_id' => $search_params['topic'],
-				'is_approved_true' => 1,
-			)
-		);
-
-		if ($smcFunc['db_num_rows']($request) == 0)
-			fatal_lang_error('topic_gone', false);
-
-		$search_params['brd'] = array();
-		list ($search_params['brd'][0]) = $smcFunc['db_fetch_row']($request);
-		$smcFunc['db_free_result']($request);
-	}
-	// Select all boards you've selected AND are allowed to see.
-	elseif ($user_info['is_admin'] && (!empty($search_params['advanced']) || !empty($_REQUEST['brd'])))
-		$search_params['brd'] = empty($_REQUEST['brd']) ? array() : $_REQUEST['brd'];
-	else
-	{
-		$see_board = empty($search_params['advanced']) ? 'query_wanna_see_board' : 'query_see_board';
-		$request = $smcFunc['db_query']('', '
-			SELECT b.id_board
-			FROM {db_prefix}boards AS b
-			WHERE {raw:boards_allowed_to_see}
-				AND redirect = {string:empty_string}' . (empty($_REQUEST['brd']) ? (!empty($modSettings['recycle_enable']) && $modSettings['recycle_board'] > 0 ? '
-				AND b.id_board != {int:recycle_board_id}' : '') : '
-				AND b.id_board IN ({array_int:selected_search_boards})'),
-			array(
-				'boards_allowed_to_see' => $user_info[$see_board],
-				'empty_string' => '',
-				'selected_search_boards' => empty($_REQUEST['brd']) ? array() : $_REQUEST['brd'],
-				'recycle_board_id' => $modSettings['recycle_board'],
-			)
-		);
-		$search_params['brd'] = array();
-		while ($row = $smcFunc['db_fetch_assoc']($request))
-			$search_params['brd'][] = $row['id_board'];
-		$smcFunc['db_free_result']($request);
-
-		// This error should pro'bly only happen for hackers.
-		if (empty($search_params['brd']))
-			$context['search_errors']['no_boards_selected'] = true;
-	}
-
-	if (count($search_params['brd']) != 0)
-	{
-		foreach ($search_params['brd'] as $k => $v)
-			$search_params['brd'][$k] = (int) $v;
-
-		// If we've selected all boards, this parameter can be left empty.
-		$request = $smcFunc['db_query']('', '
-			SELECT COUNT(*)
-			FROM {db_prefix}boards
-			WHERE redirect = {string:empty_string}',
-			array(
-				'empty_string' => '',
-			)
-		);
-		list ($num_boards) = $smcFunc['db_fetch_row']($request);
-		$smcFunc['db_free_result']($request);
-
-		if (count($search_params['brd']) == $num_boards)
-			$boardQuery = '';
-		elseif (count($search_params['brd']) == $num_boards - 1 && !empty($modSettings['recycle_board']) && !in_array($modSettings['recycle_board'], $search_params['brd']))
-			$boardQuery = '!= ' . $modSettings['recycle_board'];
-		else
-			$boardQuery = 'IN (' . implode(', ', $search_params['brd']) . ')';
-	}
-	else
-		$boardQuery = '';
 
 	$search_params['show_complete'] = !empty($search_params['show_complete']) || !empty($_REQUEST['show_complete']);
 	$search_params['subject_only'] = !empty($search_params['subject_only']) || !empty($_REQUEST['subject_only']);
@@ -885,8 +712,6 @@ function PlushSearch2()
 
 			$temp_params = $search_params;
 			$temp_params['search'] = implode(' ', $did_you_mean['search']);
-			if (isset($temp_params['brd']))
-				$temp_params['brd'] = implode(',', $temp_params['brd']);
 			$context['params'] = array();
 			foreach ($temp_params as $k => $v)
 				$context['did_you_mean_params'][] = $k . '|\'|' . $v;
@@ -931,8 +756,6 @@ function PlushSearch2()
 
 	// All search params have been checked, let's compile them to a single string... made less simple by PHP 4.3.9 and below.
 	$temp_params = $search_params;
-	if (isset($temp_params['brd']))
-		$temp_params['brd'] = implode(',', $temp_params['brd']);
 	$context['params'] = array();
 	foreach ($temp_params as $k => $v)
 		$context['params'][] = $k . '|\'|' . $v;
@@ -1058,8 +881,6 @@ function PlushSearch2()
 						$subject_query['where'][] = 't.id_first_msg >= ' . $minMsgID;
 					if (!empty($maxMsgID))
 						$subject_query['where'][] = 't.id_last_msg <= ' . $maxMsgID;
-					if (!empty($boardQuery))
-						$subject_query['where'][] = 't.id_board ' . $boardQuery;
 					if (!empty($excludedPhrases))
 					{
 						if ($subject_query['from'] != '{db_prefix}messages AS m')
@@ -1302,11 +1123,6 @@ function PlushSearch2()
 							$subject_query['where'][] = 't.id_last_msg <= {int:max_msg_id}';
 							$subject_query['params']['max_msg_id'] = $maxMsgID;
 						}
-						if (!empty($boardQuery))
-						{
-							$subject_query['where'][] = 't.id_board {raw:board_query}';
-							$subject_query['params']['board_query'] = $boardQuery;
-						}
 						if (!empty($excludedPhrases))
 						{
 							if ($subject_query['from'] != '{db_prefix}messages AS m')
@@ -1431,7 +1247,6 @@ function PlushSearch2()
 									'id_search' => !$createTemporary ? $_SESSION['search_cache']['id_search'] : 0,
 									'excluded_words' => $excludedWords,
 									'user_query' => !empty($userQuery) ? $userQuery : '',
-									'board_query' => !empty($boardQuery) ? $boardQuery : '',
 									'topic' => !empty($search_params['topic']) ? $search_params['topic'] : 0,
 									'min_msg_id' => !empty($minMsgID) ? $minMsgID : 0,
 									'max_msg_id' => !empty($maxMsgID) ? $maxMsgID : 0,
@@ -1532,11 +1347,6 @@ function PlushSearch2()
 					{
 						$main_query['where'][] = 'm.id_msg <= {int:max_msg_id}';
 						$main_query['parameters']['max_msg_id'] = $maxMsgID;
-					}
-					if (!empty($boardQuery))
-					{
-						$main_query['where'][] = 'm.id_board {raw:board_query}';
-						$main_query['parameters']['board_query'] = $boardQuery;
 					}
 				}
 				call_integration_hook('integrate_main_search_query', array($main_query));
@@ -1710,20 +1520,19 @@ function PlushSearch2()
 
 	if (!empty($context['topics']))
 	{
-		// Create an array for the permissions.
-		$boards_can = boardsAllowedTo(array('post_reply_own', 'post_reply_any', 'mark_any_notify'), true, false);
+		   $perms = array(
+				'can_lock' => 'lock_any',
+				'can_sticky' => 'can_sticky',
+				'can_move' => 'move_any',
+				'can_remove' => 'remove_any',
+				'can_merge' => 'merge_any',
+				'can_reply' => 'post_reply_any',
+				'can_mark_notify' => 'mark_any_notify',
+			);
+			foreach ($perms as $contextual => $perm)
+				$context[$contextual] = allowedTo($perm);
 
-		// How's about some quick moderation?
-		if (!empty($options['display_quick_mod']))
-		{
-			$boards_can = array_merge($boards_can, boardsAllowedTo(array('lock_any', 'lock_own', 'make_sticky', 'move_any', 'move_own', 'remove_any', 'remove_own', 'merge_any'), true, false));
-
-			$context['can_lock'] = in_array(0, $boards_can['lock_any']);
-			$context['can_sticky'] = in_array(0, $boards_can['make_sticky']) && !empty($modSettings['enableStickyTopics']);
-			$context['can_move'] = in_array(0, $boards_can['move_any']);
-			$context['can_remove'] = in_array(0, $boards_can['remove_any']);
-			$context['can_merge'] = in_array(0, $boards_can['merge_any']);
-		}
+			$context['can_sticky'] &= !empty($modSettings['enableStickyTopics']);
 
 		// What messages are we using?
 		$msg_list = array_keys($context['topics']);
@@ -1754,17 +1563,14 @@ function PlushSearch2()
 		$messages_request = $smcFunc['db_query']('', '
 			SELECT
 				m.id_msg, m.subject, m.poster_name, m.poster_email, m.poster_time, m.id_member,
-				m.icon, m.poster_ip, m.body, m.smileys_enabled, m.modified_time, m.modified_name,
-				first_m.id_msg AS first_msg, first_m.subject AS first_subject, first_m.icon AS first_icon, first_m.poster_time AS first_poster_time,
+				m.poster_ip, m.body, m.smileys_enabled, m.modified_time, m.modified_name,
+				first_m.id_msg AS first_msg, first_m.subject AS first_subject, first_m.poster_time AS first_poster_time,
 				first_mem.id_member AS first_member_id, IFNULL(first_mem.real_name, first_m.poster_name) AS first_member_name,
 				last_m.id_msg AS last_msg, last_m.poster_time AS last_poster_time, last_mem.id_member AS last_member_id,
-				IFNULL(last_mem.real_name, last_m.poster_name) AS last_member_name, last_m.icon AS last_icon, last_m.subject AS last_subject,
-				t.id_topic, t.is_sticky, t.locked, t.num_replies, t.num_views,
-				b.id_board, b.name AS board_name, c.id_cat, c.name AS cat_name
+				IFNULL(last_mem.real_name, last_m.poster_name) AS last_member_name, last_m.subject AS last_subject,
+				t.id_topic, t.is_sticky, t.locked, t.num_replies, t.num_views
 			FROM {db_prefix}messages AS m
 				INNER JOIN {db_prefix}topics AS t ON (t.id_topic = m.id_topic)
-				INNER JOIN {db_prefix}boards AS b ON (b.id_board = t.id_board)
-				INNER JOIN {db_prefix}categories AS c ON (c.id_cat = b.id_cat)
 				INNER JOIN {db_prefix}messages AS first_m ON (first_m.id_msg = t.id_first_msg)
 				INNER JOIN {db_prefix}messages AS last_m ON (last_m.id_msg = t.id_last_msg)
 				LEFT JOIN {db_prefix}members AS first_mem ON (first_mem.id_member = first_m.id_member)
@@ -1815,23 +1621,12 @@ function PlushSearch2()
 
 	$context['key_words'] = &$searchArray;
 
-	// Setup the default topic icons... for checking they exist and the like!
-	$stable_icons = array('xx', 'thumbup', 'thumbdown', 'exclamation', 'question', 'lamp', 'smiley', 'angry', 'cheesy', 'grin', 'sad', 'wink', 'moved', 'recycled', 'clip');
-	$context['icon_sources'] = array();
-	foreach ($stable_icons as $icon)
-		$context['icon_sources'][$icon] = 'images_url';
-
 	$context['sub_template'] = 'results';
 	$context['page_title'] = $txt['search_results'];
 	$context['get_topics'] = 'prepareSearchContext';
 	$context['can_send_pm'] = allowedTo('pm_send');
 	$context['can_send_email'] = allowedTo('send_email_to_members');
-	$context['can_restore'] = allowedTo('move_any') && !empty($modSettings['recycle_enable']) && $modSettings['recycle_board'] == $board;
-
-	$context['jump_to'] = array(
-		'label' => addslashes(un_htmlspecialchars($txt['jump_to'])),
-		'board_name' => addslashes(un_htmlspecialchars($txt['select_destination'])),
-	);
+	$context['can_restore'] = allowedTo('move_any');
 }
 
 /**
@@ -1850,7 +1645,7 @@ function prepareSearchContext($reset = false)
 {
 	global $txt, $modSettings, $scripturl, $user_info, $sourcedir;
 	global $memberContext, $context, $settings, $options, $messages_request;
-	global $boards_can, $participants, $smcFunc;
+	global $participants, $smcFunc;
 
 	// Remember which message this is.  (ie. reply #83)
 	static $counter = null;
@@ -1952,29 +1747,12 @@ function prepareSearchContext($reset = false)
 	// Make sure we don't end up with a practically empty message body.
 	$message['body'] = preg_replace('~^(?:&nbsp;)+$~', '', $message['body']);
 
-	// Sadly, we need to check the icon ain't broke.
-	if (!empty($modSettings['messageIconChecks_enable']))
-	{
-		if (!isset($context['icon_sources'][$message['first_icon']]))
-			$context['icon_sources'][$message['first_icon']] = file_exists($settings['theme_dir'] . '/images/post/' . $message['first_icon'] . '.png') ? 'images_url' : 'default_images_url';
-		if (!isset($context['icon_sources'][$message['last_icon']]))
-			$context['icon_sources'][$message['last_icon']] = file_exists($settings['theme_dir'] . '/images/post/' . $message['last_icon'] . '.png') ? 'images_url' : 'default_images_url';
-		if (!isset($context['icon_sources'][$message['icon']]))
-			$context['icon_sources'][$message['icon']] = file_exists($settings['theme_dir'] . '/images/post/' . $message['icon'] . '.png') ? 'images_url' : 'default_images_url';
-	}
-	else
-	{
-		if (!isset($context['icon_sources'][$message['first_icon']]))
-			$context['icon_sources'][$message['first_icon']] = 'images_url';
-		if (!isset($context['icon_sources'][$message['last_icon']]))
-			$context['icon_sources'][$message['last_icon']] = 'images_url';
-		if (!isset($context['icon_sources'][$message['icon']]))
-			$context['icon_sources'][$message['icon']] = 'images_url';
-	}
-
 	// Do we have quote tag enabled?
 	$quote_enabled = empty($modSettings['disabledBBC']) || !in_array('quote', explode(',', $modSettings['disabledBBC']));
 
+	$context['can_quote'] = $context['can_reply'] & $quote_enabled;
+	$context['can_mark_notify'] &= !$context['user']['is_guest'];
+        
 	$output = array_merge($context['topics'][$message['id_msg']], array(
 		'id' => $message['id_topic'],
 		'is_sticky' => !empty($modSettings['enableStickyTopics']) && !empty($message['is_sticky']),
@@ -1984,9 +1762,9 @@ function prepareSearchContext($reset = false)
 		'posted_in' => !empty($participants[$message['id_topic']]),
 		'views' => $message['num_views'],
 		'replies' => $message['num_replies'],
-		'can_reply' => in_array($message['id_board'], $boards_can['post_reply_any']) || in_array(0, $boards_can['post_reply_any']),
-		'can_quote' => (in_array($message['id_board'], $boards_can['post_reply_any']) || in_array(0, $boards_can['post_reply_any'])) && $quote_enabled,
-		'can_mark_notify' => in_array($message['id_board'], $boards_can['mark_any_notify']) || in_array(0, $boards_can['mark_any_notify']) && !$context['user']['is_guest'],
+		'can_reply' => $context['can_reply'],
+		'can_quote' => $context['can_quote'],
+		'can_mark_notify' => $context['can_mark_notify'],
 		'first_post' => array(
 			'id' => $message['first_msg'],
 			'time' => timeformat($message['first_poster_time']),
@@ -1994,8 +1772,6 @@ function prepareSearchContext($reset = false)
 			'subject' => $message['first_subject'],
 			'href' => $scripturl . '?topic=' . $message['id_topic'] . '.0',
 			'link' => '<a href="' . $scripturl . '?topic=' . $message['id_topic'] . '.0">' . $message['first_subject'] . '</a>',
-			'icon' => $message['first_icon'],
-			'icon_url' => $settings[$context['icon_sources'][$message['first_icon']]] . '/post/' . $message['first_icon'] . '.png',
 			'member' => array(
 				'id' => $message['first_member_id'],
 				'name' => $message['first_member_name'],
@@ -2010,26 +1786,12 @@ function prepareSearchContext($reset = false)
 			'subject' => $message['last_subject'],
 			'href' => $scripturl . '?topic=' . $message['id_topic'] . ($message['num_replies'] == 0 ? '.0' : '.msg' . $message['last_msg']) . '#msg' . $message['last_msg'],
 			'link' => '<a href="' . $scripturl . '?topic=' . $message['id_topic'] . ($message['num_replies'] == 0 ? '.0' : '.msg' . $message['last_msg']) . '#msg' . $message['last_msg'] . '">' . $message['last_subject'] . '</a>',
-			'icon' => $message['last_icon'],
-			'icon_url' => $settings[$context['icon_sources'][$message['last_icon']]] . '/post/' . $message['last_icon'] . '.png',
 			'member' => array(
 				'id' => $message['last_member_id'],
 				'name' => $message['last_member_name'],
 				'href' => !empty($message['last_member_id']) ? $scripturl . '?action=profile;u=' . $message['last_member_id'] : '',
 				'link' => !empty($message['last_member_id']) ? '<a href="' . $scripturl . '?action=profile;u=' . $message['last_member_id'] . '" title="' . $txt['profile_of'] . ' ' . $message['last_member_name'] . '">' . $message['last_member_name'] . '</a>' : $message['last_member_name']
 			)
-		),
-		'board' => array(
-			'id' => $message['id_board'],
-			'name' => $message['board_name'],
-			'href' => $scripturl . '?board=' . $message['id_board'] . '.0',
-			'link' => '<a href="' . $scripturl . '?board=' . $message['id_board'] . '.0">' . $message['board_name'] . '</a>'
-		),
-		'category' => array(
-			'id' => $message['id_cat'],
-			'name' => $message['cat_name'],
-			'href' => $scripturl . '#c' . $message['id_cat'],
-			'link' => '<a href="' . $scripturl . '#c' . $message['id_cat'] . '">' . $message['cat_name'] . '</a>'
 		)
 	));
 	determineTopicClass($output);
@@ -2044,18 +1806,23 @@ function prepareSearchContext($reset = false)
 	{
 		$started = $output['first_post']['member']['id'] == $user_info['id'];
 
+                $own_perms = array(
+                     'can_lock_own' => 'lock_own',
+                     'can_move_own' => 'move_own',
+                     'can_remove_own' => 'remove_own',
+                 );
+                 foreach ($own_perms as $contextual => $perm)
+                     $context[$contextual] = allowedTo($perm);
+                
 		$output['quick_mod'] = array(
-			'lock' => in_array(0, $boards_can['lock_any']) || in_array($output['board']['id'], $boards_can['lock_any']) || ($started && (in_array(0, $boards_can['lock_own']) || in_array($output['board']['id'], $boards_can['lock_own']))),
-			'sticky' => (in_array(0, $boards_can['make_sticky']) || in_array($output['board']['id'], $boards_can['make_sticky'])) && !empty($modSettings['enableStickyTopics']),
-			'move' => in_array(0, $boards_can['move_any']) || in_array($output['board']['id'], $boards_can['move_any']) || ($started && (in_array(0, $boards_can['move_own']) || in_array($output['board']['id'], $boards_can['move_own']))),
-			'remove' => in_array(0, $boards_can['remove_any']) || in_array($output['board']['id'], $boards_can['remove_any']) || ($started && (in_array(0, $boards_can['remove_own']) || in_array($output['board']['id'], $boards_can['remove_own']))),
+			'lock' => $started && $context['can_lock_own'],
+			'move' => $started && $context['can_move_own'],
+			'remove' => $started && $context['can_remove_own'],
 		);
 
 		$context['can_lock'] |= $output['quick_mod']['lock'];
-		$context['can_sticky'] |= $output['quick_mod']['sticky'];
 		$context['can_move'] |= $output['quick_mod']['move'];
 		$context['can_remove'] |= $output['quick_mod']['remove'];
-		$context['can_merge'] |= in_array($output['board']['id'], $boards_can['merge_any']);
 		$context['can_markread'] = $context['user']['is_logged'];
 
 		$context['qmod_actions'] = array('remove', 'lock', 'sticky', 'move', 'merge', 'restore', 'markread');
@@ -2077,8 +1844,6 @@ function prepareSearchContext($reset = false)
 		'id' => $message['id_msg'],
 		'alternate' => $counter % 2,
 		'member' => &$memberContext[$message['id_member']],
-		'icon' => $message['icon'],
-		'icon_url' => $settings[$context['icon_sources'][$message['icon']]] . '/post/' . $message['icon'] . '.png',
 		'subject' => $message['subject'],
 		'subject_highlighted' => $subject_highlighted,
 		'time' => timeformat($message['poster_time']),

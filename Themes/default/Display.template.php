@@ -40,12 +40,11 @@ function template_main()
 					', $context['page_index'], '
 			</div>';
 
-	// Show the topic information - icon, subject, etc.
+	// Show the topic information - subject, etc.
 	echo '
 			<div id="forumposts">
 					<h3 class="catbg">
 						', $txt['topic'], ': ', $context['subject'], '&nbsp;<span>(', $context['num_views_text'], ')</span>
-						<span class="nextlinks floatright">', $context['previous_next'], '</span>
 					</h3>';
 	if (!empty($settings['display_who_viewing']))
 	{
@@ -94,9 +93,6 @@ function template_main()
 
 			echo '
 						<div class="keyinfo">
-							<div class="messageicon" ', ($message['icon_url'] !== $settings['images_url'] . '/post/xx.png') ? '' : 'style="position: absolute; z-index: -1;"', '>
-								<img src="', $message['icon_url'] . '" alt=""', $message['can_modify'] ? ' id="msg_icon_' . $message['id'] . '"' : '', ' />
-							</div>
 							<h5 id="subject_', $message['id'], '">
 								<a href="', $message['href'], '" rel="nofollow" title="', !empty($message['counter']) ? sprintf($txt['reply_number'], $message['counter']) : '', ' - ', $message['subject'], '">', $message['time'], '</a>';
 
@@ -287,7 +283,7 @@ function template_main()
 						$context['oldTopicError'] ? '<p class="alert smalltext">' . sprintf($txt['error_old_topic'], $modSettings['oldTopicDays']) . '</p>' : '', '
 						', $context['can_reply_approved'] ? '' : '<em>' . $txt['wait_for_approval'] . '</em>', '
 						', !$context['can_reply_approved'] && $context['require_verification'] ? '<br />' : '', '
-						<form action="', $scripturl, '?board=', $context['current_board'], ';action=post2" method="post" accept-charset="', $context['character_set'], '" name="postmodify" id="postmodify" onsubmit="submitonce(this);" style="margin: 0;">
+						<form action="', $scripturl, '?action=post2" method="post" accept-charset="', $context['character_set'], '" name="postmodify" id="postmodify" onsubmit="submitonce(this);" style="margin: 0;">
 							<input type="hidden" name="topic" value="', $context['current_topic'], '" />
 							<input type="hidden" name="subject" value="', $context['response_prefix'], $context['subject'], '" />
 							<input type="hidden" name="icon" value="xx" />
@@ -393,7 +389,6 @@ function template_main()
 					sLastID: \'id_draft\',', !empty($context['post_box_name']) ? '
 					sSceditorID: \'' . $context['post_box_name'] . '\',' : '', '
 					sType: \'', !empty($options['display_quick_reply']) && $options['display_quick_reply'] > 2 ? 'quick' : 'quick', '\',
-					iBoard: ', (empty($context['current_board']) ? 0 : $context['current_board']), ',
 					iFreq: ', (empty($modSettings['masterAutoSaveDraftsDelay']) ? 60000 : $modSettings['masterAutoSaveDraftsDelay'] * 1000), '
 				});
 			// ]]></script>';
@@ -481,7 +476,6 @@ function template_main()
 							sIconIdPrefix: "msg_icon_",
 							sScriptUrl: smf_scripturl,
 							bShowModify: ', $settings['show_modify'] ? 'true' : 'false', ',
-							iBoardId: ', $context['current_board'], ',
 							iTopicId: ', $context['current_topic'], ',
 							sSessionId: smf_session_id,
 							sSessionVar: smf_session_var,

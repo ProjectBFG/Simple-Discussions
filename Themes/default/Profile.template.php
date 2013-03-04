@@ -344,7 +344,7 @@ function template_showPosts()
 			<div class="content">
 				<div class="counter">', $post['counter'], '</div>
 				<div class="topic_details">
-					<h5><strong><a href="', $scripturl, '?board=', $post['board']['id'], '.0">', $post['board']['name'], '</a> / <a href="', $scripturl, '?topic=', $post['topic'], '.', $post['start'], '#msg', $post['id'], '">', $post['subject'], '</a></strong></h5>
+					<h5><strong><a href="', $scripturl, '?topic=', $post['topic'], '.', $post['start'], '#msg', $post['id'], '">', $post['subject'], '</a></strong></h5>
 					<span class="smalltext">', $post['time'], '</span>
 				</div>
 				<div class="list_posts">';
@@ -451,7 +451,7 @@ function template_showDrafts()
 					<div class="content">
 						<div class="counter">', $draft['counter'], '</div>
 						<div class="topic_details">
-							<h5><strong><a href="', $scripturl, '?board=', $draft['board']['id'], '.0">', $draft['board']['name'], '</a> / ', $draft['topic']['link'], '</strong> &nbsp; &nbsp;';
+							<h5><strong>', $draft['topic']['link'], '</strong> &nbsp; &nbsp;';
 
 			if (!empty($draft['sticky']))
 				echo '<img src="', $settings['images_url'], '/icons/quick_sticky.png" alt="', $txt['sticky_topic'], '" title="', $txt['sticky_topic'], '" />';
@@ -469,7 +469,7 @@ function template_showDrafts()
 					</div>
 					<div class="floatright">
 						<ul class="reset smalltext quickbuttons">
-							<li><a href="', $scripturl, '?action=post;', (empty($draft['topic']['id']) ? 'board=' . $draft['board']['id'] : 'topic=' . $draft['topic']['id']), '.0;id_draft=', $draft['id_draft'], '" class="reply_button"><span>', $txt['draft_edit'], '</span></a></li>
+							<li><a href="', $scripturl, '?action=post;', (empty($draft['topic']['id']) ? '' : 'topic=' . $draft['topic']['id']), '.0;id_draft=', $draft['id_draft'], '" class="reply_button"><span>', $txt['draft_edit'], '</span></a></li>
 							<li><a href="', $scripturl, '?action=profile;u=', $context['member']['id'], ';area=showdrafts;delete=', $draft['id_draft'], ';', $context['session_var'], '=', $context['session_id'], '" onclick="return confirm(\'', $txt['draft_remove'], '?\');" class="remove_button"><span>', $txt['draft_delete'], '</span></a></li>
 						</ul>
 					</div>
@@ -857,20 +857,6 @@ function template_showPermissions()
 		<p class="description">',$txt['showPermissions_help'],'</p>
 		<div id="permissions" class="flow_hidden">';
 
-		if (!empty($context['no_access_boards']))
-		{
-			echo '
-					<h3 class="catbg">', $txt['showPermissions_restricted_boards'], '</h3>
-				<div class="windowbg smalltext">
-					<div class="content">', $txt['showPermissions_restricted_boards_desc'], ':<br />';
-				foreach ($context['no_access_boards'] as $no_access_board)
-					echo '
-						<a href="', $scripturl, '?board=', $no_access_board['id'], '.0">', $no_access_board['name'], '</a>', $no_access_board['is_last'] ? '' : ', ';
-				echo '
-					</div>
-				</div>';
-		}
-
 		// General Permissions section.
 		echo '
 				<div class="tborder">
@@ -916,68 +902,6 @@ function template_showPermissions()
 			echo '
 			<p class="windowbg2 description">', $txt['showPermissions_none_general'], '</p>';
 
-		// Board permission section.
-		echo '
-			<div class="tborder">
-				<form action="' . $scripturl . '?action=profile;u=', $context['id_member'], ';area=permissions#board_permissions" method="post" accept-charset="', $context['character_set'], '">
-						<h3 class="catbg">
-							<a id="board_permissions"></a>', $txt['showPermissions_select'], ':
-							<select name="board" onchange="if (this.options[this.selectedIndex].value) this.form.submit();">
-								<option value="0"', $context['board'] == 0 ? ' selected="selected"' : '', '>', $txt['showPermissions_global'], '&nbsp;</option>';
-				if (!empty($context['boards']))
-					echo '
-								<option value="" disabled="disabled">---------------------------</option>';
-
-				// Fill the box with any local permission boards.
-				foreach ($context['boards'] as $board)
-					echo '
-								<option value="', $board['id'], '"', $board['selected'] ? ' selected="selected"' : '', '>', $board['name'], ' (', $board['profile_name'], ')</option>';
-
-				echo '
-							</select>
-						</h3>
-				</form>';
-		if (!empty($context['member']['permissions']['board']))
-		{
-			echo '
-				<table class="table_grid" width="100%" cellspacing="0">
-					<thead>
-						<tr class="titlebg">
-							<th class="lefttext first_th" scope="col" width="50%">', $txt['showPermissions_permission'], '</th>
-							<th class="lefttext last_th" scope="col" width="50%">', $txt['showPermissions_status'], '</th>
-						</tr>
-					</thead>
-					<tbody>';
-			foreach ($context['member']['permissions']['board'] as $permission)
-			{
-				echo '
-						<tr>
-							<td class="windowbg" title="', $permission['id'], '">
-								', $permission['is_denied'] ? '<del>' . $permission['name'] . '</del>' : $permission['name'], '
-							</td>
-							<td class="windowbg2 smalltext">';
-
-				if ($permission['is_denied'])
-				{
-					echo '
-								<span class="alert">', $txt['showPermissions_denied'], ':&nbsp;', implode(', ', $permission['groups']['denied']), '</span>';
-				}
-				else
-				{
-					echo '
-								', $txt['showPermissions_given'], ': &nbsp;', implode(', ', $permission['groups']['allowed']);
-				}
-				echo '
-							</td>
-						</tr>';
-			}
-			echo '
-					</tbody>
-				</table>';
-		}
-		else
-			echo '
-			<p class="windowbg2 description">', $txt['showPermissions_none_board'], '</p>';
 	echo '
 			</div>
 		</div>';
@@ -1006,8 +930,6 @@ function template_statPanel()
 						<dd>', $context['num_posts'], ' ', $txt['statPanel_posts'], '</dd>
 						<dt>', $txt['statPanel_total_topics'], ':</dt>
 						<dd>', $context['num_topics'], ' ', $txt['statPanel_topics'], '</dd>
-						<dt>', $txt['statPanel_users_votes'], ':</dt>
-						<dd>', $context['num_votes'], ' ', $txt['statPanel_votes'], '</dd>
 					</dl>
 				</div>
 			</div>
@@ -1055,86 +977,7 @@ function template_statPanel()
 					<span class="clear" />
 				</div>
 			</div>
-		</div>';
-
-	// Two columns with the most popular boards by posts and activity (activity = users posts / total posts).
-	echo '
-		<div class="flow_hidden">
-			<div id="popularposts">
-					<h3 class="catbg">
-						<img src="', $settings['images_url'], '/stats_replies.png" alt="" class="icon" />', $txt['statPanel_topBoards'], '
-					</h3>
-				<div class="windowbg2">
-					<div class="content">';
-
-	if (empty($context['popular_boards']))
-		echo '
-						<span class="centertext">', $txt['statPanel_noPosts'], '</span>';
-
-	else
-	{
-		echo '
-						<dl>';
-
-		// Draw a bar for every board.
-		foreach ($context['popular_boards'] as $board)
-		{
-			echo '
-							<dt>', $board['link'], '</dt>
-							<dd>
-								<div class="profile_pie" style="background-position: -', ((int) ($board['posts_percent'] / 5) * 20), 'px 0;" title="', sprintf($txt['statPanel_topBoards_memberposts'], $board['posts'], $board['total_posts_member'], $board['posts_percent']), '">
-									', sprintf($txt['statPanel_topBoards_memberposts'], $board['posts'], $board['total_posts_member'], $board['posts_percent']), '
-								</div>
-								<span>', empty($context['hide_num_posts']) ? $board['posts'] : '', '</span>
-							</dd>';
-		}
-
-		echo '
-						</dl>';
-	}
-	echo '
-					</div>
-				</div>
-			</div>';
-	echo '
-			<div id="popularactivity">
-					<h3 class="catbg">
-						<img src="', $settings['images_url'], '/stats_replies.png" alt="" class="icon" />', $txt['statPanel_topBoardsActivity'], '
-					</h3>
-				<div class="windowbg2">
-					<div class="content">';
-
-	if (empty($context['board_activity']))
-		echo '
-						<span>', $txt['statPanel_noPosts'], '</span>';
-	else
-	{
-		echo '
-						<dl>';
-
-		// Draw a bar for every board.
-		foreach ($context['board_activity'] as $activity)
-		{
-			echo '
-							<dt>', $activity['link'], '</dt>
-							<dd>
-								<div class="profile_pie" style="background-position: -', ((int) ($activity['percent'] / 5) * 20), 'px 0;" title="', sprintf($txt['statPanel_topBoards_posts'], $activity['posts'], $activity['total_posts'], $activity['posts_percent']), '">
-									', sprintf($txt['statPanel_topBoards_posts'], $activity['posts'], $activity['total_posts'], $activity['posts_percent']), '
-								</div>
-								<span>', $activity['percent'], '%</span>
-							</dd>';
-		}
-
-		echo '
-						</dl>';
-	}
-	echo '
-					</div>
-				</div>
-			</div>
-		</div>';
-
-	echo '
+		</div>
 	</div>';
 }
 
@@ -1468,13 +1311,6 @@ function template_profile_theme_settings()
 
 	echo '
 							<dt>
-								<label for="show_board_desc">', $txt['board_desc_inside'], '</label>
-							</dt>
-							<dd>
-								<input type="hidden" name="default_options[show_board_desc]" value="0" />
-								<input type="checkbox" name="default_options[show_board_desc]" id="show_board_desc" value="1"', !empty($context['member']['options']['show_board_desc']) ? ' checked="checked"' : '', ' class="input_check" />
-							</dd>
-							<dt>
 								<label for="show_children">', $txt['show_children'], '</label>
 							</dt>
 							<dd>
@@ -1714,11 +1550,6 @@ function template_notification()
 		<br />';
 
 	template_show_list('topic_notification_list');
-
-	echo '
-		<br />';
-
-	template_show_list('board_notification_list');
 }
 
 // Template for choosing group membership.
@@ -1886,75 +1717,6 @@ function template_groupMembership()
 				<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 				<input type="hidden" name="u" value="', $context['id_member'], '" />
 			</form>';
-}
-
-function template_ignoreboards()
-{
-	global $context, $txt, $settings, $scripturl;
-	// The main containing header.
-	echo '
-	<form action="', $scripturl, '?action=profile;area=ignoreboards;save" method="post" accept-charset="', $context['character_set'], '" name="creator" id="creator">
-			<h3 class="catbg">
-				<img src="', $settings['images_url'], '/icons/profile_hd.png" alt="" class="icon" />', $txt['profile'], '
-			</h3>
-		<p class="description">', $txt['ignoreboards_info'], '</p>
-		<div class="windowbg2">
-			<div class="content flow_hidden">
-				<ul class="ignoreboards floatleft">';
-
-	$i = 0;
-	$limit = ceil($context['num_boards'] / 2);
-	foreach ($context['categories'] as $category)
-	{
-		if ($i == $limit)
-		{
-			echo '
-				</ul>
-				<ul class="ignoreboards floatright">';
-
-			$i++;
-		}
-
-		echo '
-					<li class="category">
-						<a href="javascript:void(0);" onclick="selectBoards([', implode(', ', $category['child_ids']), '], \'creator\'); return false;">', $category['name'], '</a>
-						<ul>';
-
-		foreach ($category['boards'] as $board)
-		{
-			if ($i == $limit)
-				echo '
-						</ul>
-					</li>
-				</ul>
-				<ul class="ignoreboards floatright">
-					<li class="category">
-						<ul>';
-
-			echo '
-							<li class="board" style="margin-', $context['right_to_left'] ? 'right' : 'left', ': ', $board['child_level'], 'em;">
-								<label for="ignore_brd', $board['id'], '"><input type="checkbox" id="ignore_brd', $board['id'], '" name="ignore_brd[', $board['id'], ']" value="', $board['id'], '"', $board['selected'] ? ' checked="checked"' : '', ' class="input_check" /> ', $board['name'], '</label>
-							</li>';
-
-			$i++;
-		}
-
-		echo '
-						</ul>
-					</li>';
-	}
-
-	echo '
-				</ul>';
-
-	// Show the standard "Save Settings" profile button.
-	template_profile_save();
-
-	echo '
-			</div>
-		</div>
-	</form>
-	<br />';
 }
 
 // Simple load some theme variables common to several warning templates.

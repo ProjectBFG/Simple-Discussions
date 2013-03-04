@@ -26,20 +26,4 @@ function template_main()
 		</div>';
 }
 
-function template_notify_board()
-{
-	global $context, $settings, $options, $txt, $scripturl;
-
-	echo '
-			<h3 class="catbg">
-				<img src="', $settings['images_url'], '/email_sm.png" alt="" class="icon" />', $txt['notify'], '
-			</h3>
-		<div class="roundframe centertext">
-			<p>', $context['notification_set'] ? $txt['notifyboard_turnoff'] : $txt['notifyboard_turnon'], '</p>
-			<p>
-				<strong><a href="', $scripturl, '?action=notifyboard;sa=', $context['notification_set'] ? 'off' : 'on', ';board=', $context['current_board'], '.', $context['start'], ';', $context['session_var'], '=', $context['session_id'], '">', $txt['yes'], '</a> - <a href="', $context['board_href'], '">', $txt['no'], '</a></strong>
-			</p>
-		</div>';
-}
-
 ?>

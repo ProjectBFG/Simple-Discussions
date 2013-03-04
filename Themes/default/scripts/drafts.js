@@ -112,7 +112,7 @@ smf_DraftAutoSave.prototype.draftSave = function ()
 	aSections[aSections.length] = 'message_mode=' + $('#' + this.opt.sSceditorID).data("sceditor").inSourceMode();
 
 	// Send in document for saving and hope for the best
-	sendXMLDocument.call(this, smf_prepareScriptUrl(smf_scripturl) + "action=post2;board=" + this.opt.iBoard + ";xml", aSections.join("&"), this.onDraftDone);
+	sendXMLDocument.call(this, smf_prepareScriptUrl(smf_scripturl) + "action=post2;xml", aSections.join("&"), this.onDraftDone);
 	
 	// Save the latest for compare
 	this.sCheckDraft = sPostdata;

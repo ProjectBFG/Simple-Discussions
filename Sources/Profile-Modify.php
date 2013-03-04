@@ -881,30 +881,7 @@ function saveProfileChanges(&$profile_vars, &$post_errors, $memID)
 	);
 	$profile_strings = array(
 		'buddy_list',
-		'ignore_boards',
 	);
-
-	if (isset($_POST['sa']) && $_POST['sa'] == 'ignoreboards' && empty($_POST['ignore_brd']))
-			$_POST['ignore_brd'] = array();
-
-	unset($_POST['ignore_boards']); // Whatever it is set to is a dirty fithy thing.  Kinda like our minds.
-	if (isset($_POST['ignore_brd']))
-	{
-		if (!is_array($_POST['ignore_brd']))
-			$_POST['ignore_brd'] = array ($_POST['ignore_brd']);
-
-		foreach ($_POST['ignore_brd'] as $k => $d)
-		{
-			$d = (int) $d;
-			if ($d != 0)
-				$_POST['ignore_brd'][$k] = $d;
-			else
-				unset($_POST['ignore_brd'][$k]);
-		}
-		$_POST['ignore_boards'] = implode(',', $_POST['ignore_brd']);
-		unset($_POST['ignore_brd']);
-
-	}
 
 	// Here's where we sort out all the 'other' values...
 	if ($changeOther)
@@ -1057,29 +1034,8 @@ function makeNotificationChanges($memID)
 {
 	global $smcFunc;
 
-	// Update the boards they are being notified on.
-	if (isset($_POST['edit_notify_boards']) && !empty($_POST['notify_boards']))
-	{
-		// Make sure only integers are deleted.
-		foreach ($_POST['notify_boards'] as $index => $id)
-			$_POST['notify_boards'][$index] = (int) $id;
-
-		// id_board = 0 is reserved for topic notifications.
-		$_POST['notify_boards'] = array_diff($_POST['notify_boards'], array(0));
-
-		$smcFunc['db_query']('', '
-			DELETE FROM {db_prefix}log_notify
-			WHERE id_board IN ({array_int:board_list})
-				AND id_member = {int:selected_member}',
-			array(
-				'board_list' => $_POST['notify_boards'],
-				'selected_member' => $memID,
-			)
-		);
-	}
-
-	// We are editing topic notifications......
-	elseif (isset($_POST['edit_notify_topics']) && !empty($_POST['notify_topics']))
+	// Update the topics they are being notified on.
+	if (isset($_POST['edit_notify_topics']) && !empty($_POST['notify_topics']))
 	{
 		foreach ($_POST['notify_topics'] as $index => $id)
 			$_POST['notify_topics'][$index] = (int) $id;
@@ -1593,84 +1549,7 @@ function notification($memID)
 	// Gonna want this for the list.
 	require_once($sourcedir . '/Subs-List.php');
 
-	// Fine, start with the board list.
-	$listOptions = array(
-		'id' => 'board_notification_list',
-		'width' => '100%',
-		'no_items_label' => $txt['notifications_boards_none'] . '<br /><br />' . $txt['notifications_boards_howto'],
-		'no_items_align' => 'left',
-		'base_href' => $scripturl . '?action=profile;u=' . $memID . ';area=notification',
-		'default_sort_col' => 'board_name',
-		'get_items' => array(
-			'function' => 'list_getBoardNotifications',
-			'params' => array(
-				$memID,
-			),
-		),
-		'columns' => array(
-			'board_name' => array(
-				'header' => array(
-					'value' => $txt['notifications_boards'],
-					'class' => 'lefttext first_th',
-				),
-				'data' => array(
-					'function' => create_function('$board', '
-						global $settings, $txt;
-
-						$link = $board[\'link\'];
-
-						if ($board[\'new\'])
-							$link .= \' <a href="\' . $board[\'href\'] . \'"><span class="new_posts">' . $txt['new'] . '</span></a>\';
-
-						return $link;
-					'),
-				),
-				'sort' => array(
-					'default' => 'name',
-					'reverse' => 'name DESC',
-				),
-			),
-			'delete' => array(
-				'header' => array(
-					'value' => '<input type="checkbox" class="input_check" onclick="invertAll(this, this.form);" />',
-					'style' => 'width: 4%;',
-					'class' => 'centercol',
-				),
-				'data' => array(
-					'sprintf' => array(
-						'format' => '<input type="checkbox" name="notify_boards[]" value="%1$d" class="input_check" />',
-						'params' => array(
-							'id' => false,
-						),
-					),
-					'class' => 'centercol',
-				),
-			),
-		),
-		'form' => array(
-			'href' => $scripturl . '?action=profile;area=notification;save',
-			'include_sort' => true,
-			'include_start' => true,
-			'hidden_fields' => array(
-				'u' => $memID,
-				'sa' => $context['menu_item_selected'],
-				$context['session_var'] => $context['session_id'],
-			),
-			'token' => $context['token_check'],
-		),
-		'additional_rows' => array(
-			array(
-				'position' => 'bottom_of_list',
-				'value' => '<input type="submit" name="edit_notify_boards" value="' . $txt['notifications_update'] . '" class="button_submit" />',
-				'align' => 'right',
-			),
-		),
-	);
-
-	// Create the board notification list.
-	createList($listOptions);
-
-	// Now do the topic notifications.
+	// Do the topic notifications.
 	$listOptions = array(
 		'id' => 'topic_notification_list',
 		'width' => '100%',
@@ -1705,8 +1584,6 @@ function notification($memID)
 
 						if ($topic[\'new\'])
 							$link .= \' <a href="\' . $topic[\'new_href\'] . \'"><span class="new_posts">\' . $txt[\'new\'] . \'</span></a>\';
-
-						$link .= \'<br /><span class="smalltext"><em>\' . $txt[\'in\'] . \' \' . $topic[\'board_link\'] . \'</em></span>\';
 
 						return $link;
 					'),
@@ -1811,11 +1688,9 @@ function list_getTopicNotificationCount($memID)
 
 	$request = $smcFunc['db_query']('', '
 		SELECT COUNT(*)
-		FROM {db_prefix}log_notify AS ln' . (!$modSettings['postmod_active'] && $user_info['query_see_board'] === '1=1' ? '' : '
-			INNER JOIN {db_prefix}topics AS t ON (t.id_topic = ln.id_topic)') . ($user_info['query_see_board'] === '1=1' ? '' : '
-			INNER JOIN {db_prefix}boards AS b ON (b.id_board = t.id_board)') . '
-		WHERE ln.id_member = {int:selected_member}' . ($user_info['query_see_board'] === '1=1' ? '' : '
-			AND {query_see_board}') . ($modSettings['postmod_active'] ? '
+		FROM {db_prefix}log_notify AS ln' . (!$modSettings['postmod_active'] ? '' : '
+			INNER JOIN {db_prefix}topics AS t ON (t.id_topic = ln.id_topic)') . '
+		WHERE ln.id_member = {int:selected_member}' . ($modSettings['postmod_active'] ? '
 			AND t.approved = {int:is_approved}' : ''),
 		array(
 			'selected_member' => $memID,
@@ -1845,19 +1720,18 @@ function list_getTopicNotifications($start, $items_per_page, $sort, $memID)
 	// All the topics with notification on...
 	$request = $smcFunc['db_query']('', '
 		SELECT
-			IFNULL(lt.id_msg, IFNULL(lmr.id_msg, -1)) + 1 AS new_from, b.id_board, b.name,
+			IFNULL(lt.id_msg, IFNULL(lmr.id_msg, -1)) + 1 AS new_from,
 			t.id_topic, ms.subject, ms.id_member, IFNULL(mem.real_name, ms.poster_name) AS real_name_col,
 			ml.id_msg_modified, ml.poster_time, ml.id_member AS id_member_updated,
 			IFNULL(mem2.real_name, ml.poster_name) AS last_real_name
 		FROM {db_prefix}log_notify AS ln
 			INNER JOIN {db_prefix}topics AS t ON (t.id_topic = ln.id_topic' . ($modSettings['postmod_active'] ? ' AND t.approved = {int:is_approved}' : '') . ')
-			INNER JOIN {db_prefix}boards AS b ON (b.id_board = t.id_board AND {query_see_board})
 			INNER JOIN {db_prefix}messages AS ms ON (ms.id_msg = t.id_first_msg)
 			INNER JOIN {db_prefix}messages AS ml ON (ml.id_msg = t.id_last_msg)
 			LEFT JOIN {db_prefix}members AS mem ON (mem.id_member = ms.id_member)
 			LEFT JOIN {db_prefix}members AS mem2 ON (mem2.id_member = ml.id_member)
 			LEFT JOIN {db_prefix}log_topics AS lt ON (lt.id_topic = t.id_topic AND lt.id_member = {int:current_member})
-			LEFT JOIN {db_prefix}log_mark_read AS lmr ON (lmr.id_board = b.id_board AND lmr.id_member = {int:current_member})
+			LEFT JOIN {db_prefix}log_mark_read AS lmr ON (lmr.id_member = {int:current_member})
 		WHERE ln.id_member = {int:selected_member}
 		ORDER BY {raw:sort}
 		LIMIT {int:offset}, {int:items_per_page}',
@@ -1887,52 +1761,11 @@ function list_getTopicNotifications($start, $items_per_page, $sort, $memID)
 			'updated' => timeformat($row['poster_time']),
 			'new_href' => $scripturl . '?topic=' . $row['id_topic'] . '.msg' . $row['new_from'] . '#new',
 			'new_link' => '<a href="' . $scripturl . '?topic=' . $row['id_topic'] . '.msg' . $row['new_from'] . '#new">' . $row['subject'] . '</a>',
-			'board_link' => '<a href="' . $scripturl . '?board=' . $row['id_board'] . '.0">' . $row['name'] . '</a>',
 		);
 	}
 	$smcFunc['db_free_result']($request);
 
 	return $notification_topics;
-}
-
-/**
- * @todo needs a description
- *
- * @param int $start
- * @param int $items_per_page
- * @param string $sort
- * @param int $memID id_member
- * @return array
- */
-function list_getBoardNotifications($start, $items_per_page, $sort, $memID)
-{
-	global $smcFunc, $txt, $scripturl, $user_info;
-
-	$request = $smcFunc['db_query']('', '
-		SELECT b.id_board, b.name, IFNULL(lb.id_msg, 0) AS board_read, b.id_msg_updated
-		FROM {db_prefix}log_notify AS ln
-			INNER JOIN {db_prefix}boards AS b ON (b.id_board = ln.id_board)
-			LEFT JOIN {db_prefix}log_boards AS lb ON (lb.id_board = b.id_board AND lb.id_member = {int:current_member})
-		WHERE ln.id_member = {int:selected_member}
-			AND {query_see_board}
-		ORDER BY ' . $sort,
-		array(
-			'current_member' => $user_info['id'],
-			'selected_member' => $memID,
-		)
-	);
-	$notification_boards = array();
-	while ($row = $smcFunc['db_fetch_assoc']($request))
-		$notification_boards[] = array(
-			'id' => $row['id_board'],
-			'name' => $row['name'],
-			'href' => $scripturl . '?board=' . $row['id_board'] . '.0',
-			'link' => '<a href="' . $scripturl . '?board=' . $row['id_board'] . '.0">' . $row['name'] . '</a>',
-			'new' => $row['board_read'] < $row['id_msg_updated']
-		);
-	$smcFunc['db_free_result']($request);
-
-	return $notification_boards;
 }
 
 /**
@@ -1991,86 +1824,6 @@ function loadThemeOptions($memID)
 }
 
 /**
- * @todo needs a description
- *
- * @param int $memID id_member
- */
-function ignoreboards($memID)
-{
-	global $txt, $user_info, $context, $modSettings, $smcFunc, $cur_profile;
-
-	// Have the admins enabled this option?
-	if (empty($modSettings['allow_ignore_boards']))
-		fatal_lang_error('ignoreboards_disallowed', 'user');
-
-	// Find all the boards this user is allowed to see.
-	$request = $smcFunc['db_query']('order_by_board_order', '
-		SELECT b.id_cat, c.name AS cat_name, b.id_board, b.name, b.child_level,
-			'. (!empty($cur_profile['ignore_boards']) ? 'b.id_board IN ({array_int:ignore_boards})' : '0') . ' AS is_ignored
-		FROM {db_prefix}boards AS b
-			LEFT JOIN {db_prefix}categories AS c ON (c.id_cat = b.id_cat)
-		WHERE {query_see_board}
-			AND redirect = {string:empty_string}',
-		array(
-			'ignore_boards' => !empty($cur_profile['ignore_boards']) ? explode(',', $cur_profile['ignore_boards']) : array(),
-			'empty_string' => '',
-		)
-	);
-	$context['num_boards'] = $smcFunc['db_num_rows']($request);
-	$context['categories'] = array();
-	while ($row = $smcFunc['db_fetch_assoc']($request))
-	{
-		// This category hasn't been set up yet..
-		if (!isset($context['categories'][$row['id_cat']]))
-			$context['categories'][$row['id_cat']] = array(
-				'id' => $row['id_cat'],
-				'name' => $row['cat_name'],
-				'boards' => array()
-			);
-
-		// Set this board up, and let the template know when it's a child.  (indent them..)
-		$context['categories'][$row['id_cat']]['boards'][$row['id_board']] = array(
-			'id' => $row['id_board'],
-			'name' => $row['name'],
-			'child_level' => $row['child_level'],
-			'selected' => $row['is_ignored'],
-		);
-	}
-	$smcFunc['db_free_result']($request);
-
-	// Now, let's sort the list of categories into the boards for templates that like that.
-	$temp_boards = array();
-	foreach ($context['categories'] as $category)
-	{
-		// Include a list of boards per category for easy toggling.
-		$context['categories'][$category['id']]['child_ids'] = array_keys($category['boards']);
-
-		$temp_boards[] = array(
-			'name' => $category['name'],
-			'child_ids' => array_keys($category['boards'])
-		);
-		$temp_boards = array_merge($temp_boards, array_values($category['boards']));
-	}
-
-	$max_boards = ceil(count($temp_boards) / 2);
-	if ($max_boards == 1)
-		$max_boards = 2;
-
-	// Now, alternate them so they can be shown left and right ;).
-	$context['board_columns'] = array();
-	for ($i = 0; $i < $max_boards; $i++)
-	{
-		$context['board_columns'][] = $temp_boards[$i];
-		if (isset($temp_boards[$i + $max_boards]))
-			$context['board_columns'][] = $temp_boards[$i + $max_boards];
-		else
-			$context['board_columns'][] = array();
-	}
-
-	loadThemeOptions($memID);
-}
-
-/**
  * Load all the languages for the profile.
  * @return boolean
  */
@@ -2118,12 +1871,10 @@ function profileLoadGroups()
 	$request = $smcFunc['db_query']('', '
 		SELECT group_name, id_group, hidden
 		FROM {db_prefix}membergroups
-		WHERE id_group != {int:moderator_group}
-			AND min_posts = {int:min_posts}' . (allowedTo('admin_forum') ? '' : '
+		WHERE min_posts = {int:min_posts}' . (allowedTo('admin_forum') ? '' : '
 			AND group_type != {int:is_protected}') . '
 		ORDER BY min_posts, CASE WHEN id_group < {int:newbie_group} THEN id_group ELSE 4 END, group_name',
 		array(
-			'moderator_group' => 3,
 			'min_posts' => -1,
 			'is_protected' => 1,
 			'newbie_group' => 4,
@@ -2644,14 +2395,12 @@ function groupMembership($memID)
 		WHERE (mg.id_group IN ({array_int:group_list})
 			OR mg.group_type > {int:nonjoin_group_id})
 			AND mg.min_posts = {int:min_posts}
-			AND mg.id_group != {int:moderator_group}
 		ORDER BY group_name',
 		array(
 			'group_list' => $groups,
 			'selected_member' => $memID,
 			'nonjoin_group_id' => 1,
 			'min_posts' => -1,
-			'moderator_group' => 3,
 		)
 	);
 	// This beast will be our group holder.

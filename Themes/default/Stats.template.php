@@ -60,8 +60,6 @@ function template_main()
 							<dd>', $context['average_posts'], '</dd>
 							<dt>', $txt['average_topics'], ':</dt>
 							<dd>', $context['average_topics'], '</dd>
-							<dt>', $txt['total_boards'], ':</dt>
-							<dd>', $context['num_boards'], '</dd>
 							<dt>', $txt['latest_member'], ':</dt>
 							<dd>', $context['common_stats']['latest_member']['link'], '</dd>
 							<dt>', $txt['average_online'], ':</dt>
@@ -100,31 +98,6 @@ function template_main()
 			<div class="progress">
 				<div class="bar" style="width: ', $poster['post_percent'], '%;">', $poster['num_posts'], '</div>
 			</div>';
-	}
-
-	echo '
-							</dl>
-					</div>
-			</div>
-			<div id="top_boards">
-					<h3 class="catbg">
-						<img src="', $settings['images_url'], '/stats_board.png" class="icon" alt="" /> ', $txt['top_boards'], '
-					</h3>
-					<div class="well">
-							<dl class="stats">';
-
-	foreach ($context['top_boards'] as $board)
-	{
-		echo '
-								<dt>
-									', $board['link'], '
-								</dt>';
-
-		if (!empty($board['post_percent']))
-			echo '
-									<div class="progress">
-										<div class="bar" style="width: ', $board['post_percent'], '%;">', $board['num_posts'], '</div>
-									</div>';
 	}
 
 	echo '

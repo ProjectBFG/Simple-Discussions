@@ -208,8 +208,6 @@ class custom_search
 
 		if ($query_params['user_query'])
 			$query_where[] = '{raw:user_query}';
-		if ($query_params['board_query'])
-			$query_where[] = 'm.id_board {raw:board_query}';
 
 		if ($query_params['topic'])
 			$query_where[] = 'm.id_topic = {int:topic}';

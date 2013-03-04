@@ -1615,12 +1615,11 @@ function sendNotifications($topics, $type, $exclude = array(), $members_only = a
 	$members = $smcFunc['db_query']('', '
 		SELECT
 			mem.id_member, mem.email_address, mem.notify_regularity, mem.notify_types, mem.notify_send_body, mem.lngfile,
-			ln.sent, mem.id_group, mem.additional_groups, b.member_groups, mem.id_post_group, t.id_member_started,
+			ln.sent, mem.id_group, mem.additional_groups, mem.id_post_group, t.id_member_started,
 			ln.id_topic
 		FROM {db_prefix}log_notify AS ln
 			INNER JOIN {db_prefix}members AS mem ON (mem.id_member = ln.id_member)
 			INNER JOIN {db_prefix}topics AS t ON (t.id_topic = ln.id_topic)
-			INNER JOIN {db_prefix}boards AS b ON (b.id_board = t.id_board)
 		WHERE ln.id_topic IN ({array_int:topic_list})
 			AND mem.notify_types < {int:notify_types}
 			AND mem.notify_regularity < {int:notify_regularity}
@@ -1745,7 +1744,6 @@ function createPost(&$msgOptions, &$topicOptions, &$posterOptions)
 	global $user_info, $txt, $modSettings, $smcFunc, $context, $sourcedir;
 
 	// Set optional parameters to the default value.
-	$msgOptions['icon'] = empty($msgOptions['icon']) ? 'xx' : $msgOptions['icon'];
 	$msgOptions['smileys_enabled'] = !empty($msgOptions['smileys_enabled']);
 	$msgOptions['approved'] = isset($msgOptions['approved']) ? (int) $msgOptions['approved'] : 1;
 	$topicOptions['id'] = empty($topicOptions['id']) ? 0 : (int) $topicOptions['id'];
@@ -1819,15 +1817,15 @@ function createPost(&$msgOptions, &$topicOptions, &$posterOptions)
 	$new_topic = empty($topicOptions['id']);
 
 	$message_columns = array(
-		'id_board' => 'int', 'id_topic' => 'int', 'id_member' => 'int', 'subject' => 'string-255', 'body' => (!empty($modSettings['max_messageLength']) && $modSettings['max_messageLength'] > 65534 ? 'string-' . $modSettings['max_messageLength'] : (empty($modSettings['max_messageLength']) ? 'string' : 'string-65534')),
+		'id_topic' => 'int', 'id_member' => 'int', 'subject' => 'string-255', 'body' => (!empty($modSettings['max_messageLength']) && $modSettings['max_messageLength'] > 65534 ? 'string-' . $modSettings['max_messageLength'] : (empty($modSettings['max_messageLength']) ? 'string' : 'string-65534')),
 		'poster_name' => 'string-255', 'poster_email' => 'string-255', 'poster_time' => 'int', 'poster_ip' => 'string-255',
-		'smileys_enabled' => 'int', 'modified_name' => 'string', 'icon' => 'string-16', 'approved' => 'int',
+		'smileys_enabled' => 'int', 'modified_name' => 'string', 'approved' => 'int',
 	);
 
 	$message_parameters = array(
-		$topicOptions['board'], $topicOptions['id'], $posterOptions['id'], $msgOptions['subject'], $msgOptions['body'],
+		$topicOptions['id'], $posterOptions['id'], $msgOptions['subject'], $msgOptions['body'],
 		$posterOptions['name'], $posterOptions['email'], time(), $posterOptions['ip'],
-		$msgOptions['smileys_enabled'] ? 1 : 0, '', $msgOptions['icon'], $msgOptions['approved'],
+		$msgOptions['smileys_enabled'] ? 1 : 0, '', $msgOptions['approved'],
 	);
 
 	// What if we want to do anything with posts?
@@ -1850,12 +1848,12 @@ function createPost(&$msgOptions, &$topicOptions, &$posterOptions)
 	if ($new_topic)
 	{
 		$topic_columns = array(
-			'id_board' => 'int', 'id_member_started' => 'int', 'id_member_updated' => 'int', 'id_first_msg' => 'int',
+			'id_member_started' => 'int', 'id_member_updated' => 'int', 'id_first_msg' => 'int',
 			'id_last_msg' => 'int', 'locked' => 'int', 'is_sticky' => 'int', 'num_views' => 'int',
 			'redirect_expires' => 'int', 'id_redirect_topic' => 'int',
 		);
 		$topic_parameters = array(
-			$topicOptions['board'], $posterOptions['id'], $posterOptions['id'], $msgOptions['id'],
+			$posterOptions['id'], $posterOptions['id'], $msgOptions['id'],
 			$msgOptions['id'], $topicOptions['lock_mode'] === null ? 0 : $topicOptions['lock_mode'], $topicOptions['sticky_mode'] === null ? 0 : $topicOptions['sticky_mode'], 0,
 			$topicOptions['redirect_expires'] === null ? 0 : $topicOptions['redirect_expires'], $topicOptions['redirect_topic'] === null ? 0 : $topicOptions['redirect_topic'],
 		);
@@ -1962,28 +1960,9 @@ function createPost(&$msgOptions, &$topicOptions, &$posterOptions)
 		)
 	);
 
-	// Increase the number of posts and topics on the board.
-	if ($msgOptions['approved'])
-		$smcFunc['db_query']('', '
-			UPDATE {db_prefix}boards
-			SET num_posts = num_posts + 1' . ($new_topic ? ', num_topics = num_topics + 1' : '') . '
-			WHERE id_board = {int:id_board}',
-			array(
-				'id_board' => $topicOptions['board'],
-			)
-		);
-	else
+	// Add to the approval queue if not approved.
+	if (!$msgOptions['approved'])
 	{
-		$smcFunc['db_query']('', '
-			UPDATE {db_prefix}boards
-			SET unapproved_posts = unapproved_posts + 1' . ($new_topic ? ', unapproved_topics = unapproved_topics + 1' : '') . '
-			WHERE id_board = {int:id_board}',
-			array(
-				'id_board' => $topicOptions['board'],
-			)
-		);
-
-		// Add to the approval queue too.
 		$smcFunc['db_insert']('',
 			'{db_prefix}approval_queue',
 			array(
@@ -2046,16 +2025,8 @@ function createPost(&$msgOptions, &$topicOptions, &$posterOptions)
 	// They've posted, so they can make the view count go up one if they really want. (this is to keep views >= replies...)
 	$_SESSION['last_read_topic'] = 0;
 
-	// Better safe than sorry.
-	if (isset($_SESSION['topicseen_cache'][$topicOptions['board']]))
-		$_SESSION['topicseen_cache'][$topicOptions['board']]--;
-
 	// Update all the stats so everyone knows about this new topic and message.
 	updateStats('message', true, $msgOptions['id']);
-
-	// Update the last message on the board assuming it's approved AND the topic is.
-	if ($msgOptions['approved'])
-		updateLastMessages($topicOptions['board'], $new_topic || !empty($topicOptions['is_approved']) ? $msgOptions['id'] : 0);
 
 	// Alright, done now... we can abort now, I guess... at least this much is done.
 	ignore_user_abort($previous_ignore_user_abort);
@@ -2084,8 +2055,6 @@ function modifyPost(&$msgOptions, &$topicOptions, &$posterOptions)
 		$messages_columns['poster_name'] = $posterOptions['name'];
 	if (isset($posterOptions['email']))
 		$messages_columns['poster_email'] = $posterOptions['email'];
-	if (isset($msgOptions['icon']))
-		$messages_columns['icon'] = $msgOptions['icon'];
 	if (isset($msgOptions['subject']))
 		$messages_columns['subject'] = $msgOptions['subject'];
 	if (isset($msgOptions['body']))
@@ -2236,12 +2205,11 @@ function approvePosts($msgs, $approve = true)
 
 	// May as well start at the beginning, working out *what* we need to change.
 	$request = $smcFunc['db_query']('', '
-		SELECT m.id_msg, m.approved, m.id_topic, m.id_board, t.id_first_msg, t.id_last_msg,
+		SELECT m.id_msg, m.approved, m.id_topic, t.id_first_msg, t.id_last_msg,
 			m.body, m.subject, IFNULL(mem.real_name, m.poster_name) AS poster_name, m.id_member,
-			t.approved AS topic_approved, b.count_posts
+			t.approved AS topic_approved
 		FROM {db_prefix}messages AS m
 			INNER JOIN {db_prefix}topics AS t ON (t.id_topic = m.id_topic)
-			INNER JOIN {db_prefix}boards AS b ON (b.id_board = m.id_board)
 			LEFT JOIN {db_prefix}members AS mem ON (mem.id_member = m.id_member)
 		WHERE m.id_msg IN ({array_int:message_list})
 			AND m.approved = {int:approved_state}',
@@ -2253,7 +2221,6 @@ function approvePosts($msgs, $approve = true)
 	$msgs = array();
 	$topics = array();
 	$topic_changes = array();
-	$board_changes = array();
 	$notification_topics = array();
 	$notification_posts = array();
 	$member_post_changes = array();
@@ -2271,28 +2238,17 @@ function approvePosts($msgs, $approve = true)
 				'replies' => 0,
 				'unapproved_posts' => 0,
 			);
-		if (!isset($board_changes[$row['id_board']]))
-			$board_changes[$row['id_board']] = array(
-				'posts' => 0,
-				'topics' => 0,
-				'unapproved_posts' => 0,
-				'unapproved_topics' => 0,
-			);
 
 		// If it's the first message then the topic state changes!
 		if ($row['id_msg'] == $row['id_first_msg'])
 		{
 			$topic_changes[$row['id_topic']]['approved'] = $approve ? 1 : 0;
 
-			$board_changes[$row['id_board']]['unapproved_topics'] += $approve ? -1 : 1;
-			$board_changes[$row['id_board']]['topics'] += $approve ? 1 : -1;
-
 			// Note we need to ensure we announce this topic!
 			$notification_topics[] = array(
 				'body' => $row['body'],
 				'subject' => $row['subject'],
 				'name' => $row['poster_name'],
-				'board' => $row['id_board'],
 				'topic' => $row['id_topic'],
 				'msg' => $row['id_first_msg'],
 				'poster' => $row['id_member'],
@@ -2322,8 +2278,6 @@ function approvePosts($msgs, $approve = true)
 			$topic_changes[$row['id_topic']]['id_last_msg'] = $row['id_first_msg'];
 
 		$topic_changes[$row['id_topic']]['unapproved_posts'] += $approve ? -1 : 1;
-		$board_changes[$row['id_board']]['unapproved_posts'] += $approve ? -1 : 1;
-		$board_changes[$row['id_board']]['posts'] += $approve ? 1 : -1;
 
 		// Post count for the user?
 		if ($row['id_member'] && empty($row['count_posts']))
@@ -2380,30 +2334,9 @@ function approvePosts($msgs, $approve = true)
 			)
 		);
 
-	// ... finally the boards...
-	foreach ($board_changes as $id => $changes)
-		$smcFunc['db_query']('', '
-			UPDATE {db_prefix}boards
-			SET num_posts = num_posts + {int:num_posts}, unapproved_posts = unapproved_posts + {int:unapproved_posts},
-				num_topics = num_topics + {int:num_topics}, unapproved_topics = unapproved_topics + {int:unapproved_topics}
-			WHERE id_board = {int:id_board}',
-			array(
-				'num_posts' => $changes['posts'],
-				'unapproved_posts' => $changes['unapproved_posts'],
-				'num_topics' => $changes['topics'],
-				'unapproved_topics' => $changes['unapproved_topics'],
-				'id_board' => $id,
-			)
-		);
-
 	// Finally, least importantly, notifications!
 	if ($approve)
 	{
-		if (!empty($notification_topics))
-		{
-			require_once($sourcedir . '/Post.php');
-			notifyMembersBoard($notification_topics);
-		}
 		if (!empty($notification_posts))
 			sendApprovalNotifications($notification_posts);
 
@@ -2429,9 +2362,6 @@ function approvePosts($msgs, $approve = true)
 			array('id_msg')
 		);
 	}
-
-	// Update the last messages on the boards...
-	updateLastMessages(array_keys($board_changes));
 
 	// Post count for the members?
 	if (!empty($member_post_changes))
@@ -2521,17 +2451,16 @@ function sendApprovalNotifications(&$topicData)
 	$members = $smcFunc['db_query']('', '
 		SELECT
 			mem.id_member, mem.email_address, mem.notify_regularity, mem.notify_types, mem.notify_send_body, mem.lngfile,
-			ln.sent, mem.id_group, mem.additional_groups, b.member_groups, mem.id_post_group, t.id_member_started,
+			ln.sent, mem.id_group, mem.additional_groups, mem.id_post_group, t.id_member_started,
 			ln.id_topic
 		FROM {db_prefix}log_notify AS ln
 			INNER JOIN {db_prefix}members AS mem ON (mem.id_member = ln.id_member)
 			INNER JOIN {db_prefix}topics AS t ON (t.id_topic = ln.id_topic)
-			INNER JOIN {db_prefix}boards AS b ON (b.id_board = t.id_board)
 		WHERE ln.id_topic IN ({array_int:topic_list})
 			AND mem.is_activated = {int:is_activated}
 			AND mem.notify_types < {int:notify_types}
 			AND mem.notify_regularity < {int:notify_regularity}
-		GROUP BY mem.id_member, ln.id_topic, mem.email_address, mem.notify_regularity, mem.notify_types, mem.notify_send_body, mem.lngfile, ln.sent, mem.id_group, mem.additional_groups, b.member_groups, mem.id_post_group, t.id_member_started
+		GROUP BY mem.id_member, ln.id_topic, mem.email_address, mem.notify_regularity, mem.notify_types, mem.notify_send_body, mem.lngfile, ln.sent, mem.id_group, mem.additional_groups, mem.id_post_group, t.id_member_started
 		ORDER BY mem.lngfile',
 		array(
 			'topic_list' => $topics,
@@ -2610,143 +2539,6 @@ function sendApprovalNotifications(&$topicData)
 				'is_sent' => 1,
 			)
 		);
-}
-
-/**
- * Takes an array of board IDs and updates their last messages.
- * If the board has a parent, that parent board is also automatically
- * updated.
- * The columns updated are id_last_msg and last_updated.
- * Note that id_last_msg should always be updated using this function,
- * and is not automatically updated upon other changes.
- *
- * @param array $setboards
- * @param int $id_msg = 0
- */
-function updateLastMessages($setboards, $id_msg = 0)
-{
-	global $board_info, $board, $modSettings, $smcFunc;
-
-	// Please - let's be sane.
-	if (empty($setboards))
-		return false;
-
-	if (!is_array($setboards))
-		$setboards = array($setboards);
-
-	// If we don't know the id_msg we need to find it.
-	if (!$id_msg)
-	{
-		// Find the latest message on this board (highest id_msg.)
-		$request = $smcFunc['db_query']('', '
-			SELECT id_board, MAX(id_last_msg) AS id_msg
-			FROM {db_prefix}topics
-			WHERE id_board IN ({array_int:board_list})
-				AND approved = {int:approved}
-			GROUP BY id_board',
-			array(
-				'board_list' => $setboards,
-				'approved' => 1,
-			)
-		);
-		$lastMsg = array();
-		while ($row = $smcFunc['db_fetch_assoc']($request))
-			$lastMsg[$row['id_board']] = $row['id_msg'];
-		$smcFunc['db_free_result']($request);
-	}
-	else
-	{
-		// Just to note - there should only be one board passed if we are doing this.
-		foreach ($setboards as $id_board)
-			$lastMsg[$id_board] = $id_msg;
-	}
-
-	$parent_boards = array();
-	// Keep track of last modified dates.
-	$lastModified = $lastMsg;
-	// Get all the child boards for the parents, if they have some...
-	foreach ($setboards as $id_board)
-	{
-		if (!isset($lastMsg[$id_board]))
-		{
-			$lastMsg[$id_board] = 0;
-			$lastModified[$id_board] = 0;
-		}
-
-		if (!empty($board) && $id_board == $board)
-			$parents = $board_info['parent_boards'];
-		else
-			$parents = getBoardParents($id_board);
-
-		// Ignore any parents on the top child level.
-		// @todo Why?
-		foreach ($parents as $id => $parent)
-		{
-			if ($parent['level'] != 0)
-			{
-				// If we're already doing this one as a board, is this a higher last modified?
-				if (isset($lastModified[$id]) && $lastModified[$id_board] > $lastModified[$id])
-					$lastModified[$id] = $lastModified[$id_board];
-				elseif (!isset($lastModified[$id]) && (!isset($parent_boards[$id]) || $parent_boards[$id] < $lastModified[$id_board]))
-					$parent_boards[$id] = $lastModified[$id_board];
-			}
-		}
-	}
-
-	// Note to help understand what is happening here. For parents we update the timestamp of the last message for determining
-	// whether there are child boards which have not been read. For the boards themselves we update both this and id_last_msg.
-
-	$board_updates = array();
-	$parent_updates = array();
-	// Finally, to save on queries make the changes...
-	foreach ($parent_boards as $id => $msg)
-	{
-		if (!isset($parent_updates[$msg]))
-			$parent_updates[$msg] = array($id);
-		else
-			$parent_updates[$msg][] = $id;
-	}
-
-	foreach ($lastMsg as $id => $msg)
-	{
-		if (!isset($board_updates[$msg . '-' . $lastModified[$id]]))
-			$board_updates[$msg . '-' . $lastModified[$id]] = array(
-				'id' => $msg,
-				'updated' => $lastModified[$id],
-				'boards' => array($id)
-			);
-
-		else
-			$board_updates[$msg . '-' . $lastModified[$id]]['boards'][] = $id;
-	}
-
-	// Now commit the changes!
-	foreach ($parent_updates as $id_msg => $boards)
-	{
-		$smcFunc['db_query']('', '
-			UPDATE {db_prefix}boards
-			SET id_msg_updated = {int:id_msg_updated}
-			WHERE id_board IN ({array_int:board_list})
-				AND id_msg_updated < {int:id_msg_updated}',
-			array(
-				'board_list' => $boards,
-				'id_msg_updated' => $id_msg,
-			)
-		);
-	}
-	foreach ($board_updates as $board_data)
-	{
-		$smcFunc['db_query']('', '
-			UPDATE {db_prefix}boards
-			SET id_last_msg = {int:id_last_msg}, id_msg_updated = {int:id_msg_updated}
-			WHERE id_board IN ({array_int:board_list})',
-			array(
-				'board_list' => $board_data['boards'],
-				'id_last_msg' => $board_data['id'],
-				'id_msg_updated' => $board_data['updated'],
-			)
-		);
-	}
 }
 
 /**

@@ -703,35 +703,6 @@ function rebuildModCache()
 	// Then, same again, just the boards this time!
 	$board_query = allowedTo('moderate_forum') ? '1=1' : '0=1';
 
-	if ($board_query == '0=1')
-	{
-		$boards = boardsAllowedTo('moderate_board', true);
-
-		if (empty($boards))
-			$board_query = '0=1';
-		else
-			$board_query = 'id_board IN (' . implode(',', $boards) . ')';
-	}
-
-	// What boards are they the moderator of?
-	$boards_mod = array();
-	if (!$user_info['is_guest'])
-	{
-		$request = $smcFunc['db_query']('', '
-			SELECT id_board
-			FROM {db_prefix}moderators
-			WHERE id_member = {int:current_member}',
-			array(
-				'current_member' => $user_info['id'],
-			)
-		);
-		while ($row = $smcFunc['db_fetch_assoc']($request))
-			$boards_mod[] = $row['id_board'];
-		$smcFunc['db_free_result']($request);
-	}
-
-	$mod_query = empty($boards_mod) ? '0=1' : 'b.id_board IN (' . implode(',', $boards_mod) . ')';
-
 	$_SESSION['mc'] = array(
 		'time' => time(),
 		// This looks a bit funny but protects against the login redirect.
@@ -739,9 +710,7 @@ function rebuildModCache()
 		// If you change the format of 'gq' and/or 'bq' make sure to adjust 'can_mod' in Load.php.
 		'gq' => $group_query,
 		'bq' => $board_query,
-		'ap' => boardsAllowedTo('approve_posts'),
-		'mb' => $boards_mod,
-		'mq' => $mod_query,
+		'ap' => allowedTo('approve_posts'),
 	);
 	call_integration_hook('integrate_mod_cache');
 

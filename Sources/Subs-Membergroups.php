@@ -42,8 +42,8 @@ function deleteMembergroups($groups)
 			$groups[$key] = (int) $value;
 	}
 
-	// Some groups are protected (guests, administrators, moderators, newbies).
-	$protected_groups = array(-1, 0, 1, 3, 4);
+	// Some groups are protected (guests, administrators, newbies).
+	$protected_groups = array(-1, 0, 1, 4);
 
 	// There maybe some others as well.
 	if (!allowedTo('admin_forum'))
@@ -93,13 +93,6 @@ function deleteMembergroups($groups)
 	// Remove the permissions of the membergroups.
 	$smcFunc['db_query']('', '
 		DELETE FROM {db_prefix}permissions
-		WHERE id_group IN ({array_int:group_list})',
-		array(
-			'group_list' => $groups,
-		)
-	);
-	$smcFunc['db_query']('', '
-		DELETE FROM {db_prefix}board_permissions
 		WHERE id_group IN ({array_int:group_list})',
 		array(
 			'group_list' => $groups,
@@ -160,31 +153,6 @@ function deleteMembergroups($groups)
 
 	foreach ($updates as $additional_groups => $memberArray)
 		updateMemberData($memberArray, array('additional_groups' => implode(',', array_diff(explode(',', $additional_groups), $groups))));
-
-	// No boards can provide access to these membergroups anymore.
-	$request = $smcFunc['db_query']('', '
-		SELECT id_board, member_groups
-		FROM {db_prefix}boards
-		WHERE FIND_IN_SET({raw:member_groups_explode}, member_groups) != 0',
-		array(
-			'member_groups_explode' => implode(', member_groups) != 0 OR FIND_IN_SET(', $groups),
-		)
-	);
-	$updates = array();
-	while ($row = $smcFunc['db_fetch_assoc']($request))
-		$updates[$row['member_groups']][] = $row['id_board'];
-	$smcFunc['db_free_result']($request);
-
-	foreach ($updates as $member_groups => $boardArray)
-		$smcFunc['db_query']('', '
-			UPDATE {db_prefix}boards
-			SET member_groups = {string:member_groups}
-			WHERE id_board IN ({array_int:board_lists})',
-			array(
-				'board_lists' => $boardArray,
-				'member_groups' => implode(',', array_diff(explode(',', $member_groups), $groups)),
-			)
-		);
 
 	// Recalculate the post groups, as they likely changed.
 	updateStats('postgroups');

@@ -1,13 +1,9 @@
 <?php
 // Version: 2.1; Reports
-
+/* @todoy: add missing texts */
 $txt['generate_reports_desc'] = 'From this section you can generate a variety of reports to assist in the administration of your forum. Simply follow the steps below to select the option of your choice.';
 $txt['generate_reports_continue'] = 'Continue';
 $txt['generate_reports_type'] = 'Select Type of Report';
-$txt['gr_type_boards'] = 'Boards';
-$txt['gr_type_desc_boards'] = 'Reports showing the current settings and access levels for each of boards on your forum.';
-$txt['gr_type_board_perms'] = 'Board Permissions';
-$txt['gr_type_desc_board_perms'] = 'Generate reports showing permissions each membergroup has across the different boards in your forum.';
 $txt['gr_type_member_groups'] = 'Membergroups';
 $txt['gr_type_desc_member_groups'] = 'Report showing the settings for each membergroup on your forum.';
 $txt['gr_type_group_perms'] = 'Group Permissions';
@@ -19,44 +15,8 @@ $txt['full_member'] = 'Full Member';
 $txt['global_boards'] = 'Global Boards';
 $txt['results'] = 'Results';
 
-// Board permissions
-$txt['board_perms_permission'] = 'Permission';
-$txt['board_perms_allow'] = 'Allow';
-$txt['board_perms_deny'] = 'Deny';
-$txt['board_perms_name_announce_topic'] = 'Announce topic';
-$txt['board_perms_name_approve_posts'] = 'Approve posts';
-$txt['board_perms_name_delete_any'] = 'Delete any posts';
-$txt['board_perms_name_delete_own'] = 'Delete own posts';
-$txt['board_perms_name_delete_replies'] = 'Delete replies to own topics';
-$txt['board_perms_name_lock_any'] = 'Lock any topic';
-$txt['board_perms_name_lock_own'] = 'Lock own topic';
-$txt['board_perms_name_make_sticky'] = 'Make topics sticky';
-$txt['board_perms_name_mark_any_notify'] = 'Request notification on any topic';
-$txt['board_perms_name_mark_notify'] = 'Request notification on own topics';
-$txt['board_perms_name_merge_any'] = 'Merge topics';
-$txt['board_perms_name_moderate_board'] = 'Moderate the board';
-$txt['board_perms_name_modify_any'] = 'Modify any post';
-$txt['board_perms_name_modify_own'] = 'Modify own posts';
-$txt['board_perms_name_modify_replies'] = 'Modify replies to own topics';
-$txt['board_perms_name_move_any'] = 'Move Any Topic';
-$txt['board_perms_name_move_own'] = 'Move Own Topics';
-$txt['board_perms_name_post_attachment'] = 'Post attachments';
-$txt['board_perms_name_post_new'] = 'Post new topics';
-$txt['board_perms_name_post_reply_any'] = 'Post replies in any topic';
-$txt['board_perms_name_post_reply_own'] = 'Post replies in own topics';
-$txt['board_perms_name_post_unapproved_attachments'] = 'Post unapproved attachments';
-$txt['board_perms_name_post_unapproved_topics'] = 'Post unapproved topics';
-$txt['board_perms_name_post_unapproved_replies_any'] = 'Post unapproved replies in any topic';
-$txt['board_perms_name_post_unapproved_replies_own'] = 'Post unapproved replies in own topic';
-$txt['board_perms_name_remove_any'] = 'Remove any topic';
-$txt['board_perms_name_remove_own'] = 'Remove own topics';
-$txt['board_perms_name_report_any'] = 'Report any post';
-$txt['board_perms_name_send_topic'] = 'Send topics to friends';
-$txt['board_perms_name_split_any'] = 'Split any topics';
-$txt['board_perms_name_view_attachments'] = 'View attachments';
-
-$txt['board_perms_group_reply_only'] = 'This board only allows users to make replies to topics';
-$txt['board_perms_group_read_only'] = 'This board does not allow posting';
+$txt['group_perms_group_reply_only'] = 'This board only allows users to make replies to topics';
+$txt['group_perms_group_read_only'] = 'This board does not allow posting';
 
 // Membergroup info!
 $txt['member_group_color'] = 'Color';
@@ -68,19 +28,42 @@ $txt['member_group_access'] = 'Board Access';
 
 // Board info.
 $txt['none'] = 'None';
-$txt['board_category'] = 'Category';
-$txt['board_parent'] = 'Parent Board';
-$txt['board_num_topics'] = 'Number of Topics';
-$txt['board_num_posts'] = 'Number of Posts';
-$txt['board_count_posts'] = 'Count Posts';
-$txt['board_theme'] = 'Board Theme';
-$txt['board_override_theme'] = 'Force Board Theme';
-$txt['board_profile'] = 'Permissions Profile';
-$txt['board_moderators'] = 'Moderators';
-$txt['board_groups'] = 'Groups with Access';
-$txt['board_disallowed_groups'] = 'Groups with Access Denied';
 
 // Group Permissions.
+$txt['group_perms_permission'] = 'Permission';
+$txt['group_perms_allow'] = 'Allow';
+$txt['group_perms_deny'] = 'Deny';
+$txt['group_perms_name_announce_topic'] = 'Announce topic';
+$txt['group_perms_name_approve_posts'] = 'Approve posts';
+$txt['group_perms_name_delete_any'] = 'Delete any posts';
+$txt['group_perms_name_delete_own'] = 'Delete own posts';
+$txt['group_perms_name_delete_replies'] = 'Delete replies to own topics';
+$txt['group_perms_name_lock_any'] = 'Lock any topic';
+$txt['group_perms_name_lock_own'] = 'Lock own topic';
+$txt['group_perms_name_make_sticky'] = 'Make topics sticky';
+$txt['group_perms_name_mark_any_notify'] = 'Request notification on any topic';
+$txt['group_perms_name_mark_notify'] = 'Request notification on own topics';
+$txt['group_perms_name_merge_any'] = 'Merge topics';
+$txt['group_perms_name_moderate_board'] = 'Moderate the board';
+$txt['group_perms_name_modify_any'] = 'Modify any post';
+$txt['group_perms_name_modify_own'] = 'Modify own posts';
+$txt['group_perms_name_modify_replies'] = 'Modify replies to own topics';
+$txt['group_perms_name_move_any'] = 'Move Any Topic';
+$txt['group_perms_name_move_own'] = 'Move Own Topics';
+$txt['group_perms_name_post_attachment'] = 'Post attachments';
+$txt['group_perms_name_post_new'] = 'Post new topics';
+$txt['group_perms_name_post_reply_any'] = 'Post replies in any topic';
+$txt['group_perms_name_post_reply_own'] = 'Post replies in own topics';
+$txt['group_perms_name_post_unapproved_attachments'] = 'Post unapproved attachments';
+$txt['group_perms_name_post_unapproved_topics'] = 'Post unapproved topics';
+$txt['group_perms_name_post_unapproved_replies_any'] = 'Post unapproved replies in any topic';
+$txt['group_perms_name_post_unapproved_replies_own'] = 'Post unapproved replies in own topic';
+$txt['group_perms_name_remove_any'] = 'Remove any topic';
+$txt['group_perms_name_remove_own'] = 'Remove own topics';
+$txt['group_perms_name_report_any'] = 'Report any post';
+$txt['group_perms_name_send_topic'] = 'Send topics to friends';
+$txt['group_perms_name_split_any'] = 'Split any topics';
+$txt['group_perms_name_view_attachments'] = 'View attachments';
 $txt['group_perms_name_access_mod_center'] = 'Access Moderation Center';
 $txt['group_perms_name_admin_forum'] = 'Admin forum';
 $txt['group_perms_name_edit_news'] = 'Edit forum news';

@@ -59,7 +59,7 @@ function template_main()
 				<p>', $txt['split_successful'], '</p>
 				<ul class="reset">
 					<li>
-						<a href="', $scripturl, '?board=', $context['current_board'], '.0">', $txt['message_index'], '</a>
+						<a href="', $scripturl, '>', $txt['message_index'], '</a>
 					</li>
 					<li>
 						<a href="', $scripturl, '?topic=', $context['old_topic'], '.0">', $txt['origin_topic'], '</a>
@@ -79,7 +79,7 @@ function template_select()
 
 	echo '
 	<div id="split_topics">
-		<form action="', $scripturl, '?action=splittopics;sa=splitSelection;board=', $context['current_board'], '.0" method="post" accept-charset="', $context['character_set'], '">
+		<form action="', $scripturl, '?action=splittopics;sa=splitSelection" method="post" accept-charset="', $context['character_set'], '">
 			<div id="not_selected" class="floatleft">
 					<h3 class="catbg">', $txt['split'], ' - ', $txt['select_split_posts'], '</h3>
 				<div class="information">
@@ -232,7 +232,7 @@ function template_merge_done()
 					<br />
 					<ul class="reset">
 						<li>
-							<a href="', $scripturl, '?board=', $context['target_board'], '.0">', $txt['message_index'], '</a>
+							<a href="', $scripturl, '">', $txt['message_index'], '</a>
 						</li>
 						<li>
 							<a href="', $scripturl, '?topic=', $context['target_topic'], '.0">', $txt['new_merged_topic'], '</a>
@@ -262,29 +262,7 @@ function template_merge()
 						</dt>
 						<dd>
 							', $context['origin_subject'], '
-						</dd>';
-
-	if (!empty($context['boards']) && count($context['boards']) > 1)
-	{
-			echo '
-						<dt>
-							<strong>', $txt['target_board'], ':</strong>
-						</dt>
-						<dd>
-							<form action="' . $scripturl . '?action=mergetopics;from=' . $context['origin_topic'] . ';targetboard=' . $context['target_board'] . ';board=' . $context['current_board'] . '.0" method="post" accept-charset="', $context['character_set'], '">
-								<input type="hidden" name="from" value="' . $context['origin_topic'] . '" />
-								<select name="targetboard" onchange="this.form.submit();">';
-			foreach ($context['boards'] as $board)
-				echo '
-									<option value="', $board['id'], '"', $board['id'] == $context['target_board'] ? ' selected="selected"' : '', '>', $board['category'], ' - ', $board['name'], '</option>';
-			echo '
-								</select>
-								<input type="submit" value="', $txt['go'], '" class="button_submit" />
-							</form>
-						</dd>';
-	}
-
-	echo '
+						</dd>
 					</dl>
 					<hr class="hrcolor" />
 					<dl class="settings merge_topic">
@@ -317,7 +295,7 @@ function template_merge()
 		foreach ($context['topics'] as $topic)
 			echo '
 						<li>
-							<a href="', $scripturl, '?action=mergetopics;sa=options;board=', $context['current_board'], '.0;from=', $context['origin_topic'], ';to=', $topic['id'], ';', $context['session_var'], '=', $context['session_id'], '">', $merge_button, '</a>&nbsp;
+							<a href="', $scripturl, '?action=mergetopics;sa=options;from=', $context['origin_topic'], ';to=', $topic['id'], ';', $context['session_var'], '=', $context['session_id'], '">', $merge_button, '</a>&nbsp;
 							<a href="', $scripturl, '?topic=', $topic['id'], '.0" target="_blank" class="new_win">', $topic['subject'], '</a> ', $txt['started_by'], ' ', $topic['poster']['link'], '
 						</li>';
 
@@ -393,24 +371,7 @@ function template_merge_extra_options()
 						<br /><input type="text" name="custom_subject" size="60" id="custom_subject" class="input_text custom_subject" style="display: none;" />
 						<br />
 						<label for="enforce_subject"><input type="checkbox" class="input_check" name="enforce_subject" id="enforce_subject" value="1" /> ', $txt['merge_enforce_subject'], '</label>
-					</fieldset>';
-
-	if (!empty($context['boards']) && count($context['boards']) > 1)
-	{
-		echo '
-					<fieldset id="merge_board" class="merge_options">
-						<legend>', $txt['merge_select_target_board'], '</legend>
-						<ul class="reset">';
-		foreach ($context['boards'] as $board)
-			echo '
-							<li>
-								<input type="radio" name="board" value="' . $board['id'] . '"' . ($board['selected'] ? ' checked="checked"' : '') . ' class="input_radio" /> ' . $board['name'] . '
-							</li>';
-		echo '
-						</ul>
-					</fieldset>';
-	}
-	echo '
+					</fieldset>
 					<div class="auto_flow">
 						<input type="submit" value="' . $txt['merge'] . '" class="button_submit" />
 						<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />

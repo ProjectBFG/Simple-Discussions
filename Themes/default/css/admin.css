@@ -48,7 +48,7 @@ body.action_admin .navigate_section ul li a {
 	border: none;
 	border-top: 1px solid #bbb;
 }
-#manage_maintenance .cat_bar .catbg, #manage_boards .cat_bar .catbg, #core_features .cat_bar .catbg,
+#manage_maintenance .cat_bar .catbg, #core_features .cat_bar .catbg,
 #support_credits .cat_bar .catbg, .generic_list_wrapper .cat_bar .catbg {
 	border: none;
 	border-top: 1px solid #fff;
@@ -694,128 +694,6 @@ pre.file_content {
 	width: 33%;
 }
 
-/* Styles for the manage boards section.
-------------------------------------------------- */
-#manage_boards {
-	background: #f0f4f7;
-	margin: 12px 0 0 0;
-	padding: 8px 8px 16px 8px;
-	border: 1px solid #ccc;
-	border-radius: 7px;
-	box-shadow: 0 -2px 2px rgba(0,0,0,0.1);
-	overflow: auto;
-}
-#manage_boards .title_bar {
-	background: none;
-	border-bottom: 1px solid #fff;
-}
-#manage_boards .titlebg {
-	border-bottom: 1px solid #bbb;
-}
-#manage_boards .cat_bar, #manage_boards .windowbg {
-	background: none;
-	margin: 0 0 0 0;
-	padding: 0 0 0 0;
-	border: none;
-	border-radius: 7px 7px 0 0;
-}
-#manage_boards .catbg {
-	padding: 8px 16px 4px 16px;
-	color: #444;
-}
-#manage_boards .cat_bar .catbg {
-	border: none;
-	border-bottom: 1px solid #bbb;
-}
-#manage_boards .catbg a {
-	color: #346;
-}
-#manage_boards .catbg a:hover {
-	border-bottom: 1px solid #346;
-}
-#manage_boards .windowbg {
-	margin: 0;
-	padding: 0;
-}
-#manage_boards ul {
-	padding: 0;
-	margin: 0 0 8px 0;
-	max-height: 30em;
-	overflow: auto;
-	border-top: 1px solid #bbb;
-	border-bottom: 1px solid #fff;
-	border-radius: 2px;
-}
-#manage_boards li, #manage_boards li.windowbg, #manage_boards li.windowbg2 {
-	list-style: none;
-	margin: 0 1px;
-	padding: 8px 0;
-	border: 1px solid #ccc;
-	border-bottom: 1px solid #bbb;
-	border-top: 1px solid #fff;
-	border-radius: 0;
-}
-#manage_boards li img {
-	vertical-align: middle;
-	padding: 0 6px 3px 6px;
-}
-#manage_boards li .floatleft {
-	font-weight: bold;
-	padding: 0 6px;
-}
-#manage_boards li#recycle_board {
-	background-color: #dee;
-}
-.move_links {
-	padding: 0 13px 0 0;
-}
-.modify_boards {
-	padding: 0 0.5em;
-}
-#manage_boards span.modify_boards a {
-	background: #fff url(../images/theme/lower_section.png) 0 0 repeat-x;
-	border: 1px solid #aaa;
-	border-radius: 3px;
-	box-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-	padding: 3px 6px;
-	font: 95%/115% verdana, Helvetica, sans-serif;
-	color: #222;
-	font-size: 1em;
-}
-#manage_boards span.modify_boards a:hover {
-	background: #fff url(../images/theme/upper_section.png) 0 -40px repeat-x;
-	text-decoration: none;
-	color: #444;
-	box-shadow: -1px -1px 1px rgba(0,0,0,0.1);
-}
-#manage_boards .button_submit {
-	box-shadow: 1px 1px 2px rgba(0,0,0,0.1), 0 -1px 3px rgba(0,0,0,0.1) inset;
-	border-top: 1px solid #bbb;
-	border-left: 1px solid #bbb;
-	background: #dceeff;
-	text-shadow: 0 0 2px #fff;
-	margin: 0 8px;
-}
-#manage_boards  .button_submit:hover {
-	box-shadow: -1px -1px 1px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.1) inset;
-	border-top: 1px solid #999;
-	border-left: 1px solid #999;
-	background: #cde7ff;
-}
-#manage_boards dl {
-	padding: 8px 6px 0 6px;
-}
-#manage_boards dl textarea, #manage_boards dl table{
-	margin: 0 0 8px 0;
-}
-#manage_boards span.post_group, #manage_boards span.regular_members {
-	border-bottom: 1px dotted #000;
-	cursor: help;
-}
-.select_all_box {
-	display:none;
-}
-
 /* Styles for the manage members section.
 ------------------------------------------------- */
 
@@ -943,19 +821,9 @@ ul.pending_payments li {
 
 /* Styles for the manage permissions section.
 ------------------------------------------------- */
-.perm_name, .perm_profile, .perm_board {
+.perm_name, .perm_profile {
 	display: block;
 	width: 40%;
-}
-.perm_boards {
-	padding: 0;
-	margin: 0 0 0.6em 0;
-}
-.perm_boards li {
-	list-style-type: none;
-	border: 1px solid #cacdd3;
-	padding: 0.2em;
-	margin: 1px;
 }
 .perm_groups {
 	background-color: #fff;
@@ -1190,21 +1058,6 @@ h3.grid_header {
 		max-height: 5em;
 		overflow: auto;
 	}
-	#manage_boards .catbg {
-	margin-top: 10px;
-}
-	#manage_boards .windowbg {
-		line-height: 3.2em;
-}
-	#manage_boards ul {
-		max-height: 120em;
-		padding: 0 0 10px 0;
-}
-	#manage_boards dd, #manage_boards dt {
-		width: 100%;
-}
-	#manage_boards dt {
-		line-height: 1.6em;
 }
 /* These kids and their new-fangled thingummys. :P */
 /* When I were a lad, things were different! */

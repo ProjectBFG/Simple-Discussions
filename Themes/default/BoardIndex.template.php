@@ -76,141 +76,43 @@ function template_main()
 						sCookieName: \'newsupshrink\'
 					}
 				});
-			// ]]></script>
-		';
+			// ]]></script>';
 	}
-
-	echo '
-	<div id="boardindex_table" class="boardindex_table">
-		<table class="table table-bordered">';
-
-	/* Each category in categories is made up of:
-	id, href, link, name, is_collapsed (is it collapsed?), can_collapse (is it okay if it is?),
-	new (is it new?), collapse_href (href to collapse/expand), collapse_image (up/down image),
-	and boards. (see below.) */
-	foreach ($context['categories'] as $category)
+		echo '
+				<div id="index_topics">
+					<div class="entry-title" style="display: none;">', $context['forum_name_html_safe'], ' - ', $txt['recent_posts'], '</div>
+					<div class="entry-content" style="display: none;">
+						<a rel="feedurl" href="', $scripturl, '?action=.xml;type=webslice">', $txt['subscribe_webslice'], '</a>
+					</div>';
+	
+	// This is the "Recent Posts" bar.
+	if (!empty($context['latest_topics']))
 	{
-		echo '
-			<thead id="category_', $category['id'], '">
-				<tr>
-					<td colspan="4">
-						<h3 class="catbg">
-							', $category['link'], '
-						</h3>
-					</td>
-				</tr>
-			</thead>
-			<tbody id="category_', $category['id'], '_boards">';
-			/* Each board in each category's boards has:
-			new (is it new?), id, name, description, moderators (see below), link_moderators (just a list.),
-			children (see below.), link_children (easier to use.), children_new (are they new?),
-			topics (# of), posts (# of), link, href, and last_post. (see below.) */
-			foreach ($category['boards'] as $board)
-			{
+		// Show lots of posts.
+		if (!empty($context['latest_topics']))
+		{
+			echo '
+					<table class="table table-bordered">
+						<tbody>';
+			foreach ($context['latest_topics'] as $topic)
 				echo '
-				<tr id="board_', $board['id'], '">
-					<td class="windowbg center"', !empty($board['children']) ? ' rowspan="2"' : '', '>
-						<a href="', ($board['is_redirect'] || $context['user']['is_guest'] ? $board['href'] : $scripturl . '?action=unread;board=' . $board['id'] . '.0;children'), '">';
-
-				// If the board or children is new, show an indicator.
-				if ($board['new'] || $board['children_new'])
-					echo '
-							<img src="', $settings['images_url'], '/', $context['theme_variant_url'], 'on', $board['new'] ? '' : '2', '.png" alt="', $txt['new_posts'], '" title="', $txt['new_posts'], '" />';
-				// Is it a redirection board?
-				elseif ($board['is_redirect'])
-					echo '
-							<img src="', $settings['images_url'], '/', $context['theme_variant_url'], 'redirect.png" alt="*" title="*" />';
-				// No new posts at all! The agony!!
-				else
-					echo '
-							<img src="', $settings['images_url'], '/', $context['theme_variant_url'], 'off.png" alt="', $txt['old_posts'], '" title="', $txt['old_posts'], '" />';
-
-				echo '
-						</a>
-					</td>
-					<td class="info">
-						<a class="subject" href="', $board['href'], '" name="b', $board['id'], '">', $board['name'], '</a>';
-
-				// Has it outstanding posts for approval?
-				if ($board['can_approve_posts'] && ($board['unapproved_posts'] || $board['unapproved_topics']))
-					echo '
-						<a href="', $scripturl, '?action=moderate;area=postmod;sa=', ($board['unapproved_topics'] > 0 ? 'topics' : 'posts'), ';brd=', $board['id'], ';', $context['session_var'], '=', $context['session_id'], '" title="', sprintf($txt['unapproved_posts'], $board['unapproved_topics'], $board['unapproved_posts']), '" class="moderation_link">(!)</a>';
-
-				echo '
-
-						<p>', $board['description'] , '</p>';
-
-				// Show the "Moderators: ". Each has name, href, link, and id. (but we're gonna use link_moderators.)
-				if (!empty($board['moderators']))
-					echo '
-						<p class="moderators">', count($board['moderators']) == 1 ? $txt['moderator'] : $txt['moderators'], ': ', implode(', ', $board['link_moderators']), '</p>';
-
-				// Show some basic information about the number of posts, etc.
-					echo '
-					</td>
-					<td class="windowbg center">
-						<p>', comma_format($board['posts']), ' ', $board['is_redirect'] ? $txt['redirects'] : $txt['posts'], '
-						', $board['is_redirect'] ? '' : '<br /> '.comma_format($board['topics']) . ' ' . $txt['board_topics'], '
-						</p>
-					</td>
-					<td class="lastpost">';
-
-				if (!empty($board['last_post']['id']))
-					echo '
-						<p>', $board['last_post']['last_post_message'], '</p>';
-				echo '
-					</td>
-				</tr>';
-				// Show the "Child Boards: ". (there's a link_children but we're going to bold the new ones...)
-				if (!empty($board['children']))
-				{
-					// Sort the links into an array with new boards bold so it can be imploded.
-					$children = array();
-					/* Each child in each board's children has:
-							id, name, description, new (is it new?), topics (#), posts (#), href, link, and last_post. */
-					foreach ($board['children'] as $child)
-					{
-						if (!$child['is_redirect'])
-							$child['link'] = '<a href="' . $child['href'] . '" ' . ($child['new'] ? 'class="board_new_posts" ' : '') . 'title="' . ($child['new'] ? $txt['new_posts'] : $txt['old_posts']) . ' (' . $txt['board_topics'] . ': ' . comma_format($child['topics']) . ', ' . $txt['posts'] . ': ' . comma_format($child['posts']) . ')">' . $child['name'] . ($child['new'] ? '</a> <a href="' . $scripturl . '?action=unread;board=' . $child['id'] . '" title="' . $txt['new_posts'] . ' (' . $txt['board_topics'] . ': ' . comma_format($child['topics']) . ', ' . $txt['posts'] . ': ' . comma_format($child['posts']) . ')"><span class="new_posts">' . $txt['new'] . '</span>' : '') . '</a>';
-						else
-							$child['link'] = '<a href="' . $child['href'] . '" title="' . comma_format($child['posts']) . ' ' . $txt['redirects'] . ' - ' . $child['short_description'] . '">' . $child['name'] . '</a>';
-
-						// Has it posts awaiting approval?
-						if ($child['can_approve_posts'] && ($child['unapproved_posts'] || $child['unapproved_topics']))
-							$child['link'] .= ' <a href="' . $scripturl . '?action=moderate;area=postmod;sa=' . ($child['unapproved_topics'] > 0 ? 'topics' : 'posts') . ';brd=' . $child['id'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '" title="' . sprintf($txt['unapproved_posts'], $child['unapproved_topics'], $child['unapproved_posts']) . '" class="moderation_link">(!)</a>';
-
-						$children[] = $child['new'] ? '<strong>' . $child['link'] . '</strong>' : $child['link'];
-					}
-
-				echo '
-					<tr id="board_', $board['id'], '_children" class="windowbg2">
-						<td colspan="3" class="windowbg children">
-							<p><strong>', $txt['parent_boards'], '</strong>: ', implode(', ', $children), '</p>
-						</td>
-					</tr>';
-				}
-			}
-		echo '
-			</tbody>';
+						<tr>
+							<td class="replies center">', $topic['replies'], '<br />Replies</td>
+							<td class="views center">', $topic['views'], '<br />Views</td>
+							<td class="topic">
+								<div><strong>', $topic['link'], '</strong></div>
+								<div class="pull-right">', $topic['time'], ' ', $txt['by'], ' ', $topic['poster']['link'], '</div>
+							</td>
+						</tr>';
+			echo '
+						</tbody>
+					</table>';
+		}
 	}
-	echo '
-		</table>
-	</div>
-		<ul id="posting_icons">';
-
-	if ($context['user']['is_logged'])
-	echo '
-			<li class="floatleft"><img src="', $settings['images_url'], '/', $context['theme_variant_url'], 'new_some.png" alt="" /> ', $txt['new_posts'], '</li>';
-
-	echo '
-			<li class="floatleft"><img src="', $settings['images_url'], '/', $context['theme_variant_url'], 'new_none.png" alt="" /> ', $txt['old_posts'], '</li>
-			<li class="floatleft"><img src="', $settings['images_url'], '/', $context['theme_variant_url'], 'new_redirect.png" alt="" /> ', $txt['redirect_board'], '</li>
-		</ul>';
-
-	// Show the mark all as read button?
-	if ($settings['show_mark_read'] && !empty($context['categories']))
-	echo '
-		<div class="mark_read">', template_button_strip($context['mark_read_button'], 'right'), '</div>';
+		echo '
+				', template_button_strip($context['new_topic'], 'right'), '
+				</div>
+				<div class="clearfix"></div><br />';
 
 	template_info_center();
 }
@@ -228,70 +130,16 @@ function template_info_center()
 		</h3>
 		<div id="upshrinkHeaderIC" class="collapse in">
 			<ul class="nav nav-tabs" id="ic_tabs">
-				<li class="active"><a href="#ic_recent_posts_content" data-toggle="tab">Recent</a></li>
-				<li><a href="#ic_stats" data-toggle="tab">Stats</a></li>
+				<li class="active"><a href="#ic_stats" data-toggle="tab">Stats</a></li>
 				<li><a href="#ic_membersonline" data-toggle="tab">Members Online</a></li>
 			</ul>
 			<div id="ic_tabsContent" class="tab-content">';
-
-	// This is the "Recent Posts" bar.
-	if (!empty($settings['number_recent_posts']) && (!empty($context['latest_posts']) || !empty($context['latest_post'])))
-	{
-		echo '
-				<div class="tab-pane fade in active" id="ic_recent_posts_content">
-					<div class="entry-title" style="display: none;">', $context['forum_name_html_safe'], ' - ', $txt['recent_posts'], '</div>
-					<div class="entry-content" style="display: none;">
-						<a rel="feedurl" href="', $scripturl, '?action=.xml;type=webslice">', $txt['subscribe_webslice'], '</a>
-					</div>';
-
-		// Only show one post.
-		if ($settings['number_recent_posts'] == 1)
-		{
-			// latest_post has link, href, time, subject, short_subject (shortened with...), and topic. (its id.)
-			echo '
-					<p id="infocenter_onepost" class="inline">
-						<a href="', $scripturl, '?action=recent">', $txt['recent_view'], '</a>&nbsp;&quot;', sprintf($txt['is_recent_updated'], '&quot;' . $context['latest_post']['link'], '&quot;'), ' (', $context['latest_post']['time'], ')<br />
-					</p>';
-		}
-		// Show lots of posts.
-		elseif (!empty($context['latest_posts']))
-		{
-			echo '
-					<table class="table table-stripped">
-						<thead>
-							<tr>
-								<th class="recentpost first_th">', $txt['message'], '</th>
-								<th class="recentposter">', $txt['author'], '</th>
-								<th class="recentboard">', $txt['board'], '</th>
-								<th class="recenttime last_th">', $txt['date'], '</th>
-							</tr>
-						</thead>
-						<tbody>';
-
-			/* Each post in latest_posts has:
-					board (with an id, name, and link.), topic (the topic's id.), poster (with id, name, and link.),
-					subject, short_subject (shortened with...), time, link, and href. */
-			foreach ($context['latest_posts'] as $post)
-				echo '
-						<tr>
-							<td class="recentpost"><strong>', $post['link'], '</strong></td>
-							<td class="recentposter">', $post['poster']['link'], '</td>
-							<td class="recentboard">', $post['board']['link'], '</td>
-							<td class="recenttime">', $post['time'], '</td>
-						</tr>';
-			echo '
-						</tbody>
-					</table>';
-		}
-		echo '
-				</div>';
-	}
 
 	// Show statistical style information...
 	if ($settings['show_stats_index'])
 	{
 		echo '
-				<div class="tab-pane fade" id="ic_stats">
+				<div class="tab-pane fade in active" id="ic_stats">
 					', $context['common_stats']['boardindex_total_posts'], '', !empty($settings['show_latest_member']) ? ' - '. $txt['latest_member'] . ': <strong> ' . $context['common_stats']['latest_member']['link'] . '</strong>' : '', '<br />
 					', (!empty($context['latest_post']) ? $txt['latest_post'] . ': <strong>&quot;' . $context['latest_post']['link'] . '&quot;</strong>  ( ' . $context['latest_post']['time'] . ' )<br />' : ''), '
 					<a href="', $scripturl, '?action=recent">', $txt['recent_view'], '</a>

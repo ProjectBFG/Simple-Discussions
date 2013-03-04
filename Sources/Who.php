@@ -266,13 +266,12 @@ function determineActions($urls, $preferred_prefix = false)
 
 	// Actions that require a specific permission level.
 	$allowedActions = array(
-		'admin' => array('moderate_forum', 'manage_membergroups', 'manage_bans', 'admin_forum', 'manage_permissions', 'send_mail', 'manage_smileys', 'manage_boards', 'edit_news'),
+		'admin' => array('moderate_forum', 'manage_membergroups', 'manage_bans', 'admin_forum', 'manage_permissions', 'send_mail', 'manage_smileys', 'edit_news'),
 		'ban' => array('manage_bans'),
 		'boardrecount' => array('admin_forum'),
 		'editnews' => array('edit_news'),
 		'mailing' => array('send_mail'),
 		'maintain' => array('admin_forum'),
-		'manageboards' => array('manage_boards'),
 		'mlist' => array('view_mlist'),
 		'moderate' => array('access_mod_center', 'moderate_forum', 'manage_membergroups'),
 		'optimizetables' => array('admin_forum'),
@@ -294,7 +293,6 @@ function determineActions($urls, $preferred_prefix = false)
 	// These are done to later query these in large chunks. (instead of one by one.)
 	$topic_ids = array();
 	$profile_ids = array();
-	$board_ids = array();
 
 	$data = array();
 	foreach ($url_list as $k => $url)
@@ -318,13 +316,6 @@ function determineActions($urls, $preferred_prefix = false)
 				$data[$k] = $txt['who_hidden'];
 				$topic_ids[(int) $actions['topic']][$k] = $txt['who_topic'];
 			}
-			// It's a board!
-			elseif (isset($actions['board']))
-			{
-				// Hide first, show later.
-				$data[$k] = $txt['who_hidden'];
-				$board_ids[$actions['board']][$k] = $txt['who_board'];
-			}
 			// It's the board index!!  It must be!
 			else
 				$data[$k] = $txt['who_index'];
@@ -344,11 +335,6 @@ function determineActions($urls, $preferred_prefix = false)
 
 				$data[$k] = $txt['who_hidden'];
 				$profile_ids[(int) $actions['u']][$k] = $actions['action'] == 'profile' ? $txt['who_viewprofile'] : $txt['who_profile'];
-			}
-			elseif (($actions['action'] == 'post' || $actions['action'] == 'post2') && empty($actions['topic']) && isset($actions['board']))
-			{
-				$data[$k] = $txt['who_hidden'];
-				$board_ids[(int) $actions['board']][$k] = $txt['who_post'];
 			}
 			// A subaction anyone can view... if the language string is there, show it.
 			elseif (isset($actions['sa']) && isset($txt['whoall_' . $actions['action'] . '_' . $actions['sa']]))
@@ -373,10 +359,8 @@ function determineActions($urls, $preferred_prefix = false)
 				$result = $smcFunc['db_query']('', '
 					SELECT m.id_topic, m.subject
 					FROM {db_prefix}messages AS m
-						INNER JOIN {db_prefix}boards AS b ON (b.id_board = m.id_board)
 						INNER JOIN {db_prefix}topics AS t ON (t.id_topic = m.id_topic' . ($modSettings['postmod_active'] ? ' AND t.approved = {int:is_approved}' : '') . ')
-					WHERE m.id_msg = {int:id_msg}
-						AND {query_see_board}' . ($modSettings['postmod_active'] ? '
+					WHERE m.id_msg = {int:id_msg}' . ($modSettings['postmod_active'] ? '
 						AND m.approved = {int:is_approved}' : '') . '
 					LIMIT 1',
 					array(
@@ -432,10 +416,8 @@ function determineActions($urls, $preferred_prefix = false)
 		$result = $smcFunc['db_query']('', '
 			SELECT t.id_topic, m.subject
 			FROM {db_prefix}topics AS t
-				INNER JOIN {db_prefix}boards AS b ON (b.id_board = t.id_board)
 				INNER JOIN {db_prefix}messages AS m ON (m.id_msg = t.id_first_msg)
-			WHERE {query_see_board}
-				AND t.id_topic IN ({array_int:topic_list})' . ($modSettings['postmod_active'] ? '
+			WHERE t.id_topic IN ({array_int:topic_list})' . ($modSettings['postmod_active'] ? '
 				AND t.approved = {int:is_approved}' : '') . '
 			LIMIT {int:limit}',
 			array(
@@ -449,28 +431,6 @@ function determineActions($urls, $preferred_prefix = false)
 			// Show the topic's subject for each of the actions.
 			foreach ($topic_ids[$row['id_topic']] as $k => $session_text)
 				$data[$k] = sprintf($session_text, $row['id_topic'], censorText($row['subject']));
-		}
-		$smcFunc['db_free_result']($result);
-	}
-
-	// Load board names.
-	if (!empty($board_ids))
-	{
-		$result = $smcFunc['db_query']('', '
-			SELECT b.id_board, b.name
-			FROM {db_prefix}boards AS b
-			WHERE {query_see_board}
-				AND b.id_board IN ({array_int:board_list})
-			LIMIT ' . count($board_ids),
-			array(
-				'board_list' => array_keys($board_ids),
-			)
-		);
-		while ($row = $smcFunc['db_fetch_assoc']($result))
-		{
-			// Put the board name into the string for each member...
-			foreach ($board_ids[$row['id_board']] as $k => $session_text)
-				$data[$k] = sprintf($session_text, $row['id_board'], $row['name']);
 		}
 		$smcFunc['db_free_result']($result);
 	}

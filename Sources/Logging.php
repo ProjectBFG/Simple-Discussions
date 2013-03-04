@@ -23,10 +23,10 @@ if (!defined('SMF'))
  */
 function writeLog($force = false)
 {
-	global $user_info, $user_settings, $context, $modSettings, $settings, $topic, $board, $smcFunc, $sourcedir;
+	global $user_info, $user_settings, $context, $modSettings, $settings, $topic, $smcFunc, $sourcedir;
 
 	// If we are showing who is viewing a topic, let's see if we are, and force an update if so - to make it accurate.
-	if (!empty($settings['display_who_viewing']) && ($topic || $board))
+	if (!empty($settings['display_who_viewing']) && $topic)
 	{
 		// Take the opposite approach!
 		$force = true;
@@ -483,27 +483,6 @@ function logActions($logs)
 		if (isset($log['extra']['member']) && !is_numeric($log['extra']['member']))
 			trigger_error('logActions(): data\'s member is not a number', E_USER_NOTICE);
 
-		if (isset($log['extra']['board']))
-		{
-			if (!is_numeric($log['extra']['board']))
-				trigger_error('logActions(): data\'s board is not a number', E_USER_NOTICE);
-			$board_id = empty($log['extra']['board']) ? 0 : (int) $log['extra']['board'];
-			unset($log['extra']['board']);
-		}
-		else
-			$board_id = 0;
-
-		if (isset($log['extra']['board_to']))
-		{
-			if (!is_numeric($log['extra']['board_to']))
-				trigger_error('logActions(): data\'s board_to is not a number', E_USER_NOTICE);
-			if (empty($board_id))
-			{
-				$board_id = empty($log['extra']['board_to']) ? 0 : (int) $log['extra']['board_to'];
-				unset($log['extra']['board_to']);
-			}
-		}
-
 		if (isset($log['extra']['member_affected']))
 			$memID = $log['extra']['member_affected'];
 		else
@@ -511,7 +490,7 @@ function logActions($logs)
 
 		$inserts[] = array(
 			time(), $log_types[$log['log_type']], $memID, $user_info['ip'], $log['action'],
-			$board_id, $topic_id, $msg_id, serialize($log['extra']),
+			$topic_id, $msg_id, serialize($log['extra']),
 		);
 	}
 
@@ -519,7 +498,7 @@ function logActions($logs)
 		'{db_prefix}log_actions',
 		array(
 			'log_time' => 'int', 'id_log' => 'int', 'id_member' => 'int', 'ip' => 'string-16', 'action' => 'string',
-			'id_board' => 'int', 'id_topic' => 'int', 'id_msg' => 'int', 'extra' => 'string-65534',
+			'id_topic' => 'int', 'id_msg' => 'int', 'extra' => 'string-65534',
 		),
 		$inserts,
 		array('id_action')

@@ -116,13 +116,9 @@ function updateStats($type, $parameter1 = null, $parameter2 = null)
 		{
 			// SUM and MAX on a smaller table is better for InnoDB tables.
 			$result = $smcFunc['db_query']('', '
-				SELECT SUM(num_posts + unapproved_posts) AS total_messages, MAX(id_last_msg) AS max_msg_id
-				FROM {db_prefix}boards
-				WHERE redirect = {string:blank_redirect}' . (!empty($modSettings['recycle_enable']) && $modSettings['recycle_board'] > 0 ? '
-					AND id_board != {int:recycle_board}' : ''),
+				SELECT COUNT(id_msg) AS total_messages, MAX(id_msg) AS max_msg_id
+				FROM {db_prefix}messages',
 				array(
-					'recycle_board' => isset($modSettings['recycle_board']) ? $modSettings['recycle_board'] : 0,
-					'blank_redirect' => '',
 				)
 			);
 			$row = $smcFunc['db_fetch_assoc']($result);
@@ -173,11 +169,9 @@ function updateStats($type, $parameter1 = null, $parameter2 = null)
 			// Get the number of topics - a SUM is better for InnoDB tables.
 			// We also ignore the recycle bin here because there will probably be a bunch of one-post topics there.
 			$result = $smcFunc['db_query']('', '
-				SELECT SUM(num_topics + unapproved_topics) AS total_topics
-				FROM {db_prefix}boards' . (!empty($modSettings['recycle_enable']) && $modSettings['recycle_board'] > 0 ? '
-				WHERE id_board != {int:recycle_board}' : ''),
+				SELECT COUNT(id_topic) AS total_topics
+				FROM {db_prefix}topics',
 				array(
-					'recycle_board' => !empty($modSettings['recycle_board']) ? $modSettings['recycle_board'] : 0,
 				)
 			);
 			$row = $smcFunc['db_fetch_assoc']($result);
@@ -4183,6 +4177,37 @@ function entity_fix__callback($matches)
 		return '';
 	else
 		return '&#' . $num . ';';
+}
+
+
+/**
+ * Get the id_member associated with the specified message.
+ * @param int $messageID
+ * @return int the member id
+ */
+function getMsgMemberID($messageID)
+{
+	global $smcFunc;
+
+	// Find the topic and make sure the member still exists.
+	$result = $smcFunc['db_query']('', '
+		SELECT IFNULL(mem.id_member, 0)
+		FROM {db_prefix}messages AS m
+			LEFT JOIN {db_prefix}members AS mem ON (mem.id_member = m.id_member)
+		WHERE m.id_msg = {int:selected_message}
+		LIMIT 1',
+		array(
+			'selected_message' => (int) $messageID,
+		)
+	);
+	if ($smcFunc['db_num_rows']($result) > 0)
+		list ($memberID) = $smcFunc['db_fetch_row']($result);
+	// The message doesn't even exist.
+	else
+		$memberID = 0;
+	$smcFunc['db_free_result']($result);
+
+	return (int) $memberID;
 }
 
 ?>

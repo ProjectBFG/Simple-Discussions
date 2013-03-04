@@ -569,10 +569,8 @@ function ModifySubscription()
 	$request = $smcFunc['db_query']('', '
 		SELECT id_group, group_name
 		FROM {db_prefix}membergroups
-		WHERE id_group != {int:moderator_group}
-			AND min_posts = {int:min_posts}',
+		WHERE min_posts = {int:min_posts}',
 		array(
-			'moderator_group' => 3,
 			'min_posts' => -1,
 		)
 	);

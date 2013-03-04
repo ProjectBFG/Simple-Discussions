@@ -26,7 +26,7 @@ if (!defined('SMF'))
  *   - removes all log entries concerning the deleted members, except the
  * error logs, ban logs and moderation logs.
  *   - removes these members' personal messages (only the inbox),
- * ban entries, theme settings, moderator positions
+ * ban entries, theme settings
  *   - updates member statistics afterwards.
  *
  * @param array $users
@@ -219,13 +219,6 @@ function deleteMembers($users, $check_not_admin = false)
 		)
 	);
 	$smcFunc['db_query']('', '
-		DELETE FROM {db_prefix}log_boards
-		WHERE id_member IN ({array_int:users})',
-		array(
-			'users' => $users,
-		)
-	);
-	$smcFunc['db_query']('', '
 		DELETE FROM {db_prefix}log_comments
 		WHERE id_recipient IN ({array_int:users})
 			AND comment_type = {string:warntpl}',
@@ -301,13 +294,6 @@ function deleteMembers($users, $check_not_admin = false)
 	);
 
 	// It's over, no more moderation for you.
-	$smcFunc['db_query']('', '
-		DELETE FROM {db_prefix}moderators
-		WHERE id_member IN ({array_int:users})',
-		array(
-			'users' => $users,
-		)
-	);
 	$smcFunc['db_query']('', '
 		DELETE FROM {db_prefix}group_moderators
 		WHERE id_member IN ({array_int:users})',
@@ -566,7 +552,6 @@ function registerMember(&$regOptions, $return_errors = false)
 		'secret_question' => '',
 		'secret_answer' => '',
 		'additional_groups' => '',
-		'ignore_boards' => '',
 		'smiley_set' => '',
 	);
 
@@ -876,21 +861,19 @@ function isReservedName($name, $current_ID_MEMBER = 0, $is_name = true, $fatal =
 	return false;
 }
 
-// Get a list of groups that have a given permission (on a given board).
+// Get a list of groups that have a given permission.
 /**
  * Retrieves a list of membergroups that are allowed to do the given
- * permission. (on the given board)
- * If board_id is not null, a board permission is assumed.
+ * permission.
  * The function takes different permission settings into account.
  *
  * @param string $permission
- * @param int $board_id = null
  * @return an array containing an array for the allowed membergroup ID's
  * and an array for the denied membergroup ID's.
  */
-function groupsAllowedTo($permission, $board_id = null)
+function groupsAllowedTo($permission)
 {
-	global $modSettings, $board_info, $smcFunc;
+	global $modSettings, $smcFunc;
 
 	// Admins are allowed to do anything.
 	$member_groups = array(
@@ -898,61 +881,18 @@ function groupsAllowedTo($permission, $board_id = null)
 		'denied' => array(),
 	);
 
-	// Assume we're dealing with regular permissions (like profile_view_own).
-	if ($board_id === null)
-	{
-		$request = $smcFunc['db_query']('', '
-			SELECT id_group, add_deny
-			FROM {db_prefix}permissions
-			WHERE permission = {string:permission}',
-			array(
-				'permission' => $permission,
-			)
-		);
-		while ($row = $smcFunc['db_fetch_assoc']($request))
-			$member_groups[$row['add_deny'] === '1' ? 'allowed' : 'denied'][] = $row['id_group'];
-		$smcFunc['db_free_result']($request);
-	}
-
-	// Otherwise it's time to look at the board.
-	else
-	{
-		// First get the profile of the given board.
-		if (isset($board_info['id']) && $board_info['id'] == $board_id)
-			$profile_id = $board_info['profile'];
-		elseif ($board_id !== 0)
-		{
-			$request = $smcFunc['db_query']('', '
-				SELECT id_profile
-				FROM {db_prefix}boards
-				WHERE id_board = {int:id_board}
-				LIMIT 1',
-				array(
-					'id_board' => $board_id,
-				)
-			);
-			if ($smcFunc['db_num_rows']($request) == 0)
-				fatal_lang_error('no_board');
-			list ($profile_id) = $smcFunc['db_fetch_row']($request);
-			$smcFunc['db_free_result']($request);
-		}
-		else
-			$profile_id = 1;
-
-		$request = $smcFunc['db_query']('', '
-			SELECT bp.id_group, bp.add_deny
-			FROM {db_prefix}board_permissions AS bp
-			WHERE bp.permission = {string:permission}
-				AND bp.id_profile = {int:profile_id}',
-			array(
-				'profile_id' => $profile_id,
-				'permission' => $permission,
-			)
-		);
-		while ($row = $smcFunc['db_fetch_assoc']($request))
-			$member_groups[$row['add_deny'] === '1' ? 'allowed' : 'denied'][] = $row['id_group'];
-		$smcFunc['db_free_result']($request);
-	}
+	
+        $request = $smcFunc['db_query']('', '
+                SELECT id_group, add_deny
+                FROM {db_prefix}permissions
+                WHERE permission = {string:permission}',
+                array(
+                        'permission' => $permission,
+                )
+        );
+        while ($row = $smcFunc['db_fetch_assoc']($request))
+                $member_groups[$row['add_deny'] === '1' ? 'allowed' : 'denied'][] = $row['id_group'];
+        $smcFunc['db_free_result']($request);
 
 	// Denied is never allowed.
 	$member_groups['allowed'] = array_diff($member_groups['allowed'], $member_groups['denied']);
@@ -961,38 +901,26 @@ function groupsAllowedTo($permission, $board_id = null)
 }
 
 /**
- * Retrieves a list of members that have a given permission
- * (on a given board).
- * If board_id is not null, a board permission is assumed.
+ * Retrieves a list of members that have a given permission.
  * Takes different permission settings into account.
- * Takes possible moderators (on board 'board_id') into account.
  *
  * @param string $permission
- * @param int $board_id = null
  * @return an array containing member ID's.
  */
-function membersAllowedTo($permission, $board_id = null)
+function membersAllowedTo($permission)
 {
 	global $smcFunc;
 
-	$member_groups = groupsAllowedTo($permission, $board_id);
-
-	$include_moderators = in_array(3, $member_groups['allowed']) && $board_id !== null;
-	$member_groups['allowed'] = array_diff($member_groups['allowed'], array(3));
-
-	$exclude_moderators = in_array(3, $member_groups['denied']) && $board_id !== null;
-	$member_groups['denied'] = array_diff($member_groups['denied'], array(3));
+	$member_groups = groupsAllowedTo($permission);
 
 	$request = $smcFunc['db_query']('', '
 		SELECT mem.id_member
-		FROM {db_prefix}members AS mem' . ($include_moderators || $exclude_moderators ? '
-			LEFT JOIN {db_prefix}moderators AS mods ON (mods.id_member = mem.id_member AND mods.id_board = {int:board_id})' : '') . '
-		WHERE (' . ($include_moderators ? 'mods.id_member IS NOT NULL OR ' : '') . 'mem.id_group IN ({array_int:member_groups_allowed}) OR FIND_IN_SET({raw:member_group_allowed_implode}, mem.additional_groups) != 0 OR mem.id_post_group IN ({array_int:member_groups_allowed}))' . (empty($member_groups['denied']) ? '' : '
-			AND NOT (' . ($exclude_moderators ? 'mods.id_member IS NOT NULL OR ' : '') . 'mem.id_group IN ({array_int:member_groups_denied}) OR FIND_IN_SET({raw:member_group_denied_implode}, mem.additional_groups) != 0 OR mem.id_post_group IN ({array_int:member_groups_denied}))'),
+		FROM {db_prefix}members AS mem
+		WHERE (mem.id_group IN ({array_int:member_groups_allowed}) OR FIND_IN_SET({raw:member_group_allowed_implode}, mem.additional_groups) != 0 OR mem.id_post_group IN ({array_int:member_groups_allowed}))' . (empty($member_groups['denied']) ? '' : '
+			AND NOT (mem.id_group IN ({array_int:member_groups_denied}) OR FIND_IN_SET({raw:member_group_denied_implode}, mem.additional_groups) != 0 OR mem.id_post_group IN ({array_int:member_groups_denied}))'),
 		array(
 			'member_groups_allowed' => $member_groups['allowed'],
 			'member_groups_denied' => $member_groups['denied'],
-			'board_id' => $board_id,
 			'member_group_allowed_implode' => implode(', mem.additional_groups) != 0 OR FIND_IN_SET(', $member_groups['allowed']),
 			'member_group_denied_implode' => implode(', mem.additional_groups) != 0 OR FIND_IN_SET(', $member_groups['denied']),
 		)
@@ -1043,10 +971,8 @@ function reattributePosts($memID, $email = false, $membername = false, $post_cou
 		$request = $smcFunc['db_query']('', '
 			SELECT COUNT(*)
 			FROM {db_prefix}messages AS m
-				INNER JOIN {db_prefix}boards AS b ON (b.id_board = m.id_board AND b.count_posts = {int:count_posts})
 			WHERE m.id_member = {int:guest_id}
-				AND m.approved = {int:is_approved}
-				AND m.icon != {string:recycled_icon}' . (empty($email) ? '' : '
+				AND m.approved = {int:is_approved}' . (empty($email) ? '' : '
 				AND m.poster_email = {string:email_address}') . (empty($membername) ? '' : '
 				AND m.poster_name = {string:member_name}'),
 			array(
@@ -1055,7 +981,6 @@ function reattributePosts($memID, $email = false, $membername = false, $post_cou
 				'email_address' => $email,
 				'member_name' => $membername,
 				'is_approved' => 1,
-				'recycled_icon' => 'recycled',
 			)
 		);
 		list ($messageCount) = $smcFunc['db_fetch_row']($request);

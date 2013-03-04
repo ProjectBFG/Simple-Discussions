@@ -146,18 +146,12 @@ function template_html_above()
 	else if (!empty($context['current_topic']))
 		echo '<link rel="prev" href="', $scripturl, '?topic=', $context['current_topic'], '.0;prev_next=prev" />';
 
-	// If we're in a board, or a topic for that matter, the index will be the board's index.
-	if (!empty($context['current_board']))
-		echo '
-	<link rel="index" href="', $scripturl, '?board=', $context['current_board'], '.0" />';
-
 	// Output any remaining HTML headers. (from mods, maybe?)
 	echo $context['html_headers'];
 
 	echo '
 </head>
-<body id="', $context['browser_body_id'], '" class="action_', !empty($context['current_action']) ? htmlspecialchars($context['current_action']) : (!empty($context['current_board']) ?
-		'messageindex' : (!empty($context['current_topic']) ? 'display' : 'home')), !empty($context['current_board']) ? ' board_' . htmlspecialchars($context['current_board']) : '', '">';
+<body id="', $context['browser_body_id'], '" class="action_', !empty($context['current_action']) ? htmlspecialchars($context['current_action']) : '', '">';
 }
 
 function template_body_above()
@@ -165,39 +159,25 @@ function template_body_above()
 	global $context, $settings, $options, $scripturl, $txt, $modSettings;
 
 	echo '
-		<div class="navbar navbar-inverse navbar-fixed-top">
-			<div class="navbar-inner">
-				<div class="container-fluid">
-					<a class="brand" href="', $scripturl, '">', $context['forum_name'], '</a>
-					<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-					</a>
-					<div class="nav-collapse collapse">
-						<form class="navbar-search pull-right" action="', $scripturl, '?action=search2" method="post" accept-charset="', $context['character_set'], '">
-							<input type="text" name="search" placeholder="', $txt['search'], '" />
-						</form>
-						', template_menu(), '
-					</div>
+	<div class="navbar navbar-inverse navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container-fluid">
+				<a class="brand" href="', $scripturl, '">', $context['forum_name'], '</a>
+				<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</a>
+				<div class="nav-collapse collapse">
+					<form class="navbar-search pull-right" action="', $scripturl, '?action=search2" method="post" accept-charset="', $context['character_set'], '">
+						<input type="text" name="search" placeholder="', $txt['search'], '" />
+					</form>
+					', template_menu(), '
 				</div>
 			</div>
 		</div>
-		<div id="mainpage">
-			<div id="leftside" class="span3 pull-left">
-				<div id="index">
-					<div id="partial">
-						<div id="date">', $context['current_time'], '</div>
-						<ul class="entrylist">';
-			for ($i=1;$i<=50;$i++)
-				echo '
-							<li>topic ', $i, '</li>';
-			echo '
-						</ul>
-					</div>
-				</div>
-			</div>
-			<div id="rightside" class="offset2">';
+	</div>
+	<div class="container">';
 }
 
 function template_body_below()
@@ -205,10 +185,9 @@ function template_body_below()
 	global $context, $settings, $options, $scripturl, $txt, $modSettings;
 
 	echo '
-			</div>
-			<hr />
-			<div id="footer">
-				', theme_copyright(), '';
+		<hr />
+		<div id="footer">
+			', theme_copyright();
 }
 
 function template_html_below()
@@ -219,8 +198,8 @@ function template_html_below()
 	template_javascript(true);
 
 	echo '
-			</div>
 		</div>
+	</div>
 	<script src="', $settings['theme_url'], '/scripts/bootstrap.min.js"></script>
 </body>
 </html>';

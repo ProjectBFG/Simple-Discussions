@@ -173,7 +173,6 @@ function template_control_richedit_buttons($editor_id)
 				sLastID: \'id_draft\',
 				sSceditorID: \'', $editor_id, '\',
 				sType: \'post\',
-				iBoard: ', (empty($context['current_board']) ? 0 : $context['current_board']), ',
 				iFreq: ', $context['drafts_autosave_frequency'], '
 			});
 		// ]]></script>';
@@ -202,7 +201,6 @@ function template_control_richedit_buttons($editor_id)
 				sSceditorID: \'', $editor_id, '\',
 				sType: \'post\',
 				bPM: true,
-				iBoard: 0,
 				iFreq: ', (empty($modSettings['drafts_autosave_frequency']) ? 60000 : $modSettings['drafts_autosave_frequency'] * 1000), '
 			});
 		// ]]></script>';

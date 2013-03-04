@@ -640,13 +640,6 @@ div#admin_menu {
 	float: right;
 }
 
-.ignoreboards ul {
-	margin: 0 1em 0 0;
-}
-.ignoreboards li {
-	float: right;
-}
-
 #pick_theme {
 	float: right;
 }
@@ -655,7 +648,7 @@ div#admin_menu {
 #stats_left, #top_posters, #top_topics_replies, #top_topics_starter {
 	float: right;
 }
-#stats_right, #top_boards, #top_topics_views, #most_online {
+#stats_right, #top_topics_views, #most_online {
 	float: left;
 }
 dl.stats dt {
@@ -707,13 +700,6 @@ tr.windowbg2 th.stats_month, tr.windowbg2 td.stats_day {
 	float: right;
 	margin: 0 0.5em 0 0;
 	text-align: right;
-}
-/* Boards picker */
-#searchform fieldset div#searchBoardsExpand ul {
-	margin: 0 1em 0 0;
-}
-#searchform fieldset div#searchBoardsExpand li {
-	float: right;
 }
 #searchform fieldset p {
 	text-align: right;
@@ -785,16 +771,6 @@ tr.windowbg2 th.stats_month, tr.windowbg2 td.stats_day {
 #package_list ol, #package_list ol li {
 	margin-left: 0;
 	margin-right: 50px;
-}
-/* ManageBoards */
-#manage_boards ul {
-	overflow: hidden;
-}
-#manage_boards li {
-	overflow: hidden;
-}
-.move_links {
-	padding: 0 0 0 13px;
 }
 
 span.search_weight {

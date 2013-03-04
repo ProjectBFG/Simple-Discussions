@@ -68,10 +68,6 @@ function log_error($error_message, $error_type = 'general', $file = null, $line 
 	// Don't log the session hash in the url twice, it's a waste.
 	$query_string = htmlspecialchars((SMF == 'SSI' ? '' : '?') . preg_replace(array('~;sesc=[^&;]+~', '~' . session_name() . '=' . session_id() . '[&;]~'), array(';sesc', ''), $query_string));
 
-	// Just so we know what board error messages are from.
-	if (isset($_POST['board']) && !isset($_GET['board']))
-		$query_string .= ($query_string == '' ? 'board=' : ';board=') . $_POST['board'];
-
 	// What types of categories do we have?
 	$known_error_types = array(
 		'general',

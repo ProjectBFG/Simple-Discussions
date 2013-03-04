@@ -139,6 +139,7 @@ function AutoTask()
 	die("\x47\x49\x46\x38\x39\x61\x01\x00\x01\x00\x80\x00\x00\x00\x00\x00\x00\x00\x00\x21\xF9\x04\x01\x00\x00\x00\x00\x2C\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02\x44\x01\x00\x3B");
 }
 
+// @todoy: duzelt
 /**
  * Function to sending out approval notices to moderators etc.
  */
@@ -146,19 +147,16 @@ function scheduled_approval_notification()
 {
 	global $scripturl, $modSettings, $mbname, $txt, $sourcedir, $smcFunc;
 
-	// Grab all the items awaiting approval and sort type then board - clear up any things that are no longer relevant.
+	// Grab all the items awaiting approval and sort type - clear up any things that are no longer relevant.
 	$request = $smcFunc['db_query']('', '
-		SELECT aq.id_msg, m.id_topic, m.id_board, m.subject, t.id_first_msg,
-			b.id_profile
+		SELECT aq.id_msg, m.id_topic, m.subject, t.id_first_msg
 		FROM {db_prefix}approval_queue AS aq
 			INNER JOIN {db_prefix}messages AS m ON (m.id_msg = aq.id_msg)
-			INNER JOIN {db_prefix}topics AS t ON (t.id_topic = m.id_topic)
-			INNER JOIN {db_prefix}boards AS b ON (b.id_board = m.id_board)',
+			INNER JOIN {db_prefix}topics AS t ON (t.id_topic = m.id_topic)',
 		array(
 		)
 	);
 	$notices = array();
-	$profiles = array();
 	while ($row = $smcFunc['db_fetch_assoc']($request))
 	{
 		// If this is no longer around we'll ignore it.
@@ -172,13 +170,10 @@ function scheduled_approval_notification()
 			$type = 'msg';
 
 		// Add it to the array otherwise.
-		$notices[$row['id_board']][$type][] = array(
+		$notices[][$type][] = array(
 			'subject' => $row['subject'],
 			'href' => $scripturl . '?topic=' . $row['id_topic'] . '.msg' . $row['id_msg'] . '#msg' . $row['id_msg'],
 		);
-
-		// Store the profile for a bit later.
-		$profiles[$row['id_board']] = $row['id_profile'];
 	}
 	$smcFunc['db_free_result']($request);
 
@@ -221,26 +216,6 @@ function scheduled_approval_notification()
 			$addGroups[] = $row['id_group'];
 	}
 	$smcFunc['db_free_result']($request);
-
-	// Grab the moderators if they have permission!
-	$mods = array();
-	$members = array();
-	if (in_array(2, $addGroups))
-	{
-		$request = $smcFunc['db_query']('', '
-			SELECT id_member, id_board
-			FROM {db_prefix}moderators',
-			array(
-			)
-		);
-		while ($row = $smcFunc['db_fetch_assoc']($request))
-		{
-			$mods[$row['id_member']][$row['id_board']] = true;
-			// Make sure they get included in the big loop.
-			$members[] = $row['id_member'];
-		}
-		$smcFunc['db_free_result']($request);
-	}
 
 	// Come along one and all... until we reject you ;)
 	$request = $smcFunc['db_query']('', '
@@ -296,10 +271,6 @@ function scheduled_approval_notification()
 		foreach ($notices as $board => $notice)
 		{
 			$access = false;
-
-			// Can they mod in this board?
-			if (isset($mods[$id][$board]))
-				$access = true;
 
 			// Do the group check...
 			if (!$access && isset($perms[$profiles[$board]]['add']))
@@ -502,9 +473,10 @@ function scheduled_auto_optimize()
 	return true;
 }
 
+// @todoy: check!!!
 /**
  * Send out a daily email of all subscribed topics.
- */
+
 function scheduled_daily_digest()
 {
 	global $is_weekly, $txt, $mbname, $scripturl, $sourcedir, $smcFunc, $context, $modSettings;
@@ -517,7 +489,7 @@ function scheduled_daily_digest()
 
 	// Right - get all the notification data FIRST.
 	$request = $smcFunc['db_query']('', '
-		SELECT ln.id_topic, COALESCE(t.id_board, ln.id_board) AS id_board, mem.email_address, mem.member_name, mem.notify_types,
+		SELECT ln.id_topic, mem.email_address, mem.member_name, mem.notify_types,
 			mem.lngfile, mem.id_member
 		FROM {db_prefix}log_notify AS ln
 			INNER JOIN {db_prefix}members AS mem ON (mem.id_member = ln.id_member)
@@ -548,65 +520,30 @@ function scheduled_daily_digest()
 		}
 
 		// Store this useful data!
-		$boards[$row['id_board']] = $row['id_board'];
-		if ($row['id_topic'])
-			$notify['topics'][$row['id_topic']][] = $row['id_member'];
-		else
-			$notify['boards'][$row['id_board']][] = $row['id_member'];
+		$notify['topics'][$row['id_topic']][] = $row['id_member'];
 	}
 	$smcFunc['db_free_result']($request);
 
-	if (empty($boards))
-		return true;
-
-	// Just get the board names.
-	$request = $smcFunc['db_query']('', '
-		SELECT id_board, name
-		FROM {db_prefix}boards
-		WHERE id_board IN ({array_int:board_list})',
-		array(
-			'board_list' => $boards,
-		)
-	);
-	$boards = array();
-	while ($row = $smcFunc['db_fetch_assoc']($request))
-		$boards[$row['id_board']] = $row['name'];
-	$smcFunc['db_free_result']($request);
-
-	if (empty($boards))
-		return true;
-
 	// Get the actual topics...
 	$request = $smcFunc['db_query']('', '
-		SELECT ld.note_type, t.id_topic, t.id_board, t.id_member_started, m.id_msg, m.subject,
-			b.name AS board_name
+		SELECT ld.note_type, t.id_topic, t.id_member_started, m.id_msg, m.subject
 		FROM {db_prefix}log_digest AS ld
-			INNER JOIN {db_prefix}topics AS t ON (t.id_topic = ld.id_topic
-				AND t.id_board IN ({array_int:board_list}))
+			INNER JOIN {db_prefix}topics AS t ON (t.id_topic = ld.id_topic)
 			INNER JOIN {db_prefix}messages AS m ON (m.id_msg = t.id_first_msg)
-			INNER JOIN {db_prefix}boards AS b ON (b.id_board = t.id_board)
 		WHERE ' . ($is_weekly ? 'ld.daily != {int:daily_value}' : 'ld.daily IN (0, 2)'),
 		array(
-			'board_list' => array_keys($boards),
 			'daily_value' => 2,
 		)
 	);
 	$types = array();
 	while ($row = $smcFunc['db_fetch_assoc']($request))
 	{
-		if (!isset($types[$row['note_type']][$row['id_board']]))
-			$types[$row['note_type']][$row['id_board']] = array(
-				'lines' => array(),
-				'name' => $row['board_name'],
-				'id' => $row['id_board'],
-			);
-
 		if ($row['note_type'] == 'reply')
 		{
-			if (isset($types[$row['note_type']][$row['id_board']]['lines'][$row['id_topic']]))
-				$types[$row['note_type']][$row['id_board']]['lines'][$row['id_topic']]['count']++;
+			if (isset($types[$row['note_type']][]['lines'][$row['id_topic']]))
+				$types[$row['note_type']][]['lines'][$row['id_topic']]['count']++;
 			else
-				$types[$row['note_type']][$row['id_board']]['lines'][$row['id_topic']] = array(
+				$types[$row['note_type']][]['lines'][$row['id_topic']] = array(
 					'id' => $row['id_topic'],
 					'subject' => un_htmlspecialchars($row['subject']),
 					'count' => 1,
@@ -614,27 +551,25 @@ function scheduled_daily_digest()
 		}
 		elseif ($row['note_type'] == 'topic')
 		{
-			if (!isset($types[$row['note_type']][$row['id_board']]['lines'][$row['id_topic']]))
-				$types[$row['note_type']][$row['id_board']]['lines'][$row['id_topic']] = array(
+			if (!isset($types[$row['note_type']][]['lines'][$row['id_topic']]))
+				$types[$row['note_type']][]['lines'][$row['id_topic']] = array(
 					'id' => $row['id_topic'],
 					'subject' => un_htmlspecialchars($row['subject']),
 				);
 		}
 		else
 		{
-			if (!isset($types[$row['note_type']][$row['id_board']]['lines'][$row['id_topic']]))
-				$types[$row['note_type']][$row['id_board']]['lines'][$row['id_topic']] = array(
+			if (!isset($types[$row['note_type']][]['lines'][$row['id_topic']]))
+				$types[$row['note_type']][]['lines'][$row['id_topic']] = array(
 					'id' => $row['id_topic'],
 					'subject' => un_htmlspecialchars($row['subject']),
 					'starter' => $row['id_member_started'],
 				);
 		}
 
-		$types[$row['note_type']][$row['id_board']]['lines'][$row['id_topic']]['members'] = array();
+		$types[$row['note_type']][]['lines'][$row['id_topic']]['members'] = array();
 		if (!empty($notify['topics'][$row['id_topic']]))
-			$types[$row['note_type']][$row['id_board']]['lines'][$row['id_topic']]['members'] = array_merge($types[$row['note_type']][$row['id_board']]['lines'][$row['id_topic']]['members'], $notify['topics'][$row['id_topic']]);
-		if (!empty($notify['boards'][$row['id_board']]))
-			$types[$row['note_type']][$row['id_board']]['lines'][$row['id_topic']]['members'] = array_merge($types[$row['note_type']][$row['id_board']]['lines'][$row['id_topic']]['members'], $notify['boards'][$row['id_board']]);
+			$types[$row['note_type']][]['lines'][$row['id_topic']]['members'] = array_merge($types[$row['note_type']][$row['id_board']]['lines'][$row['id_topic']]['members'], $notify['topics'][$row['id_topic']]);
 	}
 	$smcFunc['db_free_result']($request);
 
@@ -808,7 +743,7 @@ function scheduled_daily_digest()
 	// Log we've done it...
 	return true;
 }
-
+ */
 /**
  * Like the daily stuff - just seven times less regular ;)
  */

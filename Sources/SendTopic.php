@@ -533,47 +533,6 @@ function ReportToModerator2()
 		}
 	}
 
-	// Find out who the real moderators are - for mod preferences.
-	$request2 = $smcFunc['db_query']('', '
-		SELECT id_member
-		FROM {db_prefix}moderators
-		WHERE id_board = {int:current_board}',
-		array(
-			'current_board' => $board,
-		)
-	);
-	$real_mods = array();
-	while ($row = $smcFunc['db_fetch_assoc']($request2))
-		$real_mods[] = $row['id_member'];
-	$smcFunc['db_free_result']($request2);
-
-	// Send every moderator an email.
-	while ($row = $smcFunc['db_fetch_assoc']($request))
-	{
-		// Maybe they don't want to know?!
-		if (!empty($row['mod_prefs']))
-		{
-			list(,, $pref_binary) = explode('|', $row['mod_prefs']);
-			if (!($pref_binary & 1) && (!($pref_binary & 2) || !in_array($row['id_member'], $real_mods)))
-				continue;
-		}
-
-		$replacements = array(
-			'TOPICSUBJECT' => $subject,
-			'POSTERNAME' => $poster_name,
-			'REPORTERNAME' => $reporterName,
-			'TOPICLINK' => $scripturl . '?topic=' . $topic . '.msg' . $_POST['msg'] . '#msg' . $_POST['msg'],
-			'REPORTLINK' => !empty($id_report) ? $scripturl . '?action=moderate;area=reports;report=' . $id_report : '',
-			'COMMENT' => $_POST['comment'],
-		);
-
-		$emaildata = loadEmailTemplate('report_to_moderator', $replacements, empty($row['lngfile']) || empty($modSettings['userLanguage']) ? $language : $row['lngfile']);
-
-		// Send it to the moderator.
-		sendmail($row['email_address'], $emaildata['subject'], $emaildata['body'], $user_info['email'], null, false, 2);
-	}
-	$smcFunc['db_free_result']($request);
-
 	// Keep track of when the mod reports get updated, that way we know when we need to look again.
 	updateSettings(array('last_mod_report_action' => time()));
 

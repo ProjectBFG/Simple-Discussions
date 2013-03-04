@@ -97,11 +97,9 @@ function ManageSearchEngineSettings($return_config = false)
 	$request = $smcFunc['db_query']('', '
 		SELECT id_group, group_name
 		FROM {db_prefix}membergroups
-		WHERE id_group != {int:admin_group}
-			AND id_group != {int:moderator_group}',
+		WHERE id_group != {int:admin_group}',
 		array(
 			'admin_group' => 1,
-			'moderator_group' => 3,
 		)
 	);
 	while ($row = $smcFunc['db_fetch_assoc']($request))
