@@ -353,8 +353,7 @@ function removeMessage($message, $decreasePostCount = true)
 		SELECT
 			m.id_member, m.poster_time, m.subject,' . (empty($modSettings['search_custom_index_config']) ? '' : ' m.body,') . '
 			m.approved, t.id_topic, t.id_first_msg, t.id_last_msg, t.num_replies,
-			t.id_member_started AS id_member_poster,
-			b.count_posts
+			t.id_member_started AS id_member_poster
 		FROM {db_prefix}messages AS m
 			INNER JOIN {db_prefix}topics AS t ON (t.id_topic = m.id_topic)
 		WHERE m.id_msg = {int:id_msg}
