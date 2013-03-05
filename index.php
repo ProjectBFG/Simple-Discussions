@@ -240,6 +240,7 @@ function smf_main()
 		'quotefast' => array('Post.php', 'QuoteFast'),
 		'quickmod' => array('MessageIndex.php', 'QuickModeration'),
 		'quickmod2' => array('Display.php', 'QuickInTopicModeration'),
+		'rate' => array('Rate.php', 'Rate'),
 		'recent' => array('Recent.php', 'RecentPosts'),
 		'register' => array('Register.php', 'Register'),
 		'register2' => array('Register.php', 'Register2'),

@@ -147,7 +147,10 @@ function template_main()
 		if ($message['can_approve'] || $context['can_reply'] || $message['can_modify'] || $message['can_remove'] || $context['can_split'])
 			echo '
 						<div class="btn-toolbar">
-							<div class="btn-group pull-right">';
+							<div class="btn-group pull-right">
+							
+								<span class="btn" id="like_', $message['id'], '" onclick="rate(', $message['id'], ', \'like\')"><i class="icon-thumbs-up"></i></span>
+								<span class="btn" id="dislike_', $message['id'], '" onclick="rate(', $message['id'], ', \'dislike\')"><i class="icon-thumbs-down"></i></span>';
 
 		// Can they reply? Have they turned on quick reply?
 		if ($context['can_quote'] && !empty($options['display_quick_reply']))
@@ -215,7 +218,9 @@ function template_main()
 			if ($message['can_approve'] || $context['can_reply'] || $message['can_modify'] || $message['can_remove'] || $context['can_split'])
 				echo '
 							</div>
-						</div>';
+						</div>
+						<div class="clearfix"></div>
+						<div id="rating_', $message['id'], '" class="pull-right"></div>';
 
 		echo '
 						<div class="moderatorbar">';
@@ -473,27 +478,6 @@ function template_main()
 							sTemplateTopSubject: ', JavaScriptEscape($txt['topic'] . ': %subject% &nbsp;(' . $context['num_views_text'] . ')'), ',
 							sErrorBorderStyle: ', JavaScriptEscape('1px solid red'), ($context['can_reply'] && !empty($options['display_quick_reply'])) ? ',
 							sFormRemoveAccessKeys: \'postmodify\'' : '', '
-						});
-
-						aIconLists[aIconLists.length] = new IconList({
-							sBackReference: "aIconLists[" + aIconLists.length + "]",
-							sIconIdPrefix: "msg_icon_",
-							sScriptUrl: smf_scripturl,
-							bShowModify: ', $settings['show_modify'] ? 'true' : 'false', ',
-							iTopicId: ', $context['current_topic'], ',
-							sSessionId: smf_session_id,
-							sSessionVar: smf_session_var,
-							sLabelIconList: "', $txt['message_icon'], '",
-							sBoxBackground: "transparent",
-							sBoxBackgroundHover: "#ffffff",
-							iBoxBorderWidthHover: 1,
-							sBoxBorderColorHover: "#adadad" ,
-							sContainerBackground: "#ffffff",
-							sContainerBorder: "1px solid #adadad",
-							sItemBorder: "1px solid #ffffff",
-							sItemBorderHover: "1px dotted gray",
-							sItemBackground: "transparent",
-							sItemBackgroundHover: "#e0e0f0"
 						});
 					}';
 

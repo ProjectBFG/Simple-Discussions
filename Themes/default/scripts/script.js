@@ -1282,3 +1282,13 @@ function updateAuthMethod()
 		document.getElementById("auth_pass_div").style.display = "none";
 	}
 }
+
+function rate(id, rating)
+{
+	// var data = ;
+	var url = smf_prepareScriptUrl(smf_scripturl) + 'action=rate', data = {id: id, rating: rating};
+	var posting = $.post(url, data);
+	posting.done(function(e) {
+		$("#rating_" + id).html(e);
+	});
+}
