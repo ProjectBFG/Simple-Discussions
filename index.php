@@ -145,8 +145,8 @@ function smf_main()
 	is_not_banned();
 
 	// If we are in a topic and don't have permission to approve it then duck out now.
-	if (!empty($topic) && !allowedTo('approve_posts') && $user_info['is_guest'])
-		fatal_lang_error('not_a_topic', false);
+	// if (!empty($topic) && !allowedTo('approve_posts') && $user_info['is_guest'])
+		// fatal_lang_error('not_a_topic', false);
 
 	$no_stat_actions = array('findmember', 'jsoption', 'requestmembers', 'smstats', '.xml', 'xmlhttp', 'verificationcode', 'viewquery', 'viewsmfile');
 	call_integration_hook('integrate_pre_log_stats', array($no_stat_actions));
