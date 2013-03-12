@@ -501,14 +501,6 @@ div.pagesection div.floatright input, div.pagesection div.floatright select {
 
 /* All the signatures used in the forum.  If your forum users use Mozilla, Opera, or Safari, you might add max-height here ;). */
 .signature, .custom_fields_above_signature {
-	width: 100%;
-	overflow: auto;
-	clear: right;
-	padding: 12px 0 3px 0;
-	border-top: 1px solid #bfbfbf;
-	box-shadow: 0 1px 0 #fff inset;
-	line-height: 1.4em;
-	font-size: 0.9em;
 	-moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
 }
 
@@ -1108,23 +1100,6 @@ img.sort {
 }
 
 /* the posting icons */
-#posting_icons {
-	padding: 0 12px 6px 0;
-	margin: -3px 0 10px -8px;
-	line-height: 12px;
-	float: left;
-}
-#posting_icons li {
-	font-size: 0.9em;
-}
-#posting_icons img {
-	vertical-align: middle;
-	margin: 0 0 0 12px;
-}
-#postbuttons_upper ul li a span {
-	line-height: 19px;
-	padding: 0 0 0 6px;
-}
 .mark_read {
 	margin: -5px 0 0 0;
 	padding: 0;
@@ -1450,22 +1425,20 @@ td#quick_actions {
 }
 
 /* End nifty new flyout. */
-
-.postarea, .moderatorbar {
-	margin: 0 0 0 175px;
-}
 .postarea div.flow_hidden {
 	width: 100%;
 }
 .moderatorbar {
-	clear: right;
+	padding: 12px 0px 3px 0;
+	margin-top: 10px;
+	border-top: 1px solid #bfbfbf;
+	box-shadow: 0 1px 0 #fff inset;
+	line-height: 1.4em;
+	font-size: 0.9em;
 }
-.messageicon {
-	float: left;
-	margin: -2px 6px -6px 0;
-}
-.messageicon img {
-	padding: 0 3px 0 3px;
+.moderatorbar .rating {
+	width: 50%;
+	text-align: right;
 }
 .keyinfo h5 {
 	padding: 1px 0 5px 0;

@@ -34,7 +34,7 @@ function ViewQuery()
 		fatal_lang_error('no_access', false);
 
 	// Don't allow except for administrators.
-	isAllowedTo('admin_forum');
+	// isAllowedTo('admin_forum');
 
 	// If we're just hiding/showing, do it now.
 	if (isset($_REQUEST['sa']) && $_REQUEST['sa'] == 'hide')

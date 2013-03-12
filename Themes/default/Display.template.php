@@ -219,11 +219,12 @@ function template_main()
 				echo '
 							</div>
 						</div>
-						<div class="clearfix"></div>
-						<div id="rating_', $message['id'], '" class="pull-right"></div>';
+						<div class="clearfix"></div>';
 
 		echo '
-						<div class="moderatorbar">';
+						<div class="moderatorbar">
+							<div id="rating_', $message['id'], '" class="pull-right rating"></div>
+							<div class="pull-left">';
 
 		// Are there any custom profile fields for above the signature?
 		if (!empty($message['member']['custom_fields']))
@@ -255,6 +256,7 @@ function template_main()
 							<div class="signature" id="msg_', $message['id'], '_signature"', $ignoring ? ' style="display:none;"' : '', '>', $message['member']['signature'], '</div>';
 
 		echo '
+							</div>
 						</div>
 					</div>
 				</div>
