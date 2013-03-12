@@ -170,7 +170,7 @@ function template_body_above()
 				</a>
 				<div class="nav-collapse collapse">
 					<form class="navbar-search pull-right" action="', $scripturl, '?action=search2" method="post" accept-charset="', $context['character_set'], '">
-						<input type="text" name="search" placeholder="', $txt['search'], '" />
+						<input type="text" id="main_search" autocomplete="off" name="search" placeholder="', $txt['search'], '" />
 					</form>
 					', template_menu(), '
 				</div>

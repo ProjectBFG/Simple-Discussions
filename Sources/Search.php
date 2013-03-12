@@ -1621,7 +1621,14 @@ function PlushSearch2()
 
 	$context['key_words'] = &$searchArray;
 
-	$context['sub_template'] = 'results';
+	
+	if (isset($_REQUEST['json']))
+	{
+		$context['sub_template'] = 'json_results';
+		$context['template_layers'] = array();
+	}
+	else
+		$context['sub_template'] = 'results';
 	$context['page_title'] = $txt['search_results'];
 	$context['get_topics'] = 'prepareSearchContext';
 	$context['can_send_pm'] = allowedTo('pm_send');

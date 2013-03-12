@@ -1292,3 +1292,36 @@ function rate(id, rating)
 		$("#rating_" + id).html(e);
 	});
 }
+
+$(document).ready(function() {
+	var url = smf_prepareScriptUrl(smf_scripturl) + 'action=search2;json';
+	var results = [], map = [];
+	$("#main_search").typeahead({
+		minLength: 5,
+		source: function(query, process) {
+			$.ajax({
+				url: url,
+				dataType: "json",
+				type: 'POST',
+				data: { search: query },
+				success: function (data) {
+					$.each(data, function(i, result) {
+						map[result.subject] = result;
+						results.push(result.subject);
+						// console.log(map);
+						console.log(results);
+					});
+					process(results);
+					results = [];
+					console.log(results);
+				}
+			});
+		},
+        updater: function (item) {
+			selectedResult = map[item].id;
+            document.location = smf_prepareScriptUrl(smf_scripturl) + 'topic=' + selectedResult + '.0';
+            return item;
+        },
+		items: 8,
+	});
+});

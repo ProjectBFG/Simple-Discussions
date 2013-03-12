@@ -439,4 +439,23 @@ function template_results()
 
 }
 
+function template_json_results()
+{
+	global $context;
+
+	$results = array();
+
+	while ($topic = $context['get_topics']())
+	{
+		foreach ($topic['matches'] as $message)
+		{
+			$results[] = array(
+				'id' => $topic['id'],
+				'subject' => $message['subject'],
+			);
+		}
+	}
+	echo json_encode($results);
+}
+
 ?>
