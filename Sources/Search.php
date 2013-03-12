@@ -1626,6 +1626,8 @@ function PlushSearch2()
 	{
 		$context['sub_template'] = 'json_results';
 		$context['template_layers'] = array();
+		global $db_show_debug;
+		$db_show_debug = false;
 	}
 	else
 		$context['sub_template'] = 'results';
