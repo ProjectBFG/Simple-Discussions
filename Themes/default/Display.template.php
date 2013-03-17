@@ -149,18 +149,17 @@ function template_main()
 						<div class="btn-toolbar">
 							<div class="btn-group pull-right">
 							
-								<span class="btn" id="like_', $message['id'], '" onclick="rate(', $message['id'], ', \'like\')"><i class="icon-thumbs-up"></i></span>
-								<span class="btn" id="dislike_', $message['id'], '" onclick="rate(', $message['id'], ', \'dislike\')"><i class="icon-thumbs-down"></i></span>';
+								<span class="btn" id="like_post_', $message['id'], '" onclick="like(', $message['id'], ')"><i class="icon-thumbs-up"></i></span>';
 
 		// Can they reply? Have they turned on quick reply?
-		if ($context['can_quote'] && !empty($options['display_quick_reply']))
+		// if ($context['can_quote'] && !empty($options['display_quick_reply']))
 			echo '
 								<a class="btn" href="', $scripturl, '?action=post;quote=', $message['id'], ';topic=', $context['current_topic'], '.', $context['start'], ';last_msg=', $context['topic_last_message'], '" onclick="return oQuickReply.quote(', $message['id'], ');">', $txt['quote'], '</a>';
 
 		// So... quick reply is off, but they *can* reply?
-		elseif ($context['can_quote'])
-			echo '
-								<a class="btn" href="', $scripturl, '?action=post;quote=', $message['id'], ';topic=', $context['current_topic'], '.', $context['start'], ';last_msg=', $context['topic_last_message'], '">', $txt['quote'], '</a>';
+		// elseif ($context['can_quote'])
+			// echo '
+								// <a class="btn" href="', $scripturl, '?action=post;quote=', $message['id'], ';topic=', $context['current_topic'], '.', $context['start'], ';last_msg=', $context['topic_last_message'], '">', $txt['quote'], '</a>';
 
 		// Can the user modify the contents of this post?  Show the modify inline image.
 		if ($message['can_modify'])
@@ -223,7 +222,22 @@ function template_main()
 
 		echo '
 						<div class="moderatorbar">
-							<div id="rating_', $message['id'], '" class="pull-right rating"></div>
+							<div class="pull-right rating">
+								<div id="like_', $message['id'], '">
+									<div id="like_info_', $message['id'], '"></div>
+									<div id="like_count_', $message['id'], '">', sprintf($txt['like_info_display'], $message['like_count']), '</div>
+									<div id="liked_', $message['id'], '">
+										<ul>';
+						foreach ($message['liked'] as $member)
+						{
+							echo '
+											<li>', $member['link'], '</li>';
+						}
+								echo '
+										</ul>
+									</div>
+								</div>
+							</div>
 							<div class="pull-left">';
 
 		// Are there any custom profile fields for above the signature?
@@ -284,10 +298,10 @@ function template_main()
 			<a id="quickreply"></a>
 			<div class="tborder" id="quickreplybox">
 					<h3 class="catbg">
-						<a href="javascript:oQuickReply.swap();"><img src="', $settings['images_url'], '/', $options['display_quick_reply'] > 1 ? 'collapse' : 'expand', '.png" alt="+" id="quickReplyExpand" class="icon" /></a>
-						<a href="javascript:oQuickReply.swap();">', $txt['quick_reply'], '</a>
+						<span class="icon-arrow-down" data-toggle="collapse" data-target="#quickReplyOptions" id="quickReplyExpand"></span>
+						', $txt['quick_reply'], '
 					</h3>
-				<div id="quickReplyOptions"', $options['display_quick_reply'] > 1 ? '' : ' style="display: none"', '>
+				<div id="quickReplyOptions" class="collapse in">
 					<div class="roundframe">
 						<p class="smalltext lefttext">', $txt['quick_reply_desc'], '</p>
 						', $context['is_locked'] ? '<p class="alert smalltext">' . $txt['quick_reply_warning'] . '</p>' : '',

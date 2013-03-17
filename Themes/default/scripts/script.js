@@ -1283,13 +1283,13 @@ function updateAuthMethod()
 	}
 }
 
-function rate(id, rating)
+function like(id)
 {
-	// var data = ;
-	var url = smf_prepareScriptUrl(smf_scripturl) + 'action=rate', data = {id: id, rating: rating};
+	var url = smf_prepareScriptUrl(smf_scripturl) + 'action=like', data = {id: id};
 	var posting = $.post(url, data);
 	posting.done(function(e) {
-		$("#rating_" + id).html(e);
+		$('#like_' + id).html(e);
+		$('#like_post_' + id + ' i').toggleClass('icon-thumbs-down icon-thumbs-up', 200);
 	});
 }
 
@@ -1308,12 +1308,9 @@ $(document).ready(function() {
 					$.each(data, function(i, result) {
 						map[result.subject] = result;
 						results.push(result.subject);
-						// console.log(map);
-						console.log(results);
 					});
 					process(results);
 					results = [];
-					console.log(results);
 				}
 			});
 		},

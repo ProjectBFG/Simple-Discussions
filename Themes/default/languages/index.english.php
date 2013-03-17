@@ -763,4 +763,12 @@ $txt['debug_tokens'] = 'Tokens: ';
 $txt['debug_browser'] = 'Browser ID: ';
 $txt['debug_hooks'] = 'Hooks called: ';
 
+
+// @todoy: move to Like.english.php
+// Like
+$txt['cannot_like_self'] = 'You cannot like yourself.';
+$txt['succesfull_liked'] = 'You succesfully liked the post.';
+$txt['succesfull_disliked'] = 'You succesfully disliked the post.';
+$txt['like_info_display'] = 'This post has been liked by %1$d people:';
+
 ?>

@@ -100,7 +100,7 @@ function template_main()
 							<td class="replies center">', $topic['replies'], '<br />Replies</td>
 							<td class="views center">', $topic['views'], '<br />Views</td>
 							<td class="topic">
-								<div><strong>', $topic['link'], '</strong></div>
+								<h4>', $topic['link'], '</h4>
 								<div class="pull-right">', $topic['time'], ' ', $txt['by'], ' ', $topic['poster']['link'], '</div>
 							</td>
 						</tr>';
@@ -201,7 +201,6 @@ function template_info_center()
 	echo '
 	<script>
 		$(\'#upshrinkHeaderIC\').on(\'show hide\', function(e){
-			console.log(this, e.target, e.currentTarget)
 			if(!$(this).is(e.target))return;
 			$(\'#collapseIC\').toggleClass(\'icon-arrow-up icon-arrow-down\', 200);
 		});
