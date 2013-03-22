@@ -191,7 +191,7 @@ CREATE TABLE {$db_prefix}likes (
   id_msg int(10) unsigned NOT NULL default '0',
   id_member int(10) unsigned NOT NULL default '0',
   time int(10) unsigned NOT NULL default '0',
-  PRIMARY KEY (id_rate)
+  PRIMARY KEY (id_like)
 ) ENGINE=MyISAM;
 
 #
@@ -721,6 +721,7 @@ CREATE TABLE {$db_prefix}messages (
   modified_name varchar(255) NOT NULL default '',
   body text NOT NULL,
   approved tinyint(3) NOT NULL default '1',
+  likes int(10) NOT NULL default '0',
   PRIMARY KEY (id_msg),
   UNIQUE topic (id_topic, id_msg),
   UNIQUE id_member (id_member, id_msg),
