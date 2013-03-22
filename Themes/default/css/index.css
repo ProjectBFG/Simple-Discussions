@@ -49,41 +49,6 @@ textarea.editor:focus {
 	box-shadow: 0 2px 5px rgba(0,0,0,0.1) inset;
 }
 
-/* Buttons should be styled a bit differently, in order to make them look more button'ish. */
-#frmLogin input.button_submit, #guest_form  input.button_submit, #calendar_navigation input.button_submit {
-	float: none;
-	margin-left: inherit;
-}
-.button_submit, .button_reset, .button_link {
-	margin: 0 0 0 12px;
-	padding: 2px 4px;
-	float: right;
-	cursor: pointer;
-	background: #fff url(../images/theme/lower_section.png) 0 45% repeat-x;
-	border: 1px solid #ccc;
-	border-right: 1px solid #bbb;
-	border-bottom: 1px solid #aaa;
-	border-radius: 1px;
-	box-shadow: 1px 1px 1px rgba(0,0,0,0.1);
-}
-.button_submit:hover, .button_reset:hover, .button_link:hover {
-	background: #fff url(../images/theme/upper_section.png) 0 45% repeat-x;
-	color: #af6700;
-	border: 1px solid #ccc;
-	border-left: 1px solid #bbb;
-	border-top: 1px solid #aaa;
-	box-shadow: -1px -1px 2px rgba(0,0,0,0.07), -1px -2px 4px rgba(255,255,255,0.33) inset;
-}
-a.button_link {
-	color: #000;
-	padding: 1px 5px;
-	margin: 0 !important;
-	font-size: 0.9em;
-}
-.button_link:hover {
-	text-decoration: none;
-}
-
 /* the new "button" */
 a.new_posts, span.new_posts {
 	color: #fff;
@@ -1652,7 +1617,7 @@ ul.quickbuttons li.inline_mod_check {
 }
 #moderationbuttons_strip {
 	float: left;
-	margin: 4px 0 4px -4px;
+	margin: 0 0 10px 0;
 }
 #moderationbuttons ul li {
 	padding: 0 6px 4px 0;
@@ -3332,5 +3297,6 @@ ul.dropdown-menu a.active
 #footer {
 	text-align: center;
 	margin: 10px 10px 10px 10px;
-	font-size:9px;	
+	/* font-size: px;	 */
 }
+

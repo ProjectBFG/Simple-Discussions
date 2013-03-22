@@ -2,9 +2,8 @@ a:link, a:hover, a:visited {
 	text-decoration: underline;
 }
 /* These divisions wrap the forum sections when a forum width is set. */
-#wrapper, .frame {
-	width: 90%;
-	max-width: 1140px;
+body {
+	padding-top: 60px;
 }
 h1.forumtitle {
 	font-size: 2em;
@@ -29,11 +28,6 @@ img#smflogo {
 	width: 100%;
 	max-width: 100%;
 	float: left;
-}
-#main_steps {
-	float: right;
-	width: 50%;
-	padding: 0 0 1em 0;
 }
 #main_steps h2 {
 	font-size: 1.2em;
@@ -85,7 +79,7 @@ img#smflogo {
 #step_progress {
 	background: #ffd000;
 }
-.overall_progress, .progress {
+.overall_progress {
 	position: absolute;
 	top: 0.5em;
 	left: 0.5em;
@@ -119,17 +113,7 @@ img#smflogo {
 	color: red;
 	padding: 0.5em;
 }
-.panel .button_submit, .panel .button_link {
-	font-size: 1em;
-	font-weight: bold;
-	color: #333;
-	padding: 3px 6px;
-	text-decoration: none;
-}
-.panel .button_submit:hover, .panel .button_link:hover {
-	color: #af6700;
-	text-decoration: none;
-}
+
 .panel .clear {
 	padding: 1em 0 0 0;
 	overflow: auto;
@@ -153,4 +137,8 @@ img#smflogo {
 	border-radius: 5px;
 	box-shadow: 0 -2px 2px rgba(0,0,0,0.1);
 	/* End [WIP] */
+}
+
+.progress {
+	height: 40px;
 }
