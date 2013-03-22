@@ -555,7 +555,7 @@ function Display()
 		$messages_request = $smcFunc['db_query']('', '
 			SELECT
 				id_msg, subject, poster_time, poster_ip, id_member, modified_time, modified_name, body,
-				smileys_enabled, poster_name, poster_email, approved, likes,
+				smileys_enabled, poster_name, poster_email, approved,
 				id_msg_modified < {int:new_from} AS is_read
 				' . (!empty($msg_selects) ? implode(',', $msg_selects) : '') . '
 			FROM {db_prefix}messages
