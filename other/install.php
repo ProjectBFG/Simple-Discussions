@@ -1964,7 +1964,7 @@ function template_install_above()
 		<link rel="stylesheet" type="text/css" href="Themes/default/css/index.css?alp21" />
 		<link rel="stylesheet" type="text/css" href="Themes/default/css/bootstrap.min.css" />
 		<link rel="stylesheet" type="text/css" href="Themes/default/css/install.css?alp21" />
-		<script type="text/javascript" src="Themes/default/scripts/script.js"></script>
+		<script src="Themes/default/scripts/script.js"></script>
 	</head>
 	<body>
 		<div class="navbar navbar-inverse navbar-fixed-top">
@@ -2066,7 +2066,7 @@ function template_welcome_message()
 	global $incontext, $installurl, $txt;
 
 	echo '
-	<script type="text/javascript" src="http://www.simplemachines.org/smf/current-version.js?version=' . $GLOBALS['current_smf_version'] . '"></script>
+	<script src="http://www.simplemachines.org/smf/current-version.js?version=' . $GLOBALS['current_smf_version'] . '"></script>
 	<form action="', $incontext['form_url'], '" method="post">
 		<p>', sprintf($txt['install_welcome_desc'], $GLOBALS['current_smf_version']), '</p>
 		<div id="version_warning" style="margin: 2ex; padding: 2ex; border: 2px dashed #a92174; color: black; background-color: #fbbbe2; display: none;">
@@ -2088,7 +2088,7 @@ function template_welcome_message()
 
 	// For the latest version stuff.
 	echo '
-		<script type="text/javascript"><!-- // --><![CDATA[
+		<script><!-- // --><![CDATA[
 			// Latest version?
 			function smfCurrentVersion()
 			{
@@ -2292,7 +2292,7 @@ function template_database_settings()
 
 	// Allow the toggling of input boxes for SQLite etc.
 	echo '
-	<script type="text/javascript"><!-- // --><![CDATA[
+	<script><!-- // --><![CDATA[
 		function toggleDBInput()
 		{
 			// What state is it?';
@@ -2491,7 +2491,7 @@ function template_delete_install()
 		<div style="margin: 1ex; font-weight: bold;">
 			<label for="delete_self"><input type="checkbox" id="delete_self" onclick="doTheDelete();" class="input_check" /> ', $txt['delete_installer'], !isset($_SESSION['installer_temp_ftp']) ? ' ' . $txt['delete_installer_maybe'] : '', '</label>
 		</div>
-		<script type="text/javascript"><!-- // --><![CDATA[
+		<script><!-- // --><![CDATA[
 			function doTheDelete()
 			{
 				var theCheck = document.getElementById ? document.getElementById("delete_self") : document.all.delete_self;

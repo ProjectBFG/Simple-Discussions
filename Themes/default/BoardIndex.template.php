@@ -40,7 +40,7 @@ function template_main()
 				</div>
 			</div>
 			<script src="', $settings['default_theme_url'], '/scripts/fader.js"></script>
-			<script><!-- // --><![CDATA[="text/javascript"><!-- // --><![CDATA[
+			<script><!-- // --><![CDATA[
 		
 				// Create a news fader object.
 				var oNewsFader = new smc_NewsFader({

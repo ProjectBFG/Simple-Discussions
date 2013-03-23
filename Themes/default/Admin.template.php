@@ -129,7 +129,7 @@ function template_admin()
 	// This sets the announcements and current versions themselves ;).
 	echo '
 		<script src="', $settings['default_theme_url'], '/scripts/admin.js?alp21"></script>
-		<script><!-- // --><![CDATA[="text/javascript"><!-- // --><![CDATA[
+		<script><!-- // --><![CDATA[
 			var oAdminIndex = new smf_AdminIndex({
 				sSelf: \'oAdminCenter\',
 
@@ -297,7 +297,7 @@ function template_credits()
 
 	// This makes all the support information available to the support script...
 	echo '
-		<script><!-- // --><![CDATA[="text/javascript"><!-- // --><![CDATA[
+		<script><!-- // --><![CDATA[
 			var smfSupportVersions = {};
 
 			smfSupportVersions.forum = "', $context['forum_version'], '";';
@@ -316,7 +316,7 @@ function template_credits()
 
 	// This sets the latest support stuff.
 	echo '
-		<script><!-- // --><![CDATA[="text/javascript"><!-- // --><![CDATA[
+		<script><!-- // --><![CDATA[
 			function smfCurrentVersion()
 			{
 				var smfVer, yourVer;
@@ -550,7 +550,7 @@ function template_view_versions()
 	   file categories. (sources, languages, and templates.) */
 	echo '
 		<script src="', $scripturl, '?action=viewsmfile;filename=detailed-version.js"></script>
-		<script><!-- // --><![CDATA[="text/javascript"><!-- // --><![CDATA[
+		<script><!-- // --><![CDATA[
 			var oViewVersions = new smf_ViewVersions({
 				aKnownLanguages: [
 					\'.', implode('\',
@@ -600,7 +600,7 @@ function template_edit_censored()
 					<div id="moreCensoredWords"></div><div style="margin-top: 1ex; display: none;" id="moreCensoredWords_link">
 						<a class="button_link" style="float: left" href="#;" onclick="addNewWord(); return false;">', $txt['censor_clickadd'], '</a><br />
 					</div>
-					<script><!-- // --><![CDATA[="text/javascript"><!-- // --><![CDATA[
+					<script><!-- // --><![CDATA[
 						document.getElementById("moreCensoredWords_link").style.display = "";
 					// ]]></script>
 					<hr width="100%" size="1" class="hrcolor clear" />
@@ -681,7 +681,7 @@ function template_not_done()
 			</div>
 		</div>
 	</div>
-	<script><!-- // --><![CDATA[="text/javascript"><!-- // --><![CDATA[
+	<script><!-- // --><![CDATA[
 		var countdown = ', $context['continue_countdown'], ';
 		doAutoSubmit();
 
@@ -707,7 +707,7 @@ function template_show_settings()
 
 	if (!empty($context['settings_pre_javascript']))
 		echo '
-	<script><!-- // --><![CDATA[="text/javascript"><!-- // --><![CDATA[', $context['settings_pre_javascript'], '// ]]></script>';
+	<script><!-- // --><![CDATA[', $context['settings_pre_javascript'], '// ]]></script>';
 
 	if (!empty($context['settings_insert_above']))
 		echo $context['settings_insert_above'];
@@ -925,7 +925,7 @@ function template_show_settings()
 
 	if (!empty($context['settings_post_javascript']))
 		echo '
-	<script><!-- // --><![CDATA[="text/javascript"><!-- // --><![CDATA[
+	<script><!-- // --><![CDATA[
 	', $context['settings_post_javascript'], '
 	// ]]></script>';
 
@@ -942,7 +942,7 @@ function template_show_custom_profile()
 	template_show_list('standard_profile_fields');
 
 	echo '
-	<script><!-- // --><![CDATA[="text/javascript"><!-- // --><![CDATA[
+	<script><!-- // --><![CDATA[
 		var iNumChecks = document.forms.standardProfileFields.length;
 		for (var i = 0; i < iNumChecks; i++)
 			if (document.forms.standardProfileFields[i].id.indexOf(\'reg_\') == 0)
@@ -960,7 +960,7 @@ function template_edit_profile_field()
 
 	// All the javascript for this page - quite a bit in script.js!
 	echo '
-	<script><!-- // --><![CDATA[="text/javascript"><!-- // --><![CDATA[
+	<script><!-- // --><![CDATA[
 		var startOptID = ', count($context['field']['options']), ';
 	// ]]></script>';
 
@@ -1172,7 +1172,7 @@ function template_edit_profile_field()
 
 	// Get the javascript bits right!
 	echo '
-	<script><!-- // --><![CDATA[="text/javascript"><!-- // --><![CDATA[
+	<script><!-- // --><![CDATA[
 		updateInputBoxes();
 	// ]]></script>';
 }
@@ -1246,7 +1246,7 @@ function template_core_features()
 	global $context, $txt, $settings, $options, $scripturl;
 
 	echo '
-	<script><!-- // --><![CDATA[="text/javascript"><!-- // --><![CDATA[
+	<script><!-- // --><![CDATA[
 		var token_name;
 		var token_value;
 		var feature_on_text =  ', JavaScriptEscape($txt['core_settings_switch_off']), '
@@ -1509,7 +1509,7 @@ function template_repair_boards()
 	if (!empty($context['redirect_to_recount']))
 	{
 		echo '
-	<script><!-- // --><![CDATA[="text/javascript"><!-- // --><![CDATA[
+	<script><!-- // --><![CDATA[
 		var countdown = 5;
 		doAutoSubmit();
 

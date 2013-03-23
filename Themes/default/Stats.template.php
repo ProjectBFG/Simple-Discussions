@@ -300,7 +300,7 @@ function template_main()
 		</div>
 	</div>
 	<script src="', $settings['default_theme_url'], '/scripts/stats.js"></script>
-	<script><!-- // --><![CDATA[="text/javascript"><!-- // --><![CDATA[
+	<script><!-- // --><![CDATA[
 		var oStatsCenter = new smf_StatsCenter({
 			sTableId: \'stats\',
 

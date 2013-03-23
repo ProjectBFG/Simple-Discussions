@@ -182,7 +182,7 @@ function template_show_list($list_id = null)
 
 	if (isset($cur_list['javascript']))
 		echo '
-	<script><!-- // --><![CDATA[="text/javascript"><!-- // --><![CDATA[
+	<script><!-- // --><![CDATA[
 		', $cur_list['javascript'], '
 	// ]]></script>';
 }

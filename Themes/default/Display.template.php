@@ -354,7 +354,7 @@ function template_main()
 
 			echo '
 							', template_control_richedit($context['post_box_name'], 'smileyBox_message', 'bbcBox_message'), '
-							<script><!-- // --><![CDATA[="text/javascript"><!-- // --><![CDATA[
+							<script><!-- // --><![CDATA[
 								function insertQuoteFast(messageid)
 								{
 									if (window.XMLHttpRequest)
@@ -407,7 +407,7 @@ function template_main()
 	if (!empty($context['drafts_autosave']) && !empty($options['drafts_autosave_enabled']))
 		echo '
 			<script src="', $settings['default_theme_url'], '/scripts/drafts.js?alp21"></script>
-			<script><!-- // --><![CDATA[="text/javascript"><!-- // --><![CDATA[
+			<script><!-- // --><![CDATA[
 				var oDraftAutoSave = new smf_DraftAutoSave({
 					sSelf: \'oDraftAutoSave\',
 					sLastNote: \'draft_lastautosave\',
@@ -425,7 +425,7 @@ function template_main()
 
 	echo '
 				<script src="', $settings['default_theme_url'], '/scripts/topic.js"></script>
-				<script><!-- // --><![CDATA[="text/javascript"><!-- // --><![CDATA[';
+				<script><!-- // --><![CDATA[';
 
 	if (!empty($options['display_quick_reply']))
 		echo '

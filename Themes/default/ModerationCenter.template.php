@@ -634,7 +634,7 @@ function template_warn_template()
 		</form>
 	</div>
 
-	<script><!-- // --><![CDATA[="text/javascript"><!-- // --><![CDATA[
+	<script><!-- // --><![CDATA[
 		$(document).ready(function() {
 			$("#preview_button").click(function() {
 				return ajax_getTemplatePreview();

@@ -120,7 +120,7 @@ function template_new_group()
 	if ($context['undefined_group'])
 	{
 		echo '
-			<script><!-- // --><![CDATA[="text/javascript"><!-- // --><![CDATA[
+			<script><!-- // --><![CDATA[
 				function swapPostGroup(isChecked)
 				{
 					var min_posts_text = document.getElementById(\'min_posts_text\');
@@ -283,7 +283,7 @@ function template_edit_group()
 		</form>
 	</div>
 		<script src="', $settings['default_theme_url'], '/scripts/suggest.js?alp21"></script>
-		<script><!-- // --><![CDATA[="text/javascript"><!-- // --><![CDATA[
+		<script><!-- // --><![CDATA[
 			var oModeratorSuggest = new smc_AutoSuggest({
 				sSelf: \'oModeratorSuggest\',
 				sSessionId: smf_session_id,
@@ -312,7 +312,7 @@ function template_edit_group()
 
 	if ($context['group']['allow_post_group'])
 		echo '
-		<script><!-- // --><![CDATA[="text/javascript"><!-- // --><![CDATA[
+		<script><!-- // --><![CDATA[
 			function swapPostGroup(isChecked)
 			{
 				var min_posts_text = document.getElementById(\'min_posts_text\');
@@ -509,7 +509,7 @@ function template_group_members()
 	if (!empty($context['group']['assignable']))
 		echo '
 		<script src="', $settings['default_theme_url'], '/scripts/suggest.js?alp21"></script>
-		<script><!-- // --><![CDATA[="text/javascript"><!-- // --><![CDATA[
+		<script><!-- // --><![CDATA[
 			var oAddMemberSuggest = new smc_AutoSuggest({
 				sSelf: \'oAddMemberSuggest\',
 				sSessionId: \'', $context['session_id'], '\',

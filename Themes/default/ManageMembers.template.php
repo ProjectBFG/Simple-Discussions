@@ -245,7 +245,7 @@ function template_admin_browse()
 		<br />
 		<form id="admin_form_wrapper" action="', $scripturl, '?action=admin;area=viewmembers" method="post" accept-charset="', $context['character_set'], '" name="postFormOutstanding" id="postFormOutstanding" onsubmit="return onOutstandingSubmit();">
 				<h3 class="catbg">', $txt['admin_browse_outstanding'], '</h3>
-			<script><!-- // --><![CDATA[="text/javascript"><!-- // --><![CDATA[
+			<script><!-- // --><![CDATA[
 				function onOutstandingSubmit()
 				{
 					if (document.forms.postFormOutstanding.todo.value == "")

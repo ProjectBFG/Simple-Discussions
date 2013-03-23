@@ -55,7 +55,7 @@ function template_folder()
 
 	// The every helpful javascript!
 	echo '
-	<script><!-- // --><![CDATA[="text/javascript"><!-- // --><![CDATA[
+	<script><!-- // --><![CDATA[
 		var allLabels = {};
 		var currentLabels = {};
 		function loadLabelChoices()
@@ -570,7 +570,7 @@ function template_subject_list()
 		echo '
 		<tr class="', $next_alternate ? 'windowbg' : 'windowbg2', '">
 			<td align="center" width="4%">
-			<script><!-- // --><![CDATA[="text/javascript"><!-- // --><![CDATA[
+			<script><!-- // --><![CDATA[
 				currentLabels[', $message['id'], '] = {';
 
 		if (!empty($message['labels']))

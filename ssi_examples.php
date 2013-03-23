@@ -419,7 +419,7 @@ function template_ssi_above()
 	<head>
 		<title>SMF 2.1 Alpha 1 SSI.php Examples</title>
 		<link rel="stylesheet" type="text/css" href="', $settings['default_theme_url'], '/css/index.css?alp21" />
-		<script type="text/javascript" src="', $settings['default_theme_url'], '/scripts/script.js"></script>
+		<script src="', $settings['default_theme_url'], '/scripts/script.js"></script>
 		<style type="text/css">
 			#wrapper
 			{
@@ -491,7 +491,7 @@ function template_ssi_above()
 				overflow: hidden;
 			}
 		</style>
-		<script type="text/javascript"><!-- // --><![CDATA[
+		<script><!-- // --><![CDATA[
 			var smf_scripturl = "', $scripturl, '";
 			var smf_iso_case_folding = ', $context['server']['iso_case_folding'] ? 'true' : 'false', ';
 			var smf_charset = "', $context['character_set'], '";
@@ -540,7 +540,7 @@ function template_ssi_below()
 	global $time_start;
 
 	echo '
-						<script type="text/javascript"><!-- // --><![CDATA[
+						<script><!-- // --><![CDATA[
 							showSSIBlock("ssi_recentTopics");
 						// ]]></script>
 					</div>
