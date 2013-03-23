@@ -78,8 +78,7 @@ function template_ban_edit()
 					</legend>
 					<dl class="settings">
 						<dt>
-							<input type="checkbox" name="ban_suggestion[]" id="main_ip_check" value="main_ip" class="input_check" />
-							<label for="main_ip_check">', $txt['ban_on_ip'], '</label>
+							<label for="main_ip_check" class="checkbox"><input type="checkbox" name="ban_suggestion[]" id="main_ip_check" value="main_ip" class="input_check" />', $txt['ban_on_ip'], '</label>
 						</dt>
 						<dd>
 							<input type="text" name="main_ip" value="', $context['ban_suggestions']['main_ip'], '" size="44" onfocus="document.getElementById(\'main_ip_check\').checked = true;" class="input_text" />
@@ -231,8 +230,8 @@ function template_ban_edit()
 
 	echo '
 	</div>
-	<script type="text/javascript" src="', $settings['default_theme_url'], '/scripts/suggest.js?alp21"></script>
-	<script type="text/javascript"><!-- // --><![CDATA[
+	<script src="', $settings['default_theme_url'], '/scripts/suggest.js?alp21"></script>
+	<script><!-- // --><![CDATA[="text/javascript"><!-- // --><![CDATA[
 		var fUpdateStatus = function ()
 		{
 			document.getElementById("expire_date").disabled = !document.getElementById("expires_one_day").checked;
@@ -326,8 +325,8 @@ function template_ban_edit_trigger()
 		</form>
 	</div>
 
-	<script type="text/javascript" src="', $settings['default_theme_url'], '/scripts/suggest.js?alp21"></script>
-	<script type="text/javascript"><!-- // --><![CDATA[
+	<script src="', $settings['default_theme_url'], '/scripts/suggest.js?alp21"></script>
+	<script><!-- // --><![CDATA[="text/javascript"><!-- // --><![CDATA[
 		var oAddMemberSuggest = new smc_AutoSuggest({
 			sSelf: \'oAddMemberSuggest\',
 			sSessionId: smf_session_id,

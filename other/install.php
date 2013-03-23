@@ -2016,7 +2016,7 @@ function template_install_above()
 							<p>', $incontext['overall_percent'], '% ', $txt['upgrade_overall_progress'], '</p>
 						</div>
 					</div>
-					<div id="main_screen" class="clear">
+					<div id="main_screen" class="clear well">
 						<h2>', $incontext['page_title'], '</h2>
 						<div class="panel">';
 }

@@ -55,7 +55,7 @@ function template_folder()
 
 	// The every helpful javascript!
 	echo '
-	<script type="text/javascript"><!-- // --><![CDATA[
+	<script><!-- // --><![CDATA[="text/javascript"><!-- // --><![CDATA[
 		var allLabels = {};
 		var currentLabels = {};
 		function loadLabelChoices()
@@ -570,7 +570,7 @@ function template_subject_list()
 		echo '
 		<tr class="', $next_alternate ? 'windowbg' : 'windowbg2', '">
 			<td align="center" width="4%">
-			<script type="text/javascript"><!-- // --><![CDATA[
+			<script><!-- // --><![CDATA[="text/javascript"><!-- // --><![CDATA[
 				currentLabels[', $message['id'], '] = {';
 
 		if (!empty($message['labels']))
@@ -689,7 +689,7 @@ function template_search()
 				<span class="enhanced">
 					<strong>', $txt['pm_search_text'], ':</strong>
 					<input type="text" name="search"', !empty($context['search_params']['search']) ? ' value="' . $context['search_params']['search'] . '"' : '', ' size="40" class="input_text" />
-					<script type="text/javascript"><!-- // --><![CDATA[
+					<script><!-- // --><![CDATA[
 						createEventListener(window);
 						window.addEventListener("load", initSearch, false);
 					// ]]></script>
@@ -759,7 +759,7 @@ function template_search()
 
 			// Some javascript for the advanced toggling
 			echo '
-		<script type="text/javascript"><!-- // --><![CDATA[
+		<script><!-- // --><![CDATA[
 			var oAdvancedPanelToggle = new smc_Toggle({
 				bToggleEnabled: true,
 				bCurrentlyCollapsed: ', empty($context['show_advanced_options']) ? 'true' : 'false', ',
@@ -1094,7 +1094,7 @@ function template_send()
 	}
 
 	echo '
-		<script type="text/javascript"><!-- // --><![CDATA[';
+		<script><!-- // --><![CDATA[';
 	// The functions used to preview a personal message without loading a new page.
 	echo '
 			var txt_preview_title = "', $txt['preview_title'], '";
@@ -1248,9 +1248,9 @@ function template_send()
 	</div><br class="clear" />';
 
 	echo '
-		<script type="text/javascript" src="', $settings['default_theme_url'], '/scripts/PersonalMessage.js?alp21"></script>
-		<script type="text/javascript" src="', $settings['default_theme_url'], '/scripts/suggest.js?alp21"></script>
-		<script type="text/javascript"><!-- // --><![CDATA[
+		<script src="', $settings['default_theme_url'], '/scripts/PersonalMessage.js?alp21"></script>
+		<script src="', $settings['default_theme_url'], '/scripts/suggest.js?alp21"></script>
+		<script><!-- // --><![CDATA[
 			var oPersonalMessageSend = new smf_PersonalMessageSend({
 				sSelf: \'oPersonalMessageSend\',
 				sSessionId: smf_session_id,
@@ -1558,7 +1558,7 @@ function template_add_rule()
 	global $context, $settings, $options, $txt, $scripturl;
 
 	echo '
-	<script type="text/javascript"><!-- // --><![CDATA[
+	<script><!-- // --><![CDATA[
 			var criteriaNum = 0;
 			var actionNum = 0;
 			var groups = new Array()
@@ -1822,7 +1822,7 @@ function template_add_rule()
 
 	// Now setup all the bits!
 		echo '
-	<script type="text/javascript"><!-- // --><![CDATA[';
+	<script><!-- // --><![CDATA[';
 
 	foreach ($context['rule']['criteria'] as $k => $c)
 		echo '

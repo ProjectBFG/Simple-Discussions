@@ -342,7 +342,7 @@ function ModifyMailSettings($return_config = false)
 	prepareDBSettingContext($config_vars);
 
 	$context['settings_insert_above'] = '
-	<script type="text/javascript"><!-- // --><![CDATA[
+	<script><!-- // --><![CDATA[
 		var bDay = {';
 
 	$i = 0;

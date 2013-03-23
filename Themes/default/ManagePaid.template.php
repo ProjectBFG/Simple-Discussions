@@ -222,7 +222,7 @@ function template_modify_user_subscription()
 
 	// Some quickly stolen javascript from Post, could do with being more efficient :)
 	echo '
-	<script type="text/javascript"><!-- // --><![CDATA[
+	<script><!-- // --><![CDATA[="text/javascript"><!-- // --><![CDATA[
 			var monthLength = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 		// ]]></script>';
 
@@ -333,8 +333,8 @@ function template_modify_user_subscription()
 			</div>
 			<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 		</form>
-		<script type="text/javascript" src="', $settings['default_theme_url'], '/scripts/suggest.js?alp21"></script>
-		<script type="text/javascript"><!-- // --><![CDATA[
+		<script src="', $settings['default_theme_url'], '/scripts/suggest.js?alp21"></script>
+		<script><!-- // --><![CDATA[="text/javascript"><!-- // --><![CDATA[
 		var oAddMemberSuggest = new smc_AutoSuggest({
 			sSelf: \'oAddMemberSuggest\',
 			sSessionId: smf_session_id,
@@ -559,7 +559,7 @@ function template_choose_payment()
 
 		if (!empty($gateway['javascript']))
 			echo '
-						<script type="text/javascript"><!-- // --><![CDATA[
+						<script><!-- // --><![CDATA[="text/javascript"><!-- // --><![CDATA[
 							', $gateway['javascript'], '
 						// ]]></script>';
 

@@ -17,7 +17,7 @@ function template_main()
 
 	// Start the javascript... and boy is there a lot.
 	echo '
-		<script type="text/javascript"><!-- // --><![CDATA[';
+		<script><!-- // --><![CDATA[';
 
 	// When using Go Back due to fatal_error, allow the form to be re-submitted with changes.
 	if (isBrowser('is_firefox'))
@@ -214,7 +214,7 @@ function template_main()
 		</form>';
 
 	echo '
-		<script type="text/javascript"><!-- // --><![CDATA[';
+		<script><!-- // --><![CDATA[';
 
 	// The functions used to preview a posts without loading a new page.
 	echo '
@@ -511,7 +511,7 @@ function template_main()
 
 		echo '
 		</div>
-		<script type="text/javascript"><!-- // --><![CDATA[
+		<script><!-- // --><![CDATA[
 			var aIgnoreToggles = new Array();';
 
 		foreach ($ignored_posts as $post_id)
@@ -600,13 +600,13 @@ function template_spellcheck()
 	// As you may expect - we need a lot of javascript for this... load it form the separate files.
 	echo '
 		</style>
-		<script type="text/javascript"><!-- // --><![CDATA[
+		<script><!-- // --><![CDATA[
 			var spell_formname = window.opener.spell_formname;
 			var spell_fieldname = window.opener.spell_fieldname;
 		// ]]></script>
-		<script type="text/javascript" src="', $settings['default_theme_url'], '/scripts/spellcheck.js"></script>
-		<script type="text/javascript" src="', $settings['default_theme_url'], '/scripts/script.js"></script>
-		<script type="text/javascript"><!-- // --><![CDATA[
+		<script src="', $settings['default_theme_url'], '/scripts/spellcheck.js"></script>
+		<script src="', $settings['default_theme_url'], '/scripts/script.js"></script>
+		<script><!-- // --><![CDATA[
 			', $context['spell_js'], '
 		// ]]></script>
 	</head>
@@ -644,12 +644,12 @@ function template_quotefast()
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=', $context['character_set'], '" />
 		<title>', $txt['retrieving_quote'], '</title>
-		<script type="text/javascript" src="', $settings['default_theme_url'], '/scripts/script.js"></script>
+		<script src="', $settings['default_theme_url'], '/scripts/script.js"></script>
 	</head>
 	<body>
 		', $txt['retrieving_quote'], '
 		<div id="temporary_posting_area" style="display: none;"></div>
-		<script type="text/javascript"><!-- // --><![CDATA[';
+		<script><!-- // --><![CDATA[';
 
 	if ($context['close_window'])
 		echo '
@@ -761,7 +761,7 @@ function template_announcement_send()
 		</form>
 	</div>
 	<br />
-		<script type="text/javascript"><!-- // --><![CDATA[
+		<script><!-- // --><![CDATA[
 			var countdown = 2;
 			doAutoSubmit();
 

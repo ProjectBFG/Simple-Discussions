@@ -16,12 +16,12 @@ function template_profile_above()
 	global $context, $settings, $options, $scripturl, $modSettings, $txt;
 
 	echo '
-	<script type="text/javascript" src="', $settings['default_theme_url'], '/scripts/profile.js"></script>';
+	<script src="', $settings['default_theme_url'], '/scripts/profile.js"></script>';
 
 	// Prevent Chrome from auto completing fields when viewing/editing other members profiles
 	if (isBrowser('is_chrome') && !$context['user']['is_owner'])
 		echo '
-	<script type="text/javascript"><!-- // --><![CDATA[
+	<script><!-- // --><![CDATA[
 		disableAutoComplete();
 	// ]]></script>';
 
@@ -584,8 +584,8 @@ function template_editBuddies()
 			</div>
 		</div>
 	</form>
-	<script type="text/javascript" src="', $settings['default_theme_url'], '/scripts/suggest.js?alp21"></script>
-	<script type="text/javascript"><!-- // --><![CDATA[
+	<script src="', $settings['default_theme_url'], '/scripts/suggest.js?alp21"></script>
+	<script><!-- // --><![CDATA[
 		var oAddBuddySuggest = new smc_AutoSuggest({
 			sSelf: \'oAddBuddySuggest\',
 			sSessionId: smf_session_id,
@@ -677,8 +677,8 @@ function template_editIgnoreList()
 			</div>
 		</div>
 	</form>
-	<script type="text/javascript" src="', $settings['default_theme_url'], '/scripts/suggest.js?alp21"></script>
-	<script type="text/javascript"><!-- // --><![CDATA[
+	<script src="', $settings['default_theme_url'], '/scripts/suggest.js?alp21"></script>
+	<script><!-- // --><![CDATA[
 		var oAddIgnoreSuggest = new smc_AutoSuggest({
 			sSelf: \'oAddIgnoreSuggest\',
 			sSessionId: \'', $context['session_id'], '\',
@@ -1184,7 +1184,7 @@ function template_edit_options()
 
 	// Some javascript!
 	echo '
-		<script type="text/javascript"><!-- // --><![CDATA[
+		<script><!-- // --><![CDATA[
 			function checkProfileSubmit()
 			{';
 
@@ -1688,7 +1688,7 @@ function template_groupMembership()
 
 		// Javascript for the selector stuff.
 		echo '
-		<script type="text/javascript"><!-- // --><![CDATA[
+		<script><!-- // --><![CDATA[
 		var prevClass = "";
 		var prevDiv = "";
 		function highlightSelected(box)
@@ -1802,7 +1802,7 @@ function template_issueWarning()
 	template_load_warning_variables();
 
 	echo '
-	<script type="text/javascript"><!-- // --><![CDATA[
+	<script><!-- // --><![CDATA[
 		function setWarningBarPos(curEvent, isMove, changeAmount)
 		{
 			barWidth = ', $context['warningBarWidth'], ';
@@ -2068,7 +2068,7 @@ function template_issueWarning()
 
 	// Do our best to get pretty javascript enabled.
 	echo '
-	<script type="text/javascript"><!-- // --><![CDATA[
+	<script><!-- // --><![CDATA[
 		document.getElementById(\'warndiv1\').style.display = "";
 		document.getElementById(\'preview_button\').style.display = "none";
 		document.getElementById(\'warndiv2\').style.display = "none";';
@@ -2302,7 +2302,7 @@ function template_profile_group_manage()
 		echo '
 								</span>
 								<a href="javascript:void(0);" onclick="document.getElementById(\'additional_groupsList\').style.display = \'block\'; document.getElementById(\'additional_groupsLink\').style.display = \'none\'; return false;" id="additional_groupsLink" style="display: none;">', $txt['additional_membergroups_show'], '</a>
-								<script type="text/javascript"><!-- // --><![CDATA[
+								<script><!-- // --><![CDATA[
 									document.getElementById("additional_groupsList").style.display = "none";
 									document.getElementById("additional_groupsLink").style.display = "";
 								// ]]></script>
@@ -2379,11 +2379,11 @@ function template_profile_signature_modify()
 	// Load the spell checker?
 	if ($context['show_spellchecking'])
 		echo '
-								<script type="text/javascript" src="', $settings['default_theme_url'], '/scripts/spellcheck.js"></script>';
+								<script src="', $settings['default_theme_url'], '/scripts/spellcheck.js"></script>';
 
 	// Some javascript used to count how many characters have been used so far in the signature.
 	echo '
-								<script type="text/javascript"><!-- // --><![CDATA[
+								<script><!-- // --><![CDATA[
 									var maxLength = ', $context['signature_limits']['max_length'], ';
 
 									$(document).ready(function() {

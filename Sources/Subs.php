@@ -2843,7 +2843,7 @@ function setupThemeContext($forceload = false)
 
 	if (empty($settings['theme_version']))
 		$context['html_headers'] .= '
-	<script type="text/javascript"><!-- // --><![CDATA[
+	<script><!-- // --><![CDATA[
 		var smf_scripturl = "' . $scripturl . '";
 	// ]]></script>';
 
@@ -3099,7 +3099,7 @@ function template_javascript($do_defered = false)
 	if (!empty($context['javascript_vars']) && !$do_defered)
 	{
 		echo '
-	<script type="text/javascript"><!-- // --><![CDATA[';
+	<script><!-- // --><![CDATA[';
 
 		foreach ($context['javascript_vars'] as $key => $value)
 			echo '
@@ -3114,12 +3114,12 @@ function template_javascript($do_defered = false)
 	{
 		if ((!$do_defered && empty($js_file['options']['defer'])) || ($do_defered && !empty($js_file['options']['defer'])))
 			echo '
-	<script type="text/javascript" src="', $js_file['filename'], '"', !empty($js_file['options']['async']) ? ' async="async"' : '', '></script>';
+	<script src="', $js_file['filename'], '"', !empty($js_file['options']['async']) ? ' async="async"' : '', '></script>';
 
 		// If we are loading JQuery and we are set to 'auto' load, put in our remote success or load local check
 		if ($id == 'jquery' && (!isset($modSettings['jquery_source']) || !in_array($modSettings['jquery_source'], array('local', 'cdn'))))
 		echo '
-	<script type="text/javascript"><!-- // --><![CDATA[
+	<script><!-- // --><![CDATA[
 		window.jQuery || document.write(\'<script src="' . $settings['default_theme_url'] . '/scripts/jquery-1.7.1.min.js"><\/script>\');
 	// ]]></script>';
 
@@ -3131,7 +3131,7 @@ function template_javascript($do_defered = false)
 		if (!empty($context['javascript_inline']['defer']) && $do_defered)
 		{
 			echo '
-<script type="text/javascript"><!-- // --><![CDATA[';
+<script><!-- // --><![CDATA[';
 
 			foreach ($context['javascript_inline']['defer'] as $js_code)
 				echo $js_code;
@@ -3143,7 +3143,7 @@ function template_javascript($do_defered = false)
 		if (!empty($context['javascript_inline']['standard']) && !$do_defered)
 		{
 			echo '
-	<script type="text/javascript"><!-- // --><![CDATA[';
+	<script><!-- // --><![CDATA[';
 
 			foreach ($context['javascript_inline']['standard'] as $js_code)
 				echo $js_code;

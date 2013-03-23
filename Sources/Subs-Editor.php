@@ -1868,7 +1868,7 @@ function create_control_verification(&$verificationOptions, $do_test = false)
 		// Some javascript ma'am?
 		if (!empty($verificationOptions['override_visual']) || (!empty($modSettings['visual_verification_type']) && !isset($verificationOptions['override_visual'])))
 			$context['html_headers'] .= '
-		<script type="text/javascript" src="' . $settings['default_theme_url'] . '/scripts/captcha.js"></script>';
+		<script src="' . $settings['default_theme_url'] . '/scripts/captcha.js"></script>';
 
 		$context['use_graphic_library'] = in_array('gd', get_loaded_extensions());
 
@@ -1896,7 +1896,7 @@ function create_control_verification(&$verificationOptions, $do_test = false)
 	// Add javascript for the object.
 	if ($context['controls']['verification'][$verificationOptions['id']]['show_visual'])
 		$context['insert_after_template'] .= '
-			<script type="text/javascript"><!-- // --><![CDATA[
+			<script><!-- // --><![CDATA[
 				var verification' . $verificationOptions['id'] . 'Handle = new smfCaptcha("' . $thisVerification['image_href'] . '", "' . $verificationOptions['id'] . '", ' . ($context['use_graphic_library'] ? 1 : 0) . ');
 			// ]]></script>';
 

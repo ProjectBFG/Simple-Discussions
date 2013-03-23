@@ -214,7 +214,7 @@ function template_maintain_members()
 	global $context, $settings, $options, $txt, $scripturl;
 
 	echo '
-	<script type="text/javascript"><!-- // --><![CDATA[
+	<script><!-- // --><![CDATA[="text/javascript"><!-- // --><![CDATA[
 		var warningMessage = \'\';
 		var membersSwap = false;
 
@@ -354,8 +354,8 @@ function template_maintain_members()
 		</div>
 	</div>
 
-	<script type="text/javascript" src="', $settings['default_theme_url'], '/scripts/suggest.js?alp21"></script>
-	<script type="text/javascript"><!-- // --><![CDATA[
+	<script src="', $settings['default_theme_url'], '/scripts/suggest.js?alp21"></script>
+	<script><!-- // --><![CDATA[="text/javascript"><!-- // --><![CDATA[
 		var oAttributeMemberSuggest = new smc_AutoSuggest({
 			sSelf: \'oAttributeMemberSuggest\',
 			sSessionId: smf_session_id,

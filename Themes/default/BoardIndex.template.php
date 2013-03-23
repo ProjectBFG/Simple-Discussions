@@ -39,8 +39,8 @@ function template_main()
 					</ul>
 				</div>
 			</div>
-			<script type="text/javascript" src="', $settings['default_theme_url'], '/scripts/fader.js"></script>
-			<script type="text/javascript"><!-- // --><![CDATA[
+			<script src="', $settings['default_theme_url'], '/scripts/fader.js"></script>
+			<script><!-- // --><![CDATA[="text/javascript"><!-- // --><![CDATA[
 		
 				// Create a news fader object.
 				var oNewsFader = new smc_NewsFader({

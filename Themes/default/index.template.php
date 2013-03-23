@@ -47,10 +47,10 @@ function template_init()
 	/* What document type definition is being used? (for font size and other issues.)
 		'xhtml' for an XHTML 1.0 document type definition.
 		'html' for an HTML 4.01 document type definition. */
-	$settings['doctype'] = 'xhtml';
+	$settings['doctype'] = 'HTML';
 
 	// The version this template/theme is for. This should probably be the version of SMF it was created for.
-	$settings['theme_version'] = '2.0';
+	$settings['theme_version'] = '1.0';
 
 	// Set a setting that tells the theme that it can render the tabs.
 	$settings['use_tabs'] = true;
@@ -82,13 +82,9 @@ function template_html_above()
 
 	// The ?alp21 part of this link is just here to make sure browsers don't cache it wrongly.
 	echo '
-	<link rel="stylesheet" type="text/css" href="', $settings['theme_url'], '/css/bootstrap.css" />
-	<link rel="stylesheet" type="text/css" href="', $settings['theme_url'], '/css/index.css?alp21" />
+	<link rel="stylesheet" href="', $settings['theme_url'], '/css/bootstrap.css" />
+	<link rel="stylesheet" href="', $settings['theme_url'], '/css/index.css?alp21" />
     <link href="', $settings['theme_url'], '/css/bootstrap-responsive.css" rel="stylesheet">';
-
-	// Quick and dirty testing of RTL horrors. Remove before production build.
-	//echo '
-	//<link rel="stylesheet" type="text/css" href="', $settings['theme_url'], '/css/rtl.css?alp21" />';
 
 	// load in any css from mods or themes so they can overwrite if wanted
 	template_css();

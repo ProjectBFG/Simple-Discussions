@@ -21,8 +21,8 @@ function template_find_members()
 		<meta http-equiv="Content-Type" content="text/html; charset=', $context['character_set'], '" />
 		<meta name="robots" content="noindex" />
 		<link rel="stylesheet" type="text/css" href="', $settings['theme_url'], '/css/index', $context['theme_variant'], '.css?alp21" />
-		<script type="text/javascript" src="', $settings['default_theme_url'], '/scripts/script.js"></script>
-		<script type="text/javascript"><!-- // --><![CDATA[
+		<script src="', $settings['default_theme_url'], '/scripts/script.js"></script>
+		<script><!-- // --><![CDATA[="text/javascript"><!-- // --><![CDATA[
 			var membersAdded = [];
 			function addMember(name)
 			{
@@ -106,7 +106,7 @@ function template_find_members()
 
 	if (empty($context['results']))
 		echo '
-		<script type="text/javascript"><!-- // --><![CDATA[
+		<script><!-- // --><![CDATA[="text/javascript"><!-- // --><![CDATA[
 			document.getElementById("search").focus();
 		// ]]></script>';
 

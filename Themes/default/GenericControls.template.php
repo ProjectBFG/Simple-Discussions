@@ -27,7 +27,7 @@ function template_control_richedit($editor_id, $smileyContainer = null, $bbcCont
 			</div>
 		</div>
 		<input type="hidden" name="', $editor_id, '_mode" id="', $editor_id, '_mode" value="0" />
-		<script type="text/javascript"><!-- // --><![CDATA[
+		<script><!-- // --><![CDATA[="text/javascript"><!-- // --><![CDATA[
 			$(document).ready(function() {
 				', !empty($context['bbcodes_handlers']) ? $context['bbcodes_handlers'] : '', '
 
@@ -165,8 +165,8 @@ function template_control_richedit_buttons($editor_id)
 			<span id="throbber" style="display:none"><img src="' . $settings['images_url'] . '/loading_sm.gif" alt="" class="centericon" />&nbsp;</span>
 			<span id="draft_lastautosave" ></span>
 		</span>
-		<script type="text/javascript" src="', $settings['default_theme_url'], '/scripts/drafts.js?alp21"></script>
-		<script type="text/javascript"><!-- // --><![CDATA[
+		<script src="', $settings['default_theme_url'], '/scripts/drafts.js?alp21"></script>
+		<script><!-- // --><![CDATA[="text/javascript"><!-- // --><![CDATA[
 			var oDraftAutoSave = new smf_DraftAutoSave({
 				sSelf: \'oDraftAutoSave\',
 				sLastNote: \'draft_lastautosave\',
@@ -192,8 +192,8 @@ function template_control_richedit_buttons($editor_id)
 			<span id="throbber" style="display:none"><img src="' . $settings['images_url'] . '/loading_sm.gif" alt="" class="centericon" />&nbsp;</span>
 			<span id="draft_lastautosave" ></span>
 		</span>
-		<script type="text/javascript" src="', $settings['default_theme_url'], '/scripts/drafts.js?alp21"></script>
-		<script type="text/javascript"><!-- // --><![CDATA[
+		<script src="', $settings['default_theme_url'], '/scripts/drafts.js?alp21"></script>
+		<script><!-- // --><![CDATA[="text/javascript"><!-- // --><![CDATA[
 			var oDraftAutoSave = new smf_DraftAutoSave({
 				sSelf: \'oDraftAutoSave\',
 				sLastNote: \'draft_lastautosave\',

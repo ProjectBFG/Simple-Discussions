@@ -39,8 +39,8 @@ function template_registration_form()
 	global $context, $settings, $options, $scripturl, $txt, $modSettings;
 
 	echo '
-		<script type="text/javascript" src="', $settings['default_theme_url'], '/scripts/register.js"></script>
-		<script type="text/javascript"><!-- // --><![CDATA[
+		<script src="', $settings['default_theme_url'], '/scripts/register.js"></script>
+		<script><!-- // --><![CDATA[="text/javascript"><!-- // --><![CDATA[
 			function verifyAgree()
 			{
 				if (currentAuthMethod == \'passwd\' && document.forms.registration.smf_autov_pwmain.value != document.forms.registration.smf_autov_pwverify.value)
@@ -287,7 +287,7 @@ function template_registration_form()
 			<input type="hidden" name="', $context['register_token_var'], '" value="', $context['register_token'], '" />
 			<input type="hidden" name="step" value="2" />
 		</form>
-		<script type="text/javascript"><!-- // --><![CDATA[
+		<script><!-- // --><![CDATA[="text/javascript"><!-- // --><![CDATA[
 			var regTextStrings = {
 				"username_valid": "', $txt['registration_username_available'], '",
 				"username_invalid": "', $txt['registration_username_unavailable'], '",
