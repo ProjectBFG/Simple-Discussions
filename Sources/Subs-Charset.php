@@ -8,11 +8,11 @@
  * @copyright 2012 Simple Machines
  * @license http://www.simplemachines.org/about/smf/license.php BSD
  *
- * @version 2.1 Alpha 1
+ * @version 1.0 Alpha 1
  */
 
 if (!defined('SMF'))
-	die('Hacking attempt...');
+	die('No direct access...'); 
 
 /**
  * Converts the given UTF-8 string into lowercase.

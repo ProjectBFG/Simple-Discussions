@@ -8,14 +8,14 @@
  * @copyright 2012 Simple Machines
  * @license http://www.simplemachines.org/about/smf/license.php BSD
  *
- * @version 2.1 Alpha 1
+ * @version 1.0 Alpha 1
  */
 
 // This won't be dedicated without this - this must exist in each gateway!
 // SMF Payment Gateway: paypal
 
 if (!defined('SMF'))
-	die('Hacking attempt...');
+	die('No direct access...'); 
 
 /**
  * Class for returning available form data for this gateway

@@ -1,7 +1,7 @@
 <?php
 
 if (!defined('SMF'))
-	die('Hacking attempt...');
+	die('No direct access...'); 
 
 function BlogMain()
 {

@@ -8,10 +8,10 @@
  * @copyright 2012 Simple Machines
  * @license http://www.simplemachines.org/about/smf/license.php BSD
  *
- * @version 2.1 Alpha 1
+ * @version 1.0 Alpha 1
  */
 
-$GLOBALS['current_smf_version'] = '2.1 Alpha 1';
+$GLOBALS['current_smf_version'] = '1.0 Alpha 1';
 $GLOBALS['db_script_version'] = '2-1';
 
 $GLOBALS['required_php_version'] = '5.1.0';

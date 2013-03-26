@@ -8,11 +8,11 @@
  * @copyright 2012 Simple Machines
  * @license http://www.simplemachines.org/about/smf/license.php BSD
  *
- * @version 2.1 Alpha 1
+ * @version 1.0 Alpha 1
  */
 
 if (!defined('SMF'))
-	die('Hacking attempt...');
+	die('No direct access...'); 
 
 /**
  * Fulltext API, used when an SQL fulltext index is used
@@ -23,13 +23,13 @@ class fulltext_search
 	 * This is the last version of SMF that this was tested on, to protect against API changes.
 	 * @var type
 	 */
-	public $version_compatible = 'SMF 2.1 Alpha 1';
+	public $version_compatible = 'SMF 1.0 Alpha 1';
 
 	/**
 	 * This won't work with versions of SMF less than this.
 	 * @var type
 	 */
-	public $min_smf_version = 'SMF 2.1 Alpha 1';
+	public $min_smf_version = 'SMF 1.0 Alpha 1';
 
 	/**
 	 * Is it supported?

@@ -12,11 +12,11 @@
  * @copyright 2012 Simple Machines
  * @license http://www.simplemachines.org/about/smf/license.php BSD
  *
- * @version 2.1 Alpha 1
+ * @version 1.0 Alpha 1
  */
 
 if (!defined('SMF'))
-	die('Hacking attempt...');
+	die('No direct access...'); 
 
 /**
  * Log an error, if the error logging is enabled.
@@ -249,7 +249,7 @@ function error_handler($error_level, $error_string, $file, $line)
 
 	// We should NEVER get to this point.  Any fatal error MUST quit, or very bad things can happen.
 	if ($error_level % 255 == E_ERROR)
-		die('Hacking attempt...');
+		die('No direct access...'); 
 }
 
 /**

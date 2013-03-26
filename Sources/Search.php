@@ -10,16 +10,16 @@
  * @copyright 2012 Simple Machines
  * @license http://www.simplemachines.org/about/smf/license.php BSD
  *
- * @version 2.1 Alpha 1
+ * @version 1.0 Alpha 1
  */
 
 if (!defined('SMF'))
-	die('Hacking attempt...');
+	die('No direct access...'); 
 
 // This defines two version types for checking the API's are compatible with this version of SMF.
 $GLOBALS['search_versions'] = array(
 	// This is the forum version but is repeated due to some people rewriting $forum_version.
-	'forum_version' => 'SMF 2.1 Alpha 1',
+	'forum_version' => 'SMF 1.0 Alpha 1',
 	// This is the minimum version of SMF that an API could have been written for to work. (strtr to stop accidentally updating version on release)
 	'search_version' => strtr('SMF 2+1=Alpha=1', array('+' => '.', '=' => ' ')),
 );

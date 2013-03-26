@@ -1,7 +1,7 @@
 <?php
 
 if (!defined('SMF'))
-	die('Hacking attempt...');
+	die('No direct access...'); 
 
 function list_getBlogs($start, $items_per_page, $sort, $where, $where_params = array())
 {
