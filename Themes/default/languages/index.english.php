@@ -479,7 +479,7 @@ $txt['go_up'] = 'Go Up';
 $txt['go_down'] = 'Go Down';
 
 $forum_copyright = '<a href="' . $scripturl . '?action=credits" title="ProjectBFG" target="_blank" class="new_win">%1$s</a> |
- <a href="https://github.com/ProjectBFG/ProjectBFG" title="License" target="_blank" class="new_win">ProjectBFG &copy; 2013</a>, <a href="https://github.com/ProjectBFG/ProjectBFG" title="ProjectBFG" target="_blank" class="new_win">ProjectBFG</a>';
+ <a href="https://github.com/ProjectBFG/" title="License" target="_blank" class="new_win">ProjectBFG &copy; 2013</a>, <a href="https://github.com/ProjectBFG/ProjectGLS" title="ProjectGLS" target="_blank" class="new_win">ProjectGLS</a>';
 
 $txt['moveTopic1'] = 'Post a redirection topic';
 $txt['moveTopic2'] = 'Change the topic\'s subject';
