@@ -151,15 +151,15 @@ function template_main()
 							
 								<span class="btn" id="like_post_', $message['id'], '" onclick="like(', $message['id'], ')"><i class="icon-thumbs-up"></i></span>';
 
-		// Can they reply? Have they turned on quick reply?
+		/* Can they reply? Have they turned on quick reply?
 		// if ($context['can_quote'] && !empty($options['display_quick_reply']))
 			echo '
 								<a class="btn" href="', $scripturl, '?action=post;quote=', $message['id'], ';topic=', $context['current_topic'], '.', $context['start'], ';last_msg=', $context['topic_last_message'], '" onclick="return oQuickReply.quote(', $message['id'], ');">', $txt['quote'], '</a>';
 
 		// So... quick reply is off, but they *can* reply?
 		// elseif ($context['can_quote'])
-			// echo '
-								// <a class="btn" href="', $scripturl, '?action=post;quote=', $message['id'], ';topic=', $context['current_topic'], '.', $context['start'], ';last_msg=', $context['topic_last_message'], '">', $txt['quote'], '</a>';
+			echo '
+								<a class="btn" href="', $scripturl, '?action=post;quote=', $message['id'], ';topic=', $context['current_topic'], '.', $context['start'], ';last_msg=', $context['topic_last_message'], '">', $txt['quote'], '</a>';*/
 
 		// Can the user modify the contents of this post?  Show the modify inline image.
 		if ($message['can_modify'])
