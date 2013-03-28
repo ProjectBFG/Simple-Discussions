@@ -1425,9 +1425,7 @@ td#quick_actions {
 .inner {
 	padding: 7px 8px 2px 2px;
 	margin: 0 8x 0 0;
-	border-top: 1px solid #bfbfbf;
-	box-shadow: 0 1px 0 #fff inset;
-	min-height: 85px;
+	min-height: 30px;
 	word-break: hyphenate;
 	word-wrap: break-word;
 }

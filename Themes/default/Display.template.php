@@ -91,23 +91,6 @@ function template_main()
 					<a id="msg' . $message['id'] . '"></a>' . ($message['first_new'] ? '<a id="new"></a>' : '') : '', '
 					<div class="post_wrapper">';
 
-			echo '
-						<div class="keyinfo">
-							<h5 id="subject_', $message['id'], '">
-								<a href="', $message['href'], '" rel="nofollow" title="', !empty($message['counter']) ? sprintf($txt['reply_number'], $message['counter']) : '', ' - ', $message['subject'], '">', $message['time'], '</a>';
-
-		// Show "<< Last Edit: Time by Person >>" if this post was edited.
-		if ($settings['show_modify'] && !empty($message['modified']['name']))
-			echo '
-								<span class="smalltext modified" id="modified_', $message['id'], '">
-									', $message['modified']['last_edit_text'], '
-								</span>';
-
-			echo '
-							</h5>
-							<div id="msg_', $message['id'], '_quick_mod"', $ignoring ? ' style="display:none;"' : '', '></div>
-						</div>';
-
 		// Ignoring this user? Hide the post.
 		if ($ignoring)
 			echo '
@@ -136,9 +119,12 @@ function template_main()
 		
 		if (!empty($message['member']['group']))
 			echo '
-								(',$message['member']['group'],')';
+								(',$message['member']['group'],',';
+								
+			echo '							
+							<a href="', $message['href'], '" id="subject_', $message['id'], '" rel="nofollow" title="', !empty($message['counter']) ? sprintf($txt['reply_number'], $message['counter']) : '', ' - ', $message['subject'], '">', $message['time'], '</a>)';
 			
-		echo '
+			echo '
 							</div>
 						</div>';
 						
