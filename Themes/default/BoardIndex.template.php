@@ -113,7 +113,8 @@ function template_main()
 						</tr>';
 			echo '
 						</tbody>
-					</table></div>';
+					</table>
+				</div>';
 		}
 		echo '
 				', template_button_strip($context['new_topic'], 'right'), '
