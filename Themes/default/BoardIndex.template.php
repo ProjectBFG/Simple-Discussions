@@ -78,16 +78,23 @@ function template_main()
 				});
 			// ]]></script>';
 	}
+		// We can make a little sidebar here... A happy sidebar R.I.P. Bob Ross :/
 		echo '
+			<div class="sidebar">
+				<div class="well">
+					',$txt['dummy_sidebar'],'
+				</div>
+			</div>';
+			
+		// Main things happen here (topic/stats)	
+		echo '
+			<div class="mainstuff">
 				<div id="index_topics">
 					<div class="entry-title" style="display: none;">', $context['forum_name_html_safe'], ' - ', $txt['recent_posts'], '</div>
 					<div class="entry-content" style="display: none;">
 						<a rel="feedurl" href="', $scripturl, '?action=.xml;type=webslice">', $txt['subscribe_webslice'], '</a>
 					</div>';
 	
-	// This is the "Recent Posts" bar.
-	if (!empty($context['latest_topics']))
-	{
 		// Show lots of posts.
 		if (!empty($context['latest_topics']))
 		{
@@ -97,8 +104,8 @@ function template_main()
 			foreach ($context['latest_topics'] as $topic)
 				echo '
 						<tr>
-							<td class="replies center">', $topic['replies'], '<br />Replies</td>
-							<td class="views center">', $topic['views'], '<br />Views</td>
+							<td class="replies center">', $topic['replies'], '<br />'.$txt['replies'].'</td>
+							<td class="views center">', $topic['views'], '<br />'.$txt['views'].'</td>
 							<td class="topic">
 								<h4>', $topic['link'], '</h4>
 								<div class="pull-right">', $topic['time'], ' ', $txt['by'], ' ', $topic['poster']['link'], '</div>
@@ -106,15 +113,18 @@ function template_main()
 						</tr>';
 			echo '
 						</tbody>
-					</table>';
+					</table>
+				</div>';
 		}
-	}
 		echo '
 				', template_button_strip($context['new_topic'], 'right'), '
-				</div>
-				<div class="clearfix"></div><br />';
+				<br /><br />';
 
 	template_info_center();
+	
+		echo '
+			</div>
+				<div class="clearfix"></div>';
 }
 
 function template_info_center()

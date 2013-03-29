@@ -1091,8 +1091,11 @@ ul#smfFadeScroller li {
 /* Styles for the info center on the board index.
 ---------------------------------------------------- */
 #info_center {
+	border-right: 1px solid #ddd;
+	border-left: 1px solid #ddd;
 	clear: both;
-	margin: 0;
+	background: #f8f8f8;
+	padding: 16px 12px 6px 12px;
 }
 #ic_recentposts {
 	line-height: 1.6em;
@@ -3124,21 +3127,11 @@ span.hidelink {
 	padding: 3px 4px;
 	margin: 0 0 -10px 0;
 }
-#info_center{
-	background: #f8f8f8;
-	margin: 12px 0 0 0;
-	padding: 16px 12px 6px 12px;
-}
 .table_grid tr.catbg th.stats {
 	text-align: center;
 }
 .table_grid tr.catbg th.centercol, .table_grid tr.windowbg2 td.centercol, .table_grid tr.windowbg td.centercol, .table_grid tr.highlight2 td.centercol {
 	text-align: center;
-}
-#info_center  {
-	border-right: 1px solid #ddd;
-	border-left: 1px solid #ddd;
-	margin: 0 -1px;
 }
 .table_grid tr.catbg th {
 	padding: 4px 3px 3px 3px;
@@ -3297,4 +3290,11 @@ ul.dropdown-menu a.active
 	margin: 10px 10px 10px 10px;
 	/* font-size: px;	 */
 }
-
+.mainstuff {
+	float: right;
+	width: 74%;
+}
+.sidebar {
+	float: left;
+	width: 25%;
+}

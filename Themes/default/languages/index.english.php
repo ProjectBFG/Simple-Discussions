@@ -31,11 +31,6 @@ $txt['months_short'] = array(1 => 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul
 $txt['time_am'] = 'am';
 $txt['time_pm'] = 'pm';
 
-$txt['newmessages0'] = 'is new'; //Deprecated
-$txt['newmessages1'] = 'are new'; //Deprecated
-$txt['newmessages3'] = 'New'; //Deprecated
-$txt['newmessages4'] = ','; //Deprecated
-
 $txt['admin'] = 'Admin';
 $txt['moderate'] = 'Moderate';
 
@@ -770,5 +765,8 @@ $txt['cannot_like_self'] = 'You cannot like yourself.';
 $txt['succesfull_liked'] = 'You succesfully liked the post.';
 $txt['succesfull_disliked'] = 'You succesfully disliked the post.';
 $txt['like_info_display'] = 'This post has been liked by %1$d people:';
+
+// Dummy post Sidebar remove later
+$txt['dummy_sidebar'] = 'This is just a writing for sidebar :P<br />You can remove this or edit this or whatever you want you can do it.';
 
 ?>
