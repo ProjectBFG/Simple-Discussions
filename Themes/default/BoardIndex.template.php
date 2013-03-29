@@ -80,7 +80,7 @@ function template_main()
 	}
 		// We can make a little sidebar here... A happy sidebar R.I.P. Bob Ross :/
 		echo '
-			<div class="sidebar">
+			<div class="sidebar visible_desktop">
 				<div class="well">
 					',$txt['dummy_sidebar'],'
 				</div>
