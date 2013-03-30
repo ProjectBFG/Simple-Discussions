@@ -127,6 +127,7 @@ function getLastTopics($count)
 			'preview' => $row['body'],
 			'replies' => $row['num_replies'],
 			'views' => $row['num_views'],
+			'likes' => getTotalTopicLike($row['id_topic']),
 			'time' => timeformat($row['poster_time']),
 			'timestamp' => forum_time(true, $row['poster_time']),
 			'raw_timestamp' => $row['poster_time'],

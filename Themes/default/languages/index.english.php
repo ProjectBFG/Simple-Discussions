@@ -761,6 +761,7 @@ $txt['debug_hooks'] = 'Hooks called: ';
 
 // @todoy: move to Like.english.php
 // Like
+$txt['likes'] = 'Likes';
 $txt['cannot_like_self'] = 'You cannot like yourself.';
 $txt['succesfull_liked'] = 'You succesfully liked the post.';
 $txt['succesfull_disliked'] = 'You succesfully disliked the post.';
