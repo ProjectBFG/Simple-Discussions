@@ -104,8 +104,9 @@ function template_main()
 			foreach ($context['latest_topics'] as $topic)
 				echo '
 						<tr>
-							<td class="replies center">', $topic['replies'], '<br />'.$txt['replies'].'</td>
-							<td class="views center">', $topic['views'], '<br />'.$txt['views'].'</td>
+							<td class="replies center">', $topic['replies'], '<br />', $txt['replies'], '</td>
+							<td class="views center">', $topic['views'], '<br />', $txt['views'], '</td>
+							<td class="views center">', $topic['likes'], '<br />', $txt['likes'], '</td>
 							<td class="topic">
 								<h4>', $topic['link'], '</h4>
 								<div class="pull-right">', $topic['time'], ' ', $txt['by'], ' ', $topic['poster']['link'], '</div>
