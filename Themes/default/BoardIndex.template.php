@@ -98,9 +98,12 @@ function template_main()
 		// Show lots of posts.
 		if (!empty($context['latest_topics']))
 		{
+			// How it looks at desktop
 			echo '
+				<div class="visible-desktop">
 					<table class="table table-bordered">
 						<tbody>';
+			
 			foreach ($context['latest_topics'] as $topic)
 				echo '
 						<tr>
@@ -112,12 +115,35 @@ function template_main()
 								<div class="pull-right">', $topic['time'], ' ', $txt['by'], ' ', $topic['poster']['link'], '</div>
 							</td>
 						</tr>';
+			
 			echo '
 						</tbody>
 					</table>
 				</div>';
+						
+			// How it looks at mobile
+			echo '
+				<div class="hidden-desktop">
+					<table class="table table-bordered">
+						<tbody>';
+			
+			foreach ($context['latest_topics'] as $topic)
+				echo '
+						<tr>
+							<td class="topic">
+								<h4>', $topic['link'], '</h4>
+								<div class="pull-left">', $topic['likes'], ' ', $txt['likes'], ' | ', $topic['views'], ' ', $txt['views'], ' </div>
+								<div class="pull-right">', $topic['time'], ' ', $txt['by'], ' ', $topic['poster']['link'], '</div>
+							</td>
+						</tr>';
+						
+			echo '
+						</tbody>
+					</table>
+				</div>';				
 		}
 		echo '
+				</div>
 				', template_button_strip($context['new_topic'], 'right'), '
 			</div>';
 
