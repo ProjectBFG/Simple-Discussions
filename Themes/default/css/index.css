@@ -1096,6 +1096,7 @@ ul#smfFadeScroller li {
 	clear: both;
 	background: #f8f8f8;
 	padding: 16px 12px 6px 12px;
+	margin-top: 10px;
 }
 #ic_recentposts {
 	line-height: 1.6em;
@@ -3303,4 +3304,26 @@ ul.dropdown-menu a.active
 .sidebar {
 	float: left;
 	width: 25%;
+}
+
+[class^="icon-"],
+[class*=" icon-"]  { background-image: url("../images/glyphicons-halflings.png"); }
+.icon-white,
+.nav-pills > .active > a > [class^="icon-"],
+.nav-pills > .active > a > [class*=" icon-"],
+.nav-list > .active > a > [class^="icon-"],
+.nav-list > .active > a > [class*=" icon-"],
+.navbar-inverse .nav > .active > a > [class^="icon-"],
+.navbar-inverse .nav > .active > a > [class*=" icon-"],
+.dropdown-menu > li > a:hover > [class^="icon-"],
+.dropdown-menu > li > a:focus > [class^="icon-"],
+.dropdown-menu > li > a:hover > [class*=" icon-"],
+.dropdown-menu > li > a:focus > [class*=" icon-"],
+.dropdown-menu > .active > a > [class^="icon-"],
+.dropdown-menu > .active > a > [class*=" icon-"],
+.dropdown-submenu:hover > a > [class^="icon-"],
+.dropdown-submenu:focus > a > [class^="icon-"],
+.dropdown-submenu:hover > a > [class*=" icon-"],
+.dropdown-submenu:focus > a > [class*=" icon-"] {
+  background-image: url("../images/glyphicons-halflings-white.png");
 }

@@ -118,13 +118,9 @@ function template_main()
 		}
 		echo '
 				', template_button_strip($context['new_topic'], 'right'), '
-				<br /><br />';
+			</div>';
 
 	template_info_center();
-	
-		echo '
-			</div>
-				<div class="clearfix"></div>';
 }
 
 function template_info_center()
@@ -133,6 +129,7 @@ function template_info_center()
 
 	// Here's where the "Info Center" starts...
 	echo '
+	<div class="clearfix"></div>
 	<div class="well" id="info_center">
 		<h3 class="catbg">
 			<span class="icon-arrow-down" data-toggle="collapse" data-target="#upshrinkHeaderIC" id="collapseIC"></span>
