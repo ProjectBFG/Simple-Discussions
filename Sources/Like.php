@@ -174,4 +174,24 @@ function getLikes($msg)
 	return $likes;
 }
 
+function getTotalTopicLike($topic)
+{
+	global $smcFunc;
+	
+	$request = $smcFunc['db_query']('', '
+		SELECT SUM(likes)
+		FROM {db_prefix}messages
+		WHERE id_topic = {int:topic_id}
+		LIMIT 1',
+		array(
+			'topic_id' => (int) $topic,
+		)
+	);
+	list ($total) = $smcFunc['db_fetch_row']($request);
+	$smcFunc['db_free_result']($request);
+	
+	return $total;
+
+}
+
 ?>
