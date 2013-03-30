@@ -41,7 +41,6 @@ Packages/temp
 ######################
 .DS_Store*
 ehthumbs.db
-Icon?
 Thumbs.db
 *.lnk
 /nbproject/private/
