@@ -3290,10 +3290,16 @@ ul.dropdown-menu a.active
 	margin: 10px 10px 10px 10px;
 	/* font-size: px;	 */
 }
-.mainstuff {
-	float: right;
-	width: 74%;
+@media (max-width: 979px) {
+	.mainstuff {
+		width: 95%;
+	}
 }
+@media (min-width: 980px) {
+	.mainstuff {
+		float: right;
+		width: 74%;
+	}
 .sidebar {
 	float: left;
 	width: 25%;
