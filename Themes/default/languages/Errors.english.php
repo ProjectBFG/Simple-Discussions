@@ -201,6 +201,8 @@ $txt['error_no_subject'] = 'No subject was filled in.';
 $txt['error_no_message'] = 'The message body was left empty.';
 $txt['error_long_message'] = 'The message exceeds the maximum allowed length (%1$d characters).';
 $txt['error_no_comment'] = 'The comment field was left empty.';
+// duplicate of post_too_long in Post.{language}.php
+$txt['error_post_too_long'] = 'Your message is too long. Please go back and shorten it, then try again.';
 $txt['error_session_timeout'] = 'Your session timed out while posting. Please try to re-submit your message.';
 $txt['error_no_to'] = 'No recipients specified.';
 $txt['error_bad_to'] = 'One or more \'to\'-recipients could not be found.';
