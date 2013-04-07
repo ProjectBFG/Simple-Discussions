@@ -82,9 +82,9 @@ function template_html_above()
 
 	// The ?alp21 part of this link is just here to make sure browsers don't cache it wrongly.
 	echo '
-	<link rel="stylesheet" href="', $settings['theme_url'], '/css/bootstrap.css" />
+	<link rel="stylesheet" href="', $settings['theme_url'], '/css/bootstrap.min.css" />
 	<link rel="stylesheet" href="', $settings['theme_url'], '/css/index.css?alp21" />
-    <link href="', $settings['theme_url'], '/css/bootstrap-responsive.css" rel="stylesheet">';
+    <link href="', $settings['theme_url'], '/css/bootstrap-responsive.min.css" rel="stylesheet">';
 
 	// load in any css from mods or themes so they can overwrite if wanted
 	template_css();
