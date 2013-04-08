@@ -1004,7 +1004,6 @@ function ModifyLanguage()
 			'~\$txt\[\'lang_locale\'\]\s=\s(\'|")[^\r\n]+~' => '$txt[\'lang_locale\'] = \'' . addslashes($_POST['locale']) . '\';',
 			'~\$txt\[\'lang_dictionary\'\]\s=\s(\'|")[^\r\n]+~' => '$txt[\'lang_dictionary\'] = \'' . addslashes($_POST['dictionary']) . '\';',
 			'~\$txt\[\'lang_spelling\'\]\s=\s(\'|")[^\r\n]+~' => '$txt[\'lang_spelling\'] = \'' . addslashes($_POST['spelling']) . '\';',
-			'~\$txt\[\'lang_rtl\'\]\s=\s[A-Za-z0-9]+;~' => '$txt[\'lang_rtl\'] = ' . (!empty($_POST['rtl']) ? 'true' : 'false') . ';',
 		);
 		$current_data = preg_replace(array_keys($replace_array), array_values($replace_array), $current_data);
 		$fp = fopen($settings['default_theme_dir'] . '/languages/index.' . $context['lang_id'] . '.php', 'w+');
@@ -1025,7 +1024,6 @@ function ModifyLanguage()
 		'locale' => $txt['lang_locale'],
 		'dictionary' => $txt['lang_dictionary'],
 		'spelling' => $txt['lang_spelling'],
-		'rtl' => $txt['lang_rtl'],
 	);
 
 	// Restore normal service.
@@ -1092,7 +1090,7 @@ function ModifyLanguage()
 		foreach ($entries as $entryKey => $entryValue)
 		{
 			// Ignore some things we set separately.
-			$ignore_files = array('lang_character_set', 'lang_locale', 'lang_dictionary', 'lang_spelling', 'lang_rtl');
+			$ignore_files = array('lang_character_set', 'lang_locale', 'lang_dictionary', 'lang_spelling');
 			if (in_array($entryKey, $ignore_files))
 				continue;
 

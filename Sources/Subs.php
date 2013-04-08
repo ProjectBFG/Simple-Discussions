@@ -1006,7 +1006,7 @@ function parse_bbc($message, $smileys = true, $cache_id = '', $parse_tags = arra
 				'type' => 'unparsed_equals',
 				'before' => '<bdo dir="$1">',
 				'after' => '</bdo>',
-				'test' => '(rtl|ltr)\]',
+				'test' => '(ltr)\]',
 				'block_level' => true,
 			),
 			array(
@@ -1386,12 +1386,6 @@ function parse_bbc($message, $smileys = true, $cache_id = '', $parse_tags = arra
 			array(
 				'tag' => 'right',
 				'before' => '<div style="text-align: right;">',
-				'after' => '</div>',
-				'block_level' => true,
-			),
-			array(
-				'tag' => 'rtl',
-				'before' => '<div dir="rtl">',
 				'after' => '</div>',
 				'block_level' => true,
 			),
@@ -3512,7 +3506,6 @@ function setupMenuContext()
 				'show' => true,
 				'sub_buttons' => array(
 				),
-				'is_last' => $context['right_to_left'],
 			),
 			'blog' => array(
 				'title' => $txt['blog'],
@@ -3523,7 +3516,6 @@ function setupMenuContext()
 						'title' => $txt['blog_admin'],
 						'href' => $scripturl . '?action=admin;area=blog',
 						'show' => true,
-						'is_last' => true,
 					),
 				),
 			),
@@ -3562,7 +3554,6 @@ function setupMenuContext()
 						'title' => $txt['edit_permissions'],
 						'href' => $scripturl . '?action=admin;area=permissions',
 						'show' => allowedTo('manage_permissions'),
-						'is_last' => true,
 					),
 				),
 			),
@@ -3585,7 +3576,6 @@ function setupMenuContext()
 						'title' => $txt['mc_reported_posts'],
 						'href' => $scripturl . '?action=moderate;area=reports',
 						'show' => !empty($user_info['mod_cache']) && $user_info['mod_cache']['bq'] != '0=1',
-						'is_last' => true,
 					),
 				),
 			),
@@ -3603,7 +3593,6 @@ function setupMenuContext()
 						'title' => $txt['forumprofile'],
 						'href' => $scripturl . '?action=profile;area=forumprofile',
 						'show' => allowedTo(array('profile_extra_any', 'profile_extra_own')),
-						'is_last' => true,
 					),
 					'theme' => array(
 						'title' => $txt['theme'],
@@ -3626,7 +3615,6 @@ function setupMenuContext()
 						'title' => $txt['pm_menu_send'],
 						'href' => $scripturl . '?action=pm;sa=send',
 						'show' => allowedTo('pm_send'),
-						'is_last' => true,
 					),
 				),
 			),
@@ -3644,7 +3632,6 @@ function setupMenuContext()
 						'title' => $txt['mlist_search'],
 						'href' => $scripturl . '?action=mlist;sa=search',
 						'show' => true,
-						'is_last' => true,
 					),
 				),
 			),
@@ -3661,7 +3648,6 @@ function setupMenuContext()
 				'show' => $user_info['is_guest'] && $context['can_register'],
 				'sub_buttons' => array(
 				),
-				'is_last' => !$context['right_to_left'],
 			),
 			'logout' => array(
 				'title' => $txt['logout'],
@@ -3669,7 +3655,6 @@ function setupMenuContext()
 				'show' => !$user_info['is_guest'],
 				'sub_buttons' => array(
 				),
-				'is_last' => !$context['right_to_left'],
 			),
 		);
 
@@ -3686,14 +3671,6 @@ function setupMenuContext()
 				// This button needs some action.
 				if (isset($button['action_hook']))
 					$needs_action_hook = true;
-
-				// Make sure the last button truely is the last button.
-				if (!empty($button['is_last']))
-				{
-					if (isset($last_button))
-						unset($menu_buttons[$last_button]['is_last']);
-					$last_button = $act;
-				}
 
 				// Go through the sub buttons if there are any.
 				if (!empty($button['sub_buttons']))
@@ -3725,14 +3702,6 @@ function setupMenuContext()
 				// This button needs some action.
 				if (isset($button['action_hook']))
 					$needs_action_hook = true;
-
-				// Make sure the last button truely is the last button.
-				if (!empty($button['is_last']))
-				{
-					if (isset($last_button))
-						unset($top_menu_buttons[$last_button]['is_last']);
-					$last_button = $act;
-				}
 
 				// Go through the sub buttons if there are any.
 				if (!empty($button['sub_buttons']))

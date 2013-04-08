@@ -92,17 +92,6 @@ function template_html_above()
 	// load in any javascript files from mods and themes
 	template_javascript();
 
-	// RTL languages require an additional stylesheet.
-	if ($context['right_to_left'])
-	{
-		echo '
-		<link rel="stylesheet" type="text/css" href="', $settings['theme_url'], '/css/rtl.css?alp21" />';
-
-	if (!empty($context['theme_variant']))
-		echo '
-		<link rel="stylesheet" type="text/css" href="', $settings['theme_url'], '/css/rtl', $context['theme_variant'], '.css?alp21" />';
-	}
-
 	echo '
 	<meta http-equiv="Content-Type" content="text/html; charset=', $context['character_set'], '" />
 	<meta name="description" content="', $context['page_title_html_safe'], '" />', !empty($context['meta_keywords']) ? '
@@ -277,10 +266,6 @@ function template_button_strip($button_strip, $direction = '', $strip_options = 
 
 	if (!is_array($strip_options))
 		$strip_options = array();
-
-	// List the buttons in reverse order for RTL languages.
-	if ($context['right_to_left'])
-		$button_strip = array_reverse($button_strip, true);
 
 	// Create the buttons...
 	$buttons = array();

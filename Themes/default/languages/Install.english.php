@@ -3,7 +3,6 @@
 
 // These should be the same as those in index.language.php.
 $txt['lang_character_set'] = 'ISO-8859-1';
-$txt['lang_rtl'] = false;
 
 $txt['install_step_welcome'] = 'Welcome';
 $txt['install_step_writable'] = 'Writable Check';
