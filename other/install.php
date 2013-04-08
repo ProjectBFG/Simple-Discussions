@@ -134,8 +134,8 @@ function initialize_inputs()
 		session_start();
 
 		if (!headers_sent())
-			echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+			echo '<!DOCTYPE html>
+<html>
 	<head>
 		<title>', htmlspecialchars($_GET['pass_string']), '</title>
 	</head>
@@ -241,8 +241,8 @@ function load_lang_file()
 		header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
 		header('Cache-Control: no-cache');
 
-		echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+		echo '<!DOCTYPE html>
+<html>
 	<head>
 		<title>SMF Installer: Error!</title>
 	</head>
@@ -1955,8 +1955,8 @@ function template_install_above()
 {
 	global $incontext, $txt, $smfsite, $installurl;
 
-	echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"', !empty($txt['lang_rtl']) ? ' dir="rtl"' : '', '>
+	echo '<!DOCTYPE html>
+<html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=', isset($txt['lang_character_set']) ? $txt['lang_character_set'] : 'ISO-8859-1', '" />
 		<meta name="robots" content="noindex" />
@@ -2177,7 +2177,7 @@ function template_chmod_files()
 				<tr>
 					<td width="26%" valign="top"><label for="ftp_server">', $txt['ftp_server'], ':</label></td>
 					<td>
-						<div style="float: ', empty($txt['lang_rtl']) ? 'right' : 'left', '; margin-', empty($txt['lang_rtl']) ? 'right' : 'left', ': 1px;"><label for="ftp_port" class="textbox"><strong>', $txt['ftp_port'], ':&nbsp;</strong></label> <input type="text" size="3" name="ftp_port" id="ftp_port" value="', $incontext['ftp']['port'], '" class="input_text" /></div>
+						<div style="float: right; margin-right: 1px;"><label for="ftp_port" class="textbox"><strong>', $txt['ftp_port'], ':&nbsp;</strong></label> <input type="text" size="3" name="ftp_port" id="ftp_port" value="', $incontext['ftp']['port'], '" class="input_text" /></div>
 						<input type="text" size="30" name="ftp_server" id="ftp_server" value="', $incontext['ftp']['server'], '" style="width: 70%;" class="input_text" />
 						<div style="font-size: smaller; margin-bottom: 2ex;">', $txt['ftp_server_info'], '</div>
 					</td>
@@ -2201,7 +2201,7 @@ function template_chmod_files()
 					</td>
 				</tr>
 			</table>
-			<div style="margin: 1ex; margin-top: 1ex; text-align: ', empty($txt['lang_rtl']) ? 'right' : 'left', ';"><input type="submit" value="', $txt['ftp_connect'], '" onclick="return submitThisOnce(this);" class="button_submit" /></div>
+			<div style="margin: 1ex; margin-top: 1ex; text-align: right;"><input type="submit" value="', $txt['ftp_connect'], '" onclick="return submitThisOnce(this);" class="button_submit" /></div>
 		</form>
 		<a href="', $incontext['form_url'], '">', $txt['error_message_click'], '</a> ', $txt['ftp_setup_again'];
 }
@@ -2464,7 +2464,7 @@ function template_admin_account()
 		<h2>', $txt['user_settings_database'], '</h2>
 		<p>', $txt['user_settings_database_info'], '</p>
 
-		<div style="margin-bottom: 2ex; padding-', empty($txt['lang_rtl']) ? 'left' : 'right', ': 50px;">
+		<div style="margin-bottom: 2ex; padding-right: 50px;">
 			<input type="password" name="password3" size="30" class="input_password" />
 		</div>';
 }

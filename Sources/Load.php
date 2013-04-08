@@ -1261,7 +1261,6 @@ function loadTheme($id_theme = 0, $initialize = true)
 	// Set the character set from the template.
 	$context['character_set'] = empty($modSettings['global_character_set']) ? $txt['lang_character_set'] : $modSettings['global_character_set'];
 	$context['utf8'] = $context['character_set'] === 'UTF-8';
-	$context['right_to_left'] = !empty($txt['lang_rtl']);
 
 	$context['tabindex'] = 1;
 
@@ -1907,8 +1906,8 @@ function template_include($filename, $once = false)
 		}
 
 		// First, let's get the doctype and language information out of the way.
-		echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"', !empty($context['right_to_left']) ? ' dir="rtl"' : '', '>
+		echo '<!DOCTYPE html>
+<html>
 	<head>';
 		if (isset($context['character_set']))
 			echo '

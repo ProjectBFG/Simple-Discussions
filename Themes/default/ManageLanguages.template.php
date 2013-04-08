@@ -281,12 +281,6 @@ function template_modify_language_entries()
 							<dd>
 								<input type="text" name="spelling" id="spelling" size="20" value="', $context['primary_settings']['spelling'], '"', (empty($context['file_entries']) ? '' : ' disabled="disabled"'), ' class="input_text" />
 							</dd>
-							<dt>
-								<label for="rtl">', $txt['languages_rtl'], ':</label>
-							</dt>
-							<dd>
-								<input type="checkbox" name="rtl" id="rtl" ', $context['primary_settings']['rtl'] ? ' checked="checked"' : '', ' class="input_check"', (empty($context['file_entries']) ? '' : ' disabled="disabled"'), ' />
-							</dd>
 						</dl>
 					</fieldset>
 					<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />

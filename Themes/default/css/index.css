@@ -1154,10 +1154,6 @@ img.new_posts {
 	padding: 0 1px;
 }
 
-.fix_rtl_names {
-	display:inline-block;
-}
-
 /* the page navigation area */
 p.whoisviewing {
 	font-size: 0.9em;
