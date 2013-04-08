@@ -147,24 +147,12 @@ function template_main()
 				<input type="hidden" name="topic" value="', $context['search_topic']['id'], '" />';
 
 		echo '
-			</div>
-		</fieldset>
-		';
-
-		if (empty($context['search_params']['topic']))
-		{
-			echo '
-		<fieldset class="flow_hidden">
-			<div class="roundframe">
-				<br class="clear" />';
-
-			echo '
-				<div class="padding flow_auto">
-					<input type="submit" name="b_search" value="', $txt['search'], '" class="button_submit" />
-				</div>
+		<div class="floatright">
+			<input type="submit" name="b_search" value="', $txt['search'], '" class="button_submit" />
+		</div>
 			</div>
 		</fieldset>';
-		}
+
 	echo '
 		<script src="', $settings['default_theme_url'], '/scripts/suggest.js?alp21"></script>
 		<script><!-- // --><![CDATA[
