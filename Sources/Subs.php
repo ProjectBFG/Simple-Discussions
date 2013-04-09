@@ -2972,10 +2972,8 @@ function template_header()
 			if (!empty($securityFiles) || (!empty($modSettings['cache_enable']) && !is_writable($cachedir)) || !empty($agreement))
 			{
 				echo '
-		<div class="errorbox">
-			<p class="alert">!!</p>
-			<h3>', empty($securityFiles) ? $txt['generic_warning'] : $txt['security_risk'], '</h3>
-			<p>';
+		<div class="alert alert-error">
+			<h4>', empty($securityFile) ? $txt['generic_warning'] : $txt['security_risk'], '</h4>';
 
 				foreach ($securityFiles as $securityFile)
 				{
@@ -2996,7 +2994,6 @@ function template_header()
 				<strong>', $txt['agreement_missing'], '</strong><br />';
 
 				echo '
-			</p>
 		</div>';
 			}
 		}

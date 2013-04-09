@@ -1977,7 +1977,7 @@ function template_install_above()
 		<div class="container-fluid">
 			<div class="row-fluid">
 				<div class="span3" id="main_steps">
-					<h2>', $txt['upgrade_progress'], '</h2>
+					<h3 class="titlebg">', $txt['upgrade_progress'], '</h3>
 						<ul>';
 
 	foreach ($incontext['steps'] as $num => $step)
@@ -2017,7 +2017,7 @@ function template_install_above()
 						</div>
 					</div>
 					<div id="main_screen" class="clear well">
-						<h2>', $incontext['page_title'], '</h2>
+						<h3 class="titlebg">', $incontext['page_title'], '</h3>
 						<div class="panel">';
 }
 
@@ -2069,18 +2069,15 @@ function template_welcome_message()
 	<script src="http://www.simplemachines.org/smf/current-version.js?version=' . $GLOBALS['current_smf_version'] . '"></script>
 	<form action="', $incontext['form_url'], '" method="post">
 		<p>', sprintf($txt['install_welcome_desc'], $GLOBALS['current_smf_version']), '</p>
-		<div id="version_warning" style="margin: 2ex; padding: 2ex; border: 2px dashed #a92174; color: black; background-color: #fbbbe2; display: none;">
-			<div style="float: left; width: 2ex; font-size: 2em; color: red;">!!</div>
-			<strong style="text-decoration: underline;">', $txt['error_warning_notice'], '</strong><br />
-			<div style="padding-left: 6ex;">
-				', sprintf($txt['error_script_outdated'], '<em id="smfVersion" style="white-space: nowrap;">??</em>', '<em id="yourVersion" style="white-space: nowrap;">' . $GLOBALS['current_smf_version'] . '</em>'), '
-			</div>
+		<div class="alert alert-error">
+			<h2>', $txt['error_warning_notice'], '</h2>
+                        ', sprintf($txt['error_script_outdated'], '<em id="smfVersion" style="white-space: nowrap;">??</em>', '<em id="yourVersion" style="white-space: nowrap;">' . $GLOBALS['current_smf_version'] . '</em>'), '
 		</div>';
 
 	// Show the warnings, or not.
 	if (template_warning_divs())
 		echo '
-		<h3>', $txt['install_all_lovely'], '</h3>';
+		<p>', $txt['install_all_lovely'], '</p>';
 
 	// Say we want the continue button!
 	if (empty($incontext['error']))
@@ -2120,22 +2117,16 @@ function template_warning_divs()
 	// Errors are very serious..
 	if (!empty($incontext['error']))
 		echo '
-		<div style="margin: 2ex; padding: 2ex; border: 2px dashed #cc3344; color: black; background-color: #ffe4e9;">
-			<div style="float: left; width: 2ex; font-size: 2em; color: red;">!!</div>
-			<strong style="text-decoration: underline;">', $txt['upgrade_critical_error'], '</strong><br />
-			<div style="padding-left: 6ex;">
-				', $incontext['error'], '
-			</div>
+		<div class="alert alert-error">
+			<h4>', $txt['upgrade_critical_error'], '</h4>
+			', $incontext['error'], '
 		</div>';
 	// A warning message?
 	elseif (!empty($incontext['warning']))
 		echo '
-		<div style="margin: 2ex; padding: 2ex; border: 2px dashed #cc3344; color: black; background-color: #ffe4e9;">
-			<div style="float: left; width: 2ex; font-size: 2em; color: red;">!!</div>
-			<strong style="text-decoration: underline;">', $txt['upgrade_warning'], '</strong><br />
-			<div style="padding-left: 6ex;">
-				', $incontext['warning'], '
-			</div>
+		<div class="alert alert-warning">
+			<h4>', $txt['upgrade_warning'], '</h4>
+			', $incontext['warning'], '
 		</div>';
 
 	return empty($incontext['error']) && empty($incontext['warning']);
@@ -2212,21 +2203,18 @@ function template_database_settings()
 	global $incontext, $installurl, $txt;
 
 	echo '
-	<form action="', $incontext['form_url'], '" method="post">
+	<form action="', $incontext['form_url'], '" method="post" class="form-horizontal">
 		<p>', $txt['db_settings_info'], '</p>';
 
 	template_warning_divs();
-
-	echo '
-		<table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin: 1em 0;">';
 
 	// More than one database type?
 	if (count($incontext['supported_databases']) > 1)
 	{
 		echo '
-			<tr>
-				<td width="20%" valign="top"><label for="db_type_input">', $txt['db_settings_type'], ':</label></td>
-				<td>
+			<div class="control-group">
+				<label class="control-label" for="db_type_input">', $txt['db_settings_type'], ':</label>
+				<div class="controls">
 					<select name="db_type" id="db_type_input" onchange="toggleDBInput();">';
 
 	foreach ($incontext['supported_databases'] as $key => $db)
@@ -2236,59 +2224,59 @@ function template_database_settings()
 	echo '
 					</select><div id="db_sqlite_warning" style="color: blue; display: none;" class="smalltext">', $txt['db_sqlite_warning'], '</div>
 					<div style="font-size: smaller; margin-bottom: 2ex;">', $txt['db_settings_type_info'], '</div>
-				</td>
-			</tr>';
+				</div>
+			</div>';
 	}
 	else
 	{
 		echo '
-			<tr style="display: none;">
-				<td>
-					<input type="hidden" name="db_type" value="', $incontext['db']['type'], '" />
-				</td>
-			</tr>';
+                        <input type="hidden" name="db_type" value="', $incontext['db']['type'], '" />';
 	}
 
 	echo '
-			<tr id="db_server_contain">
-				<td width="20%" valign="top"><label for="db_server_input">', $txt['db_settings_server'], ':</label></td>
-				<td>
-					<input type="text" name="db_server" id="db_server_input" value="', $incontext['db']['server'], '" size="30" class="input_text" /><br />
-					<div style="font-size: smaller; margin-bottom: 2ex;">', $txt['db_settings_server_info'], '</div>
-				</td>
-			</tr><tr id="db_user_contain">
-				<td valign="top"><label for="db_user_input">', $txt['db_settings_username'], ':</label></td>
-				<td>
-					<input type="text" name="db_user" id="db_user_input" value="', $incontext['db']['user'], '" size="30" class="input_text" /><br />
-					<div style="font-size: smaller; margin-bottom: 2ex;">', $txt['db_settings_username_info'], '</div>
-				</td>
-			</tr><tr id="db_passwd_contain">
-				<td valign="top"><label for="db_passwd_input">', $txt['db_settings_password'], ':</label></td>
-				<td>
-					<input type="password" name="db_passwd" id="db_passwd_input" value="', $incontext['db']['pass'], '" size="30" class="input_password" /><br />
-					<div style="font-size: smaller; margin-bottom: 2ex;">', $txt['db_settings_password_info'], '</div>
-				</td>
-			</tr><tr id="db_name_contain">
-				<td valign="top"><label for="db_name_input">', $txt['db_settings_database'], ':</label></td>
-				<td>
-					<input type="text" name="db_name" id="db_name_input" value="', empty($incontext['db']['name']) ? 'smf' : $incontext['db']['name'], '" size="30" class="input_text" /><br />
-					<div style="font-size: smaller; margin-bottom: 2ex;">', $txt['db_settings_database_info'], '
-					<span id="db_name_info_warning">', $txt['db_settings_database_info_note'], '</span></div>
-				</td>
-			</tr><tr id="db_filename_contain" style="display: none;">
-				<td valign="top"><label for="db_filename_input">', $txt['db_settings_database_file'], ':</label></td>
-				<td>
-					<input type="text" name="db_filename" id="db_filename_input" value="', empty($incontext['db']['name']) ? dirname(__FILE__) . '/smf_' . substr(md5(microtime()), 0, 10) : stripslashes($incontext['db']['name']), '" size="30" class="input_text" /><br />
-					<div style="font-size: smaller; margin-bottom: 2ex;">', $txt['db_settings_database_file_info'], '</div>
-				</td>
-			</tr><tr>
-				<td valign="top"><label for="db_prefix_input">', $txt['db_settings_prefix'], ':</label></td>
-				<td>
-					<input type="text" name="db_prefix" id="db_prefix_input" value="', $incontext['db']['prefix'], '" size="30" class="input_text" /><br />
-					<div style="font-size: smaller; margin-bottom: 2ex;">', $txt['db_settings_prefix_info'], '</div>
-				</td>
-			</tr>
-		</table>';
+			<div class="control-group" id="db_server_contain">
+				<label class="control-label" for="db_server_input">', $txt['db_settings_server'], ':</label>
+				<div class="controls">
+					<input type="text" name="db_server" id="db_server_input" value="', $incontext['db']['server'], '" size="30" class="input_text" />
+					<span class="help-block">', $txt['db_settings_server_info'], '</span>
+				</div>
+			</div>
+			<div class="control-group" id="db_user_contain">
+				<label class="control-label" for="db_user_input">', $txt['db_settings_username'], ':</label>
+				<div class="controls">
+					<input type="text" name="db_user" id="db_user_input" value="', $incontext['db']['user'], '" size="30" class="input_text" />
+					<span class="help-block">', $txt['db_settings_username_info'], '</span>
+				</div>
+			</div>
+			<div class="control-group" id="db_passwd_contain">
+				<label class="control-label" for="db_passwd_input">', $txt['db_settings_password'], ':</label>
+				<div class="controls">
+					<input type="password" name="db_passwd" id="db_passwd_input" value="', $incontext['db']['pass'], '" size="30" class="input_password" />
+					<span class="help-block">', $txt['db_settings_password_info'], '</span>
+				</div>
+			</div>
+			<div class="control-group" id="db_name_contain">
+				<label class="control-label" for="db_name_input">', $txt['db_settings_database'], ':</label>
+				<div class="controls">
+					<input type="text" name="db_name" id="db_name_input" value="', empty($incontext['db']['name']) ? 'smf' : $incontext['db']['name'], '" size="30" class="input_text" />
+					<span class="help-block">', $txt['db_settings_database_info'], '
+                                            <span id="db_name_info_warning">', $txt['db_settings_database_info_note'], '</span></span>
+				</div>
+			</div>
+                        <div class="control-group" id="db_filename_contain" style="display: none;">
+				<label class="control-label" for="db_filename_input">', $txt['db_settings_database_file'], ':</label>
+				<div class="controls">
+					<input type="text" name="db_filename" id="db_filename_input" value="', empty($incontext['db']['name']) ? dirname(__FILE__) . '/smf_' . substr(md5(microtime()), 0, 10) : stripslashes($incontext['db']['name']), '" size="30" class="input_text" />
+					<span class="help-block">', $txt['db_settings_database_file_info'], '</span>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="db_prefix_input">', $txt['db_settings_prefix'], ':</label>
+				<div class="controls">
+					<input type="text" name="db_prefix" id="db_prefix_input" value="', $incontext['db']['prefix'], '" size="30" class="input_text" />
+					<span class="help-block">', $txt['db_settings_prefix_info'], '</span>
+				</div>
+			</div>';
 
 	// Allow the toggling of input boxes for SQLite etc.
 	echo '
@@ -2330,53 +2318,54 @@ function template_forum_settings()
 	global $incontext, $installurl, $txt;
 
 	echo '
-	<form action="', $incontext['form_url'], '" method="post">
-		<h3>', $txt['install_settings_info'], '</h3>';
+	<form action="', $incontext['form_url'], '" method="post" class="form-horizontal">
+		<p><small>', $txt['install_settings_info'], '</small></p>';
 
 	template_warning_divs();
 
 	echo '
-		<table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin: 1em 0;" class="table">
-			<tr>
-				<td width="20%" valign="top"><label for="mbname_input">', $txt['install_settings_name'], ':</label></td>
-				<td>
+			<div class="control-group">
+				<label class="control-label" for="mbname_input">', $txt['install_settings_name'], ':</label>
+				<div class="controls">
 					<input type="text" name="mbname" id="mbname_input" value="', $txt['install_settings_name_default'], '" size="65" class="input_text" />
-					<div style="font-size: smaller; margin-bottom: 2ex;">', $txt['install_settings_name_info'], '</div>
-				</td>
-			</tr><tr>
-				<td valign="top"><label for="boardurl_input">', $txt['install_settings_url'], ':</label></td>
-				<td>
-					<input type="text" name="boardurl" id="boardurl_input" value="', $incontext['detected_url'], '" size="65" class="input_text" /><br />
-					<div style="font-size: smaller; margin-bottom: 2ex;">', $txt['install_settings_url_info'], '</div>
-				</td>
-			</tr><tr>
-				<td valign="top">', $txt['install_settings_compress'], ':</td>
-				<td>
-					<label for="compress_check" class="checkbox"><input type="checkbox" name="compress" id="compress_check" checked="checked" class="input_check"  />', $txt['install_settings_compress_title'], '</label><br />
-					<div style="font-size: smaller; margin-bottom: 2ex;">', $txt['install_settings_compress_info'], '</div>
-				</td>
-			</tr><tr>
-				<td valign="top">', $txt['install_settings_dbsession'], ':</td>
-				<td>
-					<label for="dbsession_check" class="checkbox"><input type="checkbox" name="dbsession" id="dbsession_check" checked="checked" class="input_check"  />', $txt['install_settings_dbsession_title'], '</label><br />
-					<div style="font-size: smaller; margin-bottom: 2ex;">', $incontext['test_dbsession'] ? $txt['install_settings_dbsession_info1'] : $txt['install_settings_dbsession_info2'], '</div>
-				</td>
-			</tr>
-			<tr>
-				<td valign="top">', $txt['install_settings_utf8'], ':</td>
-				<td>
-					<label for="utf8_check" class="checkbox"><input type="checkbox" name="utf8" id="utf8_check"', $incontext['utf8_default'] ? ' checked="checked"' : '', ' class="input_check"', $incontext['utf8_required'] ? ' disabled="disabled"' : '', '  />', $txt['install_settings_utf8_title'], '</label><br />
-					<div style="font-size: smaller; margin-bottom: 2ex;">', $txt['install_settings_utf8_info'], '</div>
-				</td>
-			</tr>
-			<tr>
-				<td valign="top">', $txt['install_settings_stats'], ':</td>
-				<td>
-					<label for="stats_check" class="checkbox"><input type="checkbox" name="stats" id="stats_check" class="input_check"  />', $txt['install_settings_stats_title'], '</label><br />
-					<div style="font-size: smaller; margin-bottom: 2ex;">', $txt['install_settings_stats_info'], '</div>
-				</td>
-			</tr>
-		</table>';
+					<span class="help-block">', $txt['install_settings_name_info'], '</span>
+				</div>
+			</div>
+                        <div class="control-group">
+				<label class="control-label" for="boardurl_input">', $txt['install_settings_url'], ':</label>
+				<div class="controls">
+					<input type="text" name="boardurl" id="boardurl_input" value="', $incontext['detected_url'], '" size="65" class="input_text" />
+					<span class="help-block">', $txt['install_settings_url_info'], '</span>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="compress_check">', $txt['install_settings_compress'], ':</label>
+				<div class="controls">
+					<label class="checkbox"><input type="checkbox" name="compress" id="compress_check" checked="checked" class="input_check"  />', $txt['install_settings_compress_title'], '</label>
+					<span class="help-block">', $txt['install_settings_compress_info'], '</span>
+				</div>
+			</div>
+                        <div class="control-group">
+				<label class="control-label" for="dbsession_check">', $txt['install_settings_dbsession'], ':</label>
+				<div class="controls">
+					<label class="checkbox"><input type="checkbox" name="dbsession" id="dbsession_check" checked="checked" class="input_check"  />', $txt['install_settings_dbsession_title'], '</label><br />
+					<span class="help-block">', $incontext['test_dbsession'] ? $txt['install_settings_dbsession_info1'] : $txt['install_settings_dbsession_info2'], '</span>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="utf8_check">', $txt['install_settings_utf8'], ':</label>
+				<div class="controls">
+					<label class="checkbox"><input type="checkbox" name="utf8" id="utf8_check"', $incontext['utf8_default'] ? ' checked="checked"' : '', ' class="input_check"', $incontext['utf8_required'] ? ' disabled="disabled"' : '', '  />', $txt['install_settings_utf8_title'], '</label>
+					<span class="help-block">', $txt['install_settings_utf8_info'], '</span>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="stats_check">', $txt['install_settings_stats'], ':</label>
+				<div class="controls">
+					<label class="checkbox"><input type="checkbox" name="stats" id="stats_check" class="input_check"  />', $txt['install_settings_stats_title'], '</label>
+					<span class="help-block">', $txt['install_settings_stats_info'], '</span>
+				</div>
+			</div>';
 }
 
 // Show results of the database population.
@@ -2425,47 +2414,50 @@ function template_admin_account()
 	global $incontext, $installurl, $txt;
 
 	echo '
-	<form action="', $incontext['form_url'], '" method="post">
+	<form action="', $incontext['form_url'], '" method="post" class="form-horizontal">
 		<p>', $txt['user_settings_info'], '</p>';
 
 	template_warning_divs();
 
 	echo '
-		<table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 2em 0;">
-			<tr>
-				<td width="18%" valign="top"><label for="username">', $txt['user_settings_username'], ':</label></td>
-				<td>
+			<div class="control-groups">
+				<label class="control-label" for="username">', $txt['user_settings_username'], ':</label>
+				<div class="controls">
 					<input type="text" name="username" id="username" value="', $incontext['username'], '" size="40" class="input_text" />
-					<div style="font-size: smaller; margin-bottom: 2ex;">', $txt['user_settings_username_info'], '</div>
-				</td>
-			</tr><tr>
-				<td valign="top"><label for="password1">', $txt['user_settings_password'], ':</label></td>
-				<td>
+					<span class="help-block">', $txt['user_settings_username_info'], '</span>
+				</div>
+			</div>
+			<div class="control-groups">
+				<label class="control-label" for="password1">', $txt['user_settings_password'], ':</label>
+				<div class="controls">
 					<input type="password" name="password1" id="password1" size="40" class="input_password" />
-					<div style="font-size: smaller; margin-bottom: 2ex;">', $txt['user_settings_password_info'], '</div>
-				</td>
-			</tr><tr>
-				<td valign="top"><label for="password2">', $txt['user_settings_again'], ':</label></td>
-				<td>
+					<span class="help-block">', $txt['user_settings_password_info'], '</span>
+				</div>
+			</div>
+			<div class="control-groups">
+				<label class="control-label" for="password2">', $txt['user_settings_again'], ':</label>
+				<div class="controls">
 					<input type="password" name="password2" id="password2" size="40" class="input_password" />
-					<div style="font-size: smaller; margin-bottom: 2ex;">', $txt['user_settings_again_info'], '</div>
-				</td>
-			</tr><tr>
-				<td valign="top"><label for="email">', $txt['user_settings_email'], ':</label></td>
-				<td>
+					<span class="help-block">', $txt['user_settings_again_info'], '</span>
+				</div>
+			</div>
+			<div class="control-groups">
+				<label class="control-label" for="email">', $txt['user_settings_email'], ':</label>
+				<div class="controls">
 					<input type="text" name="email" id="email" value="', $incontext['email'], '" size="40" class="input_text" />
-					<div style="font-size: smaller; margin-bottom: 2ex;">', $txt['user_settings_email_info'], '</div>
-				</td>
-			</tr>
-		</table>';
+					<span class="help-block">', $txt['user_settings_email_info'], '</span>
+				</div>
+			</div>';
 
 	if ($incontext['require_db_confirm'])
 		echo '
-		<h2>', $txt['user_settings_database'], '</h2>
-		<p>', $txt['user_settings_database_info'], '</p>
+		<h3 class="titlebg">', $txt['user_settings_database'], '</h3>
+                <p>', $txt['user_settings_database_info'], '</p>
 
-		<div style="margin-bottom: 2ex; padding-right: 50px;">
-			<input type="password" name="password3" size="30" class="input_password" />
+		<div class="control-groups">
+                        <div class="controls">
+                            <input type="password" name="password3" size="30" class="input_password" />
+                        </div>
 		</div>';
 }
 

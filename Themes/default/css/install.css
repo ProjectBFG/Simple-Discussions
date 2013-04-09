@@ -29,13 +29,6 @@ img#smflogo {
 	max-width: 100%;
 	float: left;
 }
-#main_steps h2 {
-	font-size: 1.2em;
-	border-bottom: 1px solid #d05800;
-	line-height: 1.6em;
-	margin: 0 1em 0.5em 0;
-	color: #d05800;
-}
 #main_steps ul {
 	list-style: none;
 	padding: 0 0.5em;
@@ -91,13 +84,6 @@ img#smflogo {
 }
 #main_screen {
 	padding: 1em 1em 0.5em 1em;
-}
-#main_screen h2 {
-	font-size: 1.2em;
-	border-bottom: 1px solid #d05800;
-	line-height: 1.6em;
-	margin: 0 0 0.5em 0;
-	color: #d05800;
 }
 .panel form div{
 	max-height: 560px;
