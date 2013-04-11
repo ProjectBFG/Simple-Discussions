@@ -1,5 +1,10 @@
 <?php
 
+/**
+ *
+ * @version 1.0 Alpha 1
+ */
+
 if (!defined('SMF'))
 	die('No direct access...'); 
 

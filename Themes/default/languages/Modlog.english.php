@@ -1,5 +1,5 @@
 <?php
-// Version: 2.1; Modlog
+// Version: 1.0 Alpha 1; Modlog
 
 global $scripturl;
 

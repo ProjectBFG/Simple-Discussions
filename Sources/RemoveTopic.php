@@ -11,7 +11,7 @@
  * @copyright 2012 Simple Machines
  * @license http://www.simplemachines.org/about/smf/license.php BSD
  *
- * @version 2.0
+ * @version 1.0 Alpha 1
  */
 
 if (!defined('SMF'))

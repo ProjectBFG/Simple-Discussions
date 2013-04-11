@@ -1,5 +1,5 @@
 <?php
-// Version: 2.1; Like
+// Version: 1.0 Alpha 1; Like
 
 // will be implemented later
 

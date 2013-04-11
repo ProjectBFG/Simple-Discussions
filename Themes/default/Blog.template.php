@@ -1,5 +1,10 @@
 <?php
 
+/**
+ *
+ * @version 1.0 Alpha 1
+ */
+
 function template_main()
 {
 	global $context, $user_info;

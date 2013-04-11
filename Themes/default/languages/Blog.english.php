@@ -1,5 +1,5 @@
 <?php
-// Version: 1.0; Blog
+// Version: 1.0 Alpha 1; Blog
 
 $txt['blog'] = 'Blog';
 $txt['blog_admin'] = 'Manage Posts';

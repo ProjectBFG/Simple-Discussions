@@ -1,5 +1,10 @@
 <?php
 
+/**
+ *
+ * @version 1.0 Alpha 1
+ */
+
 function Like()
 {
 	global $scripturl, $context, $smcFunc, $user_info, $db_show_debug, $txt;

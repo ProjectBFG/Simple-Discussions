@@ -1,5 +1,10 @@
 <?php
 
+/**
+ *
+ * @version 1.0 Alpha 1
+ */
+
 function template_admin_blog_list()
 {
 	global $context, $user_info;
