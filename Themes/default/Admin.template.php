@@ -26,7 +26,7 @@ function template_admin()
 	if ($context['user']['is_admin'])
 		echo '
 			<object id="quick_search">
-				<form action="', $scripturl, '?action=admin;area=search" method="post" accept-charset="', $context['character_set'], '" class="floatright">
+				<form action="', $scripturl, '?action=admin;area=search" method="post" accept-charset="', $context['character_set'], '" class="form-inline pull-right">
 					<img class="icon" src="', $settings['images_url'] , '/filter.png" alt="" />
 					<input type="text" name="search_term" value="', $txt['admin_search'], '" onclick="if (this.value == \'', $txt['admin_search'], '\') this.value = \'\';" class="input_text" />
 					<select name="search_type">
@@ -34,18 +34,16 @@ function template_admin()
 						<option value="member"', (!empty($context['admin_preferences']['sb']) && $context['admin_preferences']['sb'] == 'member' ? ' selected="selected"' : ''), '>', $txt['admin_search_type_member'], '</option>
 						<option value="online"', (!empty($context['admin_preferences']['sb']) && $context['admin_preferences']['sb'] == 'online' ? ' selected="selected"' : ''), '>', $txt['admin_search_type_online'], '</option>
 					</select>
-					<input type="submit" name="search_go" id="search_go" value="', $txt['admin_search_go'], '" class="button_submit" />
+					<input type="submit" name="search_go" id="search_go" value="', $txt['admin_search_go'], '" class="btn" />
 				</form>
 			</object>';
 
 	echo $txt['admin_center'], '
 			</h3>
 		</div>
-		<div class="roundframe rfix">
-			<div id="welcome">
-				<strong>', $txt['hello_guest'], ' ', $context['user']['name'], '!</strong>
-				', sprintf($txt['admin_main_welcome'], $txt['admin_center'], $txt['help'], $txt['help']), '
-			</div>
+		<div class="well rfix">
+			<strong>', $txt['hello_guest'], ' ', $context['user']['name'], '!</strong>
+			', sprintf($txt['admin_main_welcome'], $txt['admin_center'], $txt['help'], $txt['help']), '
 		</div>';
 
 	// Is there an update available?
@@ -53,7 +51,7 @@ function template_admin()
 		<div id="update_section"></div>';
 
 	echo '
-		<div id="admin_main_section">';
+		<div class="well" id="admin_main_section">';
 
 	// Display the "live news" from simplemachines.org.
 	echo '
@@ -61,7 +59,7 @@ function template_admin()
 					<h3 class="catbg">
 						', $txt['live'], '
 					</h3>
-				<div class="windowbg nopadding">
+				<div class="well nopadding">
 					<div class="content">
 						<div id="smfAnnouncements">', $txt['lfyi'], '</div>
 					</div>
@@ -74,7 +72,7 @@ function template_admin()
 					<h3 class="catbg">
 						<a href="', $scripturl, '?action=admin;area=credits">', $txt['support_title'], '</a>
 					</h3>
-				<div class="windowbg nopadding">
+				<div class="well nopadding">
 					<div class="content">
 						<div id="version_details">
 							<strong>', $txt['support_versions'], ':</strong><br />
@@ -99,10 +97,11 @@ function template_admin()
 					</div>
 				</div>
 			</div>
-		</div>';
+		</div>
+		<br class="clearfix" />';
 
 	echo '
-		<div class="windowbg2 quick_tasks">
+		<div class="well quick_tasks">
 			<div class="content">
 				<ul id="quick_tasks" class="flow_hidden">';
 
@@ -576,12 +575,10 @@ function template_edit_censored()
 	echo '
 	<div id="admincenter">
 		<form id="admin_form_wrapper" action="', $scripturl, '?action=admin;area=postsettings;sa=censor" method="post" accept-charset="', $context['character_set'], '">
-			<div id="section_header">
-				<h3 class="catbg">
-					', $txt['admin_censored_words'], '
-				</h3>
-			</div>
-			<div class="windowbg2">
+			<h3 class="titlebg">
+				', $txt['admin_censored_words'], '
+			</h3>
+			<div class="well">
 				<div class="content">
 					<p>', $txt['admin_censored_where'], '</p>';
 
@@ -598,7 +595,7 @@ function template_edit_censored()
 						<input type="text" name="censor_vulgar[]" size="30" class="input_text" /> => <input type="text" name="censor_proper[]" size="30" class="input_text" />
 					</div>
 					<div id="moreCensoredWords"></div><div style="margin-top: 1ex; display: none;" id="moreCensoredWords_link">
-						<a class="button_link" style="float: left" href="#;" onclick="addNewWord(); return false;">', $txt['censor_clickadd'], '</a><br />
+						<a class="btn btn-link" style="float: left" href="#;" onclick="addNewWord(); return false;">', $txt['censor_clickadd'], '</a><br />
 					</div>
 					<script><!-- // --><![CDATA[
 						document.getElementById("moreCensoredWords_link").style.display = "";
@@ -618,21 +615,20 @@ function template_edit_censored()
 							<input type="checkbox" name="censorIgnoreCase" value="1" id="censorIgnoreCase_check"', empty($modSettings['censorIgnoreCase']) ? '' : ' checked="checked"', ' class="input_check" />
 						</dd>
 					</dl>
-					<input type="submit" name="save_censor" value="', $txt['save'], '" class="button_submit" />
+					<input type="submit" name="save_censor" value="', $txt['save'], '" class="btn" />
 				</div>
-			</div>
-			<br />';
+			</div>';
 
 	// This table lets you test out your filters by typing in rude words and seeing what comes out.
 	echo '
-				<h3 class="catbg">
-					', $txt['censor_test'], '
-				</h3>
-			<div class="windowbg">
+			<h3 class="titlebg">
+				', $txt['censor_test'], '
+			</h3>
+			<div class="well">
 				<div class="content">
 					<p class="centertext">
 						<input type="text" name="censortest" value="', empty($context['censor_test']) ? '' : $context['censor_test'], '" class="input_text" />
-						<input type="submit" value="', $txt['censor_test_save'], '" class="button_submit" />
+						<input type="submit" value="', $txt['censor_test_save'], '" class="btn" />
 					</p>
 				</div>
 			</div>
@@ -675,7 +671,7 @@ function template_not_done()
 
 	echo '
 				<form action="', $scripturl, $context['continue_get_data'], '" method="post" accept-charset="', $context['character_set'], '" style="margin: 0;" name="autoSubmit" id="autoSubmit">
-					<input type="submit" name="cont" value="', $txt['not_done_continue'], '" class="button_submit" />
+					<input type="submit" name="cont" value="', $txt['not_done_continue'], '" class="btn" />
 					', $context['continue_post_data'], '
 				</form>
 			</div>
@@ -726,7 +722,7 @@ function template_show_settings()
 	// Have we got a message to display?
 	if (!empty($context['settings_message']))
 		echo '
-			<div class="information">', $context['settings_message'], '</div>';
+			<div class="well">', $context['settings_message'], '</div>';
 
 	// Now actually loop through all the variables.
 	$is_open = false;
@@ -757,7 +753,7 @@ function template_show_settings()
 			else
 			{
 				echo '
-					<p class="description">
+					<p class="well">
 						', $config_var['label'], '
 					</p>';
 			}
@@ -803,7 +799,7 @@ function template_show_settings()
 				// Some quick helpers...
 				$javascript = $config_var['javascript'];
 				$disabled = !empty($config_var['disabled']) ? ' disabled="disabled"' : '';
-				$subtext = !empty($config_var['subtext']) ? '<br /><span class="smalltext"> ' . $config_var['subtext'] . '</span>' : '';
+				$subtext = !empty($config_var['subtext']) ? '<span class="smalltext"> ' . $config_var['subtext'] . '</span>' : '';
 
 					echo '
 							<a id="setting_', $config_var['name'], '"></a> <span', ($config_var['disabled'] ? ' style="color: #777777;"' : ($config_var['invalid'] ? ' class="error"' : '')), '><label for="', $config_var['name'], '">', $config_var['label'], '</label>', $subtext, ($config_var['type'] == 'password' ? '<br /><em>' . $txt['admin_confirm_password'] . '</em>' : ''), '</span>
@@ -853,11 +849,13 @@ function template_show_settings()
 						foreach ($bbcColumn as $bbcTag)
 							echo '
 										<li class="list_bbc floatleft">
-											<input type="checkbox" name="', $config_var['name'], '_enabledTags[]" id="tag_', $config_var['name'], '_', $bbcTag['tag'], '" value="', $bbcTag['tag'], '"', !in_array($bbcTag['tag'], $context['bbc_sections'][$config_var['name']]['disabled']) ? ' checked="checked"' : '', ' class="input_check" /> <label for="tag_', $config_var['name'], '_', $bbcTag['tag'], '">', $bbcTag['tag'], '</label>
+											<label class="checkbox" for="tag_', $config_var['name'], '_', $bbcTag['tag'], '"><input type="checkbox" name="', $config_var['name'], '_enabledTags[]" id="tag_', $config_var['name'], '_', $bbcTag['tag'], '" value="', $bbcTag['tag'], '"', !in_array($bbcTag['tag'], $context['bbc_sections'][$config_var['name']]['disabled']) ? ' checked="checked"' : '', ' class="input_check" />', $bbcTag['tag'], '</label>
 										</li>';
 					}
-					echo '			</ul>
-								<input type="checkbox" id="bbc_', $config_var['name'], '_select_all" onclick="invertAll(this, this.form, \'', $config_var['name'], '_enabledTags\');"', $context['bbc_sections'][$config_var['name']]['all_selected'] ? ' checked="checked"' : '', ' class="input_check" /> <label for="bbc_', $config_var['name'], '_select_all"><em>', $txt['bbcTagsToUse_select_all'], '</em></label>
+					echo '
+									</ul>
+									<div class="clearfix"></div>
+									<label class="pull-right checkbox" for="bbc_', $config_var['name'], '_select_all"><input type="checkbox" id="bbc_', $config_var['name'], '_select_all" onclick="invertAll(this, this.form, \'', $config_var['name'], '_enabledTags\');"', $context['bbc_sections'][$config_var['name']]['all_selected'] ? ' checked="checked"' : '', ' class="input_check" /><em>', $txt['bbcTagsToUse_select_all'], '</em></label>
 							</fieldset>';
 				}
 				// A simple message?
@@ -897,7 +895,8 @@ function template_show_settings()
 
 	if (empty($context['settings_save_dont_show']))
 		echo '
-					<input type="submit" value="', $txt['save'], '"', (!empty($context['save_disabled']) ? ' disabled="disabled"' : ''), (!empty($context['settings_save_onclick']) ? ' onclick="' . $context['settings_save_onclick'] . '"' : ''), ' class="button_submit" />';
+					<input type="submit" value="', $txt['save'], '"', (!empty($context['save_disabled']) ? ' disabled="disabled"' : ''), (!empty($context['settings_save_onclick']) ? ' onclick="' . $context['settings_save_onclick'] . '"' : ''), ' class="btn pull-right" />
+					<span class="clearfix"></span>';
 
 	if ($is_open)
 		echo '
@@ -1156,11 +1155,11 @@ function template_edit_profile_field()
 							</dd>
 						</dl>
 					</fieldset>
-						<input type="submit" name="save" value="', $txt['save'], '" class="button_submit" />';
+						<input type="submit" name="save" value="', $txt['save'], '" class="btn" />';
 
 	if ($context['fid'])
 		echo '
-						<input type="submit" name="delete" value="', $txt['delete'], '" onclick="return confirm(\'', $txt['custom_edit_delete_sure'], '\');" class="button_submit" />';
+						<input type="submit" name="delete" value="', $txt['delete'], '" onclick="return confirm(\'', $txt['custom_edit_delete_sure'], '\');" class="btn" />';
 
 	echo '
 				</div>
@@ -1183,19 +1182,17 @@ function template_admin_search_results()
 	global $context, $txt, $settings, $options, $scripturl;
 
 	echo '
-		<div id="section_header">
 			<h3 class="catbg">
 				<object id="quick_search">
-					<form action="', $scripturl, '?action=admin;area=search" method="post" accept-charset="', $context['character_set'], '" class="floatright">
+					<form action="', $scripturl, '?action=admin;area=search" method="post" accept-charset="', $context['character_set'], '" class="form-inline pull-right">
 						<input type="text" name="search_term" value="', $context['search_term'], '" class="input_text" />
 						<input type="hidden" name="search_type" value="', $context['search_type'], '" />
-						<input type="submit" name="search_go" value="', $txt['admin_search_results_again'], '" class="button_submit" />
+						<input type="submit" name="search_go" value="', $txt['admin_search_results_again'], '" class="btn" />
 					</form>
 				</object>
 				<img class="icon" src="' . $settings['images_url'] . '/buttons/search.png" alt="" />&nbsp;', sprintf($txt['admin_search_results_desc'], $context['search_term']), '
 			</h3>
-		</div>
-	<div class="windowbg2 generic_list_wrapper">
+	<div class="well generic_list_wrapper">
 		<div class="content">';
 
 	if (empty($context['search_results']))
@@ -1226,7 +1223,7 @@ function template_admin_search_results()
 			else
 			{
 				echo '
-				<li class="windowbg2">
+				<li>
 					<a href="', $result['url'], '"><strong>', $result['name'], '</strong></a> [', isset($txt['admin_search_section_' . $result['type']]) ? $txt['admin_search_section_' . $result['type']] : $result['type'] , ']
 				</li>';
 			}
@@ -1349,9 +1346,10 @@ function template_core_features()
 					', $txt['core_settings_title'], '
 				</h3>
 			</div>
-			<p class="description">', $txt['core_settings_desc'], '</p>
+			<p class="well well-small">', $txt['core_settings_desc'], '</p>
 			<form id="core_features" action="', $scripturl, '?action=admin;area=corefeatures" method="post" accept-charset="', $context['character_set'], '">
-			<div style="display:none" id="activation_message" class="errorbox"></div>';
+			<div style="display:none" id="activation_message" class="errorbox"></div>
+			<div class="well">';
 
 	$alternate = true;
 	$num = 0;
@@ -1360,25 +1358,26 @@ function template_core_features()
 	{
 		$num++;
 		echo '
-			<div class="content features">
-				<img class="features_image" src="', $feature['image'], '" alt="', $feature['title'], '" />
-				<div class="features_switch" id="js_feature_', $id, '">
-					<label class="core_features_hide" for="feature_', $id, '">', $txt['core_settings_enabled'], '<input class="core_features_status_box" type="checkbox" name="feature_', $id, '" id="feature_', $id, '"', $feature['enabled'] ? ' checked="checked"' : '', ' /></label>
-					<img class="core_features_img ', $feature['state'], '" src="', $settings['images_url'], '/admin/switch_', $feature['state'], '.png" alt="', $feature['state'], '" id="switch_', $id, '" style="margin-top: 1.3em;display:none" />
-				</div>
-				<h4 id="feature_link_' . $id . '">', ($feature['enabled'] && $feature['url'] ? '<a href="' . $feature['url'] . '">' . $feature['title'] . '</a>' : $feature['title']), '</h4>
-				<p>', $feature['desc'], '</p>
-				<hr />
-			</div>';
+				<div class="content features">
+					<img class="features_image" src="', $feature['image'], '" alt="', $feature['title'], '" />
+					<div class="features_switch" id="js_feature_', $id, '">
+						<label class="core_features_hide" for="feature_', $id, '">', $txt['core_settings_enabled'], '<input class="core_features_status_box" type="checkbox" name="feature_', $id, '" id="feature_', $id, '"', $feature['enabled'] ? ' checked="checked"' : '', ' /></label>
+						<img class="core_features_img ', $feature['state'], '" src="', $settings['images_url'], '/admin/switch_', $feature['state'], '.png" alt="', $feature['state'], '" id="switch_', $id, '" style="margin-top: 1.3em;display:none" />
+					</div>
+					<h4 id="feature_link_' . $id . '">', ($feature['enabled'] && $feature['url'] ? '<a href="' . $feature['url'] . '">' . $feature['title'] . '</a>' : $feature['title']), '</h4>
+					<p>', $feature['desc'], '</p>
+					<hr />
+				</div>';
 
 		$alternate = !$alternate;
 	}
 
 	echo '
+			</div>
 			<div class="righttext">
 				<input id="core_features_session" type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 				<input id="core_features_token" type="hidden" name="', $context['admin-core_token_var'], '" value="', $context['admin-core_token'], '" />
-				<input id="core_features_submit" type="submit" value="', $txt['save'], '" name="save" class="button_submit" />
+				<input id="core_features_submit" type="submit" value="', $txt['save'], '" name="save" class="btn" />
 			</div>
 		</form>
 	</div>';
@@ -1438,12 +1437,10 @@ function template_repair_boards()
 
 	echo '
 	<div id="admincenter">
-		<div id="section_header" class="cat_bar">
-			<h3 class="catbg">',
-				$context['error_search'] ? $txt['errors_list'] : $txt['errors_fixing'] , '
-			</h3>
-		</div>
-		<div class="windowbg">
+		<h3 class="titlebg">',
+			$context['error_search'] ? $txt['errors_list'] : $txt['errors_fixing'] , '
+		</h3>
+		<div class="well well-small">
 			<div class="content">';
 
 	// Are we actually fixing them, or is this just a prompt?
@@ -1547,12 +1544,12 @@ function template_php_info()
 	foreach ($context['pinfo'] as $area => $php_area)
 	{
 		echo '
-		<table id="', str_replace(' ', '_', $area), '" width="100%" class="table_grid">
+		<table id="', str_replace(' ', '_', $area), '" width="100%" class="table table-bordered table-striped">
 			<thead>
-			<tr class="catbg">
-				<th class="first_th" scope="col" width="33%"></th>
-				<th scope="col" width="33%" class="centercol"><strong>', $area, '</strong></th>
-				<th class="last_th" scope="col" width="33%"></th>
+			<tr class="titlebg">
+				<th></th>
+				<th style="width: 33%" class="center"><strong>', $area, '</strong></th>
+				<th></th>
 			</tr>
 			</thead>
 			<tbody>';
@@ -1580,12 +1577,12 @@ function template_php_info()
 
 				echo '
 			<tr>
-				<td align="left" width="33%" class="windowbg', $alternate ? '2' : '', '">', $key, '</td>';
+				<td>', $key, '</td>';
 
 				foreach ($setting as $key_lm => $value)
 				{
 					echo '
-				<td align="left" width="33%" class="windowbg', $alternate ? '2' : '', '">', $value, '</td>';
+				<td>', $value, '</td>';
 				}
 				echo '
 			</tr>';
@@ -1626,7 +1623,7 @@ function template_clean_cache_button_below()
 		<div class="content">
 			<form action="', $scripturl, '?action=admin;area=maintain;sa=routine;activity=cleancache" method="post" accept-charset="', $context['character_set'], '">
 				<p>', $txt['maintain_cache_info'], '</p>
-				<span><input type="submit" value="', $txt['maintain_run_now'], '" class="button_submit" /></span>
+				<span><input type="submit" value="', $txt['maintain_run_now'], '" class="btn" /></span>
 				<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 				<input type="hidden" name="', $context['admin-maint_token_var'], '" value="', $context['admin-maint_token'], '" />
 			</form>

@@ -295,7 +295,7 @@ function template_generic_menu_tabs(&$menu_context)
 	if (!empty($settings['use_tabs']))
 	{
 		echo '
-	<p class="description">
+	<p class="well well-small">
 		', !empty($selected_tab['description']) ? $selected_tab['description'] : $tab_context['description'], '
 	</p>';
 
@@ -317,8 +317,7 @@ function template_generic_menu_tabs(&$menu_context)
 		// the end of tabs
 		echo '
 		</ul>
-	</div>
-	<br class="clear" />';
+	</div>';
 	}
 	// ...if not use the old style
 	else

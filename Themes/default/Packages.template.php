@@ -302,7 +302,7 @@ function template_view_package()
 	{
 		echo '
 			<div class="righttext padding">
-				<input type="submit" value="', $context['uninstalling'] ? $txt['package_uninstall_now'] : $txt['package_install_now'], '" onclick="return ', !empty($context['has_failure']) ? '(submitThisOnce(this) &amp;&amp; confirm(\'' . ($context['uninstalling'] ? $txt['package_will_fail_popup_uninstall'] : $txt['package_will_fail_popup']) . '\'))' : 'submitThisOnce(this)', ';" class="button_submit" />
+				<input type="submit" value="', $context['uninstalling'] ? $txt['package_uninstall_now'] : $txt['package_install_now'], '" onclick="return ', !empty($context['has_failure']) ? '(submitThisOnce(this) &amp;&amp; confirm(\'' . ($context['uninstalling'] ? $txt['package_will_fail_popup_uninstall'] : $txt['package_will_fail_popup']) . '\'))' : 'submitThisOnce(this)', ';" class="btn" />
 			</div>';
 	}
 	// If we need ftp information then demand it!
@@ -580,7 +580,7 @@ function template_browse()
 							</dd>
 						</dl>
 						<div class="righttext padding">
-							<input type="submit" value="', $txt['package_apply'], '" class="button_submit" />
+							<input type="submit" value="', $txt['package_apply'], '" class="btn" />
 						</div>
 					</div>
 				</div>
@@ -691,7 +691,7 @@ function template_servers()
 						</dd>
 					</dl>
 					<div class="righttext">
-						<input type="submit" value="', $txt['package_proceed'], '" class="button_submit" />
+						<input type="submit" value="', $txt['package_proceed'], '" class="btn" />
 					</div>
 				</form>
 			</div>
@@ -699,72 +699,64 @@ function template_servers()
 	}
 
 	echo '
-		<div class="windowbg2">
+		<div class="well">
 			<div class="content">
-				<fieldset>
-					<legend>' . $txt['package_servers'] . '</legend>
-					<ul class="package_servers">';
+				<h3 class="titlebg">' . $txt['package_servers'] . '</h3>
+				<ul class="package_servers">';
 	foreach ($context['servers'] as $server)
 		echo '
-						<li class="flow_auto">
-							<span class="floatleft">' . $server['name'] . '</span>
-							<span class="package_server floatright"><a href="' . $scripturl . '?action=admin;area=packages;get;sa=remove;server=' . $server['id'] . ';', $context['session_var'], '=', $context['session_id'], '">[ ' . $txt['delete'] . ' ]</a></span>
-							<span class="package_server floatright"><a href="' . $scripturl . '?action=admin;area=packages;get;sa=browse;server=' . $server['id'] . '">[ ' . $txt['package_browse'] . ' ]</a></span>
-						</li>';
+					<li class="flow_auto">
+						<span class="floatleft">' . $server['name'] . '</span>
+						<span class="package_server floatright"><a href="' . $scripturl . '?action=admin;area=packages;get;sa=remove;server=' . $server['id'] . ';', $context['session_var'], '=', $context['session_id'], '">[ ' . $txt['delete'] . ' ]</a></span>
+						<span class="package_server floatright"><a href="' . $scripturl . '?action=admin;area=packages;get;sa=browse;server=' . $server['id'] . '">[ ' . $txt['package_browse'] . ' ]</a></span>
+					</li>';
 	echo '
-					</ul>
-				</fieldset>
-				<fieldset>
-					<legend>' . $txt['add_server'] . '</legend>
-					<form action="' . $scripturl . '?action=admin;area=packages;get;sa=add" method="post" accept-charset="', $context['character_set'], '">
-						<dl class="settings">
-							<dt>
-								<strong>' . $txt['server_name'] . ':</strong>
-							</dt>
-							<dd>
-								<input type="text" name="servername" size="44" value="SMF" class="input_text" />
-							</dd>
-							<dt>
-								<strong>' . $txt['serverurl'] . ':</strong>
-							</dt>
-							<dd>
-								<input type="text" name="serverurl" size="44" value="http://" class="input_text" />
-							</dd>
-						</dl>
-						<div class="righttext">
-							<input type="submit" value="' . $txt['add_server'] . '" class="button_submit" />
-							<input type="hidden" name="' . $context['session_var'] . '" value="' . $context['session_id'] . '" />
-						</div>
-					</form>
-				</fieldset>
-				<fieldset>
-					<legend>', $txt['package_download_by_url'], '</legend>
-					<form action="', $scripturl, '?action=admin;area=packages;get;sa=download;byurl;', $context['session_var'], '=', $context['session_id'], '" method="post" accept-charset="', $context['character_set'], '">
-						<dl class="settings">
-							<dt>
-								<strong>' . $txt['serverurl'] . ':</strong>
-							</dt>
-							<dd>
-								<input type="text" name="package" size="44" value="http://" class="input_text" />
-							</dd>
-							<dt>
-								<strong>', $txt['package_download_filename'], ':</strong>
-							</dt>
-							<dd>
-								<input type="text" name="filename" size="44" class="input_text" /><br />
-								<span class="smalltext">', $txt['package_download_filename_info'], '</span>
-							</dd>
-						</dl>
-						<div class="righttext">
-							<input type="submit" value="', $txt['download'], '" class="button_submit" />
-						</div>
-					</form>
-				</fieldset>
+				</ul>
+				<h3 class="titlebg">' . $txt['add_server'] . '</h3>
+				<form action="' . $scripturl . '?action=admin;area=packages;get;sa=add" method="post" accept-charset="', $context['character_set'], '">
+					<dl class="settings">
+						<dt>
+							<strong>' . $txt['server_name'] . ':</strong>
+						</dt>
+						<dd>
+							<input type="text" name="servername" size="44" value="SMF" class="input_text" />
+						</dd>
+						<dt>
+							<strong>' . $txt['serverurl'] . ':</strong>
+						</dt>
+						<dd>
+							<input type="text" name="serverurl" size="44" value="http://" class="input_text" />
+						</dd>
+					</dl>
+					<input type="submit" value="' . $txt['add_server'] . '" class="btn" />
+					<input type="hidden" name="' . $context['session_var'] . '" value="' . $context['session_id'] . '" />
+					<div class="clearfix"></div>
+				</form>
+				<h3 class="titlebg">', $txt['package_download_by_url'], '</h3>
+				<form action="', $scripturl, '?action=admin;area=packages;get;sa=download;byurl;', $context['session_var'], '=', $context['session_id'], '" method="post" accept-charset="', $context['character_set'], '">
+					<dl class="settings">
+						<dt>
+							<strong>' . $txt['serverurl'] . ':</strong>
+						</dt>
+						<dd>
+							<input type="text" name="package" size="44" value="http://" class="input_text" />
+						</dd>
+						<dt>
+							<strong>', $txt['package_download_filename'], ':</strong>
+						</dt>
+						<dd>
+							<input type="text" name="filename" size="44" class="input_text" /><br />
+							<span class="smalltext">', $txt['package_download_filename_info'], '</span>
+						</dd>
+					</dl>
+					<input type="submit" value="', $txt['download'], '" class="btn" />
+					<div class="clearfix"></div>
+				</form>
 			</div>
 		</div>
-		<br />
-			<h3 class="catbg">' . $txt['package_upload_title'] . '</h3>
-		<div class="windowbg">
+		
+		<h3 class="catbg">' . $txt['package_upload_title'] . '</h3>
+		<div class="well">
 			<div class="content">
 				<form action="' . $scripturl . '?action=admin;area=packages;get;sa=upload" method="post" accept-charset="', $context['character_set'], '" enctype="multipart/form-data" style="margin-bottom: 0;">
 					<dl class="settings">
@@ -776,10 +768,11 @@ function template_servers()
 						</dd>
 					</dl>
 					<hr class="hrcolor" />
-					<input type="submit" value="' . $txt['package_upload'] . '" class="button_submit" />
+					<input type="submit" value="' . $txt['package_upload'] . '" class="btn" />
 					<input type="hidden" name="' . $context['session_var'] . '" value="' . $context['session_id'] . '" />
 				</form>
 			</div>
+			<div class="clearfix"></div>
 		</div>
 	</div>';
 }
@@ -1046,7 +1039,7 @@ function template_install_options()
 						</dd>
 					</dl>
 
-					<input type="submit" name="save" value="', $txt['save'], '" class="button_submit" />
+					<input type="submit" name="save" value="', $txt['save'], '" class="btn" />
 					<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 				</form>
 			</div>
@@ -1124,7 +1117,7 @@ function template_control_chmod()
 
 					<div class="righttext" style="margin: 1ex;">
 						<span id="test_ftp_placeholder_full"></span>
-						<input type="submit" value="', $txt['package_proceed'], '" class="button_submit" />
+						<input type="submit" value="', $txt['package_proceed'], '" class="btn" />
 					</div>';
 
 	if (!empty($context['package_ftp']['destination']))
@@ -1557,7 +1550,7 @@ function template_file_permissions()
 	echo '
 				<span id="test_ftp_placeholder_full"></span>
 				<input type="hidden" name="action_changes" value="1" />
-				<input type="submit" value="', $txt['package_file_perms_go'], '" name="go" class="button_submit" />
+				<input type="submit" value="', $txt['package_file_perms_go'], '" name="go" class="btn" />
 			</div>
 		</div>';
 
@@ -1738,7 +1731,7 @@ function template_action_permissions()
 					<input type="hidden" name="method" value="', $context['method'], '" />
 					<input type="hidden" name="action_changes" value="1" />
 					<div class="righttext padding">
-						<input type="submit" name="go" id="cont" value="', $txt['not_done_continue'], '" class="button_submit" />
+						<input type="submit" name="go" id="cont" value="', $txt['not_done_continue'], '" class="btn" />
 					</div>
 				</div>
 			</div>

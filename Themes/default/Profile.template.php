@@ -571,7 +571,7 @@ function template_editBuddies()
 					</dt>
 					<dd>
 						<input type="text" name="new_buddy" id="new_buddy" size="30" class="input_text" />
-						<input type="submit" value="', $txt['buddy_add_button'], '" class="button_submit floatnone" />
+						<input type="submit" value="', $txt['buddy_add_button'], '" class="btn floatnone" />
 					</dd>
 				</dl>';
 
@@ -673,7 +673,7 @@ function template_editIgnoreList()
 
 	echo '
 				<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
-				<input type="submit" value="', $txt['ignore_add_button'], '" class="button_submit" />
+				<input type="submit" value="', $txt['ignore_add_button'], '" class="btn" />
 			</div>
 		</div>
 	</form>
@@ -769,7 +769,7 @@ function template_trackIP()
 						<input type="text" name="searchip" value="', $context['ip'], '" class="input_text" />
 					</dd>
 				</dl>
-				<input type="submit" value="', $txt['trackIP'], '" class="button_submit" />
+				<input type="submit" value="', $txt['trackIP'], '" class="btn" />
 			</form>
 		</div>
 	</div>
@@ -1165,10 +1165,10 @@ function template_edit_options()
 	// The button shouldn't say "Change profile" unless we're changing the profile...
 	if (!empty($context['submit_button_text']))
 		echo '
-					<input type="submit" name="save" value="', $context['submit_button_text'], '" class="button_submit" />';
+					<input type="submit" name="save" value="', $context['submit_button_text'], '" class="btn" />';
 	else
 		echo '
-					<input type="submit" name="save" value="', $txt['change_profile'], '" class="button_submit" />';
+					<input type="submit" name="save" value="', $txt['change_profile'], '" class="btn" />';
 
 	if (!empty($context['token_check']))
 		echo '
@@ -1538,7 +1538,7 @@ function template_notification()
 					</dl>
 					<hr class="hrcolor" />
 					<div>
-						<input id="notify_submit" type="submit" value="', $txt['notify_save'], '" class="button_submit" />
+						<input id="notify_submit" type="submit" value="', $txt['notify_save'], '" class="btn" />
 						<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />', !empty($context['token_check']) ? '
 						<input type="hidden" name="' . $context[$context['token_check'] . '_token_var'] . '" value="' . $context[$context['token_check'] . '_token'] . '" />' : '', '
 						<input type="hidden" name="u" value="', $context['id_member'], '" />
@@ -1583,7 +1583,7 @@ function template_groupMembership()
 					<textarea name="reason" rows="4" style="' . (isBrowser('is_ie8') ? 'width: 635px; max-width: 99%; min-width: 99%' : 'width: 99%') . ';"></textarea>
 					<div class="righttext" style="margin: 0.5em 0.5% 0 0.5%;">
 						<input type="hidden" name="gid" value="', $context['group_request']['id'], '" />
-						<input type="submit" name="req" value="', $txt['submit_request'], '" class="button_submit" />
+						<input type="submit" name="req" value="', $txt['submit_request'], '" class="btn" />
 					</div>
 				</div>
 			</div>';
@@ -1635,7 +1635,7 @@ function template_groupMembership()
 		if ($context['can_edit_primary'])
 			echo '
 			<div class="padding righttext">
-				<input type="submit" value="', $txt['make_primary'], '" class="button_submit" />
+				<input type="submit" value="', $txt['make_primary'], '" class="btn" />
 			</div>';
 
 		// Any groups they can join?
@@ -2056,8 +2056,8 @@ function template_issueWarning()
 
 	echo '
 					<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
-					<input type="submit" name="preview" id="preview_button" value="', $txt['preview'], '" class="button_submit" />
-					<input type="submit" name="save" value="', $context['user']['is_owner'] ? $txt['change_profile'] : $txt['profile_warning_issue'], '" class="button_submit" />
+					<input type="submit" name="preview" id="preview_button" value="', $txt['preview'], '" class="btn" />
+					<input type="submit" name="save" value="', $context['user']['is_owner'] ? $txt['change_profile'] : $txt['profile_warning_issue'], '" class="btn" />
 				</div>
 			</div>
 		</div>
@@ -2153,7 +2153,7 @@ function template_deleteAccount()
 					<div>
 						<strong', (isset($context['modify_error']['bad_password']) || isset($context['modify_error']['no_password']) ? ' class="error"' : ''), '>', $txt['current_password'], ': </strong>
 						<input type="password" name="oldpasswrd" size="20" class="input_password" />&nbsp;&nbsp;&nbsp;&nbsp;
-						<input type="submit" value="', $txt['yes'], '" class="button_submit" />';
+						<input type="submit" value="', $txt['yes'], '" class="btn" />';
 
 		if (!empty($context['token_check']))
 			echo '
@@ -2188,7 +2188,7 @@ function template_deleteAccount()
 						<label for="deleteAccount"><input type="checkbox" name="deleteAccount" id="deleteAccount" value="1" class="input_check" onclick="if (this.checked) return confirm(\'', $txt['deleteAccount_confirm'], '\');" /> ', $txt['deleteAccount_member'], '.</label>
 					</div>
 					<div>
-						<input type="submit" value="', $txt['delete'], '" class="button_submit" />';
+						<input type="submit" value="', $txt['delete'], '" class="btn" />';
 
 		if (!empty($context['token_check']))
 			echo '
@@ -2231,7 +2231,7 @@ function template_profile_save()
 
 	echo '
 					<div class="righttext">
-						<input type="submit" value="', $txt['change_profile'], '" class="button_submit" />
+						<input type="submit" value="', $txt['change_profile'], '" class="btn" />
 						<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 						<input type="hidden" name="u" value="', $context['id_member'], '" />
 						<input type="hidden" name="sa" value="', $context['menu_item_selected'], '" />
@@ -2356,7 +2356,7 @@ function template_profile_signature_modify()
 
 	if ($context['show_spellchecking'])
 		echo '
-								<input type="button" value="', $txt['spell_check'], '" onclick="spellCheck(\'creator\', \'signature\');" class="button_submit" />';
+								<input type="button" value="', $txt['spell_check'], '" onclick="spellCheck(\'creator\', \'signature\');" class="btn" />';
 
 		echo '
 							</dt>
@@ -2370,7 +2370,7 @@ function template_profile_signature_modify()
 
 	if (!empty($context['show_preview_button']))
 		echo '
-						<input type="submit" name="preview_signature" id="preview_button" value="', $txt['preview_signature'], '" class="button_submit" />';
+						<input type="submit" name="preview_signature" id="preview_button" value="', $txt['preview_signature'], '" class="btn" />';
 
 	if ($context['signature_warning'])
 		echo '

@@ -1656,7 +1656,7 @@ function notification($memID)
 		'additional_rows' => array(
 			array(
 				'position' => 'bottom_of_list',
-				'value' => '<input type="submit" name="edit_notify_topics" value="' . $txt['notifications_update'] . '" class="button_submit" />',
+				'value' => '<input type="submit" name="edit_notify_topics" value="' . $txt['notifications_update'] . '" class="btn" />',
 				'align' => 'right',
 			),
 		),

@@ -27,8 +27,8 @@ function template_new_group()
 	echo '
 	<div id="admincenter">
 		<form id="new_group" action="', $scripturl, '?action=admin;area=membergroups;sa=add" method="post" accept-charset="', $context['character_set'], '">
-				<h3 class="catbg">', $txt['membergroups_new_group'], '</h3>
-			<div class="windowbg">
+			<h3 class="titlebg">', $txt['membergroups_new_group'], '</h3>
+			<div class="well">
 				<div class="content">
 					<dl class="settings">
 						<dt>
@@ -72,14 +72,13 @@ function template_new_group()
 	{
 		echo '
 						<dt>
-							<label for="permission_base"><strong>', $txt['membergroups_permissions'], ':</strong></label><br />
+							<label for="permission_base"><strong>', $txt['membergroups_permissions'], ':</strong></label>
 							<span class="smalltext">', $txt['membergroups_can_edit_later'], '</span>
 						</dt>
 						<dd>
 							<fieldset id="permission_base">
 								<legend>', $txt['membergroups_select_permission_type'], '</legend>
-								<input type="radio" name="perm_type" id="perm_type_inherit" value="inherit" checked="checked" class="input_radio" />
-								<label for="perm_type_inherit">', $txt['membergroups_new_as_inherit'], ':</label>
+								<label class="radio" for="perm_type_inherit"><input type="radio" name="perm_type" id="perm_type_inherit" value="inherit" checked="checked" class="input_radio" />', $txt['membergroups_new_as_inherit'], ':
 								<select name="inheritperm" id="inheritperm_select" onclick="document.getElementById(\'perm_type_inherit\').checked = true;">
 									<option value="-1">', $txt['membergroups_guests'], '</option>
 									<option value="0" selected="selected">', $txt['membergroups_members'], '</option>';
@@ -87,10 +86,8 @@ function template_new_group()
 			echo '
 									<option value="', $group['id'], '">', $group['name'], '</option>';
 		echo '
-								</select>
-								<br />
-								<input type="radio" name="perm_type" id="perm_type_copy" value="copy" class="input_radio" />
-								<label for="perm_type_copy">', $txt['membergroups_new_as_copy'], ':</label>
+								</select></label>
+								<label for="perm_type_copy" class="radio"><input type="radio" name="perm_type" id="perm_type_copy" value="copy" class="input_radio" />', $txt['membergroups_new_as_copy'], ':
 								<select name="copyperm" id="copyperm_select" onclick="document.getElementById(\'perm_type_copy\').checked = true;">
 									<option value="-1">', $txt['membergroups_guests'], '</option>
 									<option value="0" selected="selected">', $txt['membergroups_members'], '</option>';
@@ -98,23 +95,21 @@ function template_new_group()
 			echo '
 									<option value="', $group['id'], '">', $group['name'], '</option>';
 		echo '
-								</select>
-								<br />
-								<input type="radio" name="perm_type" id="perm_type_predefined" value="predefined" class="input_radio" />
-								<label for="perm_type_predefined">', $txt['membergroups_new_as_type'], ':</label>
+								</select></label>
+								<label for="perm_type_predefined" class="radio"><input type="radio" name="perm_type" id="perm_type_predefined" value="predefined" class="input_radio" />', $txt['membergroups_new_as_type'], ':
 								<select name="level" id="level_select" onclick="document.getElementById(\'perm_type_predefined\').checked = true;">
 									<option value="restrict">', $txt['permitgroups_restrict'], '</option>
 									<option value="standard" selected="selected">', $txt['permitgroups_standard'], '</option>
 									<option value="moderator">', $txt['permitgroups_moderator'], '</option>
 									<option value="maintenance">', $txt['permitgroups_maintenance'], '</option>
-								</select>
+								</select></label>
 							</fieldset>
 						</dd>';
 	}
 
 	echo '
 					</dl>
-					<input type="submit" value="', $txt['membergroups_add_group'], '" class="button_submit" />
+					<input type="submit" value="', $txt['membergroups_add_group'], '" class="btn" />
 				</div>
 			</div>';
 	if ($context['undefined_group'])
@@ -274,8 +269,8 @@ function template_edit_group()
 							<input type="text" name="max_messages" id="max_messages_input" value="', $context['group']['id'] == 1 ? 0 : $context['group']['max_messages'], '" size="6"', $context['group']['id'] == 1 ? ' disabled="disabled"' : '', ' class="input_text" />
 						</dd>
 					</dl>
-					<input type="submit" name="save" value="', $txt['membergroups_edit_save'], '" class="button_submit" />', $context['group']['allow_delete'] ? '
-					<input type="submit" name="delete" value="' . $txt['membergroups_delete'] . '" onclick="return confirm(\'' . $txt['membergroups_confirm_delete'] . '\');" class="button_submit" />' : '', '
+					<input type="submit" name="save" value="', $txt['membergroups_edit_save'], '" class="btn" />', $context['group']['allow_delete'] ? '
+					<input type="submit" name="delete" value="' . $txt['membergroups_delete'] . '" onclick="return confirm(\'' . $txt['membergroups_confirm_delete'] . '\');" class="btn" />' : '', '
 				</div>
 			</div>
 			<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
@@ -471,7 +466,7 @@ function template_group_members()
 	if (!empty($context['group']['assignable']))
 		echo '
 			<div class="floatright">
-				<input type="submit" name="remove" value="', $txt['membergroups_members_remove'], '" class="button_submit " />
+				<input type="submit" name="remove" value="', $txt['membergroups_members_remove'], '" class="btn " />
 			</div>';
 
 	echo '
@@ -495,7 +490,7 @@ function template_group_members()
 							<div id="toAddItemContainer"></div>
 						</dd>
 					</dl>
-					<input type="submit" name="add" value="', $txt['membergroups_members_add'], '" class="button_submit" />
+					<input type="submit" name="add" value="', $txt['membergroups_members_add'], '" class="btn" />
 				</div>
 			</div>';
 	}
@@ -553,7 +548,7 @@ function template_group_request_reason()
 
 	echo '
 					</dl>
-					<input type="submit" name="go" value="', $txt['mc_groupr_submit'], '" class="button_submit" />
+					<input type="submit" name="go" value="', $txt['mc_groupr_submit'], '" class="btn" />
 					<input type="hidden" name="req_action" value="got_reason" />
 					<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 				</div>

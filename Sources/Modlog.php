@@ -285,10 +285,10 @@ function ViewModlog()
 				'value' => '
 					' . $txt['modlog_search'] . ' (' . $txt['modlog_by'] . ': ' . $context['search']['label'] . '):
 					<input type="text" name="search" size="18" value="' . $context['search']['string'] . '" class="input_text" />
-					<input type="submit" name="is_search" value="' . $txt['modlog_go'] . '" class="button_submit" style="float:none" />
+					<input type="submit" name="is_search" value="' . $txt['modlog_go'] . '" class="btn" style="float:none" />
 					' . ($context['can_delete'] ? '&nbsp;|
-					<input type="submit" name="remove" value="' . $txt['modlog_remove'] . '" onclick="return confirm(\'' . $txt['modlog_remove_selected_confirm'] . '\');" class="button_submit" />
-					<input type="submit" name="removeall" value="' . $txt['modlog_removeall'] . '" onclick="return confirm(\'' . $txt['modlog_remove_all_confirm'] . '\');" class="button_submit" />' : ''),
+					<input type="submit" name="remove" value="' . $txt['modlog_remove'] . '" onclick="return confirm(\'' . $txt['modlog_remove_selected_confirm'] . '\');" class="btn" />
+					<input type="submit" name="removeall" value="' . $txt['modlog_removeall'] . '" onclick="return confirm(\'' . $txt['modlog_remove_all_confirm'] . '\');" class="btn" />' : ''),
 				'class' => 'floatright',
 			),
 		),

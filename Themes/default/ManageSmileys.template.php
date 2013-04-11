@@ -138,7 +138,7 @@ function template_modifyset()
 		echo '
 					</dl>
 					<hr class="hrcolor" />
-					<input type="submit" name="smiley_save" value="', $txt['smiley_sets_save'], '" class="button_submit" />
+					<input type="submit" name="smiley_save" value="', $txt['smiley_sets_save'], '" class="btn" />
 				</div>
 			</div>
 			<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
@@ -222,8 +222,8 @@ function template_modifysmiley()
 						</dd>
 					</dl>
 					<hr class="hrcolor" />
-					<input type="submit" name="smiley_save" value="', $txt['smileys_save'], '" class="button_submit" />
-					<input type="submit" name="deletesmiley" value="', $txt['smileys_delete'], '" onclick="return confirm(\'', $txt['smileys_delete_confirm'], '\');" class="button_submit" />
+					<input type="submit" name="smiley_save" value="', $txt['smileys_save'], '" class="btn" />
+					<input type="submit" name="deletesmiley" value="', $txt['smileys_delete'], '" onclick="return confirm(\'', $txt['smileys_delete_confirm'], '\');" class="btn" />
 				</div>
 			</div>
 			<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
@@ -363,7 +363,7 @@ function template_addsmiley()
 						</dd>
 					</dl>
 					<hr class="hrcolor" />
-					<input type="submit" name="smiley_save" value="', $txt['smileys_save'], '" class="button_submit" />
+					<input type="submit" name="smiley_save" value="', $txt['smileys_save'], '" class="btn" />
 				</div>
 			</div>
 			<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />

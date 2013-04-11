@@ -183,7 +183,7 @@ function template_download_language()
 			<div class="righttext padding">
 				<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 				<input type="hidden" name="', $context['admin-dlang_token_var'], '" value="', $context['admin-dlang_token'], '" />
-				<input type="submit" name="do_install" value="', $txt['add_language_smf_install'], '" class="button_submit" />
+				<input type="submit" name="do_install" value="', $txt['add_language_smf_install'], '" class="btn" />
 			</div>
 		</form>
 	</div>';
@@ -233,10 +233,10 @@ function template_modify_language_entries()
 	echo '
 	<div id="admincenter">
 		<form action="', $scripturl, '?action=admin;area=languages;sa=editlang;lid=', $context['lang_id'], '" method="post" accept-charset="', $context['character_set'], '">
-				<h3 class="catbg">
-					', $txt['edit_languages'], '
-				</h3>
-			<div class="information">
+			<h3 class="catbg">
+				', $txt['edit_languages'], '
+			</h3>
+			<div class="well well-small">
 				', $txt['edit_language_entries_primary'], '
 			</div>';
 
@@ -245,7 +245,7 @@ function template_modify_language_entries()
 	{
 		// Oops, show an error for ya.
 		echo '
-			<div class="errorbox">
+			<div class="alert alert-error">
 				', $context['lang_file_not_writable_message'], '
 			</div>';
 	}
@@ -285,14 +285,14 @@ function template_modify_language_entries()
 					</fieldset>
 					<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 					<input type="hidden" name="', $context['admin-mlang_token_var'], '" value="', $context['admin-mlang_token'], '" />
-					<input type="submit" name="save_main" value="', $txt['save'], '"', $context['lang_file_not_writable_message'] || !empty($context['file_entries']) ? ' disabled="disabled"' : '', ' class="button_submit" />';
+					<input type="submit" name="save_main" value="', $txt['save'], '"', $context['lang_file_not_writable_message'] || !empty($context['file_entries']) ? ' disabled="disabled"' : '', ' class="btn" />';
 
 	// Allow deleting entries.
 	if ($context['lang_id'] != 'english')
 	{
 		// English can't be deleted though.
 		echo '
-						<input type="submit" name="delete_main" value="', $txt['delete'], '"', $context['lang_file_not_writable_message'] || !empty($context['file_entries']) ? ' disabled="disabled"' : '', ' onclick="confirm(\'', $txt['languages_delete_confirm'], '\');" class="button_submit" />';
+						<input type="submit" name="delete_main" value="', $txt['delete'], '"', $context['lang_file_not_writable_message'] || !empty($context['file_entries']) ? ' disabled="disabled"' : '', ' onclick="confirm(\'', $txt['languages_delete_confirm'], '\');" class="btn" />';
 	}
 
 	echo '
@@ -300,7 +300,7 @@ function template_modify_language_entries()
 			</div>
 		</form>
 
-		<form action="', $scripturl, '?action=admin;area=languages;sa=editlang;lid=', $context['lang_id'], ';entries" id="entry_form" method="post" accept-charset="', $context['character_set'], '">
+		<form action="', $scripturl, '?action=admin;area=languages;sa=editlang;lid=', $context['lang_id'], ';entries" id="entry_form" method="post" accept-charset="', $context['character_set'], '" class="form-inline">
 			<div class="title_bar">
 				<h3 class="titlebg">
 					', $txt['edit_language_entries'], '
@@ -325,7 +325,7 @@ function template_modify_language_entries()
 					</select>
 					<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 					<input type="hidden" name="', $context['admin-mlang_token_var'], '" value="', $context['admin-mlang_token'], '" />
-					<input type="submit" value="', $txt['go'], '" class="button_submit" style="float: none"/>
+					<input type="submit" value="', $txt['go'], '" class="btn" style="float: none"/>
 			</div>
 			<br class="clear" />';
 
@@ -394,7 +394,7 @@ function template_modify_language_entries()
 
 		echo '
 					</dl>
-					<input type="submit" name="save_entries" value="', $txt['save'], '"', !empty($context['entries_not_writable_message']) ? ' disabled="disabled"' : '', ' class="button_submit" />';
+					<input type="submit" name="save_entries" value="', $txt['save'], '"', !empty($context['entries_not_writable_message']) ? ' disabled="disabled"' : '', ' class="btn" />';
 
 		echo '
 				</div>
@@ -416,10 +416,10 @@ function template_add_language()
 	echo '
 	<div id="admincenter">
 		<form id="admin_form_wrapper"action="', $scripturl, '?action=admin;area=languages;sa=add;', $context['session_var'], '=', $context['session_id'], '" method="post" accept-charset="', $context['character_set'], '">
-				<h3 class="catbg">
-					', $txt['add_language'], '
-				</h3>
-			<div class="windowbg">
+			<h3 class="catbg">
+				', $txt['add_language'], '
+			</h3>
+			<div class="well">
 				<div class="content">
 					<fieldset>
 						<legend>', $txt['add_language_smf'], '</legend>
@@ -436,7 +436,7 @@ function template_add_language()
 
 	echo '
 					</fieldset>', isBrowser('is_ie') ? '<input type="text" name="ie_fix" style="display: none;" class="input_text" /> ' : '', '
-					<input type="submit" name="smf_add_sub" value="', $txt['search'], '" class="button_submit" />
+					<input type="submit" name="smf_add_sub" value="', $txt['search'], '" class="btn" />
 					<br />
 				</div>
 			</div>

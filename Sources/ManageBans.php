@@ -269,7 +269,7 @@ function BanList()
 		'additional_rows' => array(
 			array(
 				'position' => 'bottom_of_list',
-				'value' => '<input type="submit" name="removeBans" value="' . $txt['ban_remove_selected'] . '" onclick="return confirm(\'' . $txt['ban_remove_selected_confirm'] . '\');" class="button_submit" />',
+				'value' => '<input type="submit" name="removeBans" value="' . $txt['ban_remove_selected'] . '" onclick="return confirm(\'' . $txt['ban_remove_selected_confirm'] . '\');" class="btn" />',
 			),
 		),
 	);
@@ -459,7 +459,7 @@ function BanEdit()
 				array(
 					'position' => 'below_table_data',
 					'value' => '
-					<input type="submit" name="remove_selection" value="' . $txt['ban_remove_selected_triggers'] . '" class="button_submit" /> <a class="button_link" href="' . $scripturl . '?action=admin;area=ban;sa=edittrigger;bg=' . $ban_group_id . '">' . $txt['ban_add_trigger'] . '</a>',
+					<input type="submit" name="remove_selection" value="' . $txt['ban_remove_selected_triggers'] . '" class="btn" /> <a class="button_link" href="' . $scripturl . '?action=admin;area=ban;sa=edittrigger;bg=' . $ban_group_id . '">' . $txt['ban_add_trigger'] . '</a>',
 					'style' => 'text-align: right;',
 				),
 				array(
@@ -538,19 +538,8 @@ function BanEdit()
 		}
 	}
 
-	// If we're in wireless mode remove the admin template layer and use a special template.
-	if (WIRELESS && WIRELESS_PROTOCOL != 'wap')
-	{
-		$context['sub_template'] = WIRELESS_PROTOCOL . '_ban_edit';
-		foreach ($context['template_layers'] as $k => $v)
-			if (strpos($v, 'generic_menu') === 0)
-				unset($context['template_layers'][$k]);
-	}
-	else
-	{
-		loadJavascriptFile('suggest.js', array('default_theme' => true), 'suggest.js');
-		$context['sub_template'] = 'ban_edit';
-	}
+	loadJavascriptFile('suggest.js', array('default_theme' => true), 'suggest.js');
+	$context['sub_template'] = 'ban_edit';
 
 }
 
@@ -1712,7 +1701,7 @@ function BanBrowseTriggers()
 			),
 			array(
 				'position' => 'bottom_of_list',
-				'value' => '<input type="submit" name="remove_triggers" value="' . $txt['ban_remove_selected_triggers'] . '" onclick="return confirm(\'' . $txt['ban_remove_selected_triggers_confirm'] . '\');" class="button_submit" />',
+				'value' => '<input type="submit" name="remove_triggers" value="' . $txt['ban_remove_selected_triggers'] . '" onclick="return confirm(\'' . $txt['ban_remove_selected_triggers_confirm'] . '\');" class="btn" />',
 			),
 		),
 	);
@@ -2004,8 +1993,8 @@ function BanLog()
 			array(
 				'position' => 'bottom_of_list',
 				'value' => '
-					<input type="submit" name="removeSelected" value="' . $txt['ban_log_remove_selected'] . '" onclick="return confirm(\'' . $txt['ban_log_remove_selected_confirm'] . '\');" class="button_submit" />
-					<input type="submit" name="removeAll" value="' . $txt['ban_log_remove_all'] . '" onclick="return confirm(\'' . $txt['ban_log_remove_all_confirm'] . '\');" class="button_submit" />',
+					<input type="submit" name="removeSelected" value="' . $txt['ban_log_remove_selected'] . '" onclick="return confirm(\'' . $txt['ban_log_remove_selected_confirm'] . '\');" class="btn" />
+					<input type="submit" name="removeAll" value="' . $txt['ban_log_remove_all'] . '" onclick="return confirm(\'' . $txt['ban_log_remove_all_confirm'] . '\');" class="btn" />',
 			),
 		),
 	);

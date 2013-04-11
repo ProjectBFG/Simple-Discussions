@@ -217,7 +217,7 @@ function BlogList()
 		// 'additional_rows' => array(
 			// array(
 				// 'position' => 'below_table_data',
-				// 'value' => '<input type="submit" name="delete_members" value="' . $txt['admin_delete_members'] . '" onclick="return confirm(\'' . $txt['confirm_delete_members'] . '\');" class="button_submit" />',
+				// 'value' => '<input type="submit" name="delete_members" value="' . $txt['admin_delete_members'] . '" onclick="return confirm(\'' . $txt['confirm_delete_members'] . '\');" class="btn" />',
 			// ),
 		// ),
 	);

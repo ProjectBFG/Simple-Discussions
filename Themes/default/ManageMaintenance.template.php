@@ -24,23 +24,22 @@ function template_maintain_database()
 
 	echo '
 	<div id="manage_maintenance">
-			<h3 class="catbg">', $txt['maintain_optimize'], '</h3>
-		<div class="windowbg">
+		<h3 class="titlebg">', $txt['maintain_optimize'], '</h3>
+		<div class="well">
 			<div class="content">
 				<form action="', $scripturl, '?action=admin;area=maintain;sa=database;activity=optimize" method="post" accept-charset="', $context['character_set'], '">
 					<p>', $txt['maintain_optimize_info'], '</p>
-					<input type="submit" value="', $txt['maintain_run_now'], '" class="button_submit" />
+					<input type="submit" value="', $txt['maintain_run_now'], '" class="btn" />
 					<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 					<input type="hidden" name="', $context['admin-maint_token_var'], '" value="', $context['admin-maint_token'], '" />
 				</form>
 			</div>
 		</div>
 		
-			<h3 class="catbg">
-			', $txt['maintain_backup'], '
-			</h3>
-
-		<div class="windowbg2">
+		<h3 class="titlebg">
+		', $txt['maintain_backup'], '
+		</h3>
+		<div class="well">
 			<div class="content">
 				<form action="', $scripturl, '?action=admin;area=maintain;sa=database;activity=backup" method="post" accept-charset="', $context['character_set'], '">
 					<p>', $txt['maintain_backup_info'], '</p>';
@@ -62,7 +61,7 @@ function template_maintain_database()
 						<label for="compress"><input type="checkbox" name="compress" id="compress" value="gzip"', $context['suggested_method'] == 'zipped_file' ? ' checked="checked"' : '', ' class="input_check" /> ', $txt['maintain_backup_gz'], '</label>
 					</p>
 					<p>
-						<input ', $context['use_maintenance'] == 2 ? 'disabled="disabled" ' : '', 'type="submit" value="', $txt['maintain_backup_save'], '" id="submitDump" onclick="return document.getElementById(\'struct\').checked || document.getElementById(\'data\').checked;" class="button_submit" />
+						<input ', $context['use_maintenance'] == 2 ? 'disabled="disabled" ' : '', 'type="submit" value="', $txt['maintain_backup_save'], '" id="submitDump" onclick="return document.getElementById(\'struct\').checked || document.getElementById(\'data\').checked;" class="btn" />
 					</p>';
 
 	echo '
@@ -76,13 +75,13 @@ function template_maintain_database()
 	if (isset($context['convert_to']))
 	{
 		echo '
-			<h3 class="catbg">', $txt[$context['convert_to'] . '_title'], '</h3>
-		<div class="windowbg">
+		<h3 class="titlebg">', $txt[$context['convert_to'] . '_title'], '</h3>
+		<div class="well">
 			<div class="content">
 				<form action="', $scripturl, '?action=admin;area=maintain;sa=database;activity=convertmsgbody" method="post" accept-charset="', $context['character_set'], '">
 					<p>', $txt['mediumtext_introduction'], '</p>',
 					$context['convert_to_suggest'] ? '<p class="infobox">' . $txt['convert_to_suggest_text'] . '</p>' : '', '
-					<input type="submit" name="evaluate_conversion" value="', $txt['maintain_run_now'], '" class="button_submit" />
+					<input type="submit" name="evaluate_conversion" value="', $txt['maintain_run_now'], '" class="btn" />
 					<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 					<input type="hidden" name="', $context['admin-maint_token_var'], '" value="', $context['admin-maint_token'], '" />
 				</form>
@@ -94,13 +93,13 @@ function template_maintain_database()
 	if ($context['convert_utf8'])
 	{
 		echo '
-			<h3 class="catbg">', $txt['utf8_title'], '</h3>
-		<div class="windowbg">
+		<h3 class="titlebg">', $txt['utf8_title'], '</h3>
+		<div class="well">
 			<div class="content">
 				<form action="', $scripturl, '?action=admin;area=maintain;sa=database;activity=convertutf8" method="post" accept-charset="', $context['character_set'], '">
 					<p>', $txt['utf8_introduction'], '</p>
 					', !empty($modSettings['search_index']) && $modSettings['search_index'] == 'fulltext' ? '<div class="errorbox">' . $txt['utf8_cannot_convert_fulltext'] . '</div>' : '', '
-					<input type="submit" value="', $txt['maintain_run_now'], '" class="button_submit" ', !empty($modSettings['search_index']) && $modSettings['search_index'] == 'fulltext' ? 'disabled="disabled"' : '', '/><br class="clear_right" />
+					<input type="submit" value="', $txt['maintain_run_now'], '" class="btn" ', !empty($modSettings['search_index']) && $modSettings['search_index'] == 'fulltext' ? 'disabled="disabled"' : '', '/><br class="clear_right" />
 					<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 					<input type="hidden" name="', $context['admin-maint_token_var'], '" value="', $context['admin-maint_token'], '" />
 				</form>
@@ -112,12 +111,12 @@ function template_maintain_database()
 	if ($context['convert_entities'])
 	{
 		echo '
-			<h3 class="catbg">', $txt['entity_convert_title'], '</h3>
-		<div class="windowbg">
+		<h3 class="titlebg">', $txt['entity_convert_title'], '</h3>
+		<div class="well">
 			<div class="content">
 				<form action="', $scripturl, '?action=admin;area=maintain;sa=database;activity=convertentities" method="post" accept-charset="', $context['character_set'], '">
 					<p>', $txt['entity_convert_introduction'], '</p>
-					<input type="submit" value="', $txt['maintain_run_now'], '" class="button_submit" />
+					<input type="submit" value="', $txt['maintain_run_now'], '" class="btn" />
 					<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 					<input type="hidden" name="', $context['admin-maint_token_var'], '" value="', $context['admin-maint_token'], '" />
 				</form>
@@ -141,64 +140,64 @@ function template_maintain_routine()
 	// If maintenance has finished tell the user.
 	if (!empty($context['maintenance_finished']))
 		echo '
-			<div class="maintenance_finished">
+			<div class="alert alert-success">
 				', sprintf($txt['maintain_done'], $context['maintenance_finished']), '
 			</div>';
 
 	echo '
-			<h3 class="catbg">', $txt['maintain_version'], '</h3>
-		<div class="windowbg">
+		<h3 class="titlebg">', $txt['maintain_version'], '</h3>
+		<div class="well well-small">
 			<div class="content">
 				<form action="', $scripturl, '?action=admin;area=maintain;sa=routine;activity=version" method="post" accept-charset="', $context['character_set'], '">
 					<p>', $txt['maintain_version_info'], '
-						<input type="submit" value="', $txt['maintain_run_now'], '" class="button_submit" />
+						<input type="submit" value="', $txt['maintain_run_now'], '" class="btn" />
 						<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 					</p>
 				</form>
 			</div>
 		</div>
-			<h3 class="catbg">', $txt['maintain_errors'], '</h3>
-		<div class="windowbg2">
+		<h3 class="titlebg">', $txt['maintain_errors'], '</h3>
+		<div class="well well-small">
 			<div class="content">
 				<form action="', $scripturl, '?action=admin;area=repairboards" method="post" accept-charset="', $context['character_set'], '">
 					<p>', $txt['maintain_errors_info'], '
-						<input type="submit" value="', $txt['maintain_run_now'], '" class="button_submit" />
+						<input type="submit" value="', $txt['maintain_run_now'], '" class="btn" />
 						<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 						<input type="hidden" name="', $context['admin-maint_token_var'], '" value="', $context['admin-maint_token'], '" />
 					</p>
 				</form>
 			</div>
 		</div>
-			<h3 class="catbg">', $txt['maintain_recount'], '</h3>
-		<div class="windowbg">
+		<h3 class="titlebg">', $txt['maintain_recount'], '</h3>
+		<div class="well well-small">
 			<div class="content">
 				<form action="', $scripturl, '?action=admin;area=maintain;sa=routine;activity=recount" method="post" accept-charset="', $context['character_set'], '">
 					<p>', $txt['maintain_recount_info'], '
-						<input type="submit" value="', $txt['maintain_run_now'], '" class="button_submit" />
+						<input type="submit" value="', $txt['maintain_run_now'], '" class="btn" />
 						<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 						<input type="hidden" name="', $context['admin-maint_token_var'], '" value="', $context['admin-maint_token'], '" />
 					</p>
 				</form>
 			</div>
 		</div>
-			<h3 class="catbg">', $txt['maintain_logs'], '</h3>
-		<div class="windowbg2">
+		<h3 class="titlebg">', $txt['maintain_logs'], '</h3>
+		<div class="well well-small">
 			<div class="content">
 				<form action="', $scripturl, '?action=admin;area=maintain;sa=routine;activity=logs" method="post" accept-charset="', $context['character_set'], '">
 					<p>', $txt['maintain_logs_info'], '
-						<input type="submit" value="', $txt['maintain_run_now'], '" class="button_submit" />
+						<input type="submit" value="', $txt['maintain_run_now'], '" class="btn" />
 						<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 						<input type="hidden" name="', $context['admin-maint_token_var'], '" value="', $context['admin-maint_token'], '" />
 					</p>
 				</form>
 			</div>
 		</div>
-			<h3 class="catbg">', $txt['maintain_cache'], '</h3>
-		<div class="windowbg">
+		<h3 class="titlebg">', $txt['maintain_cache'], '</h3>
+		<div class="well well-small">
 			<div class="content">
 				<form action="', $scripturl, '?action=admin;area=maintain;sa=routine;activity=cleancache" method="post" accept-charset="', $context['character_set'], '">
 					<p>', $txt['maintain_cache_info'], '
-						<input type="submit" value="', $txt['maintain_run_now'], '" class="button_submit" />
+						<input type="submit" value="', $txt['maintain_run_now'], '" class="btn" />
 						<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 						<input type="hidden" name="', $context['admin-maint_token_var'], '" value="', $context['admin-maint_token'], '" />
 					</p>
@@ -275,20 +274,20 @@ function template_maintain_members()
 		</div>';
 
 	echo '
-			<h3 class="catbg">', $txt['maintain_reattribute_posts'], '</h3>
-		<div class="windowbg2">
+		<h3 class="titlebg">', $txt['maintain_reattribute_posts'], '</h3>
+		<div class="well">
 			<div class="content">
 				<form action="', $scripturl, '?action=admin;area=maintain;sa=members;activity=reattribute" method="post" accept-charset="', $context['character_set'], '">
 					<p><strong>', $txt['reattribute_guest_posts'], '</strong></p>
 					<dl class="settings">
 						<dt>
-							<label for="type_email"><input type="radio" name="type" id="type_email" value="email" checked="checked" class="input_radio" />', $txt['reattribute_email'], '</label>
+							<label for="type_email" class="radio"><input type="radio" name="type" id="type_email" value="email" checked="checked" class="input_radio" />', $txt['reattribute_email'], '</label>
 						</dt>
 						<dd>
 							<input type="text" name="from_email" id="from_email" value="" onclick="document.getElementById(\'type_email\').checked = \'checked\'; document.getElementById(\'from_name\').value = \'\';" />
 						</dd>
 						<dt>
-							<label for="type_name"><input type="radio" name="type" id="type_name" value="name" class="input_radio" />', $txt['reattribute_username'], '</label>
+							<label for="type_name" class="radio"><input type="radio" name="type" id="type_name" value="name" class="input_radio" />', $txt['reattribute_username'], '</label>
 						</dt>
 						<dd>
 							<input type="text" name="from_name" id="from_name" value="" onclick="document.getElementById(\'type_name\').checked = \'checked\'; document.getElementById(\'from_email\').value = \'\';" class="input_text" />
@@ -303,20 +302,19 @@ function template_maintain_members()
 						</dd>
 					</dl>
 					<p class="maintain_members">
-						<input type="checkbox" name="posts" id="posts" checked="checked" class="input_check" />
-						<label for="posts">', $txt['reattribute_increase_posts'], '</label>
+						<label for="posts" class="checkbox"><input type="checkbox" name="posts" id="posts" checked="checked" class="input_check" />', $txt['reattribute_increase_posts'], '</label>
 					</p>
 					<input type="submit" id="do_attribute" value="', $txt['reattribute'], '" onclick="if (!checkAttributeValidity()) return false;
-					return confirm(warningMessage);" class="button_submit" />
+					return confirm(warningMessage);" class="btn" />
 					<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 					<input type="hidden" name="', $context['admin-maint_token_var'], '" value="', $context['admin-maint_token'], '" />
 				</form>
 			</div>
 		</div>
-			<h3 class="catbg">
-				', $txt['maintain_members'], '
-			</h3>
-		<div class="windowbg">
+		<h3 class="titlebg">
+			', $txt['maintain_members'], '
+		</h3>
+		<div class="well">
 			<div class="content">
 				<form action="', $scripturl, '?action=admin;area=maintain;sa=members;activity=purgeinactive" method="post" accept-charset="', $context['character_set'], '" id="membersForm">
 					<p><a id="membersLink"></a>', $txt['maintain_members_since1'], '
@@ -331,22 +329,22 @@ function template_maintain_members()
 
 	foreach ($context['membergroups'] as $group)
 		echo '
-						<label for="groups', $group['id'], '"><input type="checkbox" name="groups[', $group['id'], ']" id="groups', $group['id'], '" checked="checked" class="input_check" /> ', $group['name'], '</label><br />';
+						<label for="groups', $group['id'], '" class="checkbox"><input type="checkbox" name="groups[', $group['id'], ']" id="groups', $group['id'], '" checked="checked" class="input_check" /> ', $group['name'], '</label>';
 
 	echo '
 					</div>
-					<input type="submit" value="', $txt['maintain_old_remove'], '" onclick="return confirm(\'', $txt['maintain_members_confirm'], '\');" class="button_submit" />
+					<input type="submit" value="', $txt['maintain_old_remove'], '" onclick="return confirm(\'', $txt['maintain_members_confirm'], '\');" class="btn" />
 					<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 					<input type="hidden" name="', $context['admin-maint_token_var'], '" value="', $context['admin-maint_token'], '" />
 				</form>
 			</div>
 		</div>
-			<h3 class="catbg">', $txt['maintain_recountposts'], '</h3>
-		<div class="windowbg">
+		<h3 class="titlebg">', $txt['maintain_recountposts'], '</h3>
+		<div class="well">
 			<div class="content">
 				<form action="', $scripturl, '?action=admin;area=maintain;sa=members;activity=recountposts" method="post" accept-charset="', $context['character_set'], '" id="membersRecountForm">
 					<p>', $txt['maintain_recountposts_info'], '</p>
-					<input type="submit" value="', $txt['maintain_run_now'], '" class="button_submit" />
+					<input type="submit" value="', $txt['maintain_run_now'], '" class="btn" />
 					<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 					<input type="hidden" name="', $context['admin-maint_token_var'], '" value="', $context['admin-maint_token'], '" />
 				</form>
@@ -382,8 +380,8 @@ function template_maintain_topics()
 			</div>';
 	echo '
 	<div id="manage_maintenance">
-			<h3 class="catbg">', $txt['maintain_old'], '</h3>
-		<div class="windowbg">
+		<h3 class="titlebg">', $txt['maintain_old'], '</h3>
+		<div class="well">
 			<div class="content flow_auto">
 				<form action="', $scripturl, '?action=admin;area=maintain;sa=topics;activity=pruneold" method="post" accept-charset="', $context['character_set'], '">';
 
@@ -393,31 +391,31 @@ function template_maintain_topics()
 						', $txt['maintain_old_since_days1'], '<input type="text" name="maxdays" value="30" size="3" />', $txt['maintain_old_since_days2'], '
 					</p>
 					<p>
-						<label for="delete_type_nothing"><input type="radio" name="delete_type" id="delete_type_nothing" value="nothing" class="input_radio" /> ', $txt['maintain_old_nothing_else'], '</label><br />
-						<label for="delete_type_moved"><input type="radio" name="delete_type" id="delete_type_moved" value="moved" class="input_radio" checked="checked" /> ', $txt['maintain_old_are_moved'], '</label><br />
-						<label for="delete_type_locked"><input type="radio" name="delete_type" id="delete_type_locked" value="locked" class="input_radio" /> ', $txt['maintain_old_are_locked'], '</label><br />
+						<label for="delete_type_nothing" class="radio"><input type="radio" name="delete_type" id="delete_type_nothing" value="nothing" class="input_radio" /> ', $txt['maintain_old_nothing_else'], '</label>
+						<label for="delete_type_moved" class="radio"><input type="radio" name="delete_type" id="delete_type_moved" value="moved" class="input_radio" checked="checked" /> ', $txt['maintain_old_are_moved'], '</label>
+						<label for="delete_type_locked" class="radio"><input type="radio" name="delete_type" id="delete_type_locked" value="locked" class="input_radio" /> ', $txt['maintain_old_are_locked'], '</label>
 					</p>';
 
 	if (!empty($modSettings['enableStickyTopics']))
 		echo '
 					<p>
-						<label for="delete_old_not_sticky"><input type="checkbox" name="delete_old_not_sticky" id="delete_old_not_sticky" class="input_check" checked="checked" /> ', $txt['maintain_old_are_not_stickied'], '</label><br />
+						<label for="delete_old_not_sticky" class="checkbox"><input type="checkbox" name="delete_old_not_sticky" id="delete_old_not_sticky" class="input_check" checked="checked" /> ', $txt['maintain_old_are_not_stickied'], '</label>
 					</p>';
 
 		echo '
-					<input type="submit" value="', $txt['maintain_old_remove'], '" onclick="return confirm(\'', $txt['maintain_old_confirm'], '\');" class="button_submit" />
+					<input type="submit" value="', $txt['maintain_old_remove'], '" onclick="return confirm(\'', $txt['maintain_old_confirm'], '\');" class="btn" />
 					<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 					<input type="hidden" name="', $context['admin-maint_token_var'], '" value="', $context['admin-maint_token'], '" />
 				</form>
 			</div>
 		</div>
 
-			<h3 class="catbg">', $txt['maintain_old_drafts'], '</h3>
-		<div class="windowbg">
+		<h3 class="titlebg">', $txt['maintain_old_drafts'], '</h3>
+		<div class="well">
 			<div class="content">
 				<form action="', $scripturl, '?action=admin;area=maintain;sa=topics;activity=olddrafts" method="post" accept-charset="', $context['character_set'], '">
 					<p>', $txt['maintain_old_drafts_days'], '&nbsp;<input type="text" name="draftdays" value="', (!empty($modSettings['drafts_keep_days']) ? $modSettings['drafts_keep_days'] : 30), '" size="3" />&nbsp;', $txt['days_word'], '</p>
-					<input type="submit" value="', $txt['maintain_old_remove'], '" onclick="return confirm(\'', $txt['maintain_old_drafts_confirm'], '\');" class="button_submit" />
+					<input type="submit" value="', $txt['maintain_old_remove'], '" onclick="return confirm(\'', $txt['maintain_old_drafts_confirm'], '\');" class="btn" />
 					<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 					<input type="hidden" name="', $context['admin-maint_token_var'], '" value="', $context['admin-maint_token'], '" />
 				</form>
@@ -483,7 +481,7 @@ function template_convert_utf8()
 						<dt><strong>', $txt['utf8_target_charset'], ': </strong></dt>
 						<dd>', $txt['utf8_utf8'], '</dd>
 					</dl>
-					<input type="submit" value="', $txt['utf8_proceed'], '" class="button_submit" />
+					<input type="submit" value="', $txt['utf8_proceed'], '" class="btn" />
 					<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 					<input type="hidden" name="', $context['admin-maint_token_var'], '" value="', $context['admin-maint_token'], '" />
 					<input type="hidden" name="proceed" value="1" />
@@ -504,7 +502,7 @@ function template_convert_entities()
 			<div class="content">
 				<p>', $txt['entity_convert_introduction'], '</p>
 				<form action="', $scripturl, '?action=admin;area=maintain;sa=database;activity=convertentities;start=0;', $context['session_var'], '=', $context['session_id'], '" method="post" accept-charset="', $context['character_set'], '">
-				<input type="submit" value="', $txt['entity_convert_proceed'], '" class="button_submit" />
+				<input type="submit" value="', $txt['entity_convert_proceed'], '" class="btn" />
 				</form>
 			</div>
 		</div>
@@ -543,7 +541,7 @@ function template_convert_msgbody()
 				<hr class="hrcolor" />
 				<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 				<input type="hidden" name="', $context['admin-maint_token_var'], '" value="', $context['admin-maint_token'], '" />
-				<input type="submit" name="do_conversion" value="', $txt['entity_convert_proceed'], '" class="button_submit" />
+				<input type="submit" name="do_conversion" value="', $txt['entity_convert_proceed'], '" class="btn" />
 				</form>
 			</div>
 		</div>

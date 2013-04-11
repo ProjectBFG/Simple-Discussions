@@ -16,20 +16,20 @@ function template_search_members()
 
 	echo '
 	<div id="admincenter">
-		<form action="', $scripturl, '?action=admin;area=viewmembers" method="post" accept-charset="', $context['character_set'], '" id="admin_form_wrapper">
-			<h3 class="catbg">
+		<form action="', $scripturl, '?action=admin;area=viewmembers" method="post" accept-charset="', $context['character_set'], '">
+			<h3 class="titlebg">
 				<span class="floatleft">', $txt['search_for'], '</span>
 				<span class="smalltext floatright">', $txt['wild_cards_allowed'], '</span>
 			</h3>
 			<input type="hidden" name="sa" value="query" />
-			<div class="windowbg">
+			<div class="well">
 				<div class="content">
 					<div class="flow_hidden">
 						<div class="msearch_details floatleft">
 							<dl class="settings right">
-								<dt class="righttext">
+								<dt>
 									<strong><label for="mem_id">', $txt['member_id'], ':</label></strong>
-									<select name="types[mem_id]">
+									<select name="types[mem_id]" class="input-mini">
 										<option value="--">&lt;</option>
 										<option value="-">&lt;=</option>
 										<option value="=" selected="selected">=</option>
@@ -38,11 +38,11 @@ function template_search_members()
 									</select>
 								</dt>
 								<dd>
-									<input type="text" name="mem_id" id="mem_id" value="" size="6" class="input_text" />
+									<input type="text" name="mem_id" id="mem_id" value="" class="input-mini" />
 								</dd>
 								<dt class="righttext">
 									<strong><label for="age">', $txt['age'], ':</label></strong>
-									<select name="types[age]">
+									<select name="types[age]" class="input-mini">
 										<option value="--">&lt;</option>
 										<option value="-">&lt;=</option>
 										<option value="=" selected="selected">=</option>
@@ -51,11 +51,11 @@ function template_search_members()
 									</select>
 								</dt>
 								<dd>
-									<input type="text" name="age" id="age" value="" size="6" class="input_text" />
+									<input type="text" name="age" id="age" value="" class="input-mini" />
 								</dd>
 								<dt class="righttext">
 									<strong><label for="posts">', $txt['member_postcount'], ':</label></strong>
-									<select name="types[posts]">
+									<select name="types[posts]" class="input-mini">
 										<option value="--">&lt;</option>
 										<option value="-">&lt;=</option>
 										<option value="=" selected="selected">=</option>
@@ -64,11 +64,11 @@ function template_search_members()
 									</select>
 								</dt>
 								<dd>
-									<input type="text" name="posts" id="posts" value="" size="6" class="input_text" />
+									<input type="text" name="posts" id="posts" value="" class="input-mini" />
 								</dd>
 								<dt class="righttext">
 									<strong><label for="reg_date">', $txt['date_registered'], ':</label></strong>
-									<select name="types[reg_date]">
+									<select name="types[reg_date]" class="input-mini">
 										<option value="--">&lt;</option>
 										<option value="-">&lt;=</option>
 										<option value="=" selected="selected">=</option>
@@ -77,11 +77,11 @@ function template_search_members()
 									</select>
 								</dt>
 								<dd>
-									<input type="text" name="reg_date" id="reg_date" value="" size="10" class="input_text" /><span class="smalltext">', $txt['date_format'], '</span>
+									<input type="text" name="reg_date" id="reg_date" value="" class="input-small" /><span class="smalltext">', $txt['date_format'], '</span>
 								</dd>
 								<dt class="righttext">
 									<strong><label for="last_online">', $txt['viewmembers_online'], ':</label></strong>
-									<select name="types[last_online]">
+									<select name="types[last_online]" class="input-mini">
 										<option value="--">&lt;</option>
 										<option value="-">&lt;=</option>
 										<option value="=" selected="selected">=</option>
@@ -90,7 +90,7 @@ function template_search_members()
 									</select>
 								</dt>
 								<dd>
-									<input type="text" name="last_online" id="last_online" value="" size="10" class="input_text" /><span class="smalltext">', $txt['date_format'], '</span>
+									<input type="text" name="last_online" id="last_online" value="" class="input-small" /><span class="smalltext">', $txt['date_format'], '</span>
 								</dd>
 							</dl>
 						</div>
@@ -133,28 +133,26 @@ function template_search_members()
 						<div class="msearch_details floatleft">
 							<fieldset>
 								<legend>', $txt['gender'], '</legend>
-								<label for="gender-0"><input type="checkbox" name="gender[]" value="0" id="gender-0" checked="checked" class="input_check" /> ', $txt['undefined_gender'], '</label>&nbsp;&nbsp;
-								<label for="gender-1"><input type="checkbox" name="gender[]" value="1" id="gender-1" checked="checked" class="input_check" /> ', $txt['male'], '</label>&nbsp;&nbsp;
-								<label for="gender-2"><input type="checkbox" name="gender[]" value="2" id="gender-2" checked="checked" class="input_check" /> ', $txt['female'], '</label>
+								<label for="gender-0" class="checkbox"><input type="checkbox" name="gender[]" value="0" id="gender-0" checked="checked" class="input_check" /> ', $txt['undefined_gender'], '</label>&nbsp;&nbsp;
+								<label for="gender-1" class="checkbox"><input type="checkbox" name="gender[]" value="1" id="gender-1" checked="checked" class="input_check" /> ', $txt['male'], '</label>&nbsp;&nbsp;
+								<label for="gender-2" class="checkbox"><input type="checkbox" name="gender[]" value="2" id="gender-2" checked="checked" class="input_check" /> ', $txt['female'], '</label>
 							</fieldset>
 						</div>
 						<div class="msearch_details floatright">
 							<fieldset>
 								<legend>', $txt['activation_status'], '</legend>
-								<label for="activated-0"><input type="checkbox" name="activated[]" value="1" id="activated-0" checked="checked" class="input_check" /> ', $txt['activated'], '</label>&nbsp;&nbsp;
-								<label for="activated-1"><input type="checkbox" name="activated[]" value="0" id="activated-1" checked="checked" class="input_check" /> ', $txt['not_activated'], '</label>
+								<label for="activated-0" class="checkbox"><input type="checkbox" name="activated[]" value="1" id="activated-0" checked="checked" class="input_check" /> ', $txt['activated'], '</label>&nbsp;&nbsp;
+								<label for="activated-1" class="checkbox"><input type="checkbox" name="activated[]" value="0" id="activated-1" checked="checked" class="input_check" /> ', $txt['not_activated'], '</label>
 							</fieldset>
 						</div>
 					</div>
 				</div>
 			</div>
-			<div class="title_bar">
-				<h3 class="titlebg">', $txt['member_part_of_these_membergroups'], '</h3>
-			</div>
-			<div class="flow_hidden">
-				<table width="49%" class="table_grid floatleft">
+			<h3 class="titlebg">', $txt['member_part_of_these_membergroups'], '</h3>
+			<div class="flow_hidden well">
+				<table style="width: 49%" class="table table-striped table-bordered floatleft">
 					<thead>
-						<tr class="catbg">
+						<tr class="titlebg">
 							<th scope="col" class="first_th">', $txt['membergroups'], '</th>
 							<th scope="col" class="centercol">', $txt['primary'], '</th>
 							<th scope="col" class="last_th centercol">', $txt['additional'], '</th>
@@ -164,7 +162,7 @@ function template_search_members()
 
 			foreach ($context['membergroups'] as $membergroup)
 				echo '
-						<tr class="windowbg2">
+						<tr class="windowbg">
 							<td>', $membergroup['name'], '</td>
 							<td class="centercol">
 								<input type="checkbox" name="membergroups[1][]" value="', $membergroup['id'], '" checked="checked" class="input_check" />
@@ -189,9 +187,9 @@ function template_search_members()
 					</tbody>
 				</table>
 
-				<table width="49%" class="table_grid floatright">
+				<table style="width: 49%" class="table table-striped table-bordered floatright">
 					<thead>
-						<tr class="catbg">
+						<tr class="titlebg">
 							<th scope="col" class="first_th">
 								', $txt['membergroups_postgroups'], '
 							</th>
@@ -223,8 +221,8 @@ function template_search_members()
 					</tbody>
 				</table>
 			</div>
-			<br />
-			<input type="submit" value="', $txt['search'], '" class="button_submit" />
+			<input type="submit" value="', $txt['search'], '" class="btn" />
+			<span class="clearfix"></span>
 		</form>
 	</div>';
 }
@@ -294,7 +292,7 @@ function template_admin_browse()
 							</select>
 						</dd>
 					</dl>
-					<input type="submit" value="', $txt['admin_browse_outstanding_go'], '" class="button_submit" />
+					<input type="submit" value="', $txt['admin_browse_outstanding_go'], '" class="btn" />
 					<input type="hidden" name="type" value="', $context['browse_type'], '" />
 					<input type="hidden" name="sort" value="', $context['approve_list']['sort']['id'], '" />
 					<input type="hidden" name="start" value="', $context['approve_list']['start'], '" />

@@ -60,8 +60,8 @@ function template_find_members()
 
 	echo '
 					<div class="padding righttext">
-						<input type="submit" value="', $txt['search'], '" class="button_submit" />
-						<input type="button" value="', $txt['find_close'], '" onclick="window.close();" class="button_submit" />
+						<input type="submit" value="', $txt['search'], '" class="btn" />
+						<input type="button" value="', $txt['find_close'], '" onclick="window.close();" class="btn" />
 					</div>
 				</div>
 			</div>

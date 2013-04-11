@@ -150,8 +150,7 @@ function EditNews()
 					'function' => create_function('$news', '
 
 						if (is_numeric($news[\'id\']))
-							return \'<textarea id="data_\' . $news[\'id\'] . \'" rows="3" cols="50" name="news[]" style="\' . (isBrowser(\'is_ie8\') ? \'width: 635px; max-width: 85%; min-width: 85%\' : \'width 100%;margin 0 5em\') . \';">\' . $news[\'unparsed\'] . \'</textarea>
-							<br />
+							return \'<textarea class="input-block-level" id="data_\' . $news[\'id\'] . \'" rows="3" cols="50" name="news[]">\' . $news[\'unparsed\'] . \'</textarea>
 							<div class="floatleft" id="preview_\' . $news[\'id\'] . \'"></div>\';
 						else
 							return $news[\'unparsed\'];
@@ -198,11 +197,11 @@ function EditNews()
 			array(
 				'position' => 'bottom_of_list',
 				'value' => '
-				<span id="moreNewsItems_link" class="floatleft" style="display: none;">
-					<a class="button_link" href="javascript:void(0);" onclick="addNewsItem(); return false;">' . $txt['editnews_clickadd'] . '</a>
+				<span id="moreNewsItems_link" class="pull-left" style="display: none;">
+					<a class="btn" href="javascript:void(0);" onclick="addNewsItem(); return false;">' . $txt['editnews_clickadd'] . '</a>
 				</span>
-				<input type="submit" name="save_items" value="' . $txt['save'] . '" class="button_submit" />
-				<input type="submit" name="delete_selection" value="' . $txt['editnews_remove_selected'] . '" onclick="return confirm(\'' . $txt['editnews_remove_confirm'] . '\');" class="button_submit" />',
+				<input type="submit" name="save_items" value="' . $txt['save'] . '" class="btn" />
+				<input type="submit" name="delete_selection" value="' . $txt['editnews_remove_selected'] . '" onclick="return confirm(\'' . $txt['editnews_remove_confirm'] . '\');" class="btn" />',
 			),
 		),
 		'javascript' => '
@@ -221,7 +220,7 @@ function EditNews()
 
 					function make_preview_btn (preview_id)
 					{
-						$("#preview_" + preview_id).addClass("button_link");
+						$("#preview_" + preview_id).addClass("btn");
 						$("#preview_" + preview_id).text(\'' . $txt['preview'] . '\').click(function () {
 							$.ajax({
 								type: "POST",
@@ -242,11 +241,10 @@ function EditNews()
 					{
 						last_preview++;
 						$("#list_news_lists_last").before(' . javaScriptEscape('
-						<tr class="windowbg') . ' + (last_preview % 2 == 0 ? \'\' : \'2\') + ' . javaScriptEscape('">
+						<tr>
 							<td style="width: 50%;">
-									<textarea id="data_') . ' + last_preview + ' . javaScriptEscape('" rows="3" cols="65" name="news[]" style="' . (isBrowser('is_ie8') ? 'width: 635px; max-width: 85%; min-width: 85%' : 'width: 95%') . ';"></textarea>
-									<br />
-									<div class="floatleft" id="preview_') . ' + last_preview + ' . javaScriptEscape('"></div>
+									<textarea class="input-block-level" id="data_') . ' + last_preview + ' . javaScriptEscape('" rows="3" cols="65" name="news[]"></textarea>
+									<div class="pull-left" id="preview_') . ' + last_preview + ' . javaScriptEscape('"></div>
 							</td>
 							<td style="width: 45%;">
 								<div id="box_preview_') . ' + last_preview + ' . javaScriptEscape('" style="overflow: auto; width: 100%; height: 10ex;"></div>

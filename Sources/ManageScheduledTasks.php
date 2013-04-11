@@ -245,13 +245,12 @@ function ScheduledTasks()
 			array(
 				'position' => 'below_table_data',
 				'value' => '
-					<input type="submit" name="save" value="' . $txt['scheduled_tasks_save_changes'] . '" class="button_submit" />
-					<input type="submit" name="run" value="' . $txt['scheduled_tasks_run_now'] . '" class="button_submit" />',
+					<input type="submit" name="save" value="' . $txt['scheduled_tasks_save_changes'] . '" class="btn" />
+					<input type="submit" name="run" value="' . $txt['scheduled_tasks_run_now'] . '" class="btn" />',
 			),
 			array(
 				'position' => 'after_title',
 				'value' => $txt['scheduled_tasks_time_offset'],
-				'class' => 'windowbg2',
 			),
 		),
 	);
@@ -500,12 +499,11 @@ function TaskLog()
 			array(
 				'position' => 'below_table_data',
 				'value' => '
-					<input type="submit" name="removeAll" value="' . $txt['scheduled_log_empty_log'] . '" onclick="return confirm(\'' . $txt['scheduled_log_empty_log_confirm'] . '\');" class="button_submit" />',
+					<input type="submit" name="removeAll" value="' . $txt['scheduled_log_empty_log'] . '" onclick="return confirm(\'' . $txt['scheduled_log_empty_log_confirm'] . '\');" class="btn" />',
 			),
 			array(
 				'position' => 'after_title',
 				'value' => $txt['scheduled_tasks_time_offset'],
-				'class' => 'windowbg2',
 			),
 		),
 	);

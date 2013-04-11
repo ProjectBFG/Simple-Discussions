@@ -43,34 +43,6 @@ body.action_admin .navigate_section ul li a {
 /* It's left over from when I started theming admin independently over a Curve forum.
 /* Can be simplified quite a lot before production builds. */
 
-/* Re-style default cat bars to get rid of header bar mania. */
-#manage_maintenance .cat_bar, #core_features .cat_bar, #support_credits .cat_bar {
-	border: none;
-	border-top: 1px solid #bbb;
-}
-#manage_maintenance .cat_bar .catbg, #core_features .cat_bar .catbg,
-#support_credits .cat_bar .catbg, .generic_list_wrapper .cat_bar .catbg {
-	border: none;
-	border-top: 1px solid #fff;
-	text-shadow: none;
-}
-#admin_main_section .cat_bar:first-child, #admin_main_section .cat_bar:first-child h3.catbg,
-#support_credits .cat_bar, #support_credits .cat_bar:first-child,
-#support_credits .cat_bar h3.catbg, #support_credits .cat_bar:first-child h3.catbg,
-#manage_maintenance .cat_bar, #manage_maintenance .cat_bar:first-child,
-#manage_maintenance .cat_bar h3.catbg, #manage_maintenance .cat_bar:first-child h3.catbg {
-	color: #444;
-	font-size: 1.1em;
-	background: none;
-	border-radius: 0;
-	text-shadow: none;
-}
-#admin_main_section .cat_bar:first-child, #admin_main_section .cat_bar:first-child h3.catbg,
-#support_credits .cat_bar:first-child, #support_credits .cat_bar:first-child h3.catbg,
-#manage_maintenance .cat_bar:first-child, #manage_maintenance .cat_bar:first-child h3.catbg {
-	border: none;
-}
-
 /* Special styling for admin descriptions. */
 .action_admin p.description, .action_admin  .information {
 	overflow: auto;
@@ -111,152 +83,19 @@ body.action_admin .navigate_section ul li a {
 	padding: 12px;
 }
 
-/* Secondary menu corrections. */
-.action_admin #adm_submenus {
-	margin: 0 0 -18px 0;
-	padding: 10px 15px 0 15px;
-	overflow: hidden;
-}
 
 /* A general admin wrapper class. */
 #admin_main_section, div.quick_tasks,
 #support_credits, #admin_newsletters,
 #core_features, #generate_reports_type,
 #groupForm, #mailqueue_stats, #manage_maintenance,
-#new_group, #view_group, #admin_form_wrapper, .action_admin .generic_list_wrapper{
-	background: #f0f4f7;
-	margin: 12px 0 0 0;
-	padding: 8px 8px 16px 8px;
-	border: 1px solid #ccc;
-	border-radius: 7px;
-	box-shadow: 0 -2px 2px rgba(0,0,0,0.1);
+#new_group, #view_group, #admin_form_wrapper{
 	overflow: auto;
 }
-div.quick_tasks {
-	margin: -8px 0 0 0;
-}
-#admin_form_wrapper div.windowbg, #support_credits div.windowbg,
-#generate_reports_type div.windowbg, #new_group div.windowbg,
-#view_group  div.windowbg, #admin_newsletters .windowbg {
-	background: none;
-	padding: 0;
-	margin: 0 4px;
-}
-#mailqueue_stats {
-	padding: 8px 8px 0 8px;
-}
-#mailqueue_stats .windowbg {
-	background: none;
-	padding: 0;
-}
-#mailqueue_stats .windowbg .content {
-	padding: 12px 9px 0 9px;
-}
-#admin_form_wrapper div.cat_bar:first-child, #admin_newsletters div.cat_bar:first-child,
-#generate_reports_type div.cat_bar:first-child, #groupForm div.cat_bar:first-child,
-#admin_form_wrapper div.title_bar, #mailqueue_stats div.cat_bar:first-child,
-#new_group div.cat_bar:first-child, #view_group div.cat_bar, #view_group div.cat_bar:first-child {
-	background: none;
-	border: none;
-	border-bottom: 1px solid #fff;
-	box-shadow: none;
-}
-#admin_form_wrapper div.cat_bar:first-child h3.catbg, #admin_newsletters div.cat_bar:first-child h3.catbg,
-#generate_reports_type div.cat_bar:first-child h3.catbg, #groupForm div.cat_bar:first-child h3.catbg,
-#admin_form_wrapper h3.titlebg, #mailqueue_stats div.cat_bar:first-child  h3.catbg,
-#new_group div.cat_bar:first-child  h3.catbg, #view_group div.cat_bar  h3.catbg, #view_group div.cat_bar:first-child  h3.catbg {
-	color: #444;
-	text-shadow: none;
-	padding: 3px 1px 5px 1px;
-	margin: 0;
-	border-bottom: 1px solid #bbb;
-}
-#admin_form_wrapper div.title_bar {
-	background: #fff url(../images/theme/lower_section.png) 0 0 repeat-x;
-	border: 1px solid #ccc;
-	border-radius: 2px 2px 0 0;
-	margin: 0;
-}
-.action_admin .generic_list_wrapper .title_bar {
-	background: none;
-	border-bottom: 1px solid #fff;
-}
-.action_admin .generic_list_wrapper .titlebg {
-	border-bottom: 1px solid #bbb;
-	color: #000;
-}
-#admin_form_wrapper h3.titlebg {
-	color: #666;
-	border-bottom: none;
-	padding: 8px 6px 5px 6px;
-}
-#view_group .title_bar {
-	background: none;
-	border-bottom: none;
-	border-top: 1px solid #bbb;
-	margin: -12px 0;
-}
-#view_group .titlebg {
-	border-top: 1px solid #fff;
-	border-bottom: none;
-}
-#view_group .table_grid {
-	margin: 4px 0 8px 0;
-}
-.action_admin .table_grid th, .action_admin .table_grid .first_th, .action_admin .table_grid .last_th {
-	border-radius: 0;
-	border-top: 2px solid #ff9400;
-	border-bottom: 2px solid #bf6900;
-	padding: 6px 6px 5px 6px;
-	background: #fff;
-	color: #666;
-}
-.action_admin .table_grid tr.catbg th a:link {
-	color: #666;
-}
-.action_admin .table_grid .first_th, .action_admin .table_grid  td:first-child {
-	border-left: 1px solid #ccc;
-}
-.action_admin .table_grid .last_th, .action_admin .table_grid td {
-	border-right: 1px solid #ccc;
-}
-.action_admin .table_grid td {
-	border-bottom: 1px solid #ccc;
-}
-.action_admin .table_grid tr:nth-child(even) td {
-	background: #fdfdfd;
-}
-.action_admin .table_grid tr:nth-child(odd) td {
-	background: #f8f8f8;
-}
-/*-------------------------------------------*/
 
-/* Newsletters screen.
----------------------------------------------*/
-#admin_newsletters .information {
-	background: #fff url(../images/theme/lower_section.png) 0 50% repeat-x;
-	margin: 8px 0;
-	padding: 8px 12px 6px 12px;
-	border: 1px solid #ccc;
-	border-radius: 2px;
-	box-shadow: 0 2px 2px rgba(0,0,0,0.1);
-}
-#advanced_panel_header {
-	margin-bottom: 8px;
-	background: #fff url(../images/theme/lower_section.png) 0 100% repeat-x;
-	box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-	border: 1px solid #ccc;
-	border-radius: 2px;
-}
-#advanced_panel_header a {
-	color: #444;
-}
 /*-------------------------------------------*/
 .action_admin .generic_list .flow_auto {
 	padding: 4px 2px;
-}
-h3.titlebg form {
-	font-size: 80%;
 }
 .windowbg.nopadding {
 	margin: 4px 0 0 0;
@@ -281,11 +120,6 @@ a.help .icon {
 .additional_row div.floatleft {
 	padding: 0 10px;
 }
-fieldset {
-	margin-bottom: 6px;
-	border: 1px solid #cacdd3;
-	padding: 6px;
-}
 fieldset dl {
 	margin: 0;
 }
@@ -296,69 +130,6 @@ legend {
 
 /* Styles for the admin home screen.
 ------------------------------------------------------- */
-/* Admin quick search bar, and results page. */
-h3.catbg #quick_search form {
-	padding-top: 2px;
-	font-size: 0.9em;
-}
-h3.catbg #quick_search form input, h3.catbg #quick_search form select, h3.catbg #quick_search form .button_submit {
-	margin: 0 3px;
-	padding: 4px 3px 3px 3px;
-	border-radius: 4px;
-	border: 1px solid #777;
-	vertical-align: top;
-}
-h3.catbg #quick_search form select {
-	font-size: 0.9em;
-	margin: -1px 0 0 0;
-	padding: 2px;
-}
-h3.catbg #quick_search form select option {
-	padding: 2px 4px;
-}
-h3.catbg #quick_search form .button_submit {
-	font-weight: bold;
-	background: #fff url(../images/theme/lower_section.png) 0 100% repeat-x;
-	padding: 3px 6px 2px 6px;
-}
-h3.catbg #quick_search form .button_submit:hover {
-	background: #fff;
-}
-
-/* Browser tweaks. */
-body#chrome #quick_search form input {
-	padding: 4px 3px;
-	margin-top: -3px;
-}
-body#chrome #quick_search .button_submit, body#ie #quick_search .button_submit, body#opera #quick_search .button_submit {
-	margin: 0 5px;
-	padding: 5px 9px 4px 9px;
-}
-body#chrome  #quick_search .button_submit {
-	margin: -29px 5px 0 5px;
-}
-
-/* The welcome thingy. */
-#admincenter .roundframe {
-	background: none;
-	border: none;
-	box-shadow: none;
-	padding: 0;
-	overflow: visible;
-}
-#welcome {
-	border: 1px solid #ddd;
-	border-top: none;
-	border-radius: 0 0 7px 7px;
-	font-size: 0.9em;
-	padding: 12px 9px 8px 9px;
-}
-#welcome a {
-	font-weight: bold;
-}
-#welcome img {
-	vertical-align: middle;
-}
 .search_results {
 	margin: 0 -6px;
 }
@@ -367,7 +138,7 @@ body#chrome  #quick_search .button_submit {
 	padding: 5px 0;
 	overflow: auto;
 	line-height: 1.7em;
-	border-bottom: double #ccc;
+	border-bottom: dotted #ccc;
 }
 .search_results li a strong {
 	color: #346;
@@ -380,20 +151,7 @@ body#chrome  #quick_search .button_submit {
 /* Cleaned this up a bit for less clutter.
 /* Admin and moderation could generally do with a clean up everywhere.
 /* Live news from smf.org and support information. */
-#admin_main_section {
-	margin: 12px 0 0 0;
-	padding: 8px 12px 4px 12px;
-	border-radius: 7px 7px 0 0;
-	border-bottom: none;
-}
-#admin_main_section .cat_bar {
-	background: none;
-}
-#admin_main_section .catbg, #admin_main_section .catbg a {
-	color: #444;
-	max-height: 1.5em;
-	overflow: hidden;
-}
+
 #live_news, #supportVersionsTable {
 	width: 70%;
 	-moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
@@ -402,14 +160,7 @@ body#chrome  #quick_search .button_submit {
 	width: 30%;
 	padding-left: 6px;
 }
-#admin_main_section .windowbg {
-	padding: 6px 0;
-	border: 1px solid #ccc;
-	border-top: 1px solid #bbb;
-	border-bottom: 1px solid #ddd;
-	border-radius: 0;
-	background: #fff url(../images/theme/upper_section.png) 0 -50px repeat-x;
-	box-shadow:  0 2px 2px rgba(255,255,255,0.5), 0 -1px 2px rgba(0,0,0,0.1);
+#admin_main_section .well {
 	height: 12em;
 	overflow: auto;
 }
@@ -426,10 +177,10 @@ body#chrome  #quick_search .button_submit {
 }
 #smfAnnouncements dt {
 	padding: 4px 6px 2px 6px; 
-	border-top: 1px solid #bf6900;
+	border-top: 1px solid #0080C0;
 }
 #smfAnnouncements dt a {
-	color: #bf6900;
+	color: #0080C0;
 	font-weight: bold;
 	display: block;
 }
@@ -453,14 +204,9 @@ body#chrome  #quick_search .button_submit {
 /* The <li>'s could be set to auto overflow instead, but that just clutters things up with scrollbars.
 /* Scrollbars here look worse, take up space, and don't really add anything useful in this context. */
 div.quick_tasks {
-	border-radius: 0 0 7px 7px;
-	border-top: none;
-	box-shadow: none;
-	padding: 0 0 16px 0;
 }
 #quick_tasks {
 	border-top: 1px solid #bbb;
-	border-bottom: 1px solid #fff;
 }
 #quick_tasks  li {
 	list-style: none;
@@ -468,7 +214,7 @@ div.quick_tasks {
 	border-top: 1px solid #fff;
 	border-bottom: 1px solid #bbb;
 	float: left;
-	width: 50%;
+	width: 48%;
 	height: 6em;
 	overflow: hidden;
 }
@@ -493,9 +239,6 @@ div.quick_tasks {
 #support_credits {
 	position: relative;
 	padding: 6px 12px 12px 12px;
-}
-#support_credits h3.catbg, #support_credits .cat_bar:first-child h3.catbg {
-	padding: 12px 6px 6px 6px;
 }
 #support_resources {
 	margin: 16px 0 -24px 0;
@@ -707,47 +450,9 @@ dl.right dt {
 
 /* Styles for the manage maintenance section.
 ------------------------------------------------- */
-#manage_maintenance .catbg {
-	border-top: 1px solid #fff;
-	padding-top: 14px;
-	color: #555;
-}
-#manage_maintenance .cat_bar:first-child, #manage_maintenance .cat_bar:first-child .catbg {
-	border-top: none;
-	margin: 0 0 -4px 0;
-}
-#manage_maintenance div.windowbg, #manage_maintenance div.windowbg2 {
-	background: none;
-	padding: 0 0 12px 0;
-	margin: 0;
-}
-#manage_maintenance p {
-	margin: -5px 0 0 0;
-	padding: 0 0 10px 0;
-	max-width: 70em;
-}
-#manage_maintenance p .button_submit{
-	margin: 10px 10px 0px 10px;
-}
 /* Stop the submit buttons running away on wide screens.*/
-#manage_maintenance form {
-	max-width: 80em;
-}
 #manage_maintenance .settings {
 	margin: 16px 0 0 0;
-}
-.maintenance_finished, #task_completed {
-	background: #B7FCA7 url(../images/warning_watch.png) 8px 50% no-repeat;
-	border: 1px solid green;
-	padding: 6px 30px;
-	margin-bottom: 1em;
-}
-#manage_maintenance .maintenance_finished {
-	background: #B7FCA7 url(../images/warning_watch.png) 8px 50% no-repeat;
-	border: 1px solid green;
-	border-radius: 4px 4px 0 0;
-	padding: 6px 30px;
-	margin: 0 0 6px 0;
 }
 
 /* Styles for the manage calendar section.
@@ -772,6 +477,10 @@ dl.admin_permissions dt {
 }
 dl.admin_permissions dd {
 	width: 64%;
+}
+#admin_form_wrapper .settings legend {
+	font-size: 14px;
+	margin: 0;
 }
 
 /* Styles for the manage search section.
@@ -1020,7 +729,7 @@ h3.grid_header {
 	h3.catbg #quick_search form select option {
 		padding: 4px 4px;
 	}
-	h3.catbg #quick_search form .button_submit {
+	h3.catbg #quick_search form .btn {
 		margin: 0 3px 0 3px;
 	}
 	#live_news, #supportVersionsTable {
