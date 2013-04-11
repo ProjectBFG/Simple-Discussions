@@ -37,7 +37,7 @@ function template_main()
 				<div id="search_term_input">
 					<strong>', $txt['search_for'], ':</strong>
 					<input type="text" name="search"', !empty($context['search_params']['search']) ? ' value="' . $context['search_params']['search'] . '"' : '', ' maxlength="', $context['search_string_limit'], '" size="40" class="input_text" />
-					', $context['require_verification'] ? '' : '&nbsp;<input type="submit" name="s_search" value="' . $txt['search'] . '" class="button_submit" />
+					', $context['require_verification'] ? '' : '&nbsp;<input type="submit" name="s_search" value="' . $txt['search'] . '" class="btn" />
 				</div>';
 
 		if (empty($modSettings['search_simple_fulltext']))
@@ -49,7 +49,7 @@ function template_main()
 				<div class="verification>
 					<strong>', $txt['search_visual_verification_label'], ':</strong>
 					<br />', template_control_verification($context['visual_verification_id'], 'all'), '<br />
-					<input id="submit" type="submit" name="s_search" value="' . $txt['search'] . '" class="button_submit" />
+					<input id="submit" type="submit" name="s_search" value="' . $txt['search'] . '" class="btn" />
 				</div>';
 
 		echo '
@@ -148,7 +148,7 @@ function template_main()
 
 		echo '
 		<div class="floatright">
-			<input type="submit" name="b_search" value="', $txt['search'], '" class="button_submit" />
+			<input type="submit" name="b_search" value="', $txt['search'], '" class="btn" />
 		</div>
 			</div>
 		</fieldset>';
@@ -204,7 +204,7 @@ function template_results()
 					</dd>
 				</dl>
 				<div class="flow_auto" >
-					<input type="submit" name="edit_search" value="', $txt['search_adjust_submit'], '" class="button_submit" />
+					<input type="submit" name="edit_search" value="', $txt['search_adjust_submit'], '" class="btn" />
 					<input type="hidden" name="searchtype" value="', !empty($context['search_params']['searchtype']) ? $context['search_params']['searchtype'] : 0, '" />
 					<input type="hidden" name="userspec" value="', !empty($context['search_params']['userspec']) ? $context['search_params']['userspec'] : '', '" />
 					<input type="hidden" name="show_complete" value="', !empty($context['search_params']['show_complete']) ? 1 : 0, '" />
@@ -346,7 +346,7 @@ function template_results()
 
 			echo '
 					<input type="hidden" name="redirect_url" value="', $scripturl . '?action=search2;params=' . $context['params'], '" />
-					<input type="submit" value="', $txt['quick_mod_go'], '" onclick="return this.form.qaction.value != \'\' &amp;&amp; confirm(\'', $txt['quickmod_confirm'], '\');" class="button_submit" style="float: none;font-size: .8em;"/>
+					<input type="submit" value="', $txt['quick_mod_go'], '" onclick="return this.form.qaction.value != \'\' &amp;&amp; confirm(\'', $txt['quickmod_confirm'], '\');" class="btn" style="float: none;font-size: .8em;"/>
 				</div>
 			</div>';
 		}

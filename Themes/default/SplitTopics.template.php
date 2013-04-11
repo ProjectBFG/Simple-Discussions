@@ -38,7 +38,7 @@ function template_ask()
 					</ul>
 					<hr class="hrcolor" />
 					<div class="auto_flow">
-						<input type="submit" value="', $txt['split'], '" class="button_submit" />
+						<input type="submit" value="', $txt['split'], '" class="btn" />
 						<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 					</div>
 				</div>
@@ -141,7 +141,7 @@ function template_select()
 			<div class="flow_auto">
 				<input type="hidden" name="topic" value="', $context['current_topic'], '" />
 				<input type="hidden" name="subname" value="', $context['new_subject'], '" />
-				<input type="submit" value="', $txt['split'], '" class="button_submit" />
+				<input type="submit" value="', $txt['split'], '" class="btn" />
 				<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 			</div>
 		</form>
@@ -274,7 +274,7 @@ function template_merge()
 								<input type="hidden" name="topics[]" value="', $context['origin_topic'], '" />
 								<input type="text" name="topics[]" class="input_text" />
 								<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
-								<input type="submit" value="', $txt['merge'], '" class="button_submit" />
+								<input type="submit" value="', $txt['merge'], '" class="btn" />
 							</form>
 						</dd>';
 
@@ -373,7 +373,7 @@ function template_merge_extra_options()
 						<label for="enforce_subject"><input type="checkbox" class="input_check" name="enforce_subject" id="enforce_subject" value="1" /> ', $txt['merge_enforce_subject'], '</label>
 					</fieldset>
 					<div class="auto_flow">
-						<input type="submit" value="' . $txt['merge'] . '" class="button_submit" />
+						<input type="submit" value="' . $txt['merge'] . '" class="btn" />
 						<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 						<input type="hidden" name="sa" value="execute" />
 					</div>

@@ -173,7 +173,7 @@ function template_notes()
 					<div class="floatleft post_note">
 						<input type="text" name="new_note" value="', $txt['mc_click_add_note'], '" style="width: 95%;" onclick="if (this.value == \'', $txt['mc_click_add_note'], '\') this.value = \'\';" class="input_text" />
 					</div>
-					<input type="submit" name="makenote" value="', $txt['mc_add_note'], '" class="button_submit" />
+					<input type="submit" name="makenote" value="', $txt['mc_add_note'], '" class="btn" />
 				</div>
 			</div>
 			<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
@@ -244,7 +244,7 @@ function template_reported_posts()
 		<div class="pagesection">
 			<div class="pagelinks floatleft">', $context['page_index'], '</div>
 			<div class="floatright">
-				', !$context['view_closed'] ? '<input type="submit" name="close_selected" value="' . $txt['mc_reportedp_close_selected'] . '" class="button_submit" />' : '', '
+				', !$context['view_closed'] ? '<input type="submit" name="close_selected" value="' . $txt['mc_reportedp_close_selected'] . '" class="btn" />' : '', '
 			</div>
 		</div>
 		<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
@@ -325,7 +325,7 @@ function template_unapproved_posts()
 					<option value="approve">&nbsp;--&nbsp;', $txt['approve'], '</option>
 					<option value="delete">&nbsp;--&nbsp;', $txt['delete'], '</option>
 				</select>
-				<noscript><input type="submit" name="mc_go" value="', $txt['go'], '" class="button_submit" /></noscript>
+				<noscript><input type="submit" name="mc_go" value="', $txt['go'], '" class="btn" /></noscript>
 			</div>';
 
 	if (!empty($context['unapproved_items']))
@@ -405,7 +405,7 @@ function template_viewmodreport()
 	echo '
 					<textarea rows="2" cols="60" style="' . (isBrowser('is_ie8') ? 'width: 635px; max-width: 60%; min-width: 60%' : 'width: 60%') . ';" name="mod_comment"></textarea>
 					<div>
-						<input type="submit" name="add_comment" value="', $txt['mc_modreport_add_mod_comment'], '" class="button_submit" />
+						<input type="submit" name="add_comment" value="', $txt['mc_modreport_add_mod_comment'], '" class="btn" />
 					</div>
 				</div>
 			</div>
@@ -521,7 +521,7 @@ function template_moderation_settings()
 					<hr class="hrcolor" />
 					<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 					<input type="hidden" name="', $context['mod-set_token_var'], '" value="', $context['mod-set_token'], '" />
-					<input type="submit" name="save" value="', $txt['save'], '" class="button_submit" />
+					<input type="submit" name="save" value="', $txt['save'], '" class="btn" />
 				</div>
 			</div>
 		</form>
@@ -625,8 +625,8 @@ function template_warn_template()
 
 	echo '
 					<hr class="hrcolor" />
-					<input type="submit" name="preview" id="preview_button" value="', $txt['preview'], '" class="button_submit" />
-					<input type="submit" name="save" value="', $context['page_title'], '" class="button_submit" />
+					<input type="submit" name="preview" id="preview_button" value="', $txt['preview'], '" class="btn" />
+					<input type="submit" name="save" value="', $context['page_title'], '" class="btn" />
 				</div>
 			</div>
 			<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />

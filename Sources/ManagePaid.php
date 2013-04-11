@@ -315,7 +315,7 @@ function ViewSubscriptions()
 		'additional_rows' => array(
 			array(
 				'position' => 'below_table_data',
-				'value' => '<input type="submit" name="add" value="' . $txt['paid_add_subscription'] . '" class="button_submit" />',
+				'value' => '<input type="submit" name="add" value="' . $txt['paid_add_subscription'] . '" class="btn" />',
 			),
 		),
 	);
@@ -757,16 +757,16 @@ function ViewSubscribedUsers()
 			array(
 				'position' => 'below_table_data',
 				'value' => '
-					<input type="submit" name="add" value="' . $txt['add_subscriber'] . '" class="button_submit" />
-					<input type="submit" name="finished" value="' . $txt['complete_selected'] . '" onclick="return confirm(\'' . $txt['complete_are_sure'] . '\');" class="button_submit" />
-					<input type="submit" name="delete" value="' . $txt['delete_selected'] . '" onclick="return confirm(\'' . $txt['delete_are_sure'] . '\');" class="button_submit" />
+					<input type="submit" name="add" value="' . $txt['add_subscriber'] . '" class="btn" />
+					<input type="submit" name="finished" value="' . $txt['complete_selected'] . '" onclick="return confirm(\'' . $txt['complete_are_sure'] . '\');" class="btn" />
+					<input type="submit" name="delete" value="' . $txt['delete_selected'] . '" onclick="return confirm(\'' . $txt['delete_are_sure'] . '\');" class="btn" />
 				',
 			),
 			array(
 				'position' => 'top_of_list',
 				'value' => '
 					<div class="flow_auto">
-						<input type="submit" name="ssearch" value="' . $txt['search_sub'] . '" class="button_submit" style="margin-top: 3px;" />
+						<input type="submit" name="ssearch" value="' . $txt['search_sub'] . '" class="btn" style="margin-top: 3px;" />
 						<input type="text" name="sub_search" value="" class="input_text floatright" />
 					</div>
 				',

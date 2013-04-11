@@ -24,7 +24,7 @@ function template_registration_agreement()
 				<p>', $context['agreement'], '</p>
 			</div>
 			<div id="confirm_buttons">
-                            <input type="submit" name="accept_agreement" value="', $txt['agreement_agree'], '" class="button_submit" />
+                            <input type="submit" name="accept_agreement" value="', $txt['agreement_agree'], '" class="btn" />
                             <input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
                             <input type="hidden" name="', $context['register_token_var'], '" value="', $context['register_token'], '" />
 			</div>
@@ -281,7 +281,7 @@ function template_registration_form()
 
 	echo '
 			<div id="confirm_buttons flow_auto">
-                            <input type="submit" name="regSubmit" value="', $txt['register'], '" tabindex="', $context['tabindex']++, '" class="button_submit" />
+                            <input type="submit" name="regSubmit" value="', $txt['register'], '" tabindex="', $context['tabindex']++, '" class="btn" />
 			</div>
 			<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 			<input type="hidden" name="', $context['register_token_var'], '" value="', $context['register_token'], '" />
@@ -367,13 +367,13 @@ function template_admin_register()
 	echo '
 	<div id="admincenter">
 		<div id="admin_form_wrapper">
-			<form id="postForm" class="windowbg2" action="', $scripturl, '?action=admin;area=regcenter" method="post" accept-charset="', $context['character_set'], '" name="postForm">
-					<h3 class="catbg">', $txt['admin_browse_register_new'], '</h3>
-				<div class="content" id="register_screen">';
+			<form id="postForm" action="', $scripturl, '?action=admin;area=regcenter" method="post" accept-charset="', $context['character_set'], '" name="postForm">
+				<h3 class="catbg">', $txt['admin_browse_register_new'], '</h3>
+				<div class="well content" id="register_screen">';
 
 	if (!empty($context['registration_done']))
 		echo '
-					<div class="infobox">
+					<div class="alert alert-success">
 						', $context['registration_done'], '
 					</div>';
 
@@ -436,7 +436,7 @@ function template_admin_register()
 						</dd>
 					</dl>
 					<div class="flow_auto">
-						<input type="submit" name="regSubmit" value="', $txt['register'], '" tabindex="', $context['tabindex']++, '" class="button_submit" />
+						<input type="submit" name="regSubmit" value="', $txt['register'], '" tabindex="', $context['tabindex']++, '" class="btn" />
 						<input type="hidden" name="sa" value="register" />
 						<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 						<input type="hidden" name="', $context['admin-regc_token_var'], '" value="', $context['admin-regc_token'], '" />
@@ -486,7 +486,7 @@ function template_edit_agreement()
 							<div class="righttext">
 								<input type="hidden" name="sa" value="agreement" />
 								<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
-								<input type="submit" name="change" value="', $txt['admin_agreement_select_language_change'], '" tabindex="', $context['tabindex']++, '" class="button_submit" />
+								<input type="submit" name="change" value="', $txt['admin_agreement_select_language_change'], '" tabindex="', $context['tabindex']++, '" class="btn" />
 							</div>
 						</form>
 					</div>';
@@ -503,7 +503,7 @@ function template_edit_agreement()
 						<label for="requireAgreement"><input type="checkbox" name="requireAgreement" id="requireAgreement"', $context['require_agreement'] ? ' checked="checked"' : '', ' tabindex="', $context['tabindex']++, '" value="1" class="input_check" /> ', $txt['admin_agreement'], '.</label>
 					</p>
 					<div class="flow_auto" >
-						<input type="submit" value="', $txt['save'], '" tabindex="', $context['tabindex']++, '" class="button_submit" />
+						<input type="submit" value="', $txt['save'], '" tabindex="', $context['tabindex']++, '" class="btn" />
 						<input type="hidden" name="agree_lang" value="', $context['current_agreement'], '" />
 						<input type="hidden" name="sa" value="agreement" />
 						<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
@@ -519,10 +519,10 @@ function template_edit_reserved_words()
 	global $context, $settings, $options, $scripturl, $txt;
 
 	echo '
-		<form id="admin_form_wrapper" class="windowbg2" action="', $scripturl, '?action=admin;area=regcenter" method="post" accept-charset="', $context['character_set'], '">
-				<h3 class="catbg">', $txt['admin_reserved_set'], '</h3>
-			<div class="content">
-				<h4>', $txt['admin_reserved_line'], '</h4>
+		<form id="admin_form_wrapper" action="', $scripturl, '?action=admin;area=regcenter" method="post" accept-charset="', $context['character_set'], '">
+			<h3 class="catbg">', $txt['admin_reserved_set'], '</h3>
+			<div class="well content">
+				<h3 class="titlebg">', $txt['admin_reserved_line'], '</h3>
 				<p class="reserved_names">
 					<textarea cols="30" rows="6" name="reserved" id="reserved">', implode("\n", $context['reserved_words']), '</textarea>
 				</p>
@@ -553,7 +553,7 @@ function template_edit_reserved_words()
 					</dd>
 				</dl>
 				<div class="flow_auto" >
-					<input type="submit" value="', $txt['save'], '" name="save_reserved_names" tabindex="', $context['tabindex']++, '" style="margin: 1ex;" class="button_submit" />
+					<input type="submit" value="', $txt['save'], '" name="save_reserved_names" tabindex="', $context['tabindex']++, '" style="margin: 1ex;" class="btn" />
 					<input type="hidden" name="sa" value="reservednames" />
 					<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 					<input type="hidden" name="', $context['admin-regr_token_var'], '" value="', $context['admin-regr_token'], '" />

@@ -34,11 +34,9 @@ function template_show_list($list_id = null)
 	// Show the title of the table (if any).
 	if (!empty($cur_list['title']))
 		echo '
-			<div class="title_bar clear_right">
-				<h3 class="titlebg">
+				<h3 class="catbg">
 					', $cur_list['title'], '
-				</h3>
-			</div>';
+				</h3>';
 
 	// This is for the old style menu with the arrows "> Test | Test 1"
 	if (empty($settings['use_tabs']) && isset($cur_list['list_menu'], $cur_list['list_menu']['show_on']) && ($cur_list['list_menu']['show_on'] == 'both' || $cur_list['list_menu']['show_on'] == 'top'))
@@ -47,7 +45,7 @@ function template_show_list($list_id = null)
 	if (isset($cur_list['additional_rows']['after_title']))
 	{
 		echo '
-			<div class="information flow_hidden">';
+			<div class="well well-small">';
 		template_additional_rows('after_title', $cur_list);
 		echo '
 			</div>';
@@ -76,67 +74,59 @@ function template_show_list($list_id = null)
 	}
 
 	echo '
-			<table class="table_grid" cellspacing="0" width="', !empty($cur_list['width']) ? $cur_list['width'] : '100%', '">';
+			<table class="table table-striped table-bordered" cellspacing="0" width="', !empty($cur_list['width']) ? $cur_list['width'] : '100%', '">';
 
 	// Show the column headers.
 	$header_count = count($cur_list['headers']);
 	if (!($header_count < 2 && empty($cur_list['headers'][0]['label'])))
 	{
 		echo '
-			<thead>
-				<tr class="catbg">';
+				<thead>
+					<tr class="titlebg">';
 
 		// Loop through each column and add a table header.
-		$i = 0;
 		foreach ($cur_list['headers'] as $col_header)
 		{
-			$i ++;
-			if ($i === 1)
-				$col_header['class'] = empty($col_header['class']) ? 'first_th' : 'first_th ' . $col_header['class'];
-			elseif ($i === $header_count)
-				$col_header['class'] = empty($col_header['class']) ? 'last_th' : 'last_th ' . $col_header['class'];
+			$col_header['class'] = empty($col_header['class']) ? '' : $col_header['class'];
 
 			echo '
-					<th scope="col" id="header_', $list_id, '_', $col_header['id'], '"', empty($col_header['class']) ? '' : ' class="' . $col_header['class'] . '"', empty($col_header['style']) ? '' : ' style="' . $col_header['style'] . '"', empty($col_header['colspan']) ? '' : ' colspan="' . $col_header['colspan'] . '"', '>', empty($col_header['href']) ? '' : '<a href="' . $col_header['href'] . '" rel="nofollow">', empty($col_header['label']) ? '&nbsp;' : $col_header['label'], empty($col_header['href']) ? '' : (empty($col_header['sort_image']) ? '</a>' : ' <img class="sort" src="' . $settings['images_url'] . '/sort_' . $col_header['sort_image'] . '.png" alt="" /></a>'), '</th>';
+						<th scope="col" id="header_', $list_id, '_', $col_header['id'], '"', empty($col_header['class']) ? '' : ' class="' . $col_header['class'] . '"', empty($col_header['style']) ? '' : ' style="' . $col_header['style'] . '"', empty($col_header['colspan']) ? '' : ' colspan="' . $col_header['colspan'] . '"', '>', empty($col_header['href']) ? '' : '<a href="' . $col_header['href'] . '" rel="nofollow">', empty($col_header['label']) ? '&nbsp;' : $col_header['label'], empty($col_header['href']) ? '' : (empty($col_header['sort_image']) ? '</a>' : ' <i class="icon-arrow-' . $col_header['sort_image'] . '"></i></a>'), '</th>';
 		}
 
 		echo '
-				</tr>
-			</thead>';
+					</tr>
+				</thead>';
 	}
 
 		echo '
-			<tbody>';
+				<tbody>';
 
 	// Show a nice message informing there are no items in this list.
 	if (empty($cur_list['rows']) && !empty($cur_list['no_items_label']))
 		echo '
-				<tr>
-					<td class="windowbg" colspan="', $cur_list['num_columns'], '" align="', !empty($cur_list['no_items_align']) ? $cur_list['no_items_align'] : 'center', '"><div class="padding">', $cur_list['no_items_label'], '</div></td>
-				</tr>';
+					<tr>
+						<td colspan="', $cur_list['num_columns'], '" class="', !empty($cur_list['no_items_align']) ? $cur_list['no_items_align'] : 'center', '"><div class="padding">', $cur_list['no_items_label'], '</div></td>
+					</tr>';
 
 	// Show the list rows.
 	elseif (!empty($cur_list['rows']))
 	{
-		$alternate = false;
 		foreach ($cur_list['rows'] as $id => $row)
 		{
 			echo '
-				<tr class="windowbg', $alternate ? '2' : '', $row['class'], '"', $row['style'], ' id="list_', $list_id, '_', $id, '">';
+					<tr', $row['style'], ' id="list_', $list_id, '_', $id, '">';
 
 			foreach ($row['data'] as $row_data)
 				echo '
-					<td', empty($row_data['class']) ? '' : ' class="' . $row_data['class'] . '"', empty($row_data['style']) ? '' : ' style="' . $row_data['style'] . '"', '>', $row_data['value'], '</td>';
+						<td', empty($row_data['class']) ? '' : ' class="' . $row_data['class'] . '"', empty($row_data['style']) ? '' : ' style="' . $row_data['style'] . '"', '>', $row_data['value'], '</td>';
 
 			echo '
-				</tr>';
-
-			$alternate = !$alternate;
+					</tr>';
 		}
 	}
 
 	echo '
-			</tbody>
+				</tbody>
 			</table>';
 
 	if ((!empty($cur_list['items_per_page']) && !empty($cur_list['page_index'])) || isset($cur_list['additional_rows']['below_table_data']))

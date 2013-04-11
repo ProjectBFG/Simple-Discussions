@@ -1984,7 +1984,7 @@ function template_install_above()
 
 		echo '
 							</select>
-							<noscript><input type="submit" value="', $txt['installer_language_set'], '" class="button_submit" /></noscript>
+							<noscript><input type="submit" value="', $txt['installer_language_set'], '" class="btn" /></noscript>
 						</form>
 					</div>
 					<hr class="clear" />';
@@ -2167,7 +2167,7 @@ function template_chmod_files()
 					</td>
 				</tr>
 			</table>
-			<div style="margin: 1ex; margin-top: 1ex; text-align: right;"><input type="submit" value="', $txt['ftp_connect'], '" onclick="return submitThisOnce(this);" class="button_submit" /></div>
+			<div style="margin: 1ex; margin-top: 1ex; text-align: right;"><input type="submit" value="', $txt['ftp_connect'], '" onclick="return submitThisOnce(this);" class="btn" /></div>
 		</form>
 		<a href="', $incontext['form_url'], '">', $txt['error_message_click'], '</a> ', $txt['ftp_setup_again'];
 }

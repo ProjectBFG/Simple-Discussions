@@ -95,10 +95,6 @@ hr.hrcolor {
 	box-shadow: 0 1px 0 #bbb inset;
 }
 
-.content fieldset {
-	border: double #ccc;
-}
-
 /* Alternative for u tag */
 .underline {
 	text-decoration: underline;
@@ -356,11 +352,6 @@ a img {
 .titlebg a, .titlebg2 a{
 	color: #fff;
 }
-.catbg select {
-	height: 2em;
-	font-size: 0.9em;
-	padding: 0;
-}
 
 /* Alternating backgrounds for posts, and several other sections of the forum. */
 .windowbg, #preview_body {
@@ -489,11 +480,6 @@ div.pagesection div.floatright input, div.pagesection div.floatright select {
 
 /* Sometimes there will be an error when you post */
 .error {
-	color: red;
-}
-
-/* Messages that somehow need to attract the attention. */
-.alert {
 	color: red;
 }
 
@@ -912,13 +898,6 @@ img.sort {
 	font-weight: bold;
 }
 
-/* The extra menu rows for admin sections, etc. */
-#adm_submenus {
-	margin: 0;
-	padding: 10px 15px 0 15px;
-	overflow: hidden;
-}
-
 /* Styles for sidebar menus.
 ------------------------------------------------------- */
 #main_container {
@@ -1192,7 +1171,7 @@ td#quick_actions {
 	border-right: 1px solid #ccc;
 	padding-right: 4px;
 }
-.qaction_cell .button_submit {
+.qaction_cell .btn {
 	margin: 2px 4px 0 4px;
 }
 #topic_icons {
@@ -1220,7 +1199,7 @@ td#quick_actions {
 	margin: 0 -12px 0 0;
 	padding: 2px;
 }
-#message_index_jump_to .button_submit {
+#message_index_jump_to .btn {
 	padding: 4px 6px 2px 6px;
 }
 
@@ -3063,24 +3042,11 @@ span.hidelink {
 .generic_list_wrapper {
 	margin-top: -5px;
 }
-.generic_list_wrapper .title_bar{
-	background: none;
-	border-bottom: 1px solid #fff;
-	border-radius: 0;
-}
-.generic_list_wrapper .titlebg {
-	background: none;
-	border-bottom: 1px solid #aaa;
-	font-size: /*1.1em*/1em;
-}
 .generic_list_wrapper .additional_row {
 	margin: 0;
 	padding: 5px 0;
 	/*border-top: 1px solid #aaa;*/
 	border-radius: 0;
-}
-.generic_list_wrapper table.table_grid {
-	border-bottom: 1px solid #aaa;
 }
 .generic_list_wrapper .information .additional_row{
 	border: none;
@@ -3260,20 +3226,19 @@ tr.catbg th:last-child {
 }
 
 /* New theme */
-.table .center
-{
+.table .center {
 	text-align: center;
 }
-.table .left
-{
+.table .left {
 	text-align: left;
 }
-.table tr.catbg
-{
+.table .right {
+	text-align: right;
+}
+.table tr.catbg {
 	font-size: 1em;
 }
-.table h3.catbg a 
-{
+.table h3.catbg a  {
 	text-decoration: none;
 }
 
@@ -3340,4 +3305,8 @@ ul.dropdown-menu a.active
 .dropdown-submenu:hover > a > [class*=" icon-"],
 .dropdown-submenu:focus > a > [class*=" icon-"] {
   background-image: url("../images/glyphicons-halflings-white.png");
+}
+
+.btn {
+	float: right;
 }

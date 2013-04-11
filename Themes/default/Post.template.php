@@ -625,10 +625,10 @@ function template_spellcheck()
 				</td>
 			</tr></table>
 			<div class="righttext" style="padding: 4px;">
-				<input type="button" name="change" value="', $txt['spellcheck_change'], '" onclick="replaceWord();" class="button_submit" />
-				<input type="button" name="changeall" value="', $txt['spellcheck_change_all'], '" onclick="replaceAll();" class="button_submit" />
-				<input type="button" name="ignore" value="', $txt['spellcheck_ignore'], '" onclick="nextWord(false);" class="button_submit" />
-				<input type="button" name="ignoreall" value="', $txt['spellcheck_ignore_all'], '" onclick="nextWord(true);" class="button_submit" />
+				<input type="button" name="change" value="', $txt['spellcheck_change'], '" onclick="replaceWord();" class="btn" />
+				<input type="button" name="changeall" value="', $txt['spellcheck_change_all'], '" onclick="replaceAll();" class="btn" />
+				<input type="button" name="ignore" value="', $txt['spellcheck_ignore'], '" onclick="nextWord(false);" class="btn" />
+				<input type="button" name="ignoreall" value="', $txt['spellcheck_ignore_all'], '" onclick="nextWord(true);" class="btn" />
 			</div>
 		</form>
 	</body>
@@ -717,7 +717,7 @@ function template_announce()
 					</ul>
 					<hr class="hrcolor" />
 					<div id="confirm_buttons">
-						<input type="submit" value="', $txt['post'], '" class="button_submit" />
+						<input type="submit" value="', $txt['post'], '" class="btn" />
 						<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 						<input type="hidden" name="topic" value="', $context['current_topic'], '" />
 						<input type="hidden" name="move" value="', $context['move'], '" />
@@ -747,7 +747,7 @@ function template_announcement_send()
 					</div>
 					<hr class="hrcolor" />
 					<div id="confirm_buttons">
-						<input type="submit" name="b" value="', $txt['announce_continue'], '" class="button_submit" />
+						<input type="submit" name="b" value="', $txt['announce_continue'], '" class="btn" />
 						<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 						<input type="hidden" name="topic" value="', $context['current_topic'], '" />
 						<input type="hidden" name="move" value="', $context['move'], '" />

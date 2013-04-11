@@ -171,7 +171,7 @@ function template_search()
 	echo '
 					</dl>
 					<div class="flow_auto">
-						<input type="submit" name="submit" value="' . $txt['search'] . '" class="button_submit" />
+						<input type="submit" name="submit" value="' . $txt['search'] . '" class="btn" />
 					</div>
 				</div>
 			</div>

@@ -88,7 +88,7 @@ function template_main()
 						</dl>
 					</fieldset>
 					<div class="flow_auto">
-						<input type="submit" name="send" value="', $txt['sendtopic_send'], '" class="button_submit" />
+						<input type="submit" name="send" value="', $txt['sendtopic_send'], '" class="btn" />
 						<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 					</div>
 				</div>
@@ -174,7 +174,7 @@ function template_custom_email()
 					</dl>
 					<hr class="hrcolor" />
 					<div class="flow_auto">
-						<input type="submit" name="send" value="', $txt['sendtopic_send'], '" class="button_submit" />
+						<input type="submit" name="send" value="', $txt['sendtopic_send'], '" class="btn" />
 					</div>
 				</div>
 			</div>';
@@ -259,7 +259,7 @@ function template_report()
 	echo '
 						</dl>
 						<div class="flow_auto">
-							<input type="submit" name="save" value="', $txt['rtm10'], '" style="margin-left: 1ex;" class="button_submit" />
+							<input type="submit" name="save" value="', $txt['rtm10'], '" style="margin-left: 1ex;" class="btn" />
 							<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 						</div>
 					</div>

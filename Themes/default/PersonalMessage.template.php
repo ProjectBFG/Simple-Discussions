@@ -479,7 +479,7 @@ function template_folder()
 					echo '
 					</select>
 					<noscript>
-						<input type="submit" value="', $txt['pm_apply'], '" class="button_submit" style="float: none" />
+						<input type="submit" value="', $txt['pm_apply'], '" class="btn" style="float: none" />
 					</noscript>';
 				}
 				echo '
@@ -499,7 +499,7 @@ function template_folder()
 
 	<div class="pagesection">
 		<div class="floatleft">', $context['page_index'], '</div>
-		<div class="floatright"><input type="submit" name="del_selected" value="', $txt['quickmod_delete_selected'], '" style="font-weight: normal;" onclick="if (!confirm(\'', $txt['delete_selected_confirm'], '\')) return false;" class="button_submit" /></div>
+		<div class="floatright"><input type="submit" name="del_selected" value="', $txt['quickmod_delete_selected'], '" style="font-weight: normal;" onclick="if (!confirm(\'', $txt['delete_selected_confirm'], '\')) return false;" class="btn" /></div>
 	</div>';
 
 		// Show a few buttons if we are in conversation mode and outputting the first message.
@@ -634,12 +634,12 @@ function template_subject_list()
 			echo '
 				</select>
 				<noscript>
-					<input type="submit" value="', $txt['pm_apply'], '" class="button_submit" style="float: none" />
+					<input type="submit" value="', $txt['pm_apply'], '" class="btn" style="float: none" />
 				</noscript>';
 		}
 
 		echo '
-				<input type="submit" name="del_selected" value="', $txt['quickmod_delete_selected'], '" onclick="if (!confirm(\'', $txt['delete_selected_confirm'], '\')) return false;" class="button_submit" style="float: none" />';
+				<input type="submit" name="del_selected" value="', $txt['quickmod_delete_selected'], '" onclick="if (!confirm(\'', $txt['delete_selected_confirm'], '\')) return false;" class="btn" style="float: none" />';
 	}
 
 	echo '
@@ -671,7 +671,7 @@ function template_search()
 				<div id="search_term_input">
 					<strong>', $txt['pm_search_text'], ':</strong>
 					<input type="text" name="search"', !empty($context['search_params']['search']) ? ' value="' . $context['search_params']['search'] . '"' : '', ' size="40" class="input_text" />
-					<input type="submit" name="pm_search" value="', $txt['pm_search_go'], '" class="button_submit" />
+					<input type="submit" name="pm_search" value="', $txt['pm_search_go'], '" class="btn" />
 				</div>
 				<a href="', $scripturl, '?action=pm;sa=search;advanced" onclick="this.href += \';search=\' + escape(document.forms.searchform.search.value);">', $txt['pm_search_advanced'], '</a>
 				<input type="hidden" name="advanced" value="0" />
@@ -719,7 +719,7 @@ function template_search()
 				</dl>';
 		if (!$context['currently_using_labels'])
 			echo '
-				<input type="submit" name="pm_search" value="', $txt['pm_search_go'], '" class="button_submit" />';
+				<input type="submit" name="pm_search" value="', $txt['pm_search_go'], '" class="btn" />';
 			echo '
 				<br class="clear_right" />
 			</div>
@@ -751,7 +751,7 @@ function template_search()
 				</div>
 				<p>
 					<span class="floatleft"><input type="checkbox" name="all" id="check_all" value="" ', $context['check_all'] ? 'checked="checked"' : '', ' onclick="invertAll(this, this.form, \'searchlabel\');" class="input_check" /><em> <label for="check_all">', $txt['check_all'], '</label></em></span>
-					<input type="submit" name="pm_search" value="', $txt['pm_search_go'], '" class="button_submit" />
+					<input type="submit" name="pm_search" value="', $txt['pm_search_go'], '" class="btn" />
 				</p>
 				<br class="clear_right" />
 			</div>
@@ -1319,7 +1319,7 @@ function template_prune()
 		<div class="windowbg">
 			<div class="content">
 				<p>', $txt['pm_prune_desc1'], ' <input type="text" name="age" size="3" value="14" class="input_text" /> ', $txt['pm_prune_desc2'], '</p>
-				<input type="submit" value="', $txt['delete'], '" class="button_submit" />
+				<input type="submit" value="', $txt['delete'], '" class="btn" />
 			</div>
 		</div>
 		<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
@@ -1385,8 +1385,8 @@ function template_labels()
 	if (!count($context['labels']) < 2)
 		echo '
 		<div class="padding">
-			<input type="submit" name="save" value="', $txt['save'], '" class="button_submit" />
-			<input type="submit" name="delete" value="', $txt['quickmod_delete_selected'], '" onclick="return confirm(\'', $txt['pm_labels_delete'], '\');" class="button_submit" />
+			<input type="submit" name="save" value="', $txt['save'], '" class="btn" />
+			<input type="submit" name="delete" value="', $txt['quickmod_delete_selected'], '" onclick="return confirm(\'', $txt['pm_labels_delete'], '\');" class="btn" />
 		</div>';
 
 	echo '
@@ -1405,7 +1405,7 @@ function template_labels()
 						<input type="text" id="add_label" name="label" value="" size="30" maxlength="30" class="input_text" />
 					</dd>
 				</dl>
-				<input type="submit" name="add" value="', $txt['pm_label_add_new'], '" class="button_submit" />
+				<input type="submit" name="add" value="', $txt['pm_label_add_new'], '" class="btn" />
 			</div>
 		</div>
 		<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
@@ -1456,7 +1456,7 @@ function template_report_message()
 					</dd>
 				</dl>
 				<div class="righttext">
-					<input type="submit" name="report" value="', $txt['pm_report_message'], '" class="button_submit" />
+					<input type="submit" name="report" value="', $txt['pm_report_message'], '" class="btn" />
 				</div>
 			</div>
 		</div>
@@ -1544,7 +1544,7 @@ function template_rules()
 	if (!empty($context['rules']))
 		echo '
 			<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
-			<input type="submit" name="delselected" value="', $txt['pm_delete_selected_rule'], '" onclick="return confirm(\'', $txt['pm_js_delete_rule_confirm'], '\');" class="button_submit smalltext" />';
+			<input type="submit" name="delselected" value="', $txt['pm_delete_selected_rule'], '" onclick="return confirm(\'', $txt['pm_js_delete_rule_confirm'], '\');" class="btn smalltext" />';
 
 	echo '
 		</div>
@@ -1815,7 +1815,7 @@ function template_add_rule()
 			</div>
 			<div class="righttext">
 				<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
-				<input type="submit" name="save" value="', $txt['pm_rule_save'], '" class="button_submit" />
+				<input type="submit" name="save" value="', $txt['pm_rule_save'], '" class="btn" />
 			</div>
 		</div>
 	</form>';
