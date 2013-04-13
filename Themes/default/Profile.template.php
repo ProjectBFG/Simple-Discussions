@@ -361,7 +361,7 @@ function template_showPosts()
 
 		if ($post['can_reply'] || $post['can_mark_notify'] || $post['can_delete'])
 			echo '
-			<div class="floatright">
+			<div class="pull-right">
 				<ul class="reset smalltext quickbuttons">';
 
 		// If they *can* reply?
@@ -422,7 +422,7 @@ function template_showDrafts()
 
 	echo '
 			<h3 class="catbg">
-				<span class="ie6_header floatleft"><img src="', $settings['images_url'], '/message_sm.png" alt="" class="icon" />
+				<span class="ie6_header pull-left"><img src="', $settings['images_url'], '/message_sm.png" alt="" class="icon" />
 					', $txt['drafts_show'], ' - ', $context['member']['name'], '
 				</span>
 			</h3>
@@ -467,7 +467,7 @@ function template_showDrafts()
 							', $draft['body'], '
 						</div>
 					</div>
-					<div class="floatright">
+					<div class="pull-right">
 						<ul class="reset smalltext quickbuttons">
 							<li><a href="', $scripturl, '?action=post;', (empty($draft['topic']['id']) ? '' : 'topic=' . $draft['topic']['id']), '.0;id_draft=', $draft['id_draft'], '" class="reply_button"><span>', $txt['draft_edit'], '</span></a></li>
 							<li><a href="', $scripturl, '?action=profile;u=', $context['member']['id'], ';area=showdrafts;delete=', $draft['id_draft'], ';', $context['session_var'], '=', $context['session_id'], '" onclick="return confirm(\'', $txt['draft_remove'], '?\');" class="remove_button"><span>', $txt['draft_delete'], '</span></a></li>
@@ -1969,12 +1969,12 @@ function template_issueWarning()
 					<dd>
 						<div id="warndiv1" style="display: none;">
 							<div>
-								<span class="floatleft" style="padding: 0 0.5em"><a href="#" onclick="changeWarnLevel(-5); return false;">[-]</a></span>
-								<div class="floatleft" id="warning_contain" style="font-size: 8pt; height: 12pt; width: ', $context['warningBarWidth'], 'px; border: 1px solid black; background-color: white; padding: 1px; position: relative;" onmousedown="setWarningBarPos(event, true);" onmousemove="setWarningBarPos(event, true);" onclick="setWarningBarPos(event);">
+								<span class="pull-left" style="padding: 0 0.5em"><a href="#" onclick="changeWarnLevel(-5); return false;">[-]</a></span>
+								<div class="pull-left" id="warning_contain" style="font-size: 8pt; height: 12pt; width: ', $context['warningBarWidth'], 'px; border: 1px solid black; background-color: white; padding: 1px; position: relative;" onmousedown="setWarningBarPos(event, true);" onmousemove="setWarningBarPos(event, true);" onclick="setWarningBarPos(event);">
 									<div id="warning_text" style="padding-top: 1pt; width: 100%; z-index: 2; color: black; position: absolute; text-align: center; font-weight: bold;">', $context['member']['warning'], '%</div>
 									<div id="warning_progress" style="width: ', $context['member']['warning'], '%; height: 12pt; z-index: 1; background-color: ', $context['current_color'], ';">&nbsp;</div>
 								</div>
-								<span class="floatleft" style="padding: 0 0.5em"><a href="#" onclick="changeWarnLevel(5); return false;">[+]</a></span>
+								<span class="pull-left" style="padding: 0 0.5em"><a href="#" onclick="changeWarnLevel(5); return false;">[+]</a></span>
 								<div class="clear_left smalltext">', $txt['profile_warning_impact'], ': <span id="cur_level_div">', $context['level_effects'][$context['current_level']], '</span></div>
 							</div>
 							<input type="hidden" name="warning_level" id="warning_level" value="SAME" />

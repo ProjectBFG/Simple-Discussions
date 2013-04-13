@@ -170,7 +170,7 @@ function template_notes()
 		}
 
 		echo '
-					<div class="floatleft post_note">
+					<div class="pull-left post_note">
 						<input type="text" name="new_note" value="', $txt['mc_click_add_note'], '" style="width: 95%;" onclick="if (this.value == \'', $txt['mc_click_add_note'], '\') this.value = \'\';" class="input_text" />
 					</div>
 					<input type="submit" name="makenote" value="', $txt['mc_add_note'], '" class="btn" />
@@ -242,8 +242,8 @@ function template_reported_posts()
 
 	echo '
 		<div class="pagesection">
-			<div class="pagelinks floatleft">', $context['page_index'], '</div>
-			<div class="floatright">
+			<div class="pagelinks pull-left">', $context['page_index'], '</div>
+			<div class="pull-right">
 				', !$context['view_closed'] ? '<input type="submit" name="close_selected" value="' . $txt['mc_reportedp_close_selected'] . '" class="btn" />' : '', '
 			</div>
 		</div>
@@ -276,7 +276,7 @@ function template_unapproved_posts()
 		</div>';
 	else
 		echo '
-			<div class="pagesection floatleft">
+			<div class="pagesection pull-left">
 				', $context['page_index'], '
 			</div>';
 
@@ -294,7 +294,7 @@ function template_unapproved_posts()
 					<div class="list_posts">
 						<div class="post">', $item['body'], '</div>
 					</div>
-					<span class="floatright">
+					<span class="pull-right">
 						<a href="', $scripturl, '?action=moderate;area=postmod;sa=', $context['current_view'], ';start=', $context['start'], ';', $context['session_var'], '=', $context['session_id'], ';approve=', $item['id'], '">', $approve_button, '</a>';
 
 			if ($item['can_delete'])
@@ -318,7 +318,7 @@ function template_unapproved_posts()
 
 	if (!empty($options['display_quick_mod']) && $options['display_quick_mod'] == 1)
 		echo '
-			<div class="floatright">
+			<div class="pull-right">
 				<select name="do" onchange="if (this.value != 0 &amp;&amp; confirm(\'', $txt['mc_unapproved_sure'], '\')) submit();">
 					<option value="0">', $txt['with_selected'], ':</option>
 					<option value="0">-------------------</option>
@@ -330,7 +330,7 @@ function template_unapproved_posts()
 
 	if (!empty($context['unapproved_items']))
 		echo '
-			<div class="floatleft">
+			<div class="pull-left">
 				<div class="pagelinks">', $context['page_index'], '</div>
 			</div>';
 
@@ -353,10 +353,10 @@ function template_viewmodreport()
 				</h3>
 			<div class="title_bar">
 				<h3 class="titlebg">
-					<span class="floatleft">
+					<span class="pull-left">
 						', sprintf($txt['mc_modreport_summary'], $context['report']['num_reports'], $context['report']['last_updated']), '
 					</span>
-					<span class="floatright">';
+					<span class="pull-right">';
 
 		// Make the buttons.
 		$close_button = create_button('close.png', $context['report']['closed'] ? 'mc_reportedp_open' : 'mc_reportedp_close', $context['report']['closed'] ? 'mc_reportedp_open' : 'mc_reportedp_close', 'class="centericon"');
@@ -432,10 +432,10 @@ function template_user_watch_post_callback($post)
 
 	$output_html = '
 					<div>
-						<div class="floatleft">
+						<div class="pull-left">
 							<strong><a href="' . $scripturl . '?topic=' . $post['id_topic'] . '.' . $post['id'] . '#msg' . $post['id'] . '">' . $post['subject'] . '</a></strong> ' . $txt['mc_reportedp_by'] . ' <strong>' . $post['author_link'] . '</strong>
 						</div>
-						<div class="floatright">';
+						<div class="pull-right">';
 
 	if ($post['can_delete'])
 		$output_html .= '

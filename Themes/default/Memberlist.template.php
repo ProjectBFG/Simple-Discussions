@@ -22,10 +22,10 @@ function template_main()
 			', $context['page_index'], '
 		</div>
 		<h3 class="catbg">
-			<span class="floatleft">', $txt['members_list'], '</span>';
+			<span class="pull-left">', $txt['members_list'], '</span>';
 	if (!isset($context['old_search']))
 			echo '
-			<span class="floatright">', $context['letter_links'], '</span>';
+			<span class="pull-right">', $context['letter_links'], '</span>';
 	echo '
 		</h3>';
 
@@ -164,7 +164,7 @@ function template_search()
 	{
 		echo '
 						<dd>
-							<label for="fields-', $id, '"><input type="checkbox" name="fields[]" id="fields-', $id, '" value="', $id, '" ', in_array($id, $context['search_defaults']) ? 'checked="checked"' : '', ' class="input_check floatright" />', $title, '</label>
+							<label for="fields-', $id, '"><input type="checkbox" name="fields[]" id="fields-', $id, '" value="', $id, '" ', in_array($id, $context['search_defaults']) ? 'checked="checked"' : '', ' class="input_check pull-right" />', $title, '</label>
 						</dd>';
 	}
 

@@ -1505,7 +1505,7 @@ function ViewWarningLog()
 						global $scripturl, $settings, $txt;
 
 						$output = \'
-							<div class="floatleft">
+							<div class="pull-left">
 								\' . $warning[\'reason\'] . \'
 							</div>\';
 

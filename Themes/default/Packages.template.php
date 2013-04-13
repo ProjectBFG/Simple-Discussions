@@ -53,7 +53,7 @@ function template_view_package()
 			<div class="windowbg2">
 				<div class="content">
 					', $context['package_readme'], '
-					<span class="floatright">', $txt['package_available_readme_language'], '
+					<span class="pull-right">', $txt['package_available_readme_language'], '
 						<select name="readme_language" id="readme_language" onchange="if (this.options[this.selectedIndex].value) window.location.href = smf_prepareScriptUrl(smf_scripturl + \'', '?action=admin;area=packages;sa=', $context['uninstalling'] ? 'uninstall' : 'install', ';package=', $context['filename'], ';readme=\' + this.options[this.selectedIndex].value + \';license=\' + get_selected(\'license_language\'));">';
 							foreach ($context['readmes'] as $a => $b)
 								echo '<option value="', $b, '"', $a === 'selected' ? ' selected="selected"' : '', '>', $b == 'default' ? $txt['package_readme_default'] : ucfirst($b), '</option>';
@@ -73,7 +73,7 @@ function template_view_package()
 			<div class="windowbg2">
 				<div class="content">
 					', $context['package_license'], '
-					<span class="floatright">', $txt['package_available_license_language'], '
+					<span class="pull-right">', $txt['package_available_license_language'], '
 						<select name="license_language" id="license_language" onchange="if (this.options[this.selectedIndex].value) window.location.href = smf_prepareScriptUrl(smf_scripturl + \'', '?action=admin;area=packages;sa=install', ';package=', $context['filename'], ';license=\' + this.options[this.selectedIndex].value + \';readme=\' + get_selected(\'readme_language\'));">';
 							foreach ($context['licenses'] as $a => $b)
 								echo '<option value="', $b, '"', $a === 'selected' ? ' selected="selected"' : '', '>', $b == 'default' ? $txt['package_license_default'] : ucfirst($b), '</option>';
@@ -706,9 +706,9 @@ function template_servers()
 	foreach ($context['servers'] as $server)
 		echo '
 					<li class="flow_auto">
-						<span class="floatleft">' . $server['name'] . '</span>
-						<span class="package_server floatright"><a href="' . $scripturl . '?action=admin;area=packages;get;sa=remove;server=' . $server['id'] . ';', $context['session_var'], '=', $context['session_id'], '">[ ' . $txt['delete'] . ' ]</a></span>
-						<span class="package_server floatright"><a href="' . $scripturl . '?action=admin;area=packages;get;sa=browse;server=' . $server['id'] . '">[ ' . $txt['package_browse'] . ' ]</a></span>
+						<span class="pull-left">' . $server['name'] . '</span>
+						<span class="package_server pull-right"><a href="' . $scripturl . '?action=admin;area=packages;get;sa=remove;server=' . $server['id'] . ';', $context['session_var'], '=', $context['session_id'], '">[ ' . $txt['delete'] . ' ]</a></span>
+						<span class="package_server pull-right"><a href="' . $scripturl . '?action=admin;area=packages;get;sa=browse;server=' . $server['id'] . '">[ ' . $txt['package_browse'] . ' ]</a></span>
 					</li>';
 	echo '
 				</ul>
@@ -908,7 +908,7 @@ function template_package_list()
 	echo '
 			</div>
 		</div>
-		<div class="padding smalltext floatleft">
+		<div class="padding smalltext pull-left">
 			', $txt['package_installed_key'], '
 			<img src="', $settings['images_url'], '/icons/package_installed.png" alt="" class="centericon" style="margin-left: 1ex;" /> ', $txt['package_installed_current'], '
 			<img src="', $settings['images_url'], '/icons/package_old.png" alt="" class="centericon" style="margin-left: 2ex;" /> ', $txt['package_installed_old'], '
@@ -980,9 +980,9 @@ function template_downloaded()
 			<div class="content">
 				<p>', (empty($context['package_server']) ? $txt['package_uploaded_successfully'] : $txt['package_downloaded_successfully']), '</p>
 				<ul class="reset">
-					<li class="reset"><span class="floatleft"><strong>', $context['package']['name'], '</strong></span>
-						<span class="package_server floatright">', $context['package']['list_files']['link'], '</span>
-						<span class="package_server floatright">', $context['package']['install']['link'], '</span>
+					<li class="reset"><span class="pull-left"><strong>', $context['package']['name'], '</strong></span>
+						<span class="package_server pull-right">', $context['package']['list_files']['link'], '</span>
+						<span class="package_server pull-right">', $context['package']['install']['link'], '</span>
 					</li>
 				</ul>
 				<br /><br />
@@ -1461,7 +1461,7 @@ function template_file_permissions()
 	<form action="', $scripturl, '?action=admin;area=packages;sa=perms;', $context['session_var'], '=', $context['session_id'], '" method="post" accept-charset="', $context['character_set'], '">
 		<div class="title_bar">
 			<h3 class="titlebg">
-				<span class="floatleft">', $txt['package_file_perms'], '</span><span class="fperm floatright">', $txt['package_file_perms_new_status'], '</span>
+				<span class="pull-left">', $txt['package_file_perms'], '</span><span class="fperm pull-right">', $txt['package_file_perms_new_status'], '</span>
 			</h3>
 		</div>
 		<table width="100%" class="table_grid">

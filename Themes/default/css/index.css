@@ -103,10 +103,10 @@ hr.hrcolor {
 /* Common classes to easy styling.
 ------------------------------------------------------- */
 
-.floatright {
+.pull-right {
 	float: right;
 }
-.floatleft {
+.pull-left {
 	float: left;
 }
 .floatnone {
@@ -393,7 +393,7 @@ div.windowbg, div.windowbg2 {
 #main_content_section .pagesection {
 	margin: 4px 0 0 0;
 }
-div.pagesection div.floatright input, div.pagesection div.floatright select {
+div.pagesection div.pull-right input, div.pagesection div.pull-right select {
 	margin-top: 3px;
 }
 .pagelinks {
@@ -1187,11 +1187,11 @@ td#quick_actions {
 #topic_icons p {
 	line-height: 2em;
 }
-#topic_icons p.floatleft {
+#topic_icons p.pull-left {
 	padding: 0 12px 2px 0;
 }
 /* Just to correct Fred there without requiring an extra image. Should make a new Fred with clear padding. */
-#topic_icons p.floatleft img:first-child {
+#topic_icons p.pull-left img:first-child {
 	padding: 0 2px;
 }
 #message_index_jump_to_select {
@@ -1410,7 +1410,7 @@ td#quick_actions {
 .keyinfo h5 a, .keyinfo h5 a strong {
 	color: #ad6825;
 }
-.keyinfo h5 a.floatright {
+.keyinfo h5 a.pull-right {
 	padding: 0 12px 0 0; /* Deprecated? */
 }
 .keyinfo h5 .modified {
@@ -1967,7 +1967,7 @@ dl.register_form dd {
 	min-width: 520px;
 	text-align: left;
 }
-#maintenance_mode img.floatleft {
+#maintenance_mode img.pull-left {
 	margin-right: 12px;
 }
 
@@ -2576,7 +2576,7 @@ tr.windowbg2 td.stats_day {
 #manrules div.righttext {
 	padding: 4px 1px;
 }
-dl.addrules dt.floatleft {
+dl.addrules dt.pull-left {
 	width: 15em;
 	color: #333;
 	padding: 0 15px 6px 15px;

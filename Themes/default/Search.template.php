@@ -147,7 +147,7 @@ function template_main()
 				<input type="hidden" name="topic" value="', $context['search_topic']['id'], '" />';
 
 		echo '
-		<div class="floatright">
+		<div class="pull-right">
 			<input type="submit" name="b_search" value="', $txt['search'], '" class="btn" />
 		</div>
 			</div>
@@ -227,7 +227,7 @@ function template_results()
 
 	echo '
 			<h3 class="catbg">
-				<span class="floatright">';
+				<span class="pull-right">';
 					if (!empty($options['display_quick_mod']) && $options['display_quick_mod'] == 1)
 					echo '
 							<input type="checkbox" onclick="invertAll(this, this.form, \'topics[]\');" class="input_check" />';
@@ -263,7 +263,7 @@ function template_results()
 			foreach ($topic['matches'] as $message)
 			{
 				echo '
-					<div class="topic_details floatleft" style="width: 94%">
+					<div class="topic_details pull-left" style="width: 94%">
 						<div class="counter">', $message['counter'], '</div>
 						<h5><a href="', $scripturl, '?topic=', $topic['id'], '.msg', $message['id'], '#msg', $message['id'], '">', $message['subject_highlighted'], '</a></h5>
 						<span class="smalltext">&#171;&nbsp;',$txt['by'],'&nbsp;<strong>', $message['member']['link'], '</strong>&nbsp;',$txt['on'],'&nbsp;<em>', $message['time'], '</em>&nbsp;&#187;</span>
@@ -272,7 +272,7 @@ function template_results()
 				if (!empty($options['display_quick_mod']))
 				{
 					echo '
-					<div class="floatright">';
+					<div class="pull-right">';
 
 					if ($options['display_quick_mod'] == 1)
 					{
@@ -328,7 +328,7 @@ function template_results()
 		{
 			echo '
 			<div class="titlebg2" style="padding: 4px;">
-				<div class="floatright flow_auto">
+				<div class="pull-right flow_auto">
 					<select class="qaction" name="qaction"', $context['can_move'] ? ' onchange="this.form.move_to.disabled = (this.options[this.selectedIndex].value != \'move\');"' : '', '>
 						<option value="">--------</option>';
 

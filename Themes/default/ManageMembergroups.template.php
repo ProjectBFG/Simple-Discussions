@@ -465,13 +465,13 @@ function template_group_members()
 
 	if (!empty($context['group']['assignable']))
 		echo '
-			<div class="floatright">
+			<div class="pull-right">
 				<input type="submit" name="remove" value="', $txt['membergroups_members_remove'], '" class="btn " />
 			</div>';
 
 	echo '
 			<div class="pagesection flow_hidden">
-				<div class="floatleft">', $context['page_index'], '</div>
+				<div class="pull-left">', $context['page_index'], '</div>
 			</div>
 			<br />';
 

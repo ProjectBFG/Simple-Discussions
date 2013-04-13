@@ -151,7 +151,7 @@ function EditNews()
 
 						if (is_numeric($news[\'id\']))
 							return \'<textarea class="input-block-level" id="data_\' . $news[\'id\'] . \'" rows="3" cols="50" name="news[]">\' . $news[\'unparsed\'] . \'</textarea>
-							<div class="floatleft" id="preview_\' . $news[\'id\'] . \'"></div>\';
+							<div class="pull-left" id="preview_\' . $news[\'id\'] . \'"></div>\';
 						else
 							return $news[\'unparsed\'];
 					'),

@@ -960,7 +960,7 @@ function MembersAwaitingActivation()
 					</select>
 					<noscript><input type="submit" value="' . $txt['go'] . '" class="btn" /><br class="clear_right" /></noscript>
 				',
-				'class' => 'floatright',
+				'class' => 'pull-right',
 			),
 		),
 	);
@@ -999,7 +999,7 @@ function MembersAwaitingActivation()
 		$listOptions['additional_rows'][] = array(
 			'position' => 'above_column_headers',
 			'value' => '<strong>' . $txt['admin_browse_filter_show'] . ':</strong> ' . $context['available_filters'][0]['desc'],
-			'class' => 'smalltext floatright',
+			'class' => 'smalltext pull-right',
 		);
 
 	// Now that we have all the options, create the list.
