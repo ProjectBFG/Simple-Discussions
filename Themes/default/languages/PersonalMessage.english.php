@@ -1,8 +1,6 @@
 <?php
 // Version: 1.0 Alpha 1; PersonalMessage
 
-global $context;
-
 $txt['pm_inbox'] = 'Personal Messages Index';
 $txt['send_message'] = 'Send message';
 $txt['pm_add'] = 'Add';

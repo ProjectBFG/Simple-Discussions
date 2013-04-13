@@ -1,8 +1,6 @@
 <?php
 // Version: 1.0 Alpha 1; ManageMembers
 
-global $context;
-
 $txt['groups'] = 'Groups';
 $txt['viewing_groups'] = 'Viewing Membergroups';
 
