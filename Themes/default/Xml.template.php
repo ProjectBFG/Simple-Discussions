@@ -12,7 +12,7 @@
 
 function template_sendbody()
 {
-	global $context, $settings, $options, $txt;
+	global $context;
 
 	echo '<', '?xml version="1.0" encoding="', $context['character_set'], '"?', '>
 <smf>
@@ -22,7 +22,7 @@ function template_sendbody()
 
 function template_quotefast()
 {
-	global $context, $settings, $options, $txt;
+	global $context;
 
 	echo '<', '?xml version="1.0" encoding="', $context['character_set'], '"?', '>
 <smf>
@@ -32,7 +32,7 @@ function template_quotefast()
 
 function template_modifyfast()
 {
-	global $context, $settings, $options, $txt;
+	global $context;
 
 	echo '<', '?xml version="1.0" encoding="', $context['character_set'], '"?', '>
 <smf>
@@ -44,7 +44,7 @@ function template_modifyfast()
 
 function template_modifydone()
 {
-	global $context, $settings, $options, $txt;
+	global $context, $txt;
 
 	echo '<', '?xml version="1.0" encoding="', $context['character_set'], '"?', '>
 <smf>
@@ -66,7 +66,7 @@ function template_modifydone()
 
 function template_modifytopicdone()
 {
-	global $context, $settings, $options, $txt;
+	global $context, $txt;
 
 	echo '<', '?xml version="1.0" encoding="', $context['character_set'], '"?', '>
 <smf>
@@ -89,7 +89,7 @@ function template_modifytopicdone()
 
 function template_post()
 {
-	global $context, $settings, $options, $txt;
+	global $context;
 
 	echo '<', '?xml version="1.0" encoding="', $context['character_set'], '"?', '>
 <smf>
@@ -133,7 +133,7 @@ function template_post()
 
 function template_pm()
 {
-	global $context, $settings, $options, $txt;
+	global $context;
 
 	// @todo something could be removed...otherwise it can be merged again with template_post
 	echo '<', '?xml version="1.0" encoding="', $context['character_set'], '"?', '>
@@ -162,7 +162,7 @@ function template_pm()
 
 function template_stats()
 {
-	global $context, $settings, $options, $txt, $modSettings;
+	global $context, $modSettings;
 
 	echo '<', '?xml version="1.0" encoding="', $context['character_set'], '"?', '>
 <smf>';
@@ -183,7 +183,7 @@ function template_stats()
 
 function template_split()
 {
-	global $context, $settings, $options;
+	global $context;
 
 	echo '<', '?xml version="1.0" encoding="', $context['character_set'], '"?', '>
 <smf>
@@ -220,7 +220,7 @@ if (!function_exists('template_button_strip'))
 
 function template_results()
 {
-	global $context, $settings, $options, $txt;
+	global $context, $txt;
 	echo '<', '?xml version="1.0" encoding="', $context['character_set'], '"?', '>
 <smf>';
 
@@ -272,7 +272,7 @@ function template_results()
 
 function template_check_username()
 {
-	global $context, $settings, $options, $txt;
+	global $context;
 
 	echo '<', '?xml version="1.0" encoding="', $context['character_set'], '"?', '>
 <smf>
@@ -283,7 +283,7 @@ function template_check_username()
 // This prints XML in it's most generic form.
 function template_generic_xml()
 {
-	global $context, $settings, $options, $txt;
+	global $context;
 
 	echo '<', '?xml version="1.0" encoding="', $context['character_set'], '"?', '>';
 
@@ -322,7 +322,6 @@ function template_generic_xml_recursive($xml_data, $parent_ident, $child_ident, 
 
 function template_webslice_header_above()
 {
-	global $settings;
 }
 
 function template_webslice_header_below()

@@ -15,7 +15,7 @@
  */
 function template_registration_agreement()
 {
-	global $context, $settings, $options, $scripturl, $txt, $modSettings;
+	global $context, $scripturl, $txt;
 
 	echo '
 		<form action="', $scripturl, '?action=register" method="post" accept-charset="', $context['character_set'], '" id="registration">
@@ -36,7 +36,7 @@ function template_registration_agreement()
 // Before registering - get their information.
 function template_registration_form()
 {
-	global $context, $settings, $options, $scripturl, $txt, $modSettings;
+	global $context, $settings, $scripturl, $txt, $modSettings;
 
 	echo '
 		<script src="', $settings['default_theme_url'], '/scripts/register.js"></script>
@@ -307,7 +307,7 @@ function template_registration_form()
 // After registration... all done ;).
 function template_after()
 {
-	global $context, $settings, $options, $txt, $scripturl;
+	global $context;
 
 	// Not much to see here, just a quick... "you're now registered!" or what have you.
 	echo '
@@ -322,7 +322,7 @@ function template_after()
 // Show a window containing the spoken verification code.
 function template_verification_sound()
 {
-	global $context, $settings, $options, $txt, $scripturl;
+	global $context, $settings, $txt;
 
 	echo '<!DOCTYPE html>
 <html>
@@ -362,7 +362,7 @@ function template_verification_sound()
 
 function template_admin_register()
 {
-	global $context, $settings, $options, $scripturl, $txt, $modSettings;
+	global $context, $scripturl, $txt, $modSettings;
 
 	echo '
 	<div id="admincenter">
@@ -451,7 +451,7 @@ function template_admin_register()
 // Form for editing the agreement shown for people registering to the forum.
 function template_edit_agreement()
 {
-	global $context, $settings, $options, $scripturl, $txt;
+	global $context, $scripturl, $txt;
 
 	// Just a big box to edit the text file ;).
 	echo '
@@ -516,7 +516,7 @@ function template_edit_agreement()
 
 function template_edit_reserved_words()
 {
-	global $context, $settings, $options, $scripturl, $txt;
+	global $context, $scripturl, $txt;
 
 	echo '
 		<form id="admin_form_wrapper" action="', $scripturl, '?action=admin;area=regcenter" method="post" accept-charset="', $context['character_set'], '">

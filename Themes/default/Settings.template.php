@@ -12,7 +12,7 @@
 
 function template_options()
 {
-	global $context, $settings, $options, $scripturl, $txt;
+	global $context, $txt;
 
 	$context['theme_options'] = array(
 		array(
@@ -129,7 +129,7 @@ function template_options()
 
 function template_settings()
 {
-	global $context, $settings, $options, $scripturl, $txt;
+	global $context, $txt;
 
 	$context['theme_settings'] = array(
 		array(

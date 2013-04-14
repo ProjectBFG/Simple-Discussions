@@ -15,7 +15,7 @@
  */
 function template_admin()
 {
-	global $context, $settings, $options, $scripturl, $txt, $modSettings;
+	global $context, $settings, $scripturl, $txt, $modSettings;
 
 	// Welcome message for the admin.
 	echo '
@@ -181,7 +181,7 @@ function template_admin()
  */
 function template_credits()
 {
-	global $context, $settings, $options, $scripturl, $txt;
+	global $context, $settings, $scripturl, $txt;
 
 	// Show the user version information from their server.
 	echo '
@@ -341,7 +341,7 @@ function template_credits()
  */
 function template_view_versions()
 {
-	global $context, $settings, $options, $scripturl, $txt;
+	global $context, $scripturl, $txt;
 
 	echo '
 	<div id="admincenter">
@@ -569,7 +569,7 @@ function template_view_versions()
 // Form for stopping people using naughty words, etc.
 function template_edit_censored()
 {
-	global $context, $settings, $options, $scripturl, $txt, $modSettings;
+	global $context, $scripturl, $txt, $modSettings;
 
 	// First section is for adding/removing words from the censored list.
 	echo '
@@ -642,7 +642,7 @@ function template_edit_censored()
 // Maintenance is a lovely thing, isn't it?
 function template_not_done()
 {
-	global $context, $settings, $options, $txt, $scripturl;
+	global $context, $txt, $scripturl;
 
 	echo '
 	<div id="admincenter">
@@ -699,7 +699,7 @@ function template_not_done()
 // Template for showing settings (Of any kind really!)
 function template_show_settings()
 {
-	global $context, $txt, $settings, $scripturl;
+	global $context, $txt;
 
 	if (!empty($context['settings_pre_javascript']))
 		echo '
@@ -935,8 +935,6 @@ function template_show_settings()
 // Template for showing custom profile fields.
 function template_show_custom_profile()
 {
-	global $context, $txt, $settings, $scripturl;
-
 	// Standard fields.
 	template_show_list('standard_profile_fields');
 
@@ -955,7 +953,7 @@ function template_show_custom_profile()
 // Edit a profile field?
 function template_edit_profile_field()
 {
-	global $context, $txt, $settings, $scripturl;
+	global $context, $txt, $scripturl;
 
 	// All the javascript for this page - quite a bit in script.js!
 	echo '
@@ -1179,7 +1177,7 @@ function template_edit_profile_field()
 // Results page for an admin search.
 function template_admin_search_results()
 {
-	global $context, $txt, $settings, $options, $scripturl;
+	global $context, $txt, $settings, $scripturl;
 
 	echo '
 			<h3 class="catbg">
@@ -1240,7 +1238,7 @@ function template_admin_search_results()
 // Turn on and off certain key features.
 function template_core_features()
 {
-	global $context, $txt, $settings, $options, $scripturl;
+	global $context, $txt, $settings, $scripturl;
 
 	echo '
 	<script><!-- // --><![CDATA[
@@ -1387,7 +1385,7 @@ function template_core_features()
 // This little beauty shows questions and answer from the captcha type feature.
 function template_callback_question_answer_list()
 {
-	global $txt, $context, $settings;
+	global $txt, $context;
 
 	echo '
 			<dt>

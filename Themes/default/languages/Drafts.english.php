@@ -1,8 +1,6 @@
 <?php
 // Version: 1.0 Alpha 1; Profile
 
-global $scripturl, $context;
-
 // profile
 $txt['drafts_show'] = 'Show Drafts';
 $txt['drafts_autosave_enabled'] = 'Enable the automatic saving of drafts.';

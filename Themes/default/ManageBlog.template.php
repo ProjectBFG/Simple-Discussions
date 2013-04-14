@@ -7,9 +7,9 @@
 
 function template_admin_blog_list()
 {
-	global $context, $user_info;
 	
 	template_show_list('blog_list');
+        
 }
 
 function template_add_blog()

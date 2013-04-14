@@ -36,7 +36,7 @@
  */
 function template_init()
 {
-	global $context, $settings, $options, $txt;
+	global $settings;
 
 	/* Use images from default theme when using templates from the default theme?
 		if this is 'always', images from the default theme will be used.
@@ -73,7 +73,7 @@ function template_init()
  */
 function template_html_above()
 {
-	global $context, $settings, $options, $scripturl, $txt, $modSettings;
+	global $context, $settings, $scripturl, $txt, $modSettings;
 
 	// Show right to left and the character set for ease of translating.
 	echo '<!DOCTYPE html>
@@ -141,7 +141,7 @@ function template_html_above()
 
 function template_body_above()
 {
-	global $context, $settings, $options, $scripturl, $txt, $modSettings;
+	global $context, $scripturl, $txt;
 
 	echo '
 	<div class="navbar navbar-inverse navbar-fixed-top">
@@ -167,7 +167,6 @@ function template_body_above()
 
 function template_body_below()
 {
-	global $context, $settings, $options, $scripturl, $txt, $modSettings;
 
 	echo '
 		<hr />
@@ -177,7 +176,7 @@ function template_body_below()
 
 function template_html_below()
 {
-	global $context, $settings, $options, $scripturl, $txt, $modSettings;
+	global $settings;
 
 	// load in any javascipt that could be defered to the end of the page
 	template_javascript(true);
@@ -195,7 +194,7 @@ function template_html_below()
  */
 function template_menu()
 {
-	global $context, $settings, $options, $scripturl, $txt;
+	global $context;
 
 	echo '
 			<ul class="nav">';
@@ -262,7 +261,7 @@ function template_menu()
  */
 function template_button_strip($button_strip, $direction = '', $strip_options = array())
 {
-	global $settings, $context, $txt, $scripturl;
+	global $context, $txt;
 
 	if (!is_array($strip_options))
 		$strip_options = array();
