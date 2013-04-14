@@ -13,7 +13,7 @@
 // Template for the database maintenance tasks.
 function template_maintain_database()
 {
-	global $context, $settings, $options, $txt, $scripturl, $db_type, $modSettings;
+	global $context, $txt, $scripturl, $modSettings;
 
 	// If maintenance has finished tell the user.
 	if (!empty($context['maintenance_finished']))
@@ -131,7 +131,7 @@ function template_maintain_database()
 // Template for the routine maintenance tasks.
 function template_maintain_routine()
 {
-	global $context, $settings, $options, $txt, $scripturl, $modSettings;
+	global $context, $txt, $scripturl;
 
 	// Starts off with general maintenance procedures.
 	echo '
@@ -210,7 +210,7 @@ function template_maintain_routine()
 // Template for the member maintenance tasks.
 function template_maintain_members()
 {
-	global $context, $settings, $options, $txt, $scripturl;
+	global $context, $settings, $txt, $scripturl;
 
 	echo '
 	<script><!-- // --><![CDATA[
@@ -370,7 +370,7 @@ function template_maintain_members()
 // Template for the topic maintenance tasks.
 function template_maintain_topics()
 {
-	global $scripturl, $txt, $context, $settings, $modSettings;
+	global $scripturl, $txt, $context, $modSettings;
 
 	// If maintenance has finished tell the user.
 	if (!empty($context['maintenance_finished']))
@@ -427,7 +427,7 @@ function template_maintain_topics()
 // Simple template for showing results of our optimization...
 function template_optimize()
 {
-	global $context, $settings, $options, $txt, $scripturl;
+	global $context, $txt, $scripturl;
 
 	echo '
 	<div id="manage_maintenance">
@@ -457,7 +457,7 @@ function template_optimize()
 
 function template_convert_utf8()
 {
-	global $context, $txt, $settings, $scripturl;
+	global $context, $txt, $scripturl;
 
 	echo '
 	<div id="manage_maintenance">
@@ -493,7 +493,7 @@ function template_convert_utf8()
 
 function template_convert_entities()
 {
-	global $context, $txt, $settings, $scripturl;
+	global $context, $txt, $scripturl;
 
 	echo '
 	<div id="manage_maintenance">
@@ -511,7 +511,7 @@ function template_convert_entities()
 
 function template_convert_msgbody()
 {
-	global $context, $txt, $settings, $scripturl;
+	global $context, $txt, $scripturl;
 
 	echo '
 	<div id="manage_maintenance">

@@ -12,7 +12,7 @@
 
 function template_permission_index()
 {
-	global $context, $settings, $options, $scripturl, $txt, $modSettings;
+	global $context, $settings, $scripturl, $txt, $modSettings;
 
 	echo '
 	<div id="admin_form_wrapper">
@@ -225,7 +225,7 @@ function template_permission_index()
 
 function template_modify_group()
 {
-	global $context, $settings, $options, $scripturl, $txt, $modSettings;
+	global $context, $settings, $scripturl, $txt, $modSettings;
 
 	echo '
 		<script><!-- // --><![CDATA[
@@ -283,7 +283,7 @@ function template_modify_group()
 // A javascript enabled clean permissions view.
 function template_modify_group_simple($type)
 {
-	global $context, $settings, $options, $scripturl, $txt, $modSettings;
+	global $context, $settings, $txt, $modSettings;
 
 	// Simple only has one column so we only need bother ourself with that one.
 	$permission_data = &$context['permissions'][$type]['columns'][0];
@@ -540,7 +540,7 @@ function template_modify_group_simple($type)
 // The SMF 1.x way of looking at permissions.
 function template_modify_group_classic($type)
 {
-	global $context, $settings, $options, $scripturl, $txt, $modSettings;
+	global $context, $txt, $modSettings;
 
 	$permission_type = &$context['permissions'][$type];
 
@@ -695,7 +695,7 @@ function template_modify_group_classic($type)
 
 function template_inline_permissions()
 {
-	global $context, $settings, $options, $txt, $modSettings;
+	global $context, $txt, $modSettings;
 
 	echo '
 		<fieldset id="', $context['current_permission'], '">
@@ -761,7 +761,7 @@ function template_inline_permissions()
 			document.getElementById("', $context['current_permission'], '_groups_link").style.display = "";
 		// ]]></script>';
 }
-/* @todoy: yeni bir emre kadar kaldýrýldý
+/* @todoy: yeni bir emre kadar kaldï¿½rï¿½ldï¿½
 // Edit post moderation permissions.
 function template_postmod_permissions()
 {

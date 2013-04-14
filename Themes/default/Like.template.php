@@ -7,7 +7,7 @@
 
 function template_main()
 {
-	global $context, $settings, $options, $scripturl, $modSettings, $txt;
+	global $context, $txt;
 
 	echo '
 	<div id="like_info_', $context['like_info']['id'], '">', $context['like_info']['msg'], '</div>

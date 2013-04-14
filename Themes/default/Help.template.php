@@ -12,7 +12,7 @@
 
 function template_find_members()
 {
-	global $context, $settings, $options, $scripturl, $modSettings, $txt;
+	global $context, $settings, $scripturl, $txt;
 
 	echo '<!DOCTYPE html>
 <html>

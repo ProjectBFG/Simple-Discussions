@@ -12,7 +12,7 @@
 
 function template_main()
 {
-	global $context, $settings, $options, $txt, $scripturl;
+	global $context, $settings, $txt, $scripturl;
 
 	echo '
 	<div id="recent" class="main_section">
@@ -78,7 +78,7 @@ function template_main()
 
 function template_unread()
 {
-	global $context, $settings, $options, $txt, $scripturl, $modSettings;
+	global $context, $settings, $txt, $scripturl, $modSettings;
 
 	echo '
 	<div id="recent" class="main_content">';
@@ -246,7 +246,7 @@ function template_unread()
 
 function template_replies()
 {
-	global $context, $settings, $options, $txt, $scripturl, $modSettings;
+	global $context, $settings, $txt, $scripturl, $modSettings;
 
 	echo '
 	<div id="recent">';

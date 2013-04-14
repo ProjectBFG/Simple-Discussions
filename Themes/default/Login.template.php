@@ -13,7 +13,7 @@
 // This is just the basic "login" form.
 function template_login()
 {
-	global $context, $settings, $options, $scripturl, $modSettings, $txt;
+	global $context, $settings, $scripturl, $modSettings, $txt;
 
 	echo '
 		<script src="', $settings['default_theme_url'], '/scripts/sha1.js"></script>
@@ -74,7 +74,7 @@ function template_login()
 // Tell a guest to get lost or login!
 function template_kick_guest()
 {
-	global $context, $settings, $options, $scripturl, $modSettings, $txt;
+	global $context, $settings, $scripturl, $modSettings, $txt;
 
 	// This isn't that much... just like normal login but with a message at the top.
 	echo '
@@ -129,7 +129,7 @@ function template_kick_guest()
 // This is for maintenance mode.
 function template_maintenance()
 {
-	global $context, $settings, $options, $scripturl, $txt, $modSettings;
+	global $context, $settings, $scripturl, $txt, $modSettings;
 
 	// Display the administrator's message at the top.
 	echo '
@@ -168,7 +168,7 @@ function template_maintenance()
 // This is for the security stuff - makes administrators login every so often.
 function template_admin_login()
 {
-	global $context, $settings, $options, $scripturl, $txt;
+	global $context, $settings, $scripturl, $txt;
 
 	// Since this should redirect to whatever they were doing, send all the get data.
 	echo '
@@ -209,7 +209,7 @@ function template_admin_login()
 // Activate your account manually?
 function template_retry_activate()
 {
-	global $context, $settings, $options, $txt, $scripturl;
+	global $context, $txt, $scripturl;
 
 	// Just ask them for their code so they can try it again...
 	echo '
@@ -238,7 +238,7 @@ function template_retry_activate()
 // Activate your account manually?
 function template_resend()
 {
-	global $context, $settings, $options, $txt, $scripturl;
+	global $context, $txt, $scripturl;
 
 	// Just ask them for their code so they can try it again...
 	echo '

@@ -12,7 +12,7 @@
 
 function template_email_members()
 {
-	global $context, $settings, $options, $txt, $scripturl;
+	global $context, $settings, $txt, $scripturl;
 
 	echo '
 	<div id="admincenter">
@@ -183,7 +183,7 @@ function template_email_members()
 
 function template_email_members_compose()
 {
-	global $context, $settings, $options, $txt, $scripturl;
+	global $context, $txt, $scripturl;
 
 	echo '
 		<div id="preview_section"', isset($context['preview_message']) ? '' : ' style="display: none;"', '>
@@ -390,7 +390,7 @@ function template_email_members_compose()
 
 function template_email_members_send()
 {
-	global $context, $settings, $options, $txt, $scripturl;
+	global $context, $txt, $scripturl;
 
 	echo '
 	<div id="admincenter">
