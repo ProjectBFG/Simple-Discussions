@@ -24,11 +24,11 @@ function template_pm_above()
 		echo '
 		<div class="title_bar">
 			<h3 class="titlebg">
-				<span class="floatleft">', $txt['pm_capacity'], ':</span>
-				<span class="floatleft capacity_bar">
+				<span class="pull-left">', $txt['pm_capacity'], ':</span>
+				<span class="pull-left capacity_bar">
 					<span class="', $context['limit_bar']['percent'] > 85 ? 'full' : ($context['limit_bar']['percent'] > 40 ? 'filled' : 'empty'), '" style="width: ', $context['limit_bar']['percent'] / 10, 'em;"></span>
 				</span>
-				<span class="floatright', $context['limit_bar']['percent'] > 90 ? ' alert' : '', '">', $context['limit_bar']['text'], '</span>
+				<span class="pull-right', $context['limit_bar']['percent'] > 90 ? ' alert' : '', '">', $context['limit_bar']['text'], '</span>
 			</h3>
 		</div>';
 
@@ -498,8 +498,8 @@ function template_folder()
 			echo '
 
 	<div class="pagesection">
-		<div class="floatleft">', $context['page_index'], '</div>
-		<div class="floatright"><input type="submit" name="del_selected" value="', $txt['quickmod_delete_selected'], '" style="font-weight: normal;" onclick="if (!confirm(\'', $txt['delete_selected_confirm'], '\')) return false;" class="btn" /></div>
+		<div class="pull-left">', $context['page_index'], '</div>
+		<div class="pull-right"><input type="submit" name="del_selected" value="', $txt['quickmod_delete_selected'], '" style="font-weight: normal;" onclick="if (!confirm(\'', $txt['delete_selected_confirm'], '\')) return false;" class="btn" /></div>
 	</div>';
 
 		// Show a few buttons if we are in conversation mode and outputting the first message.
@@ -600,8 +600,8 @@ function template_subject_list()
 	</tbody>
 	</table>
 	<div class="pagesection">
-		<div class="floatleft">', $context['page_index'], '</div>
-		<div class="floatright">&nbsp;';
+		<div class="pull-left">', $context['page_index'], '</div>
+		<div class="pull-right">&nbsp;';
 
 	if ($context['show_delete'])
 	{
@@ -750,7 +750,7 @@ function template_search()
 				</ul>
 				</div>
 				<p>
-					<span class="floatleft"><input type="checkbox" name="all" id="check_all" value="" ', $context['check_all'] ? 'checked="checked"' : '', ' onclick="invertAll(this, this.form, \'searchlabel\');" class="input_check" /><em> <label for="check_all">', $txt['check_all'], '</label></em></span>
+					<span class="pull-left"><input type="checkbox" name="all" id="check_all" value="" ', $context['check_all'] ? 'checked="checked"' : '', ' onclick="invertAll(this, this.form, \'searchlabel\');" class="input_check" /><em> <label for="check_all">', $txt['check_all'], '</label></em></span>
 					<input type="submit" name="pm_search" value="', $txt['pm_search_go'], '" class="btn" />
 				</p>
 				<br class="clear_right" />
@@ -831,8 +831,8 @@ function template_search_results()
 			echo '
 			<div class="title_bar">
 				<h3 class="titlebg">
-					<span class="floatright">', $txt['search_on'], ': ', $message['time'], '</span>
-					<span class="floatleft">', $message['counter'], '&nbsp;&nbsp;<a href="', $message['href'], '">', $message['subject'], '</a></span>
+					<span class="pull-right">', $txt['search_on'], ': ', $message['time'], '</span>
+					<span class="pull-left">', $message['counter'], '&nbsp;&nbsp;<a href="', $message['href'], '">', $message['subject'], '</a></span>
 				</h3>
 			</div>
 				<h3 class="catbg">', $txt['from'], ': ', $message['member']['link'], ', ', $txt['to'], ': ';
@@ -1239,7 +1239,7 @@ function template_send()
 	<div class="windowbg2">
 		<div class="content">
 			<div class="clear">
-				<span class="smalltext floatright">', $txt['on'], ': ', $context['quoted_message']['time'], '</span>
+				<span class="smalltext pull-right">', $txt['on'], ': ', $context['quoted_message']['time'], '</span>
 				<strong>', $txt['from'], ': ', $context['quoted_message']['member']['name'], '</strong>
 			</div>
 			<hr />
@@ -1701,11 +1701,11 @@ function template_add_rule()
 		<div class="windowbg">
 			<div class="content">
 				<dl class="addrules">
-					<dt class="floatleft">
+					<dt class="pull-left">
 						<strong>', $txt['pm_rule_name'], ':</strong><br />
 						<span class="smalltext">', $txt['pm_rule_name_desc'], '</span>
 					</dt>
-					<dd class="floatleft">
+					<dd class="pull-left">
 						<input type="text" name="rule_name" value="', empty($context['rule']['name']) ? $txt['pm_rule_name_default'] : $context['rule']['name'], '" size="50" class="input_text" />
 					</dd>
 				</dl>

@@ -364,10 +364,10 @@ function template_modify_user_subscription()
 			echo '
 					<li class="reset">
 						', $payment['desc'], '
-						<span class="floatleft">
+						<span class="pull-left">
 							<a href="', $scripturl, '?action=admin;area=paidsubscribe;sa=modifyuser;lid=', $context['log_id'], ';pending=', $id, ';accept">', $txt['pending_payments_accept'], '</a>
 						</span>
-						<span class="floatright">
+						<span class="pull-right">
 							<a href="', $scripturl, '?action=admin;area=paidsubscribe;sa=modifyuser;lid=', $context['log_id'], ';pending=', $id, ';remove">', $txt['pending_payments_remove'], '</a>
 						</span>
 					</li>';

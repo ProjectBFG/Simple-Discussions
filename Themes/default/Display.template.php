@@ -36,7 +36,7 @@ function template_main()
 	echo '
 			<div class="pagination">
 				', template_button_strip($context['normal_buttons'], 'right'), '
-				', !empty($modSettings['topbottomEnable']) ? $context['menu_separator'] . '<a href="#bot" class="topbottom floatleft">' . $txt['go_down'] . '</a>' : '', '
+				', !empty($modSettings['topbottomEnable']) ? $context['menu_separator'] . '<a href="#bot" class="topbottom pull-left">' . $txt['go_down'] . '</a>' : '', '
 					', $context['page_index'], '
 			</div>';
 
@@ -271,7 +271,7 @@ function template_main()
 	echo '
 			<div class="pagination">
 				', template_button_strip($context['normal_buttons'], 'right'), '
-				', !empty($modSettings['topbottomEnable']) ? $context['menu_separator'] . '<a href="#top" class="topbottom floatleft">' . $txt['go_up'] . '</a>' : '', '
+				', !empty($modSettings['topbottomEnable']) ? $context['menu_separator'] . '<a href="#top" class="topbottom pull-left">' . $txt['go_up'] . '</a>' : '', '
 				', $context['page_index'], '
 			</div>';
 

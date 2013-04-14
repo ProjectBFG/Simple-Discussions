@@ -339,13 +339,13 @@ function issueWarning($memID)
 						global $scripturl, $txt, $settings;
 
 						$ret = \'
-						<div class="floatleft">
+						<div class="pull-left">
 							\' . $warning[\'reason\'] . \'
 						</div>\';
 
 						if (!empty($warning[\'id_notice\']))
 							$ret .= \'
-						<div class="floatright">
+						<div class="pull-right">
 							<a href="\' . $scripturl . \'?action=moderate;area=notice;nid=\' . $warning[\'id_notice\'] . \'" onclick="window.open(this.href, \\\'\\\', \\\'scrollbars=yes,resizable=yes,width=400,height=250\\\');return false;" target="_blank" class="new_win" title="\' . $txt[\'profile_warning_previous_notice\'] . \'"><img src="\' . $settings[\'images_url\'] . \'/filter.png" alt="" /></a>
 						</div>\';
 

@@ -18,14 +18,14 @@ function template_search_members()
 	<div id="admincenter">
 		<form action="', $scripturl, '?action=admin;area=viewmembers" method="post" accept-charset="', $context['character_set'], '">
 			<h3 class="titlebg">
-				<span class="floatleft">', $txt['search_for'], '</span>
-				<span class="smalltext floatright">', $txt['wild_cards_allowed'], '</span>
+				<span class="pull-left">', $txt['search_for'], '</span>
+				<span class="smalltext pull-right">', $txt['wild_cards_allowed'], '</span>
 			</h3>
 			<input type="hidden" name="sa" value="query" />
 			<div class="well">
 				<div class="content">
 					<div class="flow_hidden">
-						<div class="msearch_details floatleft">
+						<div class="msearch_details pull-left">
 							<dl class="settings right">
 								<dt>
 									<strong><label for="mem_id">', $txt['member_id'], ':</label></strong>
@@ -94,7 +94,7 @@ function template_search_members()
 								</dd>
 							</dl>
 						</div>
-						<div class="msearch_details floatright">
+						<div class="msearch_details pull-right">
 							<dl class="settings right">
 								<dt class="righttext">
 									<strong><label for="membername">', $txt['username'], ':</label></strong>
@@ -130,7 +130,7 @@ function template_search_members()
 						</div>
 					</div>
 					<div class="flow_hidden">
-						<div class="msearch_details floatleft">
+						<div class="msearch_details pull-left">
 							<fieldset>
 								<legend>', $txt['gender'], '</legend>
 								<label for="gender-0" class="checkbox"><input type="checkbox" name="gender[]" value="0" id="gender-0" checked="checked" class="input_check" /> ', $txt['undefined_gender'], '</label>&nbsp;&nbsp;
@@ -138,7 +138,7 @@ function template_search_members()
 								<label for="gender-2" class="checkbox"><input type="checkbox" name="gender[]" value="2" id="gender-2" checked="checked" class="input_check" /> ', $txt['female'], '</label>
 							</fieldset>
 						</div>
-						<div class="msearch_details floatright">
+						<div class="msearch_details pull-right">
 							<fieldset>
 								<legend>', $txt['activation_status'], '</legend>
 								<label for="activated-0" class="checkbox"><input type="checkbox" name="activated[]" value="1" id="activated-0" checked="checked" class="input_check" /> ', $txt['activated'], '</label>&nbsp;&nbsp;
@@ -150,7 +150,7 @@ function template_search_members()
 			</div>
 			<h3 class="titlebg">', $txt['member_part_of_these_membergroups'], '</h3>
 			<div class="flow_hidden well">
-				<table style="width: 49%" class="table table-striped table-bordered floatleft">
+				<table style="width: 49%" class="table table-striped table-bordered pull-left">
 					<thead>
 						<tr class="titlebg">
 							<th scope="col" class="first_th">', $txt['membergroups'], '</th>
@@ -187,7 +187,7 @@ function template_search_members()
 					</tbody>
 				</table>
 
-				<table style="width: 49%" class="table table-striped table-bordered floatright">
+				<table style="width: 49%" class="table table-striped table-bordered pull-right">
 					<thead>
 						<tr class="titlebg">
 							<th scope="col" class="first_th">

@@ -138,7 +138,7 @@ function template_maintenance()
 	<div class="tborder login" id="maintenance_mode">
 			<h3 class="catbg">', $context['title'], '</h3>
 		<p class="description">
-			<img class="floatleft" src="', $settings['images_url'], '/construction.png" width="40" height="40" alt="', $txt['in_maintain_mode'], '" />
+			<img class="pull-left" src="', $settings['images_url'], '/construction.png" width="40" height="40" alt="', $txt['in_maintain_mode'], '" />
 			', $context['description'], '<br class="clear" />
 		</p>
 		<div class="title_bar">

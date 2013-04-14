@@ -289,7 +289,7 @@ function ViewModlog()
 					' . ($context['can_delete'] ? '&nbsp;|
 					<input type="submit" name="remove" value="' . $txt['modlog_remove'] . '" onclick="return confirm(\'' . $txt['modlog_remove_selected_confirm'] . '\');" class="btn" />
 					<input type="submit" name="removeall" value="' . $txt['modlog_removeall'] . '" onclick="return confirm(\'' . $txt['modlog_remove_all_confirm'] . '\');" class="btn" />' : ''),
-				'class' => 'floatright',
+				'class' => 'pull-right',
 			),
 		),
 	);

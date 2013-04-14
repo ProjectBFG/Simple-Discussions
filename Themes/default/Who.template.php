@@ -25,7 +25,7 @@ function template_main()
 			<div class="topic_table" id="mlist">
 					<div class="pagination">', $context['page_index'], '';
 		echo '
-					<div class="selectbox floatright">', $txt['who_show1'], '
+					<div class="selectbox pull-right">', $txt['who_show1'], '
 						<select name="show_top" onchange="document.forms.whoFilter.show.value = this.value; document.forms.whoFilter.submit();">';
 
 		foreach ($context['show_methods'] as $value => $label)
@@ -93,7 +93,7 @@ function template_main()
 				</table>
 				<div class="pagination">', $context['page_index'], '';
 		echo '
-					<div class="selectbox floatright">', $txt['who_show1'], '
+					<div class="selectbox pull-right">', $txt['who_show1'], '
 						<select name="show" onchange="document.forms.whoFilter.submit();">';
 
 		foreach ($context['show_methods'] as $value => $label)

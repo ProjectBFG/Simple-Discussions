@@ -55,7 +55,7 @@ function template_admin()
 
 	// Display the "live news" from simplemachines.org.
 	echo '
-			<div id="live_news" class="floatleft">
+			<div id="live_news" class="pull-left">
 					<h3 class="catbg">
 						', $txt['live'], '
 					</h3>
@@ -68,7 +68,7 @@ function template_admin()
 
 	// Show the user version information from their server.
 	echo '
-			<div id="supportVersionsTable" class="floatright">
+			<div id="supportVersionsTable" class="pull-right">
 					<h3 class="catbg">
 						<a href="', $scripturl, '?action=admin;area=credits">', $txt['support_title'], '</a>
 					</h3>
@@ -848,7 +848,7 @@ function template_show_settings()
 					{
 						foreach ($bbcColumn as $bbcTag)
 							echo '
-										<li class="list_bbc floatleft">
+										<li class="list_bbc pull-left">
 											<label class="checkbox" for="tag_', $config_var['name'], '_', $bbcTag['tag'], '"><input type="checkbox" name="', $config_var['name'], '_enabledTags[]" id="tag_', $config_var['name'], '_', $bbcTag['tag'], '" value="', $bbcTag['tag'], '"', !in_array($bbcTag['tag'], $context['bbc_sections'][$config_var['name']]['disabled']) ? ' checked="checked"' : '', ' class="input_check" />', $bbcTag['tag'], '</label>
 										</li>';
 					}

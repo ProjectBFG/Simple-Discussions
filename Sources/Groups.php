@@ -743,7 +743,7 @@ function GroupRequests()
 						<option value="reason">' . $txt['mc_groupr_reject_w_reason'] . '</option>
 					</select>
 					<input type="submit" name="go" value="' . $txt['go'] . '" onclick="var sel = document.getElementById(\'req_action\'); if (sel.value != 0 &amp;&amp; sel.value != \'reason\' &amp;&amp; !confirm(\'' . $txt['mc_groupr_warning'] . '\')) return false;" class="btn" />',
-				'class' => 'floatright',
+				'class' => 'pull-right',
 			),
 		),
 	);

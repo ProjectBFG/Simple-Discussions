@@ -49,13 +49,13 @@ function template_ban_edit()
 						<textarea name="notes" id="ban_notes" cols="40" rows="3" style="min-height: 64px; max-height: 64px; min-width: 50%; max-width: 99%;">', $context['ban']['notes'], '</textarea>
 					</dd>
 				</dl>
-				<fieldset class="ban_settings floatleft">
+				<fieldset class="ban_settings pull-left">
 					<legend>', $txt['ban_expiration'], '</legend>
 					<label class="radio" for="never_expires"><input type="radio" name="expiration" value="never" id="never_expires" onclick="fUpdateStatus();"', $context['ban']['expiration']['status'] == 'never' ? ' checked="checked"' : '', ' class="input_radio" />', $txt['never'], '</label><br />
 					<label class="radio" for="expires_one_day"><input type="radio" name="expiration" value="one_day" id="expires_one_day" onclick="fUpdateStatus();"', $context['ban']['expiration']['status'] == 'still_active_but_we_re_counting_the_days' ? ' checked="checked"' : '', ' class="input_radio" />', $txt['ban_will_expire_within'], ': <input type="text" name="expire_date" id="expire_date" size="3" value="', $context['ban']['expiration']['days'], '" class="input_text" /> ', $txt['ban_days'], '</label>
 					<label class="radio" for="already_expired"><input type="radio" name="expiration" value="expired" id="already_expired" onclick="fUpdateStatus();"', $context['ban']['expiration']['status'] == 'expired' ? ' checked="checked"' : '', ' class="input_radio" />', $txt['ban_expired'], '</label>
 				</fieldset>
-				<fieldset class="ban_settings floatright">
+				<fieldset class="ban_settings pull-right">
 					<legend>
 						', $txt['ban_restriction'], '
 					</legend>
