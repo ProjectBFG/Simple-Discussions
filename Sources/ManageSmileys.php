@@ -21,7 +21,7 @@ if (!defined('SMF'))
  */
 function ManageSmileys()
 {
-	global $context, $txt, $scripturl, $modSettings;
+	global $context, $txt, $modSettings;
 
 	isAllowedTo('manage_smileys');
 
@@ -100,7 +100,7 @@ function ManageSmileys()
  */
 function EditSmileySettings($return_config = false)
 {
-	global $modSettings, $context, $settings, $txt, $boarddir, $sourcedir, $scripturl;
+	global $modSettings, $context, $txt, $boarddir, $sourcedir, $scripturl;
 
 	// The directories...
 	$context['smileys_dir'] = empty($modSettings['smileys_dir']) ? $boarddir . '/Smileys' : $modSettings['smileys_dir'];
@@ -173,7 +173,7 @@ function EditSmileySettings($return_config = false)
  */
 function EditSmileySets()
 {
-	global $modSettings, $context, $settings, $txt, $boarddir;
+	global $modSettings, $context, $txt;
 	global $smcFunc, $scripturl, $sourcedir;
 
 	// Set the right tab to be selected.
@@ -517,7 +517,7 @@ function list_getNumSmileySets()
  */
 function AddSmiley()
 {
-	global $modSettings, $context, $settings, $txt, $boarddir, $smcFunc;
+	global $modSettings, $context, $txt, $boarddir, $smcFunc;
 
 	// Get a list of all known smiley sets.
 	$context['smileys_dir'] = empty($modSettings['smileys_dir']) ? $boarddir . '/Smileys' : $modSettings['smileys_dir'];
@@ -766,7 +766,7 @@ function AddSmiley()
  */
 function EditSmileys()
 {
-	global $modSettings, $context, $settings, $txt, $boarddir;
+	global $modSettings, $context, $txt, $boarddir;
 	global $smcFunc, $scripturl, $sourcedir;
 
 	// Force the correct tab to be displayed.
@@ -1227,7 +1227,7 @@ function list_getNumSmileys()
  */
 function EditSmileyOrder()
 {
-	global $modSettings, $context, $settings, $txt, $boarddir, $smcFunc;
+	global $context, $txt, $smcFunc;
 
 	// Move smileys to another position.
 	if (isset($_REQUEST['reorder']))

@@ -23,7 +23,7 @@ if (!defined('SMF'))
  */
 function activateAccount($memID)
 {
-	global $sourcedir, $context, $user_profile, $modSettings, $user_info;
+	global $sourcedir, $context, $user_profile, $modSettings;
 
 	isAllowedTo('moderate_forum');
 
@@ -67,7 +67,7 @@ function activateAccount($memID)
 function issueWarning($memID)
 {
 	global $txt, $scripturl, $modSettings, $user_info, $mbname;
-	global $context, $cur_profile, $memberContext, $smcFunc, $sourcedir;
+	global $context, $cur_profile, $smcFunc, $sourcedir;
 
 	// Get all the actual settings.
 	list ($modSettings['warning_enable'], $modSettings['user_limit']) = explode(',', $modSettings['warning_settings']);
@@ -518,7 +518,7 @@ function list_getUserWarnings($start, $items_per_page, $sort, $memID)
  */
 function deleteAccount($memID)
 {
-	global $txt, $context, $user_info, $modSettings, $cur_profile, $smcFunc;
+	global $txt, $context, $modSettings, $cur_profile;
 
 	if (!$context['user']['is_owner'])
 		isAllowedTo('profile_remove_any');

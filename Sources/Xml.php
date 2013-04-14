@@ -41,7 +41,7 @@ function XMLhttpMain()
 
 function EnableCoreFeatures()
 {
-	global $context, $smcFunc, $sourcedir, $modSettings, $txt, $boarddir, $settings;
+	global $context, $sourcedir, $modSettings, $txt, $boarddir, $settings;
 
 	$context['xml_data'] = array();
 	// Just in case, maybe we don't need it
@@ -188,7 +188,7 @@ function newspreview()
 }
 function newsletterpreview()
 {
-	global $context, $sourcedir, $smcFunc, $txt;
+	global $context, $sourcedir, $txt;
 
 	require_once($sourcedir . '/Subs-Post.php');
 	require_once($sourcedir . '/ManageNews.php');

@@ -170,8 +170,8 @@ function PlushSearch1()
  */
 function PlushSearch2()
 {
-	global $scripturl, $modSettings, $sourcedir, $txt, $db_connection;
-	global $user_info, $context, $options, $messages_request;
+	global $scripturl, $modSettings, $sourcedir, $txt;
+	global $user_info, $context, $messages_request;
 	global $excludedWords, $participants, $smcFunc;
 
 	// if comming from the quick search box, and we want to search on members, well we need to do that ;)
@@ -1652,8 +1652,8 @@ function PlushSearch2()
  */
 function prepareSearchContext($reset = false)
 {
-	global $txt, $modSettings, $scripturl, $user_info, $sourcedir;
-	global $memberContext, $context, $settings, $options, $messages_request;
+	global $txt, $modSettings, $scripturl, $user_info;
+	global $memberContext, $context, $options, $messages_request;
 	global $participants, $smcFunc;
 
 	// Remember which message this is.  (ie. reply #83)

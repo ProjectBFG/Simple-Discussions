@@ -27,7 +27,7 @@ if (!defined('SMF'))
  */
 function validateSession($type = 'admin')
 {
-	global $modSettings, $sourcedir, $user_info, $sc, $user_settings;
+	global $modSettings, $sourcedir, $user_info, $sc;
 
 	// We don't care if the option is off, because Guests should NEVER get past here.
 	is_not_guest();
@@ -737,7 +737,6 @@ function createToken($action, $type = 'post')
  */
 function validateToken($action, $type = 'post', $reset = true)
 {
-	global $modSettings;
 
 	$type = $type == 'get' || $type == 'request' ? $type : 'post';
 
@@ -869,7 +868,7 @@ function checkSubmitOnce($action, $is_fatal = true)
  */
 function allowedTo($permission)
 {
-	global $user_info, $modSettings, $smcFunc;
+	global $user_info, $smcFunc;
 
 	// You're always allowed to do nothing. (unless you're a working man, MR. LAZY :P!)
 	if (empty($permission))
@@ -970,7 +969,7 @@ function isAllowedTo($permission)
  */
 function boardsAllowedTo($permissions, $check_access = true, $simple = true)
 {
-	global $user_info, $modSettings, $smcFunc;
+	global $user_info, $smcFunc;
 
 	// Arrays are nice, most of the time.
 	if (!is_array($permissions))
@@ -1100,7 +1099,7 @@ function showEmailAddress($userProfile_hideEmail, $userProfile_id)
  */
 function spamProtection($error_type)
 {
-	global $modSettings, $txt, $user_info, $smcFunc;
+	global $modSettings, $user_info, $smcFunc;
 
 	// Certain types take less/more time.
 	$timeOverrides = array(

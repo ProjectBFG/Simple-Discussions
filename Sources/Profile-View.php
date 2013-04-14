@@ -20,7 +20,7 @@ if (!defined('SMF'))
  */
 function summary($memID)
 {
-	global $context, $memberContext, $txt, $modSettings, $user_info, $user_profile, $sourcedir, $scripturl, $smcFunc;
+	global $context, $memberContext, $txt, $modSettings, $user_profile, $sourcedir, $scripturl, $smcFunc;
 
 	// Attempt to load the member's profile data.
 	if (!loadMemberContext($memID) || !isset($memberContext[$memID]))
@@ -457,7 +457,7 @@ function showPosts($memID)
  */
 function showDisregarded($memID)
 {
-	global $txt, $user_info, $scripturl, $modSettings, $context, $sourcedir, $smcFunc;
+	global $txt, $user_info, $scripturl, $modSettings, $context, $sourcedir;
 
 	// Only the owner can see the list (if the function is enabled of course)
 	if ($user_info['id'] != $memID || !$modSettings['enable_disregard'])
@@ -577,7 +577,7 @@ function showDisregarded($memID)
  */
 function list_getDisregarded($start, $items_per_page, $sort, $memID)
 {
-	global $smcFunc, $modSettings, $context;
+	global $smcFunc;
 
 	// Get the list of topics we can see
 	$request = $smcFunc['db_query']('', '
@@ -635,7 +635,7 @@ function list_getDisregarded($start, $items_per_page, $sort, $memID)
  */
 function list_getNumDisregarded($memID)
 {
-	global $smcFunc, $user_info;
+	global $smcFunc;
 
 	// Get the total number of attachments they have posted.
 	$request = $smcFunc['db_query']('', '
@@ -661,7 +661,7 @@ function list_getNumDisregarded($memID)
  */
 function statPanel($memID)
 {
-	global $txt, $scripturl, $context, $user_profile, $user_info, $modSettings, $smcFunc;
+	global $txt, $context, $user_profile, $user_info, $modSettings, $smcFunc;
 
 	$context['page_title'] = $txt['statPanel_showStats'] . ' ' . $user_profile[$memID]['real_name'];
 
@@ -758,7 +758,7 @@ function statPanel($memID)
  */
 function tracking($memID)
 {
-	global $sourcedir, $context, $txt, $scripturl, $modSettings, $user_profile;
+	global $sourcedir, $context, $txt, $modSettings, $user_profile;
 
 	$subActions = array(
 		'activity' => array('trackActivity', $txt['trackActivity']),
@@ -1121,7 +1121,7 @@ function list_getIPMessageCount($where, $where_vars = array())
  */
 function list_getIPMessages($start, $items_per_page, $sort, $where, $where_vars = array())
 {
-	global $smcFunc, $txt, $scripturl;
+	global $smcFunc, $scripturl;
 
 	// Get all the messages fitting this where clause.
 	// @todo SLOW This query is using a filesort.
@@ -1443,8 +1443,8 @@ function TrackIP($memID = 0)
  */
 function TrackLogins($memID = 0)
 {
-	global $user_profile, $scripturl, $txt, $user_info, $modSettings, $sourcedir;
-	global $context, $smcFunc;
+	global $scripturl, $txt, $sourcedir;
+	global $context;
 
 	// Gonna want this for the list.
 	require_once($sourcedir . '/Subs-List.php');
@@ -1553,7 +1553,7 @@ function list_getLoginCount($where, $where_vars = array())
  */
 function list_getLogins($start, $items_per_page, $sort, $where, $where_vars = array())
 {
-	global $smcFunc, $txt, $scripturl;
+	global $smcFunc;
 
 	$request = $smcFunc['db_query']('', '
 		SELECT time, ip, ip2
@@ -1799,8 +1799,8 @@ function list_getProfileEdits($start, $items_per_page, $sort, $memID)
  */
 function showPermissions($memID)
 {
-	global $scripturl, $txt, $modSettings;
-	global $user_profile, $context, $user_info, $sourcedir, $smcFunc;
+	global $txt;
+	global $user_profile, $context, $sourcedir, $smcFunc;
 
 	// Verify if the user has sufficient permissions.
 	isAllowedTo('manage_permissions');

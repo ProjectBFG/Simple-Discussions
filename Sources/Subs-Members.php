@@ -371,7 +371,7 @@ function deleteMembers($users, $check_not_admin = false)
 function registerMember(&$regOptions, $return_errors = false)
 {
 	global $scripturl, $txt, $modSettings, $context, $sourcedir;
-	global $user_info, $options, $settings, $smcFunc;
+	global $user_info, $smcFunc;
 
 	loadLanguage('Login');
 
@@ -771,7 +771,7 @@ function registerMember(&$regOptions, $return_errors = false)
  */
 function isReservedName($name, $current_ID_MEMBER = 0, $is_name = true, $fatal = true)
 {
-	global $user_info, $modSettings, $smcFunc, $context;
+	global $modSettings, $smcFunc;
 
 	$name = preg_replace_callback('~(&#(\d{1,7}|x[0-9a-fA-F]{1,6});)~', 'replaceEntities__callback', $name);
 	$checkName = $smcFunc['strtolower']($name);
@@ -873,7 +873,7 @@ function isReservedName($name, $current_ID_MEMBER = 0, $is_name = true, $fatal =
  */
 function groupsAllowedTo($permission)
 {
-	global $modSettings, $smcFunc;
+	global $smcFunc;
 
 	// Admins are allowed to do anything.
 	$member_groups = array(

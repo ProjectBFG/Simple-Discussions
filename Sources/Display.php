@@ -713,7 +713,7 @@ function Display()
 function prepareDisplayContext($reset = false)
 {
 	global $settings, $txt, $modSettings, $scripturl, $options, $user_info, $smcFunc;
-	global $memberContext, $context, $messages_request, $topic, $topicinfo;
+	global $memberContext, $context, $messages_request, $topic;
 
 	static $counter = null;
 

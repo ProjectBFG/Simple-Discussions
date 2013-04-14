@@ -25,7 +25,7 @@ if (!defined('SMF'))
  */
 function loadProfileFields($force_reload = false)
 {
-	global $context, $profile_fields, $txt, $scripturl, $modSettings, $user_info, $old_profile, $smcFunc, $cur_profile, $language;
+	global $context, $profile_fields, $txt, $scripturl, $modSettings, $user_info, $cur_profile, $language;
 
 	// Don't load this twice!
 	if (!empty($profile_fields) && !$force_reload)
@@ -626,7 +626,7 @@ function loadProfileFields($force_reload = false)
  */
 function setupProfileContext($fields)
 {
-	global $profile_fields, $context, $cur_profile, $smcFunc, $txt;
+	global $profile_fields, $context, $cur_profile, $txt;
 
 	// Make sure we have this!
 	loadProfileFields(true);
@@ -711,7 +711,7 @@ function setupProfileContext($fields)
  */
 function saveProfileFields()
 {
-	global $profile_fields, $profile_vars, $context, $old_profile, $post_errors, $sourcedir, $modSettings, $cur_profile, $smcFunc;
+	global $profile_fields, $profile_vars, $context, $old_profile, $post_errors, $cur_profile;
 
 	// Load them up.
 	loadProfileFields();
@@ -850,9 +850,8 @@ function saveProfileFields()
  */
 function saveProfileChanges(&$profile_vars, &$post_errors, $memID)
 {
-	global $user_info, $txt, $modSettings, $user_profile;
-	global $context, $settings, $sourcedir;
-	global $smcFunc;
+	global $user_profile;
+	global $context;
 
 	// These make life easier....
 	$old_profile = &$user_profile[$memID];
@@ -1172,7 +1171,7 @@ function makeCustomFieldChanges($memID, $area, $sanitize = true)
  */
 function editBuddyIgnoreLists($memID)
 {
-	global $sourcedir, $context, $txt, $scripturl, $modSettings, $user_profile;
+	global $context, $txt, $modSettings;
 
 	// Do a quick check to ensure people aren't getting here illegally!
 	if (!$context['user']['is_owner'] || empty($modSettings['enable_buddylist']))
@@ -1212,7 +1211,6 @@ function editBuddyIgnoreLists($memID)
  */
 function editBuddies($memID)
 {
-	global $txt, $scripturl, $modSettings;
 	global $context, $user_profile, $memberContext, $smcFunc;
 
 	// For making changes!
@@ -1331,7 +1329,6 @@ function editBuddies($memID)
  */
 function editIgnoreList($memID)
 {
-	global $txt, $scripturl, $modSettings;
 	global $context, $user_profile, $memberContext, $smcFunc;
 
 	// For making changes!
@@ -1470,7 +1467,7 @@ function account($memID)
  */
 function forumProfile($memID)
 {
-	global $context, $user_profile, $user_info, $txt, $modSettings;
+	global $context, $txt;
 
 	loadThemeOptions($memID);
 	if (allowedTo(array('profile_extra_own', 'profile_extra_any')))
@@ -1497,7 +1494,7 @@ function forumProfile($memID)
  */
 function pmprefs($memID)
 {
-	global $sourcedir, $context, $txt, $scripturl;
+	global $context, $txt;
 
 	loadThemeOptions($memID);
 	loadCustomFields($memID, 'pmprefs');
@@ -1519,7 +1516,7 @@ function pmprefs($memID)
  */
 function theme($memID)
 {
-	global $txt, $context, $user_profile, $modSettings, $settings, $user_info, $smcFunc;
+	global $txt, $context;
 
 	loadThemeOptions($memID);
 	if (allowedTo(array('profile_extra_own', 'profile_extra_any')))
@@ -1544,7 +1541,7 @@ function theme($memID)
  */
 function notification($memID)
 {
-	global $txt, $scripturl, $user_profile, $user_info, $context, $modSettings, $smcFunc, $sourcedir, $settings;
+	global $txt, $scripturl, $user_profile, $context, $modSettings, $sourcedir;
 
 	// Gonna want this for the list.
 	require_once($sourcedir . '/Subs-List.php');
@@ -1684,7 +1681,7 @@ function notification($memID)
  */
 function list_getTopicNotificationCount($memID)
 {
-	global $smcFunc, $user_info, $context, $modSettings;
+	global $smcFunc, $modSettings;
 
 	$request = $smcFunc['db_query']('', '
 		SELECT COUNT(*)
@@ -1715,7 +1712,7 @@ function list_getTopicNotificationCount($memID)
  */
 function list_getTopicNotifications($start, $items_per_page, $sort, $memID)
 {
-	global $smcFunc, $txt, $scripturl, $user_info, $context, $modSettings;
+	global $smcFunc, $scripturl, $user_info, $modSettings;
 
 	// All the topics with notification on...
 	$request = $smcFunc['db_query']('', '
@@ -1829,7 +1826,7 @@ function loadThemeOptions($memID)
  */
 function profileLoadLanguages()
 {
-	global $context, $modSettings, $settings, $cur_profile, $language, $smcFunc;
+	global $context;
 
 	$context['profile_languages'] = array();
 
@@ -1909,7 +1906,7 @@ function profileLoadGroups()
  */
 function profileLoadSignatureData()
 {
-	global $modSettings, $context, $txt, $cur_profile, $smcFunc, $memberContext;
+	global $modSettings, $context, $txt, $cur_profile, $memberContext;
 
 	// Signature limits.
 	list ($sig_limits, $sig_bbc) = explode(':', $modSettings['signature_settings']);
@@ -2255,7 +2252,7 @@ function profileValidateSignature(&$value)
  */
 function profileValidateEmail($email, $memID = 0)
 {
-	global $smcFunc, $context;
+	global $smcFunc;
 
 	$email = strtr($email, array('&#039;' => '\''));
 
@@ -2290,7 +2287,7 @@ function profileValidateEmail($email, $memID = 0)
  */
 function profileReloadUser()
 {
-	global $sourcedir, $modSettings, $context, $cur_profile, $smcFunc, $profile_vars;
+	global $sourcedir, $modSettings, $context, $cur_profile;
 
 	// Log them back in - using the verify password as they must have matched and this one doesn't get changed by anyone!
 	if (isset($_POST['passwrd2']) && $_POST['passwrd2'] != '')
@@ -2364,7 +2361,7 @@ function profileSendActivation()
  */
 function groupMembership($memID)
 {
-	global $txt, $scripturl, $user_profile, $user_info, $context, $modSettings, $smcFunc;
+	global $txt, $user_profile, $context, $smcFunc;
 
 	$curMember = $user_profile[$memID];
 	$context['primary_group'] = $curMember['id_group'];
@@ -2463,7 +2460,7 @@ function groupMembership($memID)
  */
 function groupMembership2($profile_vars, $post_errors, $memID)
 {
-	global $user_info, $sourcedir, $context, $user_profile, $modSettings, $txt, $smcFunc, $scripturl, $language;
+	global $sourcedir, $context, $user_profile, $modSettings, $txt, $smcFunc, $scripturl, $language;
 
 	// Let's be extra cautious...
 	if (!$context['user']['is_owner'] || empty($modSettings['show_group_membership']))

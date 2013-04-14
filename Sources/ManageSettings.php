@@ -25,7 +25,7 @@ if (!defined('SMF'))
  */
 function loadGeneralSettingParameters($subActions = array(), $defaultAction = '')
 {
-	global $context, $txt, $sourcedir;
+	global $context, $sourcedir;
 
 	// You need to be an admin to edit settings!
 	isAllowedTo('admin_forum');
@@ -47,7 +47,7 @@ function loadGeneralSettingParameters($subActions = array(), $defaultAction = ''
  */
 function ModifyFeatureSettings()
 {
-	global $context, $txt, $scripturl, $modSettings, $settings;
+	global $context, $txt, $settings;
 
 	$context['page_title'] = $txt['modSettings_title'];
 
@@ -94,7 +94,7 @@ function ModifyFeatureSettings()
  */
 function ModifySecuritySettings()
 {
-	global $context, $txt, $scripturl, $modSettings, $settings;
+	global $context, $txt;
 
 	$context['page_title'] = $txt['admin_security_moderation'];
 
@@ -136,7 +136,7 @@ function ModifySecuritySettings()
  */
 function ModifyModSettings()
 {
-	global $context, $txt, $scripturl, $modSettings, $settings;
+	global $context, $txt;
 
 	$context['page_title'] = $txt['admin_modifications'];
 
@@ -174,7 +174,7 @@ function ModifyModSettings()
  */
 function ModifyCoreFeatures($return_config = false)
 {
-	global $txt, $scripturl, $context, $settings, $sc, $modSettings;
+	global $txt, $scripturl, $context, $settings, $modSettings;
 
 	/* This is an array of all the features that can be enabled/disabled - each option can have the following:
 		title		- Text title of this item (If standard string does not exist).
@@ -464,7 +464,7 @@ function ModifyCoreFeatures($return_config = false)
  */
 function ModifyBasicSettings($return_config = false)
 {
-	global $txt, $scripturl, $context, $settings, $sc, $modSettings;
+	global $txt, $scripturl, $context;
 
 	$config_vars = array(
 			// Basic stuff, titles, flash, permissions...
@@ -547,7 +547,7 @@ function ModifyBasicSettings($return_config = false)
  */
 function ModifyGeneralSecuritySettings($return_config = false)
 {
-	global $txt, $scripturl, $context, $settings, $sc, $modSettings;
+	global $txt, $scripturl, $context;
 
 	$config_vars = array(
 			array('check', 'guest_hideContacts'),
@@ -606,7 +606,7 @@ function ModifyGeneralSecuritySettings($return_config = false)
  */
 function ModifyLayoutSettings($return_config = false)
 {
-	global $txt, $scripturl, $context, $settings, $sc;
+	global $txt, $scripturl, $context;
 
 	$config_vars = array(
 			// Pagination stuff.
@@ -659,7 +659,7 @@ function ModifyLayoutSettings($return_config = false)
  */
 function ModifyModerationSettings($return_config = false)
 {
-	global $txt, $scripturl, $context, $settings, $sc, $modSettings;
+	global $txt, $scripturl, $context, $modSettings;
 
 	$config_vars = array(
 			// Warning system?
@@ -724,7 +724,7 @@ function ModifyModerationSettings($return_config = false)
  */
 function ModifySpamSettings($return_config = false)
 {
-	global $txt, $scripturl, $context, $settings, $sc, $modSettings, $smcFunc;
+	global $txt, $scripturl, $context, $modSettings, $smcFunc;
 
 	// Generate a sample registration image.
 	$context['use_graphic_library'] = in_array('gd', get_loaded_extensions());
@@ -1294,8 +1294,8 @@ function pauseSignatureApplySettings()
  */
 function ShowCustomProfiles()
 {
-	global $txt, $scripturl, $context, $settings, $sc, $smcFunc;
-	global $modSettings, $sourcedir;
+	global $txt, $scripturl, $context;
+	global $sourcedir;
 
 	$context['page_title'] = $txt['custom_profile_title'];
 	$context['sub_template'] = 'show_custom_profile';
@@ -1595,7 +1595,7 @@ function list_getProfileFieldSize()
  */
 function EditCustomProfiles()
 {
-	global $txt, $scripturl, $context, $settings, $sc, $smcFunc;
+	global $txt, $scripturl, $context, $smcFunc;
 
 	// Sort out the context!
 	$context['fid'] = isset($_GET['fid']) ? (int) $_GET['fid'] : 0;
@@ -1999,7 +1999,7 @@ function EditCustomProfiles()
  */
 function ModifyPruningSettings($return_config = false)
 {
-	global $txt, $scripturl, $sourcedir, $context, $settings, $sc, $modSettings;
+	global $txt, $scripturl, $sourcedir, $context, $modSettings;
 
 	// Make sure we understand what's going on.
 	loadLanguage('ManageSettings');
@@ -2078,7 +2078,7 @@ function ModifyPruningSettings($return_config = false)
  */
 function ModifyGeneralModSettings($return_config = false)
 {
-	global $txt, $scripturl, $context, $settings, $sc, $modSettings;
+	global $txt, $scripturl, $context;
 
 	$config_vars = array(
 		// Mod authors, add any settings UNDER this line. Include a comma at the end of the line and don't remove this statement!!

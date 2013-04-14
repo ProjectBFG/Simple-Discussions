@@ -20,7 +20,7 @@ if (!defined('SMF'))
  */
 function EmailUser()
 {
-	global $topic, $txt, $context, $scripturl, $sourcedir, $smcFunc;
+	global $context;
 
 	// Don't index anything here.
 	$context['robot_no_index'] = true;
@@ -378,7 +378,7 @@ function ReportToModerator()
  */
 function ReportToModerator2()
 {
-	global $txt, $scripturl, $topic, $board, $user_info, $modSettings, $sourcedir, $language, $context, $smcFunc;
+	global $txt, $topic, $board, $user_info, $modSettings, $sourcedir, $context, $smcFunc;
 
 	// You must have the proper permissions!
 	isAllowedTo('report_any');

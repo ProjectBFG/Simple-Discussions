@@ -21,7 +21,7 @@ if (!defined('SMF'))
  */
 function PackageGet()
 {
-	global $txt, $scripturl, $context, $boarddir, $sourcedir, $modSettings;
+	global $txt, $context, $sourcedir;
 
 	isAllowedTo('admin_forum');
 	require_once($sourcedir . '/Subs-Package.php');
@@ -84,7 +84,7 @@ function PackageGet()
  */
 function PackageServers()
 {
-	global $txt, $scripturl, $context, $boarddir, $sourcedir, $modSettings, $smcFunc;
+	global $txt, $context, $boarddir, $sourcedir, $modSettings, $smcFunc;
 
 	// Ensure we use the correct template, and page title.
 	$context['sub_template'] = 'servers';
@@ -179,7 +179,7 @@ function PackageServers()
  */
 function PackageGBrowse()
 {
-	global $txt, $boardurl, $context, $scripturl, $boarddir, $sourcedir, $forum_version, $context, $smcFunc;
+	global $txt, $context, $scripturl, $sourcedir, $forum_version, $context, $smcFunc;
 
 	if (isset($_GET['server']))
 	{
@@ -511,7 +511,7 @@ function PackageGBrowse()
  */
 function PackageDownload()
 {
-	global $txt, $scripturl, $boarddir, $context, $sourcedir, $smcFunc;
+	global $txt, $scripturl, $boarddir, $context, $smcFunc;
 
 	// Use the downloaded sub template.
 	$context['sub_template'] = 'downloaded';
@@ -618,7 +618,7 @@ function PackageDownload()
  */
 function PackageUpload()
 {
-	global $txt, $scripturl, $boarddir, $context, $sourcedir;
+	global $txt, $scripturl, $boarddir, $context;
 
 	// Setup the correct template, even though I'll admit we ain't downloading ;)
 	$context['sub_template'] = 'downloaded';

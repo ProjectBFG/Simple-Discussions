@@ -193,7 +193,7 @@ function InMaintenance()
  */
 function adminLogin($type = 'admin')
 {
-	global $context, $scripturl, $txt, $user_info, $user_settings;
+	global $context, $txt, $user_info;
 
 	loadLanguage('Admin');
 	loadTemplate('Login');
@@ -254,7 +254,6 @@ function adminLogin($type = 'admin')
  */
 function adminLogin_outputPostVars($k, $v)
 {
-	global $smcFunc;
 
 	if (!is_array($v))
 		return '
@@ -322,7 +321,7 @@ function construct_query_string($get)
  */
 function findMembers($names, $use_wildcards = false, $buddies_only = false, $max = 500)
 {
-	global $scripturl, $user_info, $modSettings, $smcFunc;
+	global $scripturl, $user_info, $smcFunc;
 
 	// If it's not already an array, make it one.
 	if (!is_array($names))
@@ -525,7 +524,7 @@ function RequestMembers()
  */
 function resetPassword($memID, $username = null)
 {
-	global $scripturl, $context, $txt, $sourcedir, $modSettings, $smcFunc, $language;
+	global $sourcedir, $modSettings, $smcFunc, $language;
 
 	// Language... and a required file.
 	loadLanguage('Login');

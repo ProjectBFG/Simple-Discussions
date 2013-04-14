@@ -69,7 +69,7 @@ function BlogAdminMain()
 
 function BlogList()
 {
-	global $context, $smcFunc, $txt, $scripturl, $sourcedir;
+	global $context, $txt, $scripturl, $sourcedir;
 	
 	$context['page_title'] = $txt['blog_list'];
 
@@ -237,7 +237,7 @@ function BlogList()
 
 function AddBlog()
 {
-	global $context, $txt, $scripturl, $sourcedir;
+	global $context, $txt, $sourcedir;
 	
 	$context['submit_label'] = $txt['post'];
 	
@@ -273,7 +273,7 @@ function AddBlog()
 
 function AddBlog2()
 {
-	global $smcFunc, $context, $scripturl, $user_info, $sourcedir;
+	global $smcFunc, $scripturl, $user_info, $sourcedir;
 	
 	require_once($sourcedir . '/Subs-Post.php');
 	require_once($sourcedir . '/Subs-Blog.php');
@@ -324,7 +324,7 @@ function AddBlog2()
 
 function EditBlog()
 {
-	global $context, $txt, $scripturl, $sourcedir;
+	global $context, $txt, $sourcedir;
 	
 	$context['submit_label'] = $txt['post'];
 	

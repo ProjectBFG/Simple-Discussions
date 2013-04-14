@@ -21,7 +21,7 @@ if (!defined('SMF'))
  */
 function RecentPosts()
 {
-	global $txt, $scripturl, $user_info, $context, $modSettings, $sourcedir, $smcFunc;
+	global $txt, $scripturl, $user_info, $context, $modSettings, $smcFunc;
 
 	loadTemplate('Recent');
 	$context['page_title'] = $txt['recent_posts'];
@@ -172,7 +172,7 @@ function RecentPosts()
  */
 function UnreadTopics()
 {
-	global $txt, $scripturl, $sourcedir;
+	global $txt, $scripturl;
 	global $user_info, $context, $settings, $modSettings, $smcFunc, $options;
 
 	// Guests can't have unread things, we don't know anything about them.

@@ -24,7 +24,7 @@ if (!defined('SMF'))
  */
 function MessageMain()
 {
-	global $txt, $scripturl, $sourcedir, $context, $user_info, $user_settings, $smcFunc, $modSettings;
+	global $txt, $sourcedir, $context, $user_info, $user_settings, $smcFunc, $modSettings;
 
 	// No guests!
 	is_not_guest();
@@ -210,7 +210,7 @@ function MessageMain()
  */
 function messageIndexBar($area)
 {
-	global $txt, $context, $scripturl, $sourcedir, $sc, $modSettings, $settings, $user_info, $options;
+	global $txt, $context, $scripturl, $sourcedir, $modSettings, $user_info;
 
 	$pm_areas = array(
 		'folders' => array(
@@ -361,7 +361,7 @@ function messageIndexBar($area)
 function MessageFolder()
 {
 	global $txt, $scripturl, $modSettings, $context, $subjects_request;
-	global $messages_request, $user_info, $recipients, $options, $smcFunc, $memberContext, $user_settings;
+	global $messages_request, $user_info, $recipients, $options, $smcFunc, $user_settings;
 
 	// Changing view?
 	if (isset($_GET['view']))
@@ -927,7 +927,7 @@ function prepareMessageContext($type = 'subject', $reset = false)
  */
 function MessageSearch()
 {
-	global $context, $txt, $scripturl, $modSettings, $smcFunc;
+	global $context, $txt, $modSettings;
 
 	if (isset($_REQUEST['params']))
 	{
@@ -1931,7 +1931,7 @@ function messagePostError($error_types, $named_recipients, $recipient_ids = arra
 function MessagePost2()
 {
 	global $txt, $context, $sourcedir;
-	global $user_info, $modSettings, $scripturl, $smcFunc;
+	global $user_info, $modSettings, $smcFunc;
 
 	isAllowedTo('pm_send');
 	require_once($sourcedir . '/Subs-Auth.php');
@@ -2221,7 +2221,7 @@ function MessagePost2()
  */
 function MessageActionsApply()
 {
-	global $txt, $context, $user_info, $options, $smcFunc;
+	global $context, $user_info, $options, $smcFunc;
 
 	checkSession('request');
 
@@ -2415,7 +2415,7 @@ function MessageKillAll()
  */
 function MessagePrune()
 {
-	global $txt, $context, $user_info, $scripturl, $smcFunc;
+	global $txt, $context, $user_info, $smcFunc;
 
 	// Actually delete the messages.
 	if (isset($_REQUEST['age']))
@@ -2690,7 +2690,7 @@ function markMessages($personal_messages = null, $label = null, $owner = null)
  */
 function ManageLabels()
 {
-	global $txt, $context, $user_info, $scripturl, $smcFunc;
+	global $txt, $context, $user_info, $smcFunc;
 
 	$context['page_title'] = $txt['pm_manage_labels'];
 	$context['sub_template'] = 'labels';
@@ -2899,7 +2899,7 @@ function ManageLabels()
  */
 function MessageSettings()
 {
-	global $txt, $user_settings, $user_info, $context, $sourcedir, $smcFunc;
+	global $txt, $user_info, $context, $sourcedir;
 	global $scripturl, $profile_vars, $cur_profile, $user_profile;
 
 	// Need this for the display.
@@ -2954,7 +2954,7 @@ function MessageSettings()
  */
 function ReportMessage()
 {
-	global $txt, $context, $scripturl, $sourcedir;
+	global $txt, $context, $scripturl;
 	global $user_info, $language, $modSettings, $smcFunc;
 
 	// Check that this feature is even enabled!
@@ -3123,7 +3123,7 @@ function ReportMessage()
  */
 function ManageRules()
 {
-	global $txt, $context, $user_info, $scripturl, $smcFunc;
+	global $txt, $context, $user_info, $smcFunc;
 
 	$context['page_title'] = $txt['pm_manage_rules'];
 	$context['sub_template'] = 'rules';

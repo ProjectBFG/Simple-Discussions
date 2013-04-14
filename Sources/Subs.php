@@ -43,7 +43,7 @@ if (!defined('SMF'))
  */
 function updateStats($type, $parameter1 = null, $parameter2 = null)
 {
-	global $sourcedir, $modSettings, $smcFunc;
+	global $modSettings, $smcFunc;
 
 	switch ($type)
 	{
@@ -829,7 +829,7 @@ function permute($array)
  */
 function parse_bbc($message, $smileys = true, $cache_id = '', $parse_tags = array())
 {
-	global $txt, $scripturl, $context, $modSettings, $user_info, $smcFunc;
+	global $txt, $scripturl, $context, $modSettings, $user_info;
 	static $bbc_codes = array(), $itemcodes = array(), $no_autolink_tags = array();
 	static $disabled;
 
@@ -2429,7 +2429,6 @@ function parsesmileys(&$message)
  */
 function highlight_php_code($code)
 {
-	global $context;
 
 	// Remove special characters.
 	$code = un_htmlspecialchars(strtr($code, array('<br />' => "\n", "\t" => 'SMF_TAB();', '&#91;' => '[')));
@@ -3034,7 +3033,7 @@ function template_header()
  */
 function theme_copyright()
 {
-	global $forum_copyright, $context, $boardurl, $forum_version, $txt, $modSettings;
+	global $forum_copyright, $forum_version;
 
 	// Don't display copyright for things like SSI.
 	if (!isset($forum_version))
@@ -3335,7 +3334,7 @@ function text2words($text, $max_chars = 20, $encrypt = false)
  */
 function create_button($name, $alt, $label = '', $custom = '', $force_use = false)
 {
-	global $settings, $txt, $context;
+	global $settings, $txt;
 
 	// Does the current loaded theme have this and we are not forcing the usage of this function?
 	if (function_exists('template_create_button') && !$force_use)

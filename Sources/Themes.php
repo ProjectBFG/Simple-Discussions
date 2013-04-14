@@ -43,7 +43,7 @@ if (!defined('SMF'))
  */
 function ThemesMain()
 {
-	global $txt, $context, $scripturl;
+	global $txt, $context;
 
 	// Load the important language files...
 	loadLanguage('Themes');
@@ -691,7 +691,7 @@ function SetThemeOptions()
  */
 function SetThemeSettings()
 {
-	global $txt, $context, $settings, $modSettings, $sourcedir, $smcFunc;
+	global $txt, $context, $settings, $modSettings, $smcFunc;
 
 	if (empty($_GET['th']) && empty($_GET['id']))
 		return ThemeAdmin();
@@ -929,7 +929,7 @@ function RemoveTheme()
  */
 function PickTheme()
 {
-	global $txt, $context, $modSettings, $user_info, $language, $smcFunc, $settings, $scripturl;
+	global $txt, $context, $modSettings, $user_info, $language, $smcFunc, $settings;
 
 	loadLanguage('Profile');
 	loadTemplate('Themes');
@@ -1687,7 +1687,7 @@ function SetJavaScript()
  */
 function EditTheme()
 {
-	global $context, $settings, $scripturl, $boarddir, $smcFunc;
+	global $context, $scripturl, $boarddir, $smcFunc;
 
 	// @todo Should this be removed?
 	if (isset($_REQUEST['preview']))
