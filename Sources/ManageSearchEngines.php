@@ -21,7 +21,7 @@ if (!defined('SMF'))
  */
 function SearchEngines()
 {
-	global $context, $txt, $scripturl;
+	global $context, $txt;
 
 	isAllowedTo('admin_forum');
 
@@ -60,7 +60,7 @@ function SearchEngines()
  */
 function ManageSearchEngineSettings($return_config = false)
 {
-	global $context, $txt, $modSettings, $scripturl, $sourcedir, $smcFunc;
+	global $context, $txt, $scripturl, $sourcedir, $smcFunc;
 
 	$config_vars = array(
 		// How much detail?

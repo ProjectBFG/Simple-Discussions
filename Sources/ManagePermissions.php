@@ -26,7 +26,7 @@ if (!defined('SMF'))
 
 function ModifyPermissions()
 {
-	global $txt, $scripturl, $context;
+	global $txt, $context;
 
 	loadLanguage('ManagePermissions+ManageMembers');
 	loadTemplate('ManagePermissions');
@@ -37,7 +37,7 @@ function ModifyPermissions()
 		'modify' => array('ModifyMembergroup', 'manage_permissions'),
 		'modify2' => array('ModifyMembergroup2', 'manage_permissions'),
 		'quick' => array('SetQuickGroups', 'manage_permissions'),
-		/* @todoy: yeni bir emre kadar kaldýrýldý
+		/* @todoy: yeni bir emre kadar kaldï¿½rï¿½ldï¿½
 		'postmod' => array('ModifyPostModeration', 'manage_permissions', 'disabled' => !in_array('pm', $context['admin_features'])), */
 		'settings' => array('GeneralPermissionSettings', 'admin_forum'),
 	);
@@ -55,7 +55,7 @@ function ModifyPermissions()
 			'index' => array(
 				'description' => $txt['permissions_groups'],
 			),
-			/* @todoy: yeni bir emre kadar kaldýrýldý
+			/* @todoy: yeni bir emre kadar kaldï¿½rï¿½ldï¿½
 			'postmod' => array(
 				'description' => $txt['permissions_post_moderation_desc'],
 			), */
@@ -446,7 +446,7 @@ function SetQuickGroups()
  */
 function ModifyMembergroup()
 {
-	global $context, $txt, $modSettings, $smcFunc, $sourcedir;
+	global $context, $txt, $smcFunc, $sourcedir;
 
 	if (!isset($_GET['group']))
 		fatal_lang_error('no_access', false);
@@ -557,7 +557,7 @@ function ModifyMembergroup()
  */
 function ModifyMembergroup2()
 {
-	global $modSettings, $smcFunc, $context;
+	global $smcFunc, $context;
 
 	checkSession();
 	validateToken('admin-mp');
@@ -1436,7 +1436,7 @@ function loadIllegalGuestPermissions()
 	call_integration_hook('integrate_load_illegal_guest_permissions');
 }
 
-/* @todoy: yeni bir emre kadar kaldýrýldý
+/* @todoy: yeni bir emre kadar kaldï¿½rï¿½ldï¿½
 /**
  * Present a nice way of applying post moderation.
  

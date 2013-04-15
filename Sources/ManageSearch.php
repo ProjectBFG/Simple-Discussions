@@ -29,7 +29,7 @@ if (!defined('SMF'))
  */
 function ManageSearch()
 {
-	global $context, $txt, $scripturl;
+	global $context, $txt;
 
 	isAllowedTo('admin_forum');
 
@@ -86,7 +86,7 @@ function ManageSearch()
  */
 function EditSearchSettings($return_config = false)
 {
-	global $txt, $context, $scripturl, $sourcedir, $modSettings;
+	global $txt, $context, $scripturl, $sourcedir;
 
 	// What are we editing anyway?
 	$config_vars = array(

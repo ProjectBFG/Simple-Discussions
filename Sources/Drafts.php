@@ -30,7 +30,7 @@ loadLanguage('Drafts');
  */
 function SaveDraft(&$post_errors)
 {
-	global $txt, $context, $user_info, $smcFunc, $modSettings;
+	global $context, $user_info, $smcFunc, $modSettings;
 
 	// can you be, should you be ... here?
 	if (empty($modSettings['drafts_enabled']) || empty($modSettings['drafts_post_enabled']) || !allowedTo('post_draft') || !isset($_POST['save_draft']) || !isset($_POST['id_draft']))
@@ -508,7 +508,7 @@ function XmlDraft($id_draft)
  */
 function showProfileDrafts($memID, $draft_type = 0)
 {
-	global $txt, $user_info, $scripturl, $modSettings, $context, $smcFunc;
+	global $txt, $scripturl, $modSettings, $context, $smcFunc;
 
 	// Some initial context.
 	$context['start'] = isset($_REQUEST['start']) ? (int) $_REQUEST['start'] : 0;

@@ -40,7 +40,7 @@ if (!defined('SMF'))
  */
 function ReportsMain()
 {
-	global $txt, $modSettings, $context, $scripturl;
+	global $txt, $context, $scripturl;
 
 	// Only admins, only EVER admins!
 	isAllowedTo('admin_forum');
@@ -119,7 +119,7 @@ function ReportsMain()
  */
 function MemberGroupsReport()
 {
-	global $context, $txt, $settings, $modSettings, $smcFunc;
+	global $txt, $settings, $smcFunc;
 
 	// Standard settings.
 	$mgSettings = array(
@@ -205,7 +205,7 @@ function MemberGroupsReport()
  */
 function GroupPermissionsReport()
 {
-	global $context, $txt, $modSettings, $smcFunc;
+	global $txt, $modSettings, $smcFunc;
 
 	if (isset($_REQUEST['groups']))
 	{
@@ -303,7 +303,7 @@ function GroupPermissionsReport()
  */
 function StaffReport()
 {
-	global $sourcedir, $context, $txt, $smcFunc;
+	global $sourcedir, $txt, $smcFunc;
 
 	require_once($sourcedir . '/Subs-Members.php');
 

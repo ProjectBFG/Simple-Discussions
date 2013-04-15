@@ -28,7 +28,7 @@ if (!defined('SMF'))
  */
 function preparsecode(&$message, $previewing = false)
 {
-	global $user_info, $modSettings, $smcFunc, $context;
+	global $user_info, $context;
 
 	// This line makes all languages *theoretically* work even with the wrong charset ;).
 	$message = preg_replace('~&amp;#(\d{4,5}|[2-9]\d{2,4}|1[2-9]\d);~', '&#$1;', $message);
@@ -257,7 +257,6 @@ function preparsecode(&$message, $previewing = false)
  */
 function un_preparsecode($message)
 {
-	global $smcFunc;
 
 	$parts = preg_split('~(\[/code\]|\[code(?:=[^\]]+)?\])~i', $message, -1, PREG_SPLIT_DELIM_CAPTURE);
 
@@ -522,7 +521,6 @@ function fixTag(&$message, $myTag, $protocols, $embeddedUrl = false, $hasEqualSi
 function sendmail($to, $subject, $message, $from = null, $message_id = null, $send_html = false, $priority = 3, $hotmail_fix = null, $is_private = false)
 {
 	global $webmaster_email, $context, $modSettings, $txt, $scripturl;
-	global $smcFunc;
 
 	// Use sendmail if it's set or if no SMTP server is set.
 	$use_sendmail = empty($modSettings['mail_type']) || $modSettings['smtp_host'] == '';
@@ -700,7 +698,7 @@ function sendmail($to, $subject, $message, $from = null, $message_id = null, $se
  */
 function AddMailQueue($flush = false, $to_array = array(), $subject = '', $message = '', $headers = '', $send_html = false, $priority = 3, $is_private = false)
 {
-	global $context, $modSettings, $smcFunc;
+	global $context, $smcFunc;
 
 	static $cur_insert = array();
 	static $cur_insert_len = 0;
@@ -1540,8 +1538,8 @@ function SpellCheck()
  */
 function sendNotifications($topics, $type, $exclude = array(), $members_only = array())
 {
-	global $txt, $scripturl, $language, $user_info;
-	global $modSettings, $sourcedir, $context, $smcFunc;
+	global $scripturl, $language, $user_info;
+	global $modSettings, $smcFunc;
 
 	// Can't do it if there's no topics.
 	if (empty($topics))
@@ -1741,7 +1739,7 @@ function sendNotifications($topics, $type, $exclude = array(), $members_only = a
  */
 function createPost(&$msgOptions, &$topicOptions, &$posterOptions)
 {
-	global $user_info, $txt, $modSettings, $smcFunc, $context, $sourcedir;
+	global $user_info, $txt, $modSettings, $smcFunc, $sourcedir;
 
 	// Set optional parameters to the default value.
 	$msgOptions['smileys_enabled'] = !empty($msgOptions['smileys_enabled']);
@@ -2044,7 +2042,7 @@ function createPost(&$msgOptions, &$topicOptions, &$posterOptions)
  */
 function modifyPost(&$msgOptions, &$topicOptions, &$posterOptions)
 {
-	global $user_info, $modSettings, $smcFunc, $context, $sourcedir;
+	global $user_info, $modSettings, $smcFunc, $sourcedir;
 
 	$topicOptions['lock_mode'] = isset($topicOptions['lock_mode']) ? $topicOptions['lock_mode'] : null;
 	$topicOptions['sticky_mode'] = isset($topicOptions['sticky_mode']) ? $topicOptions['sticky_mode'] : null;
@@ -2195,7 +2193,7 @@ function modifyPost(&$msgOptions, &$topicOptions, &$posterOptions)
  */
 function approvePosts($msgs, $approve = true)
 {
-	global $sourcedir, $smcFunc;
+	global $smcFunc;
 
 	if (!is_array($msgs))
 		$msgs = array($msgs);
@@ -2416,8 +2414,8 @@ function approveTopics($topics, $approve = true)
  */
 function sendApprovalNotifications(&$topicData)
 {
-	global $txt, $scripturl, $language, $user_info;
-	global $modSettings, $sourcedir, $context, $smcFunc;
+	global $scripturl, $language, $user_info;
+	global $modSettings, $smcFunc;
 
 	// Clean up the data...
 	if (!is_array($topicData) || empty($topicData))
@@ -2555,7 +2553,7 @@ function sendApprovalNotifications(&$topicData)
  */
 function adminNotify($type, $memberID, $member_name = null)
 {
-	global $txt, $modSettings, $language, $scripturl, $user_info, $context, $smcFunc;
+	global $modSettings, $language, $scripturl, $user_info, $smcFunc;
 
 	// If the setting isn't enabled then just exit.
 	if (empty($modSettings['notify_new_registration']))
@@ -2652,7 +2650,7 @@ function adminNotify($type, $memberID, $member_name = null)
  */
 function loadEmailTemplate($template, $replacements = array(), $lang = '', $loadLang = true)
 {
-	global $txt, $mbname, $scripturl, $settings, $user_info;
+	global $txt, $mbname, $scripturl, $settings;
 
 	// First things first, load up the email templates language file, if we need to.
 	if ($loadLang)

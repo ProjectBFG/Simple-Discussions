@@ -23,7 +23,7 @@ if (!defined('SMF'))
  */
 function Groups()
 {
-	global $context, $txt, $scripturl, $sourcedir, $user_info;
+	global $sourcedir, $user_info;
 
 	// The sub-actions that we can do. Format "Function Name, Mod Bar Index if appropriate".
 	$subActions = array(
@@ -797,7 +797,7 @@ function list_getGroupRequestCount($where, $where_parameters)
  */
 function list_getGroupRequests($start, $items_per_page, $sort, $where, $where_parameters)
 {
-	global $smcFunc, $txt, $scripturl;
+	global $smcFunc, $scripturl;
 
 	$request = $smcFunc['db_query']('', '
 		SELECT lgr.id_request, lgr.id_member, lgr.id_group, lgr.time_applied, lgr.reason,

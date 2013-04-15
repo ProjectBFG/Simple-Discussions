@@ -10,7 +10,6 @@ if (!defined('SMF'))
 
 function BlogMain()
 {
-	global $context, $txt, $scripturl;
 	
 	loadTemplate('Blog');
 	

@@ -23,7 +23,7 @@ if (!defined('SMF'))
  */
 function ManageMail()
 {
-	global $context, $txt, $scripturl, $modSettings, $sourcedir;
+	global $context, $txt, $sourcedir;
 
 	// You need to be an admin to edit settings!
 	isAllowedTo('admin_forum');
@@ -63,7 +63,7 @@ function ManageMail()
  */
 function BrowseMailQueue()
 {
-	global $scripturl, $context, $modSettings, $txt, $smcFunc;
+	global $scripturl, $context, $txt, $smcFunc;
 	global $sourcedir;
 
 	// First, are we deleting something from the queue?
@@ -276,7 +276,7 @@ function list_getMailQueueSize()
  */
 function ModifyMailSettings($return_config = false)
 {
-	global $txt, $scripturl, $context, $settings, $modSettings, $txtBirthdayEmails;
+	global $txt, $scripturl, $context, $modSettings, $txtBirthdayEmails;
 
 	loadLanguage('EmailTemplates');
 

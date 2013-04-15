@@ -26,7 +26,7 @@ if (!defined('SMF'))
  */
 function ManagePostSettings()
 {
-	global $context, $txt, $scripturl;
+	global $context, $txt;
 
 	// Make sure you can be here.
 	isAllowedTo('admin_forum');
@@ -80,7 +80,7 @@ function ManagePostSettings()
  */
 function SetCensor()
 {
-	global $txt, $modSettings, $context, $smcFunc, $sourcedir;
+	global $txt, $modSettings, $context, $sourcedir;
 
 	if (!empty($_POST['save_censor']))
 	{
@@ -175,7 +175,7 @@ function SetCensor()
  */
 function ModifyPostSettings($return_config = false)
 {
-	global $context, $txt, $modSettings, $scripturl, $sourcedir, $smcFunc, $db_prefix, $db_type;
+	global $context, $txt, $modSettings, $scripturl, $sourcedir, $smcFunc, $db_type;
 
 	// All the settings...
 	$config_vars = array(
@@ -326,7 +326,7 @@ function ModifyBBCSettings($return_config = false)
  */
 function ModifyTopicSettings($return_config = false)
 {
-	global $context, $txt, $modSettings, $sourcedir, $scripturl;
+	global $context, $txt, $sourcedir, $scripturl;
 
 	// Here are all the topic settings.
 	$config_vars = array(

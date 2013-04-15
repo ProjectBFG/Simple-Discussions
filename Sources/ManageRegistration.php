@@ -28,7 +28,7 @@ if (!defined('SMF'))
  */
 function RegCenter()
 {
-	global $modSettings, $context, $txt, $scripturl;
+	global $context, $txt;
 
 	// Old templates might still request this.
 	if (isset($_REQUEST['sa']) && $_REQUEST['sa'] == 'browse')
@@ -171,7 +171,7 @@ function AdminRegister()
 function EditAgreement()
 {
 	// I hereby agree not to be a lazy bum.
-	global $txt, $boarddir, $context, $modSettings, $smcFunc, $settings;
+	global $txt, $boarddir, $context, $modSettings;
 
 	// By default we look at agreement.txt.
 	$context['current_agreement'] = '';
@@ -270,7 +270,7 @@ function SetReserved()
  */
 function ModifyRegistrationSettings($return_config = false)
 {
-	global $txt, $context, $scripturl, $modSettings, $sourcedir;
+	global $txt, $context, $scripturl, $sourcedir;
 
 	// This is really quite wanting.
 	require_once($sourcedir . '/ManageServer.php');

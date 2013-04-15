@@ -25,7 +25,7 @@ if (!defined('SMF'))
  */
 function RepairBoards()
 {
-	global $txt, $context, $sourcedir;
+	global $txt, $context;
 
 	isAllowedTo('admin_forum');
 

@@ -22,7 +22,7 @@ if (!defined('SMF'))
  */
 function ManageMaintenance()
 {
-	global $txt, $modSettings, $scripturl, $context, $options;
+	global $txt, $context;
 
 	// You absolutely must be an admin by here!
 	isAllowedTo('admin_forum');
@@ -253,7 +253,7 @@ function MaintainMembers()
  */
 function MaintainTopics()
 {
-	global $context, $smcFunc, $txt;
+	global $context, $txt;
 
 	if (isset($_GET['done']) && $_GET['done'] == 'purgeold')
 		$context['maintenance_finished'] = $txt['maintain_old'];
@@ -362,7 +362,7 @@ function Destroy()
  */
 function ConvertUtf8()
 {
-	global $scripturl, $context, $txt, $language, $db_character_set;
+	global $context, $txt, $language, $db_character_set;
 	global $modSettings, $user_info, $sourcedir, $smcFunc, $db_prefix;
 
 	// Show me your badge!
@@ -736,8 +736,8 @@ function ConvertUtf8()
  */
 function ConvertMsgBody()
 {
-	global $scripturl, $context, $txt, $language, $db_character_set, $db_type;
-	global $modSettings, $user_info, $sourcedir, $smcFunc, $db_prefix, $time_start;
+	global $scripturl, $context, $txt, $db_type;
+	global $modSettings, $smcFunc, $time_start;
 
 	// Show me your badge!
 	isAllowedTo('admin_forum');
@@ -1076,7 +1076,7 @@ function ConvertEntities()
  */
 function OptimizeTables()
 {
-	global $db_type, $db_name, $db_prefix, $txt, $context, $scripturl, $sourcedir, $smcFunc;
+	global $db_prefix, $txt, $context, $sourcedir, $smcFunc;
 
 	isAllowedTo('admin_forum');
 
@@ -1144,7 +1144,7 @@ function OptimizeTables()
  */
 function AdminBoardRecount()
 {
-	global $txt, $context, $scripturl, $modSettings, $sourcedir;
+	global $txt, $context, $sourcedir;
 	global $time_start, $smcFunc;
 
 	isAllowedTo('admin_forum');
@@ -1491,7 +1491,7 @@ function MaintainPurgeInactiveMembers()
  */
 function MaintainRemoveOldPosts()
 {
-	global $sourcedir, $context, $txt;
+	global $sourcedir;
 
 	validateToken('admin-maint');
 
@@ -1549,7 +1549,7 @@ function MaintainRemoveOldDrafts()
  */
 function MaintainRecountPosts()
 {
-	global $txt, $context, $modSettings, $smcFunc;
+	global $txt, $context, $smcFunc;
 
 	// You have to be allowed in here
 	isAllowedTo('admin_forum');

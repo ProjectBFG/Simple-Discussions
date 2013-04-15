@@ -68,7 +68,7 @@ if (!defined('SMF'))
  */
 function ModifySettings()
 {
-	global $context, $txt, $scripturl, $boarddir;
+	global $context, $txt, $boarddir;
 
 	// This is just to keep the database password more secure.
 	isAllowedTo('admin_forum');
@@ -195,7 +195,7 @@ function ModifyGeneralSettings($return_config = false)
  */
 function ModifyDatabaseSettings($return_config = false)
 {
-	global $scripturl, $context, $settings, $txt, $boarddir;
+	global $scripturl, $context, $txt;
 
 	/* If you're writing a mod, it's a bad idea to add things here....
 		For each option:
@@ -319,7 +319,7 @@ function ModifyCookieSettings($return_config = false)
  */
 function ModifyCacheSettings($return_config = false)
 {
-	global $context, $scripturl, $txt, $cache_enable;
+	global $context, $scripturl, $txt;
 
 	// Detect all available optimizers
 	$detected = array();
@@ -409,7 +409,7 @@ function ModifyCacheSettings($return_config = false)
  */
 function ModifyLoadBalancingSettings($return_config = false)
 {
-	global $txt, $scripturl, $context, $settings, $modSettings;
+	global $txt, $scripturl, $context, $modSettings;
 
 	// Setup a warning message, but disabled by default.
 	$disabled = true;
@@ -736,8 +736,7 @@ function prepareDBSettingContext(&$config_vars)
  */
 function saveSettings(&$config_vars)
 {
-	global $boarddir, $sc, $cookiename, $modSettings, $user_settings;
-	global $sourcedir, $context, $cachedir;
+	global $sourcedir, $context;
 
 	validateToken('admin-ssc');
 
@@ -838,7 +837,7 @@ function saveSettings(&$config_vars)
  */
 function saveDBSettings(&$config_vars)
 {
-	global $sourcedir, $context;
+	global $sourcedir;
 
 	validateToken('admin-dbsc');
 

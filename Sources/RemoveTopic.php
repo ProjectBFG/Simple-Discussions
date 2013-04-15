@@ -28,7 +28,7 @@ if (!defined('SMF'))
  */
 function RemoveTopic2()
 {
-	global $user_info, $topic, $sourcedir, $smcFunc, $context, $modSettings;
+	global $user_info, $topic, $sourcedir, $smcFunc, $modSettings;
 
 	// Make sure they aren't being lead around by someone. (:@)
 	checkSession('get');
@@ -148,7 +148,7 @@ function DeleteMessage()
  */
 function RemoveOldTopics2()
 {
-	global $modSettings, $smcFunc;
+	global $smcFunc;
 
 	isAllowedTo('admin_forum');
 	checkSession('post', 'admin');
@@ -215,7 +215,7 @@ function RemoveOldTopics2()
  */
 function removeTopics($topics, $decreasePostCount = true)
 {
-	global $sourcedir, $modSettings, $smcFunc;
+	global $modSettings, $smcFunc;
 
 	// Nothing to do?
 	if (empty($topics))
@@ -344,7 +344,7 @@ function removeTopics($topics, $decreasePostCount = true)
  */
 function removeMessage($message, $decreasePostCount = true)
 {
-	global $sourcedir, $modSettings, $user_info, $smcFunc, $context;
+	global $sourcedir, $modSettings, $user_info, $smcFunc;
 
 	if (empty($message) || !is_numeric($message))
 		return false;
@@ -523,7 +523,7 @@ function removeMessage($message, $decreasePostCount = true)
  */
 function mergePosts($msgs = array(), $from_topic, $target_topic)
 {
-	global $context, $smcFunc, $modSettings, $sourcedir;
+	global $smcFunc, $sourcedir;
 
 	//!!! This really needs to be rewritten to take a load of messages from ANY topic, it's also inefficient.
 

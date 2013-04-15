@@ -120,7 +120,7 @@ function db_fix_prefix(&$db_prefix, $db_name)
  */
 function smf_db_replacement__callback($matches)
 {
-	global $db_callback, $user_info, $db_prefix;
+	global $db_callback, $db_prefix;
 
 	list ($values, $connection) = $db_callback;
 

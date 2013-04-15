@@ -7,7 +7,7 @@
 
 function Like()
 {
-	global $scripturl, $context, $smcFunc, $user_info, $db_show_debug, $txt;
+	global $context, $smcFunc, $user_info, $db_show_debug, $txt;
 	
 	$context['template_layers'] = array();
 	loadTemplate('Like');

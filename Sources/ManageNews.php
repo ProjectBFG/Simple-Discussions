@@ -25,7 +25,7 @@ if (!defined('SMF'))
  */
 function ManageNews()
 {
-	global $context, $txt, $scripturl;
+	global $context, $txt;
 
 	// First, let's do a quick permissions check for the best error message possible.
 	isAllowedTo(array('edit_news', 'send_mail', 'admin_forum'));
@@ -84,7 +84,7 @@ function ManageNews()
  */
 function EditNews()
 {
-	global $txt, $modSettings, $context, $sourcedir, $user_info, $scripturl;
+	global $txt, $modSettings, $context, $sourcedir, $scripturl;
 	global $smcFunc;
 
 	require_once($sourcedir . '/Subs-Post.php');
@@ -410,7 +410,7 @@ function SelectMailingMembers()
  */
 function prepareMailingForPreview ()
 {
-	global $context, $smcFunc, $modSettings, $scripturl, $user_info, $txt;
+	global $context, $modSettings, $scripturl, $user_info, $txt;
 	loadLanguage('Errors');
 
 	$processing = array('preview_subject' => 'subject', 'preview_message' => 'message');
@@ -999,7 +999,7 @@ function SendMailing($clean_only = false)
  */
 function ModifyNewsSettings($return_config = false)
 {
-	global $context, $sourcedir, $modSettings, $txt, $scripturl;
+	global $context, $sourcedir, $txt, $scripturl;
 
 	$config_vars = array(
 		array('title', 'settings'),

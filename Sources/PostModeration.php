@@ -358,7 +358,7 @@ function approveAllData()
  */
 function removeMessages($messages, $messageDetails, $current_view = 'replies')
 {
-	global $sourcedir, $modSettings;
+	global $sourcedir;
 
 	// @todo something's not right, removeMessage() does check permissions,
 	// removeTopics() doesn't

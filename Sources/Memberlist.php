@@ -29,7 +29,7 @@ if (!defined('SMF'))
  */
 function Memberlist()
 {
-	global $scripturl, $txt, $modSettings, $context, $settings, $modSettings;
+	global $scripturl, $txt, $modSettings, $context, $modSettings;
 
 	// Make sure they can view the memberlist.
 	isAllowedTo('view_mlist');
@@ -163,7 +163,7 @@ function Memberlist()
  */
 function MLAll()
 {
-	global $txt, $scripturl, $user_info;
+	global $txt, $scripturl;
 	global $modSettings, $context, $smcFunc;
 
 	// The chunk size for the cached index.
@@ -362,7 +362,7 @@ function MLAll()
  */
 function MLSearch()
 {
-	global $txt, $scripturl, $context, $user_info, $modSettings, $smcFunc;
+	global $txt, $scripturl, $context, $modSettings, $smcFunc;
 
 	$context['page_title'] = $txt['mlist_search'];
 	$context['can_moderate_forum'] = allowedTo('moderate_forum');
@@ -542,8 +542,7 @@ function MLSearch()
  */
 function printMemberListRows($request)
 {
-	global $scripturl, $txt, $user_info, $modSettings;
-	global $context, $settings, $memberContext, $smcFunc;
+	global $context, $memberContext, $smcFunc;
 
 	// Get the most posts.
 	$result = $smcFunc['db_query']('', '

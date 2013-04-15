@@ -34,7 +34,7 @@ if (!defined('SMF'))
 function ShowXmlFeed()
 {
 	global $context, $scripturl, $boardurl, $txt, $modSettings, $user_info;
-	global $smcFunc, $forum_version, $cdata_override;
+	global $forum_version, $cdata_override;
 
 	// If it's not enabled, die.
 	if (empty($modSettings['xmlnews_enable']))
@@ -336,7 +336,6 @@ function cdata_parse($data, $ns = '')
  */
 function dumpTags($data, $i, $tag = null, $xml_format = '')
 {
-	global $modSettings, $context, $scripturl;
 
 	// For every array in the data...
 	foreach ($data as $key => $val)
@@ -467,8 +466,8 @@ function getXmlMembers($xml_format)
  */
 function getXmlRecent($xml_format)
 {
-	global $user_info, $scripturl, $modSettings;
-	global $smcFunc, $settings, $context;
+	global $scripturl, $modSettings;
+	global $smcFunc, $context;
 
 	$done = false;
 	$loops = 0;
@@ -614,7 +613,7 @@ function getXmlRecent($xml_format)
  */
 function getXmlProfile($xml_format)
 {
-	global $scripturl, $memberContext, $user_profile, $modSettings, $user_info;
+	global $scripturl, $memberContext, $user_profile, $user_info;
 
 	// You must input a valid user....
 	if (empty($_GET['u']) || loadMemberData((int) $_GET['u']) === false)

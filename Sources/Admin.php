@@ -25,7 +25,7 @@ if (!defined('SMF'))
  */
 function AdminMain()
 {
-	global $txt, $context, $scripturl, $sc, $modSettings, $user_info, $settings, $sourcedir, $options, $smcFunc, $boarddir;
+	global $txt, $context, $scripturl, $modSettings, $settings, $sourcedir, $options, $boarddir;
 
 	// Load the language and templates....
 	loadLanguage('Admin');
@@ -277,7 +277,7 @@ function AdminMain()
 					'permission' => array('manage_permissions'),
 					'subsections' => array(
 						'index' => array($txt['permissions_groups'], 'manage_permissions'),
-						/* @todoy: yeni bir emre kadar kaldýrýldý
+						/* @todoy: yeni bir emre kadar kaldï¿½rï¿½ldï¿½
 						'postmod' => array($txt['permissions_post_moderation'], 'manage_permissions', 'enabled' => $modSettings['postmod_active']), */
 						'settings' => array($txt['settings'], 'admin_forum'),
 					),
@@ -342,7 +342,7 @@ function AdminMain()
 			'areas' => array(
 				'blog' => array(
 					'label' => $txt['blog_admin'],
-					'file' => 'Manageblog.php',
+					'file' => 'ManageBlog.php',
 					'function' => 'blogAdminMain',
 					'subsections' => array(
 						'bloglist' => array($txt['blog_list'], true),
@@ -468,7 +468,7 @@ function AdminMain()
 */
 function AdminHome()
 {
-	global $sourcedir, $forum_version, $txt, $scripturl, $context, $user_info, $boardurl, $modSettings, $smcFunc;
+	global $sourcedir, $forum_version, $txt, $scripturl, $context, $user_info;
 
 	// You have to be able to do at least one of the below to see this page.
 	isAllowedTo(array('admin_forum', 'manage_permissions', 'moderate_forum', 'manage_membergroups', 'manage_bans', 'send_mail', 'edit_news', 'manage_smileys'));
