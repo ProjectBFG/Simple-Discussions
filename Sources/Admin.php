@@ -342,7 +342,7 @@ function AdminMain()
 			'areas' => array(
 				'blog' => array(
 					'label' => $txt['blog_admin'],
-					'file' => 'Manageblog.php',
+					'file' => 'ManageBlog.php',
 					'function' => 'blogAdminMain',
 					'subsections' => array(
 						'bloglist' => array($txt['blog_list'], true),

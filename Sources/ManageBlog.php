@@ -81,7 +81,7 @@ function BlogList()
 		'default_sort_col' => 'id_blog',
 		'get_items' => array(
 			'file' => $sourcedir . '/Subs-Blog.php',
-			'function' => 'list_getBlog',
+			'function' => 'list_getBlogs',
 			'params' => array(
 				isset($where) ? $where : '1=1',
 				isset($where_params) ? $where_params : array(),
@@ -89,7 +89,7 @@ function BlogList()
 		),
 		'get_count' => array(
 			'file' => $sourcedir . '/Subs-Blog.php',
-			'function' => 'list_getNumBlog',
+			'function' => 'list_getNumBlogs',
 			'params' => array(
 				isset($where) ? $where : '1=1',
 				isset($where_params) ? $where_params : array(),
