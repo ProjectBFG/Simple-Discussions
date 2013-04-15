@@ -6,6 +6,7 @@ db_last_error.php
 cache/data*.php
 Packages/backups/*
 Packages/temp
+*.patch
 
 # Compiled source #
 ###################
