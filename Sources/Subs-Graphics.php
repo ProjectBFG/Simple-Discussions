@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * ProjectGLS
+ *
+ * @copyright 2013 ProjectGLS
+ * @license http://next.mmobrowser.com/projectgls/license.txt
+ *
  * This file deals with low-level graphics operations performed on images,
  * specially as needed for visual verification images.
  * It uses, for gifs at least, Gif Util. For more information on that,

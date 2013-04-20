@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * ProjectGLS
+ *
+ * @copyright 2013 ProjectGLS
+ * @license http://next.mmobrowser.com/projectgls/license.txt
+ *
  * This file has the primary job of showing and editing people's profiles.
  * 	It also allows the user to change some of their or another's preferences,
  * 	and such things

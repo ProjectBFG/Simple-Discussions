@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * ProjectGLS
+ *
+ * @copyright 2013 ProjectGLS
+ * @license http://next.mmobrowser.com/projectgls/license.txt
+ *
  * This file is exclusively for generating reports to help assist forum
  * administrators keep track of their forum configuration and state. The
  * core report generation is done in two areas. Firstly, a report "generator"

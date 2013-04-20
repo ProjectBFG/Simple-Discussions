@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * ProjectGLS
+ *
+ * @copyright 2013 ProjectGLS
+ * @license http://next.mmobrowser.com/projectgls/license.txt
+ *
  * The job of this file is to handle everything related to posting replies,
  * new topics, quotes, and modifications to existing posts.  It also handles
  * quoting posts by way of javascript.

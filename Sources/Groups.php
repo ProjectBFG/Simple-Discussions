@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * ProjectGLS
+ *
+ * @copyright 2013 ProjectGLS
+ * @license http://next.mmobrowser.com/projectgls/license.txt
+ *
  * This file currently just shows group info, and allows certain priviledged members to add/remove members.
  *
  * Simple Machines Forum (SMF)

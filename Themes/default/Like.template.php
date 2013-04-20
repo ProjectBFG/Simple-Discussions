@@ -1,7 +1,10 @@
 <?php
 
 /**
+ * ProjectGLS
  *
+ * @copyright 2013 ProjectGLS
+ * @license http://next.mmobrowser.com/projectgls/license.txt
  * @version 1.0 Alpha 1
  */
 

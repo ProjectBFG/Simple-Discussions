@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * ProjectGLS
+ *
+ * @copyright 2013 ProjectGLS
+ * @license http://next.mmobrowser.com/projectgls/license.txt
+ *
  * This file contains database functionality specifically designed for packages (mods) to utilize.
  *
  * Simple Machines Forum (SMF)

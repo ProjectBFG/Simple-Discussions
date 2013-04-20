@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * ProjectGLS
+ *
+ * @copyright 2013 ProjectGLS
+ * @license http://next.mmobrowser.com/projectgls/license.txt
+ *
  * This file contains a standard way of displaying side/drop down menus for SMF.
  *
  * Simple Machines Forum (SMF)

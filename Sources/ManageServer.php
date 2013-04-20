@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * ProjectGLS
+ *
+ * @copyright 2013 ProjectGLS
+ * @license http://next.mmobrowser.com/projectgls/license.txt
+ *
  * Contains all the functionality required to be able to edit the core server
  * settings. This includes anything from which an error may result in the forum
  * destroying itself in a firey fury.

@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * ProjectGLS
+ *
+ * @copyright 2013 ProjectGLS
+ * @license http://next.mmobrowser.com/projectgls/license.txt
+ *
  * This file's central purpose of existence is that of making the package
  * manager work nicely.  It contains functions for handling tar.gz and zip
  * files, as well as a simple xml parser to handle the xml package stuff.

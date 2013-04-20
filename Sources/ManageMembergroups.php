@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * ProjectGLS
+ *
+ * @copyright 2013 ProjectGLS
+ * @license http://next.mmobrowser.com/projectgls/license.txt
+ *
  * This file is concerned with anything in the Manage Membergroups admin screen.
  *
  * Simple Machines Forum (SMF)

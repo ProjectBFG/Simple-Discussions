@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * ProjectGLS
+ *
+ * @copyright 2013 ProjectGLS
+ * @license http://next.mmobrowser.com/projectgls/license.txt
+ *
  * This file provides compatibility functions and code for older versions of
  * PHP, such as the sha1() function, missing extensions, or 64-bit vs 32-bit
  * systems. It is only included for those older versions or when the respective
