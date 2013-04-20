@@ -1,6 +1,10 @@
 <?php
-
 /**
+ * ProjectGLS
+ *
+ * @copyright 2013 ProjectGLS
+ * @license http://next.mmobrowser.com/projectgls/license.txt
+ *
  * This, as you have probably guessed, is the crux on which SMF functions.
  * Everything should start here, so all the setup and security is done
  * properly.  The most interesting part of this file is the action array in
