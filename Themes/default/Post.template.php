@@ -38,10 +38,10 @@ function template_main()
 	// If the user wants to see how their message looks - the preview section is where it's at!
 	echo '
 			<div id="preview_section"', isset($context['preview_message']) ? '' : ' style="display: none;"', '>
-					<h3 class="catbg">
-						<span id="preview_subject">', empty($context['preview_subject']) ? '' : $context['preview_subject'], '</span>
-					</h3>
-				<div class="windowbg">
+				<h3 class="catbg">
+					<span id="preview_subject">', empty($context['preview_subject']) ? '' : $context['preview_subject'], '</span>
+				</h3>
+				<div class="well">
 					<div class="content">
 						<div class="post" id="preview_body">
 							', empty($context['preview_message']) ? '<br />' : $context['preview_message'], '
@@ -52,9 +52,9 @@ function template_main()
 
 	// Start the main table.
 	echo '
-				<h3 class="catbg">', $context['page_title'], '</h3>
+			<h3 class="catbg">', $context['page_title'], '</h3>
 			<div>
-				<div class="roundframe">', isset($context['current_topic']) ? '
+				<div class="well">', isset($context['current_topic']) ? '
 					<input type="hidden" name="topic" value="' . $context['current_topic'] . '" />' : '';
 
 	// If an error occurred, explain what happened.

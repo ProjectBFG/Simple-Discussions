@@ -96,6 +96,7 @@ function template_main()
 		echo '
 			<div class="mainstuff">
 				<div id="index_topics">
+					<div class="pagination">', $context['page_index'], '</div>
 					<div class="entry-title" style="display: none;">', $context['forum_name_html_safe'], ' - ', $txt['recent_posts'], '</div>
 					<div class="entry-content" style="display: none;">
 						<a rel="feedurl" href="', $scripturl, '?action=.xml;type=webslice">', $txt['subscribe_webslice'], '</a>

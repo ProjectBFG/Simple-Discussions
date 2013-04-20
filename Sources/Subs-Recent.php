@@ -88,7 +88,20 @@ function getLastPosts($latestPostOptions)
 
 function getLastTopics($count)
 {
-	global $scripturl, $modSettings, $smcFunc;
+	global $scripturl, $modSettings, $smcFunc, $context;
+
+	$request = $smcFunc['db_query']('', '
+		SELECT COUNT(id_topic)
+		FROM {db_prefix}topics' . ($modSettings['postmod_active'] ? '
+		WHERE approved = {int:is_approved}' : ''),
+		array(
+			'is_approved' => 1,
+		)
+	);
+	list ($maxtopics) = $smcFunc['db_fetch_row']($request);
+	$smcFunc['db_free_result']($request);
+	
+	$context['page_index'] = constructPageIndex($scripturl . '?start=%1$d', $_REQUEST['start'], $maxtopics, $count, true);
 
 	// Find all the posts.  Newer ones will have higher IDs.  (assuming the last 20 * number are accessable...)
 	// @todo SLOW This query is now slow, NEEDS to be fixed.  Maybe break into two?
@@ -101,10 +114,12 @@ function getLastTopics($count)
 			INNER JOIN {db_prefix}topics AS t ON (t.id_first_msg = m.id_msg)
 			LEFT JOIN {db_prefix}members AS mem ON (mem.id_member = m.id_member)' . ($modSettings['postmod_active'] ? '
 		WHERE t.approved = {int:is_approved}' : '') . '
-		ORDER BY t.id_topic DESC
-		LIMIT ' . $count,
+		ORDER BY t.num_replies DESC
+		LIMIT {int:offset}, {int:limit}',
 		array(
 			'is_approved' => 1,
+			'offset' => $_REQUEST['start'],
+			'limit' => $count,
 		)
 	);
 	$topics = array();

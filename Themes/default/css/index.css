@@ -616,9 +616,6 @@ img#newsupshrink, img.panel_toggle, img#quickReplyExpand {
 	padding: 2px 6px 0 0;
 }
 
-.table_grid th.last_th input {
-	margin: 0 7px;
-}
 .table_grid th.lefttext {
 	padding: 0 8px;
 }
@@ -1886,29 +1883,6 @@ fieldset.merge_options {
 	width: 540px;
 	margin: 0 auto;
 }
-.login dl {
-	overflow: auto;
-	clear: right;
-}
-.login dt, .login dd {
-	margin: 0 0 5px 0;
-	width: 44%;
-	padding: 1px;
-}
-.login dt {
-	float: left;
-	clear: both;
-	text-align: right;
-	font-weight: bold;
-}
-.login dd {
-	width: 54%;
-	float: right;
-	text-align: left;
-}
-.login p {
-	text-align: center;
-}
 
 /* Additional register fields */
 dl.register_form {
@@ -1964,15 +1938,6 @@ tr.titlebg td {
 /* Custom profile fields like to play with us some times. */
 #admin_content .custom_field {
 	margin-bottom: 15px;
-}
-#admin_login .centertext {
-	padding: 12px;
-}
-#admin_login .centertext .error {
-	padding: 0 0 12px 0;
-}
-#admin_login .centertext a.help img {
-	vertical-align: middle;
 }
 
 tr.windowbg td, tr.windowbg2 td, tr.approvebg td, tr.highlight2 td {
@@ -3283,8 +3248,4 @@ ul.dropdown-menu a.active
 .dropdown-submenu:hover > a > [class*=" icon-"],
 .dropdown-submenu:focus > a > [class*=" icon-"] {
   background-image: url("../images/glyphicons-halflings-white.png");
-}
-
-.btn {
-	float: right;
 }

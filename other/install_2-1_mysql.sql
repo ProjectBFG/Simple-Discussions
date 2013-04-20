@@ -551,6 +551,21 @@ CREATE TABLE {$db_prefix}log_subscribed (
 ) ENGINE=MyISAM;
 
 #
+# Table structure for table `log_tags`
+#
+
+CREATE TABLE {$db_prefix}log_tags (
+  id_taglog mediumint(8) unsigned NOT NULL auto_increment,
+  id_tag mediumint(8) unsigned NOT NULL default '0',
+  id_topic mediumint(8) unsigned NOT NULL default '0',
+  id_member mediumint(8) unsigned NOT NULL default '0',
+  time int(10) unsigned NOT NULL default '0',
+  PRIMARY KEY (id_taglog),
+  UNIQUE KEY (id_tag, id_topic),
+  KEY id_tag (id_tag)
+) ENGINE=MyISAM;
+
+#
 # Table structure for table `log_topics`
 #
 
@@ -1307,3 +1322,15 @@ CREATE TABLE {$db_prefix}user_drafts (
   PRIMARY KEY (id_draft),
   UNIQUE id_member (id_member, id_draft, type)
 ) ENGINE=MyISAM;
+
+#
+# Table structure for table `tags`
+
+CREATE TABLE {$db_prefix}tags (
+  id_tag int(10) unsigned NOT NULL,
+  tag varchar (255) NOT NULL,
+  time int(10) unsigned NOT NULL default '0',
+  status int(1) unsigned NOT NULL default '0',
+  PRIMARY KEY (id_tag),
+  UNIQUE id_tag (id_tag, tag)
+) ENGIN=MyISAM;
