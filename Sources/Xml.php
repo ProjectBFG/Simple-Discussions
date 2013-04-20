@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * ProjectGLS
+ *
+ * @copyright 2013 ProjectGLS
+ * @license http://next.mmobrowser.com/projectgls/license.txt
+ *
  * Maintains all XML-based interaction (mainly XMLhttp)
  *
  * Simple Machines Forum (SMF)

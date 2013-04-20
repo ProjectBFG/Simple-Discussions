@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * ProjectGLS
+ *
+ * @copyright 2013 ProjectGLS
+ * @license http://next.mmobrowser.com/projectgls/license.txt
+ *
  * This file is mainly meant for controlling the actions related to personal
  * messages. It allows viewing, sending, deleting, and marking personal
  * messages. For compatibility reasons, they are often called "instant messages".

@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * ProjectGLS
+ *
+ * @copyright 2013 ProjectGLS
+ * @license http://next.mmobrowser.com/projectgls/license.txt
+ *
  * The functions in this file deal with sending topics to a friend or moderator
  * Simple Machines Forum (SMF)
  *

@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * ProjectGLS
+ *
+ * @copyright 2013 ProjectGLS
+ * @license http://next.mmobrowser.com/projectgls/license.txt
+ *
  * This file is all about mail, how we love it so. In particular it handles the admin side of
  * mail configuration, as well as reviewing the mail queue - if enabled.
  * @todo refactor as controller-model.

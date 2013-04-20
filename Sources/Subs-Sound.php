@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * ProjectGLS
+ *
+ * @copyright 2013 ProjectGLS
+ * @license http://next.mmobrowser.com/projectgls/license.txt
+ *
  * Handles sound processing. In order to make sure the visual
  * verification is still accessible for all users, a sound clip is being addded
  * that reads the letters that are being shown.

@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * ProjectGLS
+ *
+ * @copyright 2013 ProjectGLS
+ * @license http://next.mmobrowser.com/projectgls/license.txt
+ *
  * This file concerns itself almost completely with theme administration.
  * Its tasks include changing theme settings, installing and removing
  * themes, choosing the current theme, and editing themes.

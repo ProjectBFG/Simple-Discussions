@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * ProjectGLS
+ *
+ * @copyright 2013 ProjectGLS
+ * @license http://next.mmobrowser.com/projectgls/license.txt
+ *
  *  Implementation of PHP's session API.
  * 	What it does:
  * 	- it handles the session data in the database (more scalable.)

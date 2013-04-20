@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * ProjectGLS
+ *
+ * @copyright 2013 ProjectGLS
+ * @license http://next.mmobrowser.com/projectgls/license.txt
+ *
  * The purpose of this file is... errors. (hard to guess, I guess?)  It takes
  * care of logging, error messages, error handling, database errors, and
  * error log administration.

@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * ProjectGLS
+ *
+ * @copyright 2013 ProjectGLS
+ * @license http://next.mmobrowser.com/projectgls/license.txt
+ *
  * Find and retrieve information about recently posted topics, messages, and the like.
  *
  * Simple Machines Forum (SMF)

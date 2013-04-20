@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * ProjectGLS
+ *
+ * @copyright 2013 ProjectGLS
+ * @license http://next.mmobrowser.com/projectgls/license.txt
+ *
  * This file has two main jobs, but they really are one.  It registers new
  * members, and it helps the administrator moderate member registrations.
  * Similarly, it handles account activation as well.
