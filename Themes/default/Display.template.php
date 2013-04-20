@@ -116,13 +116,13 @@ function template_main()
 						<div class="tiptop">
 							<div class="pull-left">
 								<a href="', $scripturl, '?action=profile;u=', $message['member']['id'], '">' ,$message['member']['name'], '</a>';
+		echo '
+								(';
 		
 		if (!empty($message['member']['group']))
-			echo '
-								(',$message['member']['group'],',';
+			echo '', $message['member']['group'], ',';
 								
-			echo '							
-							<a href="', $message['href'], '" id="subject_', $message['id'], '" rel="nofollow" title="', !empty($message['counter']) ? sprintf($txt['reply_number'], $message['counter']) : '', ' - ', $message['subject'], '">', $message['time'], '</a>)';
+			echo '<a href="', $message['href'], '" id="subject_', $message['id'], '" rel="nofollow" title="', !empty($message['counter']) ? sprintf($txt['reply_number'], $message['counter']) : '', ' - ', $message['subject'], '">', $message['time'], '</a>)';
 			
 			echo '
 							</div>
@@ -211,7 +211,10 @@ function template_main()
 							<div class="pull-right rating">
 								<div id="like_', $message['id'], '">
 									<div id="like_info_', $message['id'], '"></div>
-									<div id="like_count_', $message['id'], '">', sprintf($txt['like_info_display'], $message['like_count']), '</div>
+									<div id="like_count_', $message['id'], '">', sprintf($txt['like_info_display'], $message['like_count']), '</div>';
+			if (!empty($message['liked']))
+			{
+				echo '
 									<div id="liked_', $message['id'], '">
 										<ul>';
 						foreach ($message['liked'] as $member)
@@ -221,7 +224,9 @@ function template_main()
 						}
 								echo '
 										</ul>
-									</div>
+									</div>';
+			}
+			echo '
 								</div>
 							</div>
 							<div class="pull-left">';

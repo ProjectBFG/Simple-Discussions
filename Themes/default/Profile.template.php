@@ -1006,10 +1006,10 @@ function template_edit_options()
 	// Have we some description?
 	if ($context['page_desc'])
 		echo '
-			<p class="description">', $context['page_desc'], '</p>';
+			<div class="well well-small">', $context['page_desc'], '</div>';
 
 	echo '
-			<div class="windowbg2">
+			<div class="well">
 				<div class="content">';
 
 	// Any bits at the start?
@@ -1178,6 +1178,7 @@ function template_edit_options()
 					<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 					<input type="hidden" name="u" value="', $context['id_member'], '" />
 					<input type="hidden" name="sa" value="', $context['menu_item_selected'], '" />
+					<div class="clearfix"></div>
 				</div>
 			</div>
 		</form>';
@@ -1476,8 +1477,8 @@ function template_notification()
 				<h3 class="catbg">
 					<img src="', $settings['images_url'], '/icons/profile_hd.png" alt="" class="icon" />', $txt['profile'], '
 				</h3>
-			<p class="description">', $txt['notification_info'], '</p>
-			<div class="windowbg2">
+			<div class="well well-small">', $txt['notification_info'], '</div>
+			<div class="well">
 				<div class="content">
 					<dl class="settings">';
 
