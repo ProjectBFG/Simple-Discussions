@@ -18,7 +18,7 @@
 
 function template_main()
 {
-	global $context, $settings, $options, $txt, $scripturl;
+	global $context, $settings, $options, $txt, $scripturl, $modSettings;
 
 	// Show some statistics if stat info is off.
 	if (!$settings['show_stats_index'])
@@ -84,17 +84,76 @@ function template_main()
 				});
 			// ]]></script>';
 	}
-		// We can make a little sidebar here... A happy sidebar R.I.P. Bob Ross :/
+
+			
+	if ($context['sidebar_settings']['sidebar_enabled'])
+	{
+		// We can make a little sidebar here... A happy little sidebar R.I.P. Bob Ross :/
 		echo '
 			<div class="sidebar visible-desktop">
 				<div class="well">
 					',$txt['dummy_sidebar'],'
-				</div>
-			</div>';
-			
+				</div>';
+
+		// Stats and Online list (Sidebar)
+			echo '
+				<div class="well">';
+				
+		// Stats coming here
+		if (!empty($context['sidebar_settings']['sidebar_stats']))
+			echo '<strong>', $context['common_stats']['boardindex_total_posts'], '</strong><br /><br />';
+				
+		// Here my online list
+		if (!empty($context['sidebar_settings']['sidebar_online']))
+		{
+		// "Users online" - in order of activity.
+			echo '
+					', $context['show_who'] ? '<a href="' . $scripturl . '?action=who">' : '', '<strong>', $txt['online'], ': </strong>', comma_format($context['num_guests']), ' ', $context['num_guests'] == 1 ? $txt['guest'] : $txt['guests'], ', ', comma_format($context['num_users_online']), ' ', $context['num_users_online'] == 1 ? $txt['user'] : $txt['users'];
+
+			// Handle hidden users and buddies.
+			$bracketList = array();
+			if ($context['show_buddies'])
+		$bracketList[] = comma_format($context['num_buddies']) . ' ' . ($context['num_buddies'] == 1 ? $txt['buddy'] : $txt['buddies']);
+	if (!empty($context['num_spiders']))
+		$bracketList[] = comma_format($context['num_spiders']) . ' ' . ($context['num_spiders'] == 1 ? $txt['spider'] : $txt['spiders']);
+	if (!empty($context['num_users_hidden']))
+		$bracketList[] = comma_format($context['num_users_hidden']) . ' ' . ($context['num_spiders'] == 1 ? $txt['hidden'] : $txt['hidden_s']);
+
+	if (!empty($bracketList))
+		echo ' (' . implode(', ', $bracketList) . ')';
+
+	echo $context['show_who'] ? '</a><br />' : '', '
+
+					', $txt['most_online_today'], ': <strong>', comma_format($modSettings['mostOnlineToday']), '</strong><br />
+					', $txt['most_online_ever'], ': ', comma_format($modSettings['mostOnline']), ' <br /> (', timeformat($modSettings['mostDate']), ')<br />';
+
+	// Assuming there ARE users online... each user in users_online has an id, username, name, group, href, and link.
+	if (!empty($context['users_online']))
+	{
+		echo '
+					', sprintf($txt['users_active'], $modSettings['lastActive']), ': <br /> ', implode(', ', $context['list_users_online']);
+
+		// Showing membergroups?
+		if (!empty($settings['show_group_key']) && !empty($context['membergroups']))
+			echo '<br /><br />
+					<span class="membergroups">[' . implode(',&nbsp;', $context['membergroups']). ']</span>';
+	}
+
+	echo '
+				</div>';
+				
+		echo '
+			</div>
+			<div class="mainstuff">';
+		}			
+	}
+		else
+		echo '
+			<div class="mainstuff2">';
+		
+		
 		// Main things happen here (topic/stats)	
 		echo '
-			<div class="mainstuff">
 				<div id="index_topics">
 					<div class="pagination">', $context['page_index'], '</div>
 					<div class="entry-title" style="display: none;">', $context['forum_name_html_safe'], ' - ', $txt['recent_posts'], '</div>
@@ -152,99 +211,7 @@ function template_main()
 		echo '
 				</div>
 				', template_button_strip($context['new_topic'], 'right'), '
-			</div>';
-
-	template_info_center();
-}
-
-function template_info_center()
-{
-	global $context, $settings, $txt, $scripturl, $modSettings;
-
-	// Here's where the "Info Center" starts...
-	echo '
-	<div class="clearfix"></div>
-	<div class="well" id="info_center">
-		<h3 class="catbg">
-			<span class="icon-arrow-down" data-toggle="collapse" data-target="#upshrinkHeaderIC" id="collapseIC"></span>
-			<a href="#">', sprintf($txt['info_center_title'], $context['forum_name_html_safe']), '</a>
-		</h3>
-		<div id="upshrinkHeaderIC" class="collapse in">
-			<ul class="nav nav-tabs" id="ic_tabs">
-				<li class="active"><a href="#ic_stats" data-toggle="tab">Stats</a></li>
-				<li><a href="#ic_membersonline" data-toggle="tab">Members Online</a></li>
-			</ul>
-			<div id="ic_tabsContent" class="tab-content">';
-
-	// Show statistical style information...
-	if ($settings['show_stats_index'])
-	{
-		echo '
-				<div class="tab-pane fade in active" id="ic_stats">
-					', $context['common_stats']['boardindex_total_posts'], '', !empty($settings['show_latest_member']) ? ' - '. $txt['latest_member'] . ': <strong> ' . $context['common_stats']['latest_member']['link'] . '</strong>' : '', '<br />
-					', (!empty($context['latest_post']) ? $txt['latest_post'] . ': <strong>&quot;' . $context['latest_post']['link'] . '&quot;</strong>  ( ' . $context['latest_post']['time'] . ' )<br />' : ''), '
-					<a href="', $scripturl, '?action=recent">', $txt['recent_view'], '</a>
-				</div>';
-	}
-
-	// "Users online" - in order of activity.
-	echo '
-				<div class="tab-pane fade" id="ic_membersonline">
-					', $context['show_who'] ? '<a href="' . $scripturl . '?action=who">' : '', '<strong>', $txt['online'], ': </strong>', comma_format($context['num_guests']), ' ', $context['num_guests'] == 1 ? $txt['guest'] : $txt['guests'], ', ', comma_format($context['num_users_online']), ' ', $context['num_users_online'] == 1 ? $txt['user'] : $txt['users'];
-
-	// Handle hidden users and buddies.
-	$bracketList = array();
-	if ($context['show_buddies'])
-		$bracketList[] = comma_format($context['num_buddies']) . ' ' . ($context['num_buddies'] == 1 ? $txt['buddy'] : $txt['buddies']);
-	if (!empty($context['num_spiders']))
-		$bracketList[] = comma_format($context['num_spiders']) . ' ' . ($context['num_spiders'] == 1 ? $txt['spider'] : $txt['spiders']);
-	if (!empty($context['num_users_hidden']))
-		$bracketList[] = comma_format($context['num_users_hidden']) . ' ' . ($context['num_spiders'] == 1 ? $txt['hidden'] : $txt['hidden_s']);
-
-	if (!empty($bracketList))
-		echo ' (' . implode(', ', $bracketList) . ')';
-
-	echo $context['show_who'] ? '</a>' : '', '
-
-					&nbsp;-&nbsp;', $txt['most_online_today'], ': <strong>', comma_format($modSettings['mostOnlineToday']), '</strong>&nbsp;-&nbsp;
-					', $txt['most_online_ever'], ': ', comma_format($modSettings['mostOnline']), ' (', timeformat($modSettings['mostDate']), ')<br />';
-
-	// Assuming there ARE users online... each user in users_online has an id, username, name, group, href, and link.
-	if (!empty($context['users_online']))
-	{
-		echo '
-					', sprintf($txt['users_active'], $modSettings['lastActive']), ': ', implode(', ', $context['list_users_online']);
-
-		// Showing membergroups?
-		if (!empty($settings['show_group_key']) && !empty($context['membergroups']))
-			echo '
-					<span class="membergroups">[' . implode(',&nbsp;', $context['membergroups']). ']</span>';
-	}
-
-	echo '
-				</div>';
-
-	// If they are logged in, but statistical information is off... show a personal message bar.
-	if ($context['user']['is_logged'] && !$settings['show_stats_index'])
-	{
-		echo '
-				<div class="pminfo">
-					', empty($context['user']['messages']) ? $txt['you_have_no_msg'] : ($context['user']['messages'] == 1 ? sprintf($txt['you_have_one_msg'], $scripturl . '?action=pm') : sprintf($txt['you_have_many_msgs'], $scripturl . '?action=pm', $context['user']['messages'])), '
-				</div>';
-	}
-
-	echo '
 			</div>
-		</div>
-	</div>';
-	
-	// Info center collapse object.
-	echo '
-	<script>
-		$(\'#upshrinkHeaderIC\').on(\'show hide\', function(e){
-			if(!$(this).is(e.target))return;
-			$(\'#collapseIC\').toggleClass(\'icon-arrow-up icon-arrow-down\', 200);
-		});
-	</script>';
+	<div class="clearfix"></div>';
 }
 ?>

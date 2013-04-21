@@ -192,6 +192,15 @@ function AdminMain()
 						// Note the comma!! The setting with automatically appear with the first mod to be added.
 					),
 				),
+				'sidebar' => array(
+					'label' => $txt['gls_sidebar'],
+					'file' => 'Sidebar.php',
+					'function' => 'SidebarMain',
+					'custom_url' => $scripturl . '?action=admin;area=sidebar',
+					'icon' => '',
+					'subsections' => array(
+					),
+				),
 			),
 		),
 		'layout' => array(
