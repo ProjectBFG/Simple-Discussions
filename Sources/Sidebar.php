@@ -7,8 +7,7 @@ function SidebarMain()
 {
 	global $context, $txt;
 		
-		loadLanguage('Themes');
-		loadLanguage('Settings');
+		loadLanguage('Themes+Settings');
 	
 	$context['page_title'] = $txt['gls_sidebar'];
 	

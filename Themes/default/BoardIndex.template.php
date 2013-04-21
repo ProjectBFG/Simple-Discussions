@@ -84,7 +84,11 @@ function template_main()
 				});
 			// ]]></script>';
 	}
-		// We can make a little sidebar here... A happy sidebar R.I.P. Bob Ross :/
+
+			
+	if ($context['sidebar_settings']['sidebar_enabled'])
+	{
+		// We can make a little sidebar here... A happy little sidebar R.I.P. Bob Ross :/
 		echo '
 			<div class="sidebar visible-desktop">
 				<div class="well">
@@ -96,11 +100,12 @@ function template_main()
 				<div class="well">';
 				
 		// Stats coming here
+		if (!empty($context['sidebar_settings']['sidebar_stats']))
 			echo '<strong>', $context['common_stats']['boardindex_total_posts'], '</strong><br /><br />';
 				
 		// Here my online list
-//		if (!empty($modSettings(
-//		{
+		if (!empty($context['sidebar_settings']['sidebar_online']))
+		{
 		// "Users online" - in order of activity.
 			echo '
 					', $context['show_who'] ? '<a href="' . $scripturl . '?action=who">' : '', '<strong>', $txt['online'], ': </strong>', comma_format($context['num_guests']), ' ', $context['num_guests'] == 1 ? $txt['guest'] : $txt['guests'], ', ', comma_format($context['num_users_online']), ' ', $context['num_users_online'] == 1 ? $txt['user'] : $txt['users'];
@@ -138,12 +143,17 @@ function template_main()
 				</div>';
 				
 		echo '
-			</div>';
-//		}			
-			
+			</div>
+			<div class="mainstuff">';
+		}			
+	}
+		else
+		echo '
+			<div class="mainstuff2">';
+		
+		
 		// Main things happen here (topic/stats)	
 		echo '
-			<div class="mainstuff">
 				<div id="index_topics">
 					<div class="entry-title" style="display: none;">', $context['forum_name_html_safe'], ' - ', $txt['recent_posts'], '</div>
 					<div class="entry-content" style="display: none;">
@@ -201,6 +211,6 @@ function template_main()
 				</div>
 				', template_button_strip($context['new_topic'], 'right'), '
 			</div>
-		<div class="clearfix"></div>';
+	<div class="clearfix"></div>';
 }
 ?>
