@@ -40,6 +40,9 @@ function BoardIndex()
 	// Do not let search engines index anything if there is a random thing in $_GET.
 	if (!empty($_GET))
 		$context['robot_no_index'] = true;
+		
+	require_once($sourcedir . '/Subs-Sidebar.php');
+	$context['sidebar_settings'] = getSidebarSettings();
 
 	// Get the user online list.
 	require_once($sourcedir . '/Subs-MembersOnline.php');
