@@ -1,10 +1,5 @@
 <?php
 /**
- * ProjectGLS
- *
- * @copyright 2013 ProjectGLS
- * @license http://next.mmobrowser.com/projectgls/license.txt
- *
  * This file is the file which all subscription gateways should call
  * when a payment has been received - it sorts out the user status.
  *

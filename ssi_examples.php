@@ -1,10 +1,5 @@
 <?php
 /**
- * ProjectGLS
- *
- * @copyright 2013 ProjectGLS
- * @license http://next.mmobrowser.com/projectgls/license.txt
- *
  * Simple Machines Forum (SMF)
  *
  * @package SMF
