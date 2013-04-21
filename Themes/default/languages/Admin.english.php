@@ -729,4 +729,8 @@ $txt['board_perms_ignore'] = 'Ignore';
 $txt['board_perms_deny'] = 'Deny';
 $txt['all_boards_in_cat'] = 'All boards in this category';
 
+$txt['gls_sidebar'] = 'Sidebar';
+$txt['gls_sidebar_info'] = 'Main page for sidebar options';
+$txt['gls_sidebar_stats'] = 'Show stats';
+$txt['gls_sidebar_online'] = 'Show online members';
 ?>
