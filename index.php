@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This, as you have probably guessed, is the crux on which SMF functions.
  * Everything should start here, so all the setup and security is done
