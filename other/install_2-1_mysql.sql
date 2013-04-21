@@ -1309,10 +1309,23 @@ CREATE TABLE {$db_prefix}user_drafts (
 ) ENGINE=MyISAM;
 
 #
-# Table structure for table `sidebar_blocks`
+# Table structure for table `tags`
 #
 
-CREATE TABLE glsloc_sidebar_settings (
+CREATE TABLE {$db_prefix}tags (
+  id_tag int(10) unsigned NOT NULL,
+  tag varchar (255) NOT NULL,
+  time int(10) unsigned NOT NULL default '0',
+  status int(1) unsigned NOT NULL default '0',
+  PRIMARY KEY (id_tag),
+  UNIQUE id_tag (id_tag, tag)
+) ENGIN=MyISAM;
+
+#
+# Table structure for table `sidebar_settings`
+#
+
+CREATE TABLE {$db_prefix}sidebar_settings (
 	id_sideset int(10) unsigned NOT NULL auto_increment,
 	name varchar(255) NOT NULL default '',
 	value tinyint(4) NOT NULL default '1',
@@ -1320,6 +1333,6 @@ CREATE TABLE glsloc_sidebar_settings (
     UNIQUE name (name, value)
 ) ENGINE=MyISAM;
 
-INSERT INTO glsloc_sidebar_settings	(id_sideset, name, value) VALUES (1, 'sidebar_enabled', 1);
-INSERT INTO glsloc_sidebar_settings	(id_sideset, name, value) VALUES (2, 'sidebar_online', 1);
-INSERT INTO glsloc_sidebar_settings (id_sideset, name, value) VALUES (3, 'sidebar_stats', 1);
+INSERT INTO {$db_prefix}sidebar_settings	(id_sideset, name, value) VALUES (1, 'sidebar_enabled', 1);
+INSERT INTO {$db_prefix}sidebar_settings	(id_sideset, name, value) VALUES (2, 'sidebar_online', 1);
+INSERT INTO {$db_prefix}sidebar_settings (id_sideset, name, value) VALUES (3, 'sidebar_stats', 1);	
