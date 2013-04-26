@@ -41,8 +41,10 @@ function template_main()
 	// Show the page index... "Pages: [1]".
 	echo '
 			<div class="pagination">
+				<div class="hidden-phone">
 				', template_button_strip($context['normal_buttons'], 'right'), '
-				', !empty($modSettings['topbottomEnable']) ? $context['menu_separator'] . '<a href="#bot" class="topbottom pull-left">' . $txt['go_down'] . '</a>' : '', '
+				', !empty($modSettings['topbottomEnable']) ? $context['menu_separator'] . '<a href="#bot" class="btn pull-left">' . $txt['go_down'] . '</a>' : '', '
+				</div>
 					', $context['page_index'], '
 			</div>';
 
@@ -280,14 +282,14 @@ function template_main()
 
 	// Show the page index... "Pages: [1]".
 	echo '
-			<div class="pagination">
+			<div class="pagination hidden-phone">
 				', template_button_strip($context['normal_buttons'], 'right'), '
-				', !empty($modSettings['topbottomEnable']) ? $context['menu_separator'] . '<a href="#top" class="topbottom pull-left">' . $txt['go_up'] . '</a>' : '', '
+				', !empty($modSettings['topbottomEnable']) ? $context['menu_separator'] . '<a href="#top" class="btn pull-left">' . $txt['go_up'] . '</a>' : '', '
 				', $context['page_index'], '
 			</div>';
 
 	echo '
-			<div id="moderationbuttons">', template_button_strip($context['mod_buttons'], 'bottom', array('id' => 'moderationbuttons_strip')), '</div>';
+			<div class="hidden-phone" id="moderationbuttons">', template_button_strip($context['mod_buttons'], 'bottom', array('id' => 'moderationbuttons_strip')), '</div>';
 
 	if ($context['can_reply'] && !empty($options['display_quick_reply']))
 	{
