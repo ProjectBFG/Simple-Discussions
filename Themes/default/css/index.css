@@ -3248,3 +3248,21 @@ ul.dropdown-menu a.active
 .dropdown-submenu:focus > a > [class*=" icon-"] {
   background-image: url("../images/glyphicons-halflings-white.png");
 }
+
+.panel-sd {
+  border-color: #0088cc;
+}
+
+.panel-sd > .panel-heading {
+  color: #ffffff;
+  background-color: #0088cc;
+  border-color: #0088cc;
+}
+
+.panel-sd > .panel-heading + .panel-collapse .panel-body {
+  border-top-color: #0088cc;
+}
+
+.panel-sd > .panel-footer + .panel-collapse .panel-body {
+  border-bottom-color: #0088cc;
+}
