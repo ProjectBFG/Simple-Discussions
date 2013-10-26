@@ -150,24 +150,26 @@ function template_body_above()
 	global $context, $scripturl, $txt;
 
 	echo '
-	<div class="navbar navbar-inverse navbar-fixed-top">
-		<div class="navbar-inner">
-			<div class="container-fluid">
-				<a class="brand" href="', $scripturl, '">', $context['forum_name'], '</a>
-				<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</a>
-				<div class="nav-collapse collapse">
-					<form class="navbar-search pull-right" action="', $scripturl, '?action=search2" method="post" accept-charset="', $context['character_set'], '">
-						<input type="text" id="main_search" autocomplete="off" name="search" placeholder="', $txt['search'], '" />
-					</form>
-					', template_menu(), '
-				</div>
-			</div>
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="', $scripturl, '">', $context['forum_name'], '</a>
 		</div>
-	</div>
+		<div class="collapse navbar-collapse navbar-ex1-collapse">
+			', template_menu(), '
+			<form class="navbar-form navbar-right" action="', $scripturl, '?action=search2" method="post" accept-charset="', $context['character_set'], '" role="search">
+				<div class="form-group">
+					<input type="text" id="main_search" autocomplete="off" name="search" placeholder="', $txt['search'], '" class="form-control" />
+				</div>
+				<button type="submit" class="btn btn-default">Submit</button>
+			</form>
+		</div>
+	</nav>
 	<div class="container">';
 }
 
@@ -203,7 +205,7 @@ function template_menu()
 	global $context;
 
 	echo '
-			<ul class="nav">';
+				<ul class="nav navbar-nav">';
 
 	// Note: Menu markup has been cleaned up to remove unnecessary spans and classes.
 	foreach ($context['menu_buttons'] as $act => $button)
@@ -219,44 +221,35 @@ function template_menu()
 			$li_class = '';
 
 		echo '
-				<li', !empty($li_class) ? ' class="' . $li_class . '"' : '', '>
-					<a', !empty($button['sub_buttons']) ? ' class="dropdown-toggle disabled" data-toggle="dropdown"' : '' , ' href="', $button['href'], '" ', isset($button['target']) ? 'target="' . $button['target'] . '"' : '', '>
-						', $button['title'], !empty($button['sub_buttons']) ? '
-						<b class="caret"></b>' : '' , '
-					</a>';
+					<li', !empty($li_class) ? ' class="' . $li_class . '"' : '', '>
+						<a', !empty($button['sub_buttons']) ? ' class="dropdown-toggle" data-toggle="dropdown"' : '' , ' href="', $button['href'], '" ', isset($button['target']) ? 'target="' . $button['target'] . '"' : '', '>
+							', $button['title'], !empty($button['sub_buttons']) ? '
+							<b class="caret"></b>' : '' , '
+						</a>';
 
 		if (!empty($button['sub_buttons']))
 		{
 			echo '
-					<ul class="dropdown-menu" role="menu">';
+						<ul class="dropdown-menu">';
 
 			foreach ($button['sub_buttons'] as $childbutton)
 			{
 				echo '
-						<li>
-							<a href="', $childbutton['href'], '"' , isset($childbutton['target']) ? ' target="' . $childbutton['target'] . '"' : '', '>
-								', $childbutton['title'], '
-							</a>
-						</li>';
+							<li>
+								<a href="', $childbutton['href'], '"' , isset($childbutton['target']) ? ' target="' . $childbutton['target'] . '"' : '', '>
+									', $childbutton['title'], '
+								</a>
+							</li>';
 			}
 				echo '
-					</ul>';
+						</ul>';
 		}
 		echo '
-				</li>';
+					</li>';
 	}
 
 	echo '
-			</ul>
-			<script>
-				jQuery(\'ul.nav li.dropdown\').hover(function() {
-					jQuery(this).closest(\'.dropdown-menu\').stop(true, true).show();
-					jQuery(this).addClass(\'open\');
-				}, function() {
-					jQuery(this).closest(\'.dropdown-menu\').stop(true, true).hide();
-					jQuery(this).removeClass(\'open\');
-				});
-			</script>';
+				</ul>';
 }
 
 /**
@@ -280,7 +273,7 @@ function template_button_strip($button_strip, $direction = '', $strip_options = 
 		// Kept for backward compatibility
 		if (!isset($value['test']) || !empty($context[$value['test']]))
 			$buttons[] = '
-				<a' . (isset($value['id']) ? ' id="button_strip_' . $value['id'] . '"' : '') . ' class="btn' . (isset($value['active']) ? ' active' : '') . '" href="' . $value['url'] . '"' . (isset($value['custom']) ? ' ' . $value['custom'] : '') . '>' . $txt[$value['text']] . '</a>';
+				<a' . (isset($value['id']) ? ' id="button_strip_' . $value['id'] . '"' : '') . ' class="btn btn-default' . (isset($value['active']) ? ' active' : '') . '" href="' . $value['url'] . '"' . (isset($value['custom']) ? ' ' . $value['custom'] : '') . '>' . $txt[$value['text']] . '</a>';
 	}
 
 	// No buttons? No button strip either.

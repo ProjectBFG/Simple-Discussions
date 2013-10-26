@@ -519,7 +519,7 @@ function constructPageIndex($base_url, &$start, $max_value, $num_per_page, $flex
 
 	$base_link = '<li%3$s><a href="' . ($flexible_start ? $base_url : strtr($base_url, array('%' => '%%')) . ';start=%1$d') . '">%2$s</a></li>';
 		
-	$pageindex = '<ul>';
+	$pageindex = '';
 	
 	// Compact pages is off or on?
 	if (empty($modSettings['compactTopicPagesEnable']))
@@ -592,7 +592,7 @@ function constructPageIndex($base_url, &$start, $max_value, $num_per_page, $flex
 			$pageindex .= sprintf($base_link, $start + $num_per_page, $txt['next'], '');
 	}
 	
-	$pageindex .= '</ul>';
+	$pageindex .= '';
 
 	return $pageindex;
 }
