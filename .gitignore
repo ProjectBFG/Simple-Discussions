@@ -3,6 +3,7 @@ install_2-1_mysql.sql
 Settings.php
 Settings_bak.php
 db_last_error.php
+populate.php
 cache/data*.php
 Packages/backups/*
 Packages/temp

@@ -152,15 +152,14 @@ legend {
 /* Admin and moderation could generally do with a clean up everywhere.
 /* Live news from smf.org and support information. */
 
-#live_news, #supportVersionsTable {
+#live_news {
 	width: 70%;
 	-moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
 }
 #supportVersionsTable {
-	width: 30%;
-	padding-left: 6px;
+	width: 29%;
 }
-#admin_main_section .well {
+#admin_main_section .well, #admin_main_section .panel-body {
 	height: 12em;
 	overflow: auto;
 }

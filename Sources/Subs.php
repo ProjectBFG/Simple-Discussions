@@ -519,7 +519,7 @@ function constructPageIndex($base_url, &$start, $max_value, $num_per_page, $flex
 
 	$base_link = '<li%3$s><a href="' . ($flexible_start ? $base_url : strtr($base_url, array('%' => '%%')) . ';start=%1$d') . '">%2$s</a></li>';
 		
-	$pageindex = '<ul>';
+	$pageindex = '<ul class="pagination">';
 	
 	// Compact pages is off or on?
 	if (empty($modSettings['compactTopicPagesEnable']))
@@ -3499,30 +3499,7 @@ function setupMenuContext()
 
 	// All the buttons we can possible want and then some, try pulling the final list of buttons from cache first.
 	if (($menu_buttons = cache_get_data('menu_buttons-' . implode('_', $user_info['groups']) . '-' . $user_info['language'], $cacheTime)) === null || time() - $cacheTime <= $modSettings['settings_updated'])
-	{
-		$top_buttons = array(
-			'home' => array(
-				'title' => $txt['home'],
-				'href' => $scripturl,
-				'show' => true,
-				'sub_buttons' => array(
-				),
-			),
-			'blog' => array(
-				'title' => $txt['blog'],
-				'href' => $scripturl . '?action=blog',
-				'show' => true, // No permission for now, everyone will see what you write, so no secret!
-				'sub_buttons' => array(
-					'admin' => array(
-						'title' => $txt['blog_admin'],
-						'href' => $scripturl . '?action=admin;area=blog',
-						'show' => true,
-					),
-				),
-			),
-		);
-		
-		
+	{		
 		$buttons = array(
 			'search' => array(
 				'title' => $txt['search'],
@@ -3536,6 +3513,11 @@ function setupMenuContext()
 				'href' => $scripturl . '?action=admin',
 				'show' => $context['allow_admin'],
 				'sub_buttons' => array(
+					'admincenter' => array(
+						'title' => $txt['admin_center'],
+						'href' => $scripturl . '?action=admin;area=index',
+						'show' => allowedTo('admin_forum'),
+					),
 					'featuresettings' => array(
 						'title' => $txt['modSettings_title'],
 						'href' => $scripturl . '?action=admin;area=featuresettings',
@@ -3563,6 +3545,11 @@ function setupMenuContext()
 				'href' => $scripturl . '?action=moderate',
 				'show' => $context['allow_moderation_center'],
 				'sub_buttons' => array(
+					'modcenter' => array(
+						'title' => $txt['moderate'],
+						'href' => $scripturl . '?action=moderate;area=index',
+						'show' => $context['allow_moderation_center'],
+					),
 					'modlog' => array(
 						'title' => $txt['modlog_view'],
 						'href' => $scripturl . '?action=moderate;area=modlog',
@@ -3585,6 +3572,11 @@ function setupMenuContext()
 				'href' => $scripturl . '?action=profile',
 				'show' => $context['allow_edit_profile'],
 				'sub_buttons' => array(
+					'summary' => array(
+						'title' => $txt['summary'],
+						'href' => $scripturl . '?action=profile',
+						'show' => allowedTo('profile_view_own'),
+					),
 					'account' => array(
 						'title' => $txt['account'],
 						'href' => $scripturl . '?action=profile;area=account',
@@ -3694,46 +3686,11 @@ function setupMenuContext()
 				$menu_buttons[$act] = $button;
 			}
 
-		$top_menu_buttons = array();
-		foreach ($top_buttons as $act => $button)
-			if (!empty($button['show']))
-			{
-				$button['active_button'] = false;
-
-				// This button needs some action.
-				if (isset($button['action_hook']))
-					$needs_action_hook = true;
-
-				// Go through the sub buttons if there are any.
-				if (!empty($button['sub_buttons']))
-					foreach ($button['sub_buttons'] as $key => $subbutton)
-					{
-						if (empty($subbutton['show']))
-							unset($button['sub_buttons'][$key]);
-
-						// 2nd level sub buttons next...
-						if (!empty($subbutton['sub_buttons']))
-						{
-							foreach ($subbutton['sub_buttons'] as $key2 => $sub_button2)
-							{
-								if (empty($sub_button2['show']))
-									unset($button['sub_buttons'][$key]['sub_buttons'][$key2]);
-							}
-						}
-					}
-
-				$top_menu_buttons[$act] = $button;
-			}
-
 		if (!empty($modSettings['cache_enable']) && $modSettings['cache_enable'] >= 2)
 			cache_put_data('menu_buttons-' . implode('_', $user_info['groups']) . '-' . $user_info['language'], $menu_buttons, $cacheTime);
-		
-		if (!empty($modSettings['cache_enable']) && $modSettings['cache_enable'] >= 2)
-			cache_put_data('top_menu_buttons-' . implode('_', $user_info['groups']) . '-' . $user_info['language'], $top_menu_buttons, $cacheTime);
 	}
 
 	$context['menu_buttons'] = $menu_buttons;
-	$context['top_menu_buttons'] = $top_menu_buttons;
 
 	// Logging out requires the session id in the url.
 	if (isset($context['menu_buttons']['logout']))
@@ -3775,9 +3732,6 @@ function setupMenuContext()
 
 	if (isset($context['menu_buttons'][$current_action]))
 		$context['menu_buttons'][$current_action]['active_button'] = true;
-		
-	if (isset($context['top_menu_buttons'][$current_action]))
-		$context['top_menu_buttons'][$current_action]['active_button'] = true;
 
 	if (!$user_info['is_guest'] && $context['user']['unread_messages'] > 0 && isset($context['menu_buttons']['pm']))
 	{

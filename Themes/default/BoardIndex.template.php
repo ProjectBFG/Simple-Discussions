@@ -90,7 +90,7 @@ function template_main()
 	{
 		// We can make a little sidebar here... A happy little sidebar R.I.P. Bob Ross :/
 		echo '
-			<div class="sidebar visible-desktop">
+			<div class="sidebar visible-lg">
 				<div class="well">
 					',$txt['dummy_sidebar'],'
 				</div>';
@@ -155,7 +155,7 @@ function template_main()
 		// Main things happen here (topic/stats)	
 		echo '
 				<div id="index_topics">
-					<div class="pagination">', $context['page_index'], '</div>
+					<ul class="pagination">', $context['page_index'], '</ul>
 					<div class="entry-title" style="display: none;">', $context['forum_name_html_safe'], ' - ', $txt['recent_posts'], '</div>
 					<div class="entry-content" style="display: none;">
 						<a rel="feedurl" href="', $scripturl, '?action=.xml;type=webslice">', $txt['subscribe_webslice'], '</a>
@@ -166,7 +166,7 @@ function template_main()
 		{
 			// How it looks at desktop
 			echo '
-				<div class="visible-desktop">
+				<div class="visible-lg">
 					<table class="table table-bordered">
 						<tbody>';
 			
@@ -189,7 +189,7 @@ function template_main()
 						
 			// How it looks at mobile
 			echo '
-				<div class="hidden-desktop">
+				<div class="hidden-lg">
 					<table class="table table-bordered">
 						<tbody>';
 			
@@ -198,7 +198,7 @@ function template_main()
 						<tr>
 							<td class="topic">
 								<h4>', $topic['link'], '</h4>
-								<div class="pull-left">', $topic['likes'], ' ', $txt['likes'], ' | ', $topic['views'], ' ', $txt['views'], ' </div>
+								<div class="pull-left">', $topic['likes'], ' ', $txt['likes'], ' | ', $topic['views'], ' ', $txt['views'], ' | ', $topic['replies'], ' ', $txt['replies'], ' </div>
 								<div class="pull-right">', $topic['time'], ' ', $txt['by'], ' ', $topic['poster']['link'], '</div>
 							</td>
 						</tr>';

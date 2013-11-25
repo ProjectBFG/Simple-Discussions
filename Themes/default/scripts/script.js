@@ -1289,36 +1289,37 @@ function like(id)
 	var posting = $.post(url, data);
 	posting.done(function(e) {
 		$('#like_' + id).html(e);
-		$('#like_post_' + id + ' i').toggleClass('icon-thumbs-down icon-thumbs-up', 200);
+		$('#like_post_' + id + ' span').toggleClass('glyphicon-thumbs-down glyphicon-thumbs-up', 200);
 	});
 }
 
 $(document).ready(function() {
-	var url = smf_prepareScriptUrl(smf_scripturl) + 'action=search2;json';
-	var results = [], map = [];
-	$("#main_search").typeahead({
-		minLength: 5,
-		source: function(query, process) {
-			$.ajax({
-				url: url,
-				dataType: "json",
-				type: 'POST',
-				data: { search: query },
-				success: function (data) {
-					$.each(data, function(i, result) {
-						map[result.subject] = result;
-						results.push(result.subject);
-					});
-					process(results);
-					results = [];
-				}
-			});
-		},
-        updater: function (item) {
-			selectedResult = map[item].id;
-            document.location = smf_prepareScriptUrl(smf_scripturl) + 'topic=' + selectedResult + '.0';
-            return item;
-        },
-		items: 8,
-	});
+	$('.post_popover').popover();
+	// var url = smf_prepareScriptUrl(smf_scripturl) + 'action=search2;json';
+	// var results = [], map = [];
+	// $("#main_search").typeahead({
+		// minLength: 5,
+		// source: function(query, process) {
+			// $.ajax({
+				// url: url,
+				// dataType: "json",
+				// type: 'POST',
+				// data: { search: query },
+				// success: function (data) {
+					// $.each(data, function(i, result) {
+						// map[result.subject] = result;
+						// results.push(result.subject);
+					// });
+					// process(results);
+					// results = [];
+				// }
+			// });
+		// },
+        // updater: function (item) {
+			// selectedResult = map[item].id;
+            // document.location = smf_prepareScriptUrl(smf_scripturl) + 'topic=' + selectedResult + '.0';
+            // return item;
+        // },
+		// items: 8,
+	// });
 });
