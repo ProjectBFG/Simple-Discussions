@@ -142,7 +142,7 @@ function template_generic_menu_dropdown_above()
 			$li_class = 'dropdown active';
 			
 		echo '
-			<li', !empty($li_class) ? ' class="' . $li_class . '"' : '', '><a ', !empty($section['areas']) ? 'class="dropdown-toggle disabled" role="button" data-toggle="dropdown"' : '' ,' href="', $section['url'], $menu_context['extra_parameters'], '">', $section['title'], '</a>
+			<li', !empty($li_class) ? ' class="' . $li_class . '"' : '', '><a ', !empty($section['areas']) ? 'class="dropdown-toggle" role="button" data-toggle="dropdown"' : '' ,' href="', $section['url'], $menu_context['extra_parameters'], '">', $section['title'], '</a>
 				<ul class="dropdown-menu" role="menu">';
 
 		// For every area of this section show a link to that area (bold if it's currently selected.)
@@ -196,16 +196,7 @@ function template_generic_menu_dropdown_above()
 
 	echo '
 	</ul>
-</div>
-<script>
-jQuery(\'ul.nav li.dropdown\').hover(function() {
-	jQuery(this).closest(\'.dropdown-menu\').stop(true, true).show();
-	jQuery(this).addClass(\'open\');
-}, function() {
-	jQuery(this).closest(\'.dropdown-menu\').stop(true, true).hide();
-	jQuery(this).removeClass(\'open\');
-});
-</script>';
+</div>';
 
 	// This is the main table - we need it so we can keep the content to the right of it.
 	echo '

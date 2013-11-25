@@ -38,7 +38,7 @@ function template_profile_above()
 	// If the profile was update successfully, let the user know this.
 	if (!empty($context['profile_updated']))
 		echo '
-					<div class="infobox">
+					<div class="alert alert-success">
 						', $context['profile_updated'], '
 					</div>';
 }
@@ -55,10 +55,11 @@ function template_summary()
 
 	// Display the basic information about the user
 	echo '
-	<h3 class="catbg">
-		<img src="', $settings['images_url'], '/icons/profile_hd.png" alt="" class="icon" />', $txt['summary'], '
-	</h3>
-<div id="profileview" class="flow_auto">
+	<div class="panel panel-primary">
+		<div class="panel-heading">
+			<img src="', $settings['images_url'], '/icons/profile_hd.png" alt="" class="icon" />', $txt['summary'], '
+		</div>
+<div id="profileview" class="panel-body flow_auto">
 	<div id="basicinfo">
 		<div class="windowbg">
 			<div class="content flow_auto">
@@ -318,6 +319,7 @@ function template_summary()
 		</div>
 	</div>
 <div class="clear"></div>
+</div>
 </div>';
 }
 

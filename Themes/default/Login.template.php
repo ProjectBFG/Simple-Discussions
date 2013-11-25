@@ -23,60 +23,69 @@ function template_login()
 
 	echo '
 		<script src="', $settings['default_theme_url'], '/scripts/sha1.js"></script>
-
-		<form action="', $scripturl, '?action=login2" name="frmLogin" id="frmLogin" method="post" accept-charset="', $context['character_set'], '" ', empty($context['disable_login_hashing']) ? ' onsubmit="hashLoginPassword(this, \'' . $context['session_id'] . '\', \'' . (!empty($context['login_token']) ? $context['login_token'] : '') . '\');"' : '', ' class="form-horizontal">
-			<h3 class="catbg">
-				<img src="', $settings['images_url'], '/icons/login_hd.png" alt="" class="icon" /> ', $txt['login'], '
-			</h3>
-			<div class="well">';
+		<div class="panel panel-sd">
+			<div class="panel-heading">
+				<h3 class="panel-title">
+					<span class="glyphicon glyphicon-log-in"></span> ', $txt['login'], '
+				</h3>
+			</div>
+			<div class="panel-body">
+				<form action="', $scripturl, '?action=login2" name="frmLogin" id="frmLogin" method="post" accept-charset="', $context['character_set'], '" ', empty($context['disable_login_hashing']) ? ' onsubmit="hashLoginPassword(this, \'' . $context['session_id'] . '\', \'' . (!empty($context['login_token']) ? $context['login_token'] : '') . '\');"' : '', ' class="form-horizontal" role="form">';
 
 	// Did they make a mistake last time?
 	if (!empty($context['login_errors']))
 		echo '
-				<div class="alert alert-error">', implode('<br />', $context['login_errors']), '</div><br />';
+					<div class="alert alert-danger">', implode('<br />', $context['login_errors']), '</div><br />';
 
 	// Or perhaps there's some special description for this time?
 	if (isset($context['description']))
 		echo '
-				<div class="alert alert-info">', $context['description'], '</div>';
+					<div class="alert alert-info">', $context['description'], '</div>';
 
 	// Now just get the basic information - username, password, etc.
 	echo '
-				<div class="control-group">
-					<label class="control-label" for="user">', $txt['username'], ':</label>
-					<div class="controls">
-						<input type="text" name="user" id="user" size="20" value="', $context['default_username'], '" />
+					<div class="form-group">
+						<label class="col-sm-2 control-label" for="user">', $txt['username'], ':</label>
+						<div class="col-sm-10">
+							<input type="text" name="user" id="user" size="20" value="', $context['default_username'], '" class="form-control">
+						</div>
 					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label" for="passwrd">', $txt['password'], ':</label>
-					<div class="controls">
-						<input type="password" name="passwrd" id="passwrd" value="', $context['default_password'], '" />
+					<div class="form-group">
+						<label class="col-sm-2 control-label" for="passwrd">', $txt['password'], ':</label>
+						<div class="col-sm-10">
+							<input type="password" name="passwrd" id="passwrd" value="', $context['default_password'], '" class="form-control">
+						</div>
 					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label" for="cookielength">', $txt['mins_logged_in'], ':</label>
-					<div class="controls">
-						<input type="text" name="cookielength" id="cookielength" value="', $modSettings['cookieTime'], '"', $context['never_expire'] ? ' disabled="disabled"' : '', ' />
+					<div class="form-group">
+						<label class="col-sm-2 control-label" for="cookielength">', $txt['mins_logged_in'], ':</label>
+						<div class="col-sm-2 ">
+							<input type="text" name="cookielength" id="cookielength" value="', $modSettings['cookieTime'], '"', $context['never_expire'] ? ' disabled="disabled"' : '', ' class="form-control">
+						</div>
 					</div>
-				</div>
-				<div class="control-group">
-					<div class="controls">
-						<label class="checkbox"><input type="checkbox" name="cookieneverexp" id="cookieneverexp"', $context['never_expire'] ? ' checked="checked"' : '', ' onclick="this.form.cookielength.disabled = this.checked;" /> ', $txt['always_logged_in'], '</label>';
+					<div class="form-group">
+						<div class="col-sm-offset-2 col-sm-10">
+							<div class="checkbox">
+								<label><input type="checkbox" name="cookieneverexp" id="cookieneverexp"', $context['never_expire'] ? ' checked="checked"' : '', ' onclick="this.form.cookielength.disabled = this.checked;" /> ', $txt['always_logged_in'], '</label>';
 	// If they have deleted their account, give them a chance to change their mind.
 	if (isset($context['login_show_undelete']))
 		echo '
-						<label class="checkbox"><input type="checkbox" name="undelete" /> <span class="alert-error">', $txt['undelete_account'], '</span></label>';
+								<label class="checkbox"><input type="checkbox" name="undelete" /> <span class="alert-error">', $txt['undelete_account'], '</span></label>';
 	echo '
-						<input type="submit" value="', $txt['login'], '" class="btn" />
-						<a href="', $scripturl, '?action=reminder" class="btn btn-link">', $txt['forgot_your_password'], '</a>
+							</div>
+						</div>
 					</div>
+					<div class="form-group">
+						<div class="col-sm-offset-2 col-sm-10">
+							<input type="submit" value="', $txt['login'], '" class="btn btn-primary" />
+							<a href="', $scripturl, '?action=reminder" class="btn btn-link">', $txt['forgot_your_password'], '</a>
+						</div>
+					</div>
+					<input type="hidden" name="hash_passwrd" value="" />
+					<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
+					<input type="hidden" name="', $context['login_token_var'], '" value="', $context['login_token'], '" />
+		</form>
 				</div>
-				<input type="hidden" name="hash_passwrd" value="" />
-				<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
-				<input type="hidden" name="', $context['login_token_var'], '" value="', $context['login_token'], '" />
-			</div>
-		</form>';
+			</div>';
 
 	// Focus on the correct input - username or password.
 	echo '
@@ -186,36 +195,38 @@ function template_admin_login()
 
 	// Since this should redirect to whatever they were doing, send all the get data.
 	echo '
-<script src="', $settings['default_theme_url'], '/scripts/sha1.js"></script>
-
-<form action="', $scripturl, $context['get_data'], '" method="post" accept-charset="', $context['character_set'], '" name="frmLogin" id="frmLogin" class="form-inline" onsubmit="hash', ucfirst($context['sessionCheckType']), 'Password(this, \'', $context['user']['username'], '\', \'', $context['session_id'], '\', \'' . (!empty($context['login_token']) ? $context['login_token'] : '') . '\');">
-		<h3 class="catbg">
-			', $txt['login'], '
-		</h3>
-		<div class="well">';
+		<script src="', $settings['default_theme_url'], '/scripts/sha1.js"></script>
+	
+		<div class="panel panel-sd">
+			<div class="panel-heading">', $txt['login'], '</div>
+			<div class="panel-body">
+				<form action="', $scripturl, $context['get_data'], '" method="post" accept-charset="', $context['character_set'], '" name="frmLogin" id="frmLogin" class="form-inline" onsubmit="hash', ucfirst($context['sessionCheckType']), 'Password(this, \'', $context['user']['username'], '\', \'', $context['session_id'], '\', \'' . (!empty($context['login_token']) ? $context['login_token'] : '') . '\');" role="form">';
 
 	if (!empty($context['incorrect_password']))
 		echo '
-			<div class="error">', $txt['admin_incorrect_password'], '</div>';
+					<div class="error">', $txt['admin_incorrect_password'], '</div>';
 
 	echo '
-			<strong>', $txt['password'], ':</strong>
-			<input type="password" name="', $context['sessionCheckType'], '_pass" size="24" />
-			<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
-			<input type="hidden" name="', $context['admin-login_token_var'], '" value="', $context['admin-login_token'], '" />
-			<input type="submit" value="', $txt['login'], '" class="btn" />';
+					<div class="form-group">
+						<label class="sr-only" for="password">', $txt['password'], '</label>
+						<input type="password" name="', $context['sessionCheckType'], '_pass" size="24" id="password" placeholder="', $txt['password'], '" class="form-control">
+					</div>
+					<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
+					<input type="hidden" name="', $context['admin-login_token_var'], '" value="', $context['admin-login_token'], '" />
+					<input type="submit" value="', $txt['login'], '" class="btn btn-default" />';
 
 	// Make sure to output all the old post data.
 	echo $context['post_data'], '
-		</div>
-	<input type="hidden" name="', $context['sessionCheckType'], '_hash_pass" value="" />
-</form>';
+					<input type="hidden" name="', $context['sessionCheckType'], '_hash_pass" value="" />
+				</form>
+			</div>
+		</div>';
 
 	// Focus on the password box.
 	echo '
-<script><!-- // --><![CDATA[
-	document.forms.frmLogin.', $context['sessionCheckType'], '_pass.focus();
-// ]]></script>';
+		<script><!-- // --><![CDATA[
+			document.forms.frmLogin.', $context['sessionCheckType'], '_pass.focus();
+		// ]]></script>';
 }
 
 // Activate your account manually?

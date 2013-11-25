@@ -90,7 +90,7 @@ function template_main()
 	{
 		// We can make a little sidebar here... A happy little sidebar R.I.P. Bob Ross :/
 		echo '
-			<div class="sidebar visible-desktop">
+			<div class="sidebar visible-lg">
 				<div class="well">
 					',$txt['dummy_sidebar'],'
 				</div>';
@@ -166,7 +166,7 @@ function template_main()
 		{
 			// How it looks at desktop
 			echo '
-				<div class="visible-desktop">
+				<div class="visible-lg">
 					<table class="table table-bordered">
 						<tbody>';
 			
@@ -189,7 +189,7 @@ function template_main()
 						
 			// How it looks at mobile
 			echo '
-				<div class="hidden-desktop">
+				<div class="hidden-lg">
 					<table class="table table-bordered">
 						<tbody>';
 			
@@ -198,7 +198,7 @@ function template_main()
 						<tr>
 							<td class="topic">
 								<h4>', $topic['link'], '</h4>
-								<div class="pull-left">', $topic['likes'], ' ', $txt['likes'], ' | ', $topic['views'], ' ', $txt['views'], ' </div>
+								<div class="pull-left">', $topic['likes'], ' ', $txt['likes'], ' | ', $topic['views'], ' ', $txt['views'], ' | ', $topic['replies'], ' ', $txt['replies'], ' </div>
 								<div class="pull-right">', $topic['time'], ' ', $txt['by'], ' ', $topic['poster']['link'], '</div>
 							</td>
 						</tr>';

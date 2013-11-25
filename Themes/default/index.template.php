@@ -90,7 +90,7 @@ function template_html_above()
 	echo '
 	<link rel="stylesheet" href="', $settings['theme_url'], '/css/bootstrap.min.css" />
 	<link rel="stylesheet" href="', $settings['theme_url'], '/css/index.css?alp21" />
-    <link href="', $settings['theme_url'], '/css/bootstrap-responsive.min.css" rel="stylesheet">';
+    <!-- <link href="', $settings['theme_url'], '/css/bootstrap-responsive.min.css" rel="stylesheet"> -->';
 
 	// load in any css from mods or themes so they can overwrite if wanted
 	template_css();
@@ -164,9 +164,14 @@ function template_body_above()
 			', template_menu(), '
 			<form class="navbar-form navbar-right" action="', $scripturl, '?action=search2" method="post" accept-charset="', $context['character_set'], '" role="search">
 				<div class="form-group">
-					<input type="text" id="main_search" autocomplete="off" name="search" placeholder="', $txt['search'], '" class="form-control" />
-				</div>
-				<button type="submit" class="btn btn-default">Submit</button>
+                    <div class="input-group">
+					   <input type="text" id="main_search" autocomplete="off" name="search" placeholder="', $txt['search'], '" class="form-control" />
+				        <span class="input-group-btn">
+                            <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></button> 
+                        </span>
+                    </div>
+                    <!-- <a href="', $scripturl, '?action=search" class="btn btn-primary"><span class="glyphicon glyphicon-cog"></span></a> -->
+                </div>
 			</form>
 		</div>
 	</nav>
@@ -250,6 +255,7 @@ function template_menu()
 
 	echo '
 				</ul>';
+				
 }
 
 /**
@@ -258,7 +264,7 @@ function template_menu()
  * @param string $direction = ''
  * @param array $strip_options = array()
  */
-function template_button_strip($button_strip, $direction = '', $strip_options = array())
+function template_button_strip($button_strip, $direction = '', $strip_options = array(), $additionnal_class)
 {
 	global $context, $txt;
 
@@ -281,7 +287,7 @@ function template_button_strip($button_strip, $direction = '', $strip_options = 
 		return;
 
 	echo '
-		<div class="btn-group', !empty($direction) ? ' pull-' . $direction : '', '"', (empty($buttons) ? ' style="display: none;"' : ''), (!empty($strip_options['id']) ? ' id="' . $strip_options['id'] . '"': ''), '>',
+		<div class="', !empty($additionnal_class) ? $additionnal_class : '', ' btn-group', !empty($direction) ? ' pull-' . $direction : '', '"', (empty($buttons) ? ' style="display: none;"' : ''), (!empty($strip_options['id']) ? ' id="' . $strip_options['id'] . '"': ''), '>',
 				implode('', $buttons), '
 		</div>';
 }

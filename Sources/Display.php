@@ -804,6 +804,7 @@ function prepareDisplayContext($reset = false)
 		'can_remove' => allowedTo('delete_any') || (allowedTo('delete_replies') && $context['user']['started']) || (allowedTo('delete_own') && $message['id_member'] == $user_info['id'] && (empty($modSettings['edit_disable_time']) || $message['poster_time'] + $modSettings['edit_disable_time'] * 60 > time())),
 		'can_see_ip' => allowedTo('moderate_forum') || ($message['id_member'] == $user_info['id'] && !empty($user_info['id'])),
 		'like_count' => getLikesCount($message['id_msg']),
+		'like_button' => didYouLike($message['id_msg'], $user_info['id']) === false ? 'up' : 'down',
 		'liked' => getLikes($message['id_msg']),
 	);
 

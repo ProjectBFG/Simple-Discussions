@@ -24,7 +24,6 @@ function Like()
 		'liked' => array(),
 	);
 	$db_show_debug = false;
-	// $context['rate_errors'] = array();
 
 	// Check if we have the ID of the message.
 	$request = $smcFunc['db_query']('', '
@@ -38,6 +37,7 @@ function Like()
 	);
 	if ($smcFunc['db_fetch_row']($request) === 0) {
 		$context['like_info']['msg'] = $txt['no_posts_selected'];
+		$context['like_info']['alert'] = 'danger';
 		return;
 	}
 	$smcFunc['db_free_result']($request);
@@ -56,6 +56,7 @@ function Like()
 	);
 	if ($smcFunc['db_fetch_row']($request) >= 1) {
 		$context['like_info']['msg'] = $txt['cannot_like_self'];
+		$context['like_info']['alert'] = 'danger';
 		return;
 	}
 	$smcFunc['db_free_result']($request);
@@ -76,6 +77,7 @@ function Like()
 		updateLikes($id_msg, $user_info['id'], 'm');
 
 		$context['like_info']['msg'] = $txt['succesfull_disliked'];
+		$context['like_info']['alert'] = 'warning';
 		$context['like_info']['like_count'] = getLikesCount($id_msg);
 		$context['like_info']['liked'] = getLikes($id_msg);
 	}
@@ -84,6 +86,7 @@ function Like()
 		updateLikes($id_msg, $user_info['id'], 'p');
 		
 		$context['like_info']['msg'] = $txt['succesfull_liked'];
+		$context['like_info']['alert'] = 'success';
 		$context['like_info']['like_count'] = getLikesCount($id_msg);
 		$context['like_info']['liked'] = getLikes($id_msg);
 	}
@@ -200,6 +203,29 @@ function getTotalTopicLike($topic)
 	
 	return $total;
 
+}
+
+function didYouLike($msg, $member)
+{
+	global $smcFunc;
+	
+	$request = $smcFunc['db_query']('', '
+		SELECT id_like
+		FROM {db_prefix}likes
+		WHERE id_msg = {int:msg}
+			AND id_member = {int:member}
+		LIMIT 1',
+		array(
+			'msg' => $msg,
+			'member' => $member,
+		)
+	);
+	if ($smcFunc['db_num_rows']($request) === 1)
+		return true;
+	else
+		return false;
+		
+	$smcFunc['db_free_result']($request);
 }
 
 ?>

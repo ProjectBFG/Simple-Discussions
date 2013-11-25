@@ -33,14 +33,17 @@ function template_admin()
 		echo '
 			<object id="quick_search">
 				<form action="', $scripturl, '?action=admin;area=search" method="post" accept-charset="', $context['character_set'], '" class="form-inline pull-right">
-					<img class="icon" src="', $settings['images_url'] , '/filter.png" alt="" />
-					<input type="text" name="search_term" value="', $txt['admin_search'], '" onclick="if (this.value == \'', $txt['admin_search'], '\') this.value = \'\';" class="input_text" />
-					<select name="search_type">
-						<option value="internal"', (empty($context['admin_preferences']['sb']) || $context['admin_preferences']['sb'] == 'internal' ? ' selected="selected"' : ''), '>', $txt['admin_search_type_internal'], '</option>
-						<option value="member"', (!empty($context['admin_preferences']['sb']) && $context['admin_preferences']['sb'] == 'member' ? ' selected="selected"' : ''), '>', $txt['admin_search_type_member'], '</option>
-						<option value="online"', (!empty($context['admin_preferences']['sb']) && $context['admin_preferences']['sb'] == 'online' ? ' selected="selected"' : ''), '>', $txt['admin_search_type_online'], '</option>
-					</select>
-					<input type="submit" name="search_go" id="search_go" value="', $txt['admin_search_go'], '" class="btn" />
+					<div class="form-group">
+						<input type="text" name="search_term" value="" placeholder="', $txt['admin_search'], '" class="form-control">
+					</div>
+					<div class="form-group">
+						<select name="search_type" class="form-control">
+							<option value="internal"', (empty($context['admin_preferences']['sb']) || $context['admin_preferences']['sb'] == 'internal' ? ' selected="selected"' : ''), '>', $txt['admin_search_type_internal'], '</option>
+							<option value="member"', (!empty($context['admin_preferences']['sb']) && $context['admin_preferences']['sb'] == 'member' ? ' selected="selected"' : ''), '>', $txt['admin_search_type_member'], '</option>
+							<option value="online"', (!empty($context['admin_preferences']['sb']) && $context['admin_preferences']['sb'] == 'online' ? ' selected="selected"' : ''), '>', $txt['admin_search_type_online'], '</option>
+						</select>
+					</div>
+					<input type="submit" name="search_go" id="search_go" value="', $txt['admin_search_go'], '" class="btn btn-default" />
 				</form>
 			</object>';
 
@@ -61,11 +64,11 @@ function template_admin()
 
 	// Display the "live news" from simplemachines.org.
 	echo '
-			<div id="live_news" class="pull-left">
-					<h3 class="catbg">
-						', $txt['live'], '
-					</h3>
-				<div class="well nopadding">
+			<div id="live_news" class="panel panel-sd pull-left">
+				<div class="panel-heading">
+					', $txt['live'], '
+				</div>
+				<div class="panel-body nopadding">
 					<div class="content">
 						<div id="smfAnnouncements">', $txt['lfyi'], '</div>
 					</div>
@@ -74,11 +77,11 @@ function template_admin()
 
 	// Show the user version information from their server.
 	echo '
-			<div id="supportVersionsTable" class="pull-right">
-					<h3 class="catbg">
-						<a href="', $scripturl, '?action=admin;area=credits">', $txt['support_title'], '</a>
-					</h3>
-				<div class="well nopadding">
+			<div id="supportVersionsTable" class="panel panel-sd pull-right">
+				<div class="panel-heading">
+					', $txt['support_title'], '
+				</div>
+				<div class="panel-body nopadding">
 					<div class="content">
 						<div id="version_details">
 							<strong>', $txt['support_versions'], ':</strong><br />
